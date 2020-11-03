@@ -1,0 +1,80 @@
+from rest_framework.permissions import IsAuthenticated
+from rest_framework import generics
+
+from flower_app.controllers.permissions import HasGroupPermission
+from .publishing import computeDocx
+from flower_app.models.Etude import Etude
+from flower_app.models.Facture import Facture
+from flower_app.models.Mission import Mission
+from flower_app.models.People.Membre import Membre
+from flower_app.models.PVR import PVR
+
+from flower_app.controllers.gantt.gantt import computeJPGGanttFromEtude
+
+import tempfile
+
+class DevisView(generics.RetrieveAPIView):
+    permission_classes = [IsAuthenticated, HasGroupPermission]
+    required_groups = {
+        'GET': ['ROLE_CA']
+    }
+
+    def retrieve(request, self, etude_id):
+        etude = Etude.objects.get(pk=etude_id)
+        return computeDocx({'etude': etude}, 'DEVIS.docx','DEVIS-' + etude.name)
+        
+class CustomDevisView(generics.CreateAPIView):
+    permission_classes = [IsAuthenticated, HasGroupPermission]
+    required_groups = {
+        'POST': ['ROLE_CA']
+    }
+
+    def create(self, request):
+        etude = request.data
+        etude['projectManager'] = Membre.objects.get(pk=etude['projectManager'])
+        return computeDocx({'etude': etude}, 'DEVIS_JSON.docx','DEVIS-' + etude['name'])
+
+class CEView(generics.RetrieveAPIView):
+    permission_classes = [IsAuthenticated, HasGroupPermission]
+    required_groups = {
+        'GET': ['ROLE_CA']
+    }
+
+    def retrieve(request, self, etude_id):
+        etude = Etude.objects.get(pk=etude_id)
+        svgData = computeJPGGanttFromEtude(etude)
+        tmp_img_file = tempfile.NamedTemporaryFile(delete=None, suffix='.jpg')
+        tmp_img_file.write(svgData)
+        # tmp_img_file.close()
+        images = {'gantt': tmp_img_file.name}
+        return computeDocx({'etude': etude}, 'CETUDE.docx','CE-' + etude.name, images=images)
+        
+class RDMView(generics.RetrieveAPIView):
+    permission_classes = [IsAuthenticated, HasGroupPermission]
+    required_groups = {
+        'GET': ['ROLE_CA']
+    }
+
+    def retrieve(request, self, rdm_id):
+        mission = Mission.objects.get(pk=rdm_id)
+        return computeDocx({'mission': mission}, 'RDM.docx','RDM-' + mission.project.name)
+
+class FactureView(generics.RetrieveAPIView):
+    permission_classes = [IsAuthenticated, HasGroupPermission]
+    required_groups = {
+        'GET': ['ROLE_CA']
+    }
+
+    def retrieve(request, self, facture_id):
+        invoice = Facture.objects.get(pk=facture_id)
+        return computeDocx({'facture': invoice}, 'FA.docx', str(invoice))
+
+class PVRView(generics.RetrieveAPIView):
+    permission_classes = [IsAuthenticated, HasGroupPermission]
+    required_groups = {
+        'GET': ['ROLE_CA']
+    }
+
+    def retrieve(request, self, pvr_id):
+        pvr = PVR.objects.get(pk=pvr_id)
+        return computeDocx({'pvr': pvr}, 'PVR.docx')
