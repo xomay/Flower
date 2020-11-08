@@ -8,7 +8,7 @@ import base64
 from datetime import date, timedelta
 
 import locale
-locale.setlocale(locale.LC_TIME, "fr_FR")
+locale.setlocale(locale.LC_TIME, "fr_FR.utf8")
 
 def computeJPGGanttFromEtude(etude):
     data = []

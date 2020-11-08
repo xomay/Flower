@@ -4,7 +4,7 @@ from docxtpl import DocxTemplate, InlineImage
 from docx.shared import Mm
 
 import locale
-locale.setlocale(locale.LC_TIME, "fr_FR")
+locale.setlocale(locale.LC_TIME, "fr_FR.utf8")
 from datetime import date, timedelta
 import jinja2
 from num2words import num2words

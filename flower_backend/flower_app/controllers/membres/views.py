@@ -10,7 +10,7 @@ class MembreView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated, HasGroupPermission]
     required_groups = {
         'GET': ['ROLE_CA'],
-        'POST': ['ROLE_ADMIN']
+        'POST': ['ROLE_CA'],
     }
     serializer_class = MembreSerializer
     queryset = Membre.objects.all()
