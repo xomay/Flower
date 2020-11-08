@@ -53,7 +53,7 @@ class Phase(models.Model):
     
     @property
     def finishDate(self):
-        return (date.fromisoformat(str(self.beginDate)) + timedelta(days=self.period)).isoformat()
+        return (self.beginDate + timedelta(days=self.period)).isoformat()
 
 class PhaseSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False, write_only=False)
