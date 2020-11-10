@@ -1,6 +1,6 @@
 #This is Flower repo
 
-##Flower is a ERP-CRM developed by Steeve Doppler and then by Si-department from Ouest-INSA(INSA Rennes J.-E.). 
+##Flower is a ERP-CRM developed by the SI-department from Ouest-INSA(INSA Rennes J.-E.). 
 It will be util to Junior enterprise, and its vocation is to be simpler to enhance than others ERP-CRM.
 
 
