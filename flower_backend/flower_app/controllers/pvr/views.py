@@ -21,7 +21,7 @@ class PVRRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
         'GET': ['ROLE_CA'],                                     #from modules/etudes/views/PVREditor.view
         'PUT': ['ROLE_CA'],                                     #from modules/etudes/views/PVREditor.view
         'PATCH': ['ROLE_CA'],
-        'DELETE': ['ROLE_CA']
+        'DELETE': ['ROLE_CA']                                   #from modules/etudes/components/Generation.vue in modules/etudes/views/EtudeDetail.vue
     }
     serializer_class = PVRSerializer
     queryset = PVR.objects.all()
