@@ -9,7 +9,10 @@ from flower_app.models.People.Membre import Membre, MembreSerializer
 class MembreView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated, HasGroupPermission]
     required_groups = {
-        'GET': ['ROLE_CA'],
+        'GET': ['ROLE_CA'],                                     #from modules/etudes/components/forms/ProjectForm.vue in modules/etudes/views/EtudeModifier.vue
+                                                                #   or from modules/etudes/components/forms/MissionForm.vue in modules/etudes/views/MissionCreer.vue
+                                                                #   or from modules/etudes/components/forms/PVRForm.vue in modules/etudes/views/PVRCreator.vue
+                                                                #   or in modules/etudes/views/PVREditor.vue
         'POST': ['ROLE_CA'],
     }
     serializer_class = MembreSerializer

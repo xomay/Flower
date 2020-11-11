@@ -13,8 +13,8 @@ from flower_app.models.Mission import Mission, MissionSerializer, MissionDetailS
 class EtudeListCreateView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated, HasGroupPermission]
     required_groups = {
-        'GET': ['ROLE_CA'],
-        'POST': ['ROLE_CA']
+        'GET': ['ROLE_CA'],                                     #from modules/etudes/views/EtudeVoir.vue
+        'POST': ['ROLE_CA']                                     #from modules/etudes/views/project/EtudeCreer.vue
     }
     serializer_class = EtudeSerializer
     queryset = Etude.objects.all()
@@ -22,8 +22,11 @@ class EtudeListCreateView(generics.ListCreateAPIView):
 class EtudeRetrieveUpdateView(generics.RetrieveUpdateAPIView):
     permission_classes = [IsAuthenticated, HasGroupPermission]
     required_groups = {
-        'GET': ['ROLE_CA'],
-        'PUT': ['ROLE_CA'],
+        'GET': ['ROLE_CA'],                                     #from modules/etudes/views/project/EtudeModifier.vue or modules/etudes/views/project/EtudeDetail.vue
+                                                                #   or modules/etudes/views/PhaseModifier.vue or modules/etudes/views/projectConvention/EtudeConvention.vue
+                                                                #   or modules/etudes/views/MissionCreer.vue beforeCreate or modules/etudes/views/PVRCreator.vue or
+                                                                #   modules/etudes/views/PVREditor.vue
+        'PUT': ['ROLE_CA'],                                     #from modules/etudes/views/project/EtudeModifier.vue to save
         'PATCH': ['ROLE_CA']
     }
     queryset = Etude.objects.all()
@@ -55,8 +58,8 @@ class MissionsView(generics.ListCreateAPIView, generics.UpdateAPIView):
     permission_classes = [IsAuthenticated, HasGroupPermission]
     required_groups = {
         'GET': ['ROLE_CA'],
-        'POST': ['ROLE_CA'],
-        'PUT': ['ROLE_CA'],
+        'POST': ['ROLE_CA'],                                        # from modules/etudes/views/MissionCreer.vue
+        'PUT': ['ROLE_CA'],                                         # from modules/etudes/views/MissionCreer.vue
         'PATCH': ['ROLE_CA']
     }
     serializer_class = MissionSerializer
@@ -79,7 +82,7 @@ class MissionsView(generics.ListCreateAPIView, generics.UpdateAPIView):
 class MissionsDetailView(generics.DestroyAPIView):
     permission_classes = [IsAuthenticated, HasGroupPermission]
     required_groups = {
-        'DELETE': ['ROLE_CA']
+        'DELETE': ['ROLE_CA']                                   #from from modules/etudes/components/forms/MissionForm.vue in modules/etudes/views/MissionCreer.vue
     }
     serializer_class = MissionSerializer
     queryset = Mission.objects.all()

@@ -10,8 +10,8 @@ class GroupeView(generics.ListCreateAPIView, generics.UpdateAPIView):
     permission_classes = [IsAuthenticated, HasGroupPermission]
     required_groups = {
         'GET': ['ROLE_CA'],
-        'POST': ['ROLE_CA'],
-        'PUT': ['ROLE_CA'],
+        'POST': ['ROLE_CA'],                                #from modules/etudes/views/PhaseModifier.vue to add a group
+        'PUT': ['ROLE_CA'],                                 #from modules/etudes/views/PhaseModifier.vue to modify the group and his phases
         'PATCH': ['ROLE_CA']
     }
     serializer_class = GroupeSerializer
@@ -26,7 +26,7 @@ class GroupeView(generics.ListCreateAPIView, generics.UpdateAPIView):
 class GroupeDetailView(generics.DestroyAPIView):
     permission_classes = [IsAuthenticated, HasGroupPermission]
     required_groups = {
-        'DELETE': ['ROLE_CA']
+        'DELETE': ['ROLE_CA']                               #from modules/etudes/views/PhaseModifier.vue to delete a group
     }
     serializer_class = GroupeSerializer
     queryset = Groupe.objects.all()

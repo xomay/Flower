@@ -10,7 +10,7 @@ class PVRListCreateView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated, HasGroupPermission]
     required_groups = {
         'GET': ['ROLE_CA'],
-        'POST': ['ROLE_CA']
+        'POST': ['ROLE_CA']                                     #from modules/etudes/views/PVRCreator.view
     }
     serializer_class = PVRSerializer
     queryset = PVR.objects.all()
@@ -18,8 +18,8 @@ class PVRListCreateView(generics.ListCreateAPIView):
 class PVRRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated, HasGroupPermission]
     required_groups = {
-        'GET': ['ROLE_CA'],
-        'PUT': ['ROLE_CA'],
+        'GET': ['ROLE_CA'],                                     #from modules/etudes/views/PVREditor.view
+        'PUT': ['ROLE_CA'],                                     #from modules/etudes/views/PVREditor.view
         'PATCH': ['ROLE_CA'],
         'DELETE': ['ROLE_CA']
     }

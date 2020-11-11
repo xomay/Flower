@@ -10,7 +10,8 @@ from flower_app.models.People.Employe import Employe, EmployeSerializer
 class ProspectListCreateView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated, HasGroupPermission]
     required_groups = {
-        'GET': ['ROLE_CA'],
+        'GET': ['ROLE_CA'],                                         #from modules/etudes/components/forms/ProjectForm.vue in modules/etudes/views/EtudeModifier.vue
+                                                                    #   or modules/etudes/views/invoice/InvoiceCreate.vue or modules/etudes/views/invoice/InvoiceModify.vue
         'POST': ['ROLE_CA']
     }
     serializer_class = ProspectSerializer
@@ -30,7 +31,8 @@ class ProspectRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
 class EmployeListCreateView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated, HasGroupPermission]
     required_groups = {
-        'GET': ['ROLE_CA'],
+        'GET': ['ROLE_CA'],                                         #from modules/etudes/components/forms/PVRForm.vue in modules/etudes/views/PVRCreator.vue
+                                                                    #   or in modules/etudes/views/PVREditor.vue
         'POST': ['ROLE_CA']
     }
     serializer_class = EmployeSerializer
