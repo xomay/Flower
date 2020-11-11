@@ -1,6 +1,8 @@
 from django.urls import include, path
 from . import views
 
+#Base url for here is '/etudes/'
+
 urlpatterns = [
     path('', views.EtudeListCreateView.as_view()),
     path('<int:pk>/', views.EtudeRetrieveUpdateView.as_view()),
