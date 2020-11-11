@@ -26,7 +26,7 @@ class DevisView(generics.RetrieveAPIView):
 class CustomDevisView(generics.CreateAPIView):
     permission_classes = [IsAuthenticated, HasGroupPermission]
     required_groups = {
-        'POST': ['ROLE_CA']
+        'POST': ['ROLE_CA']                                     #from modules/prospects/views/Devis.vue
     }
 
     def create(self, request):
