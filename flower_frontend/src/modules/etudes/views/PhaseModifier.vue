@@ -163,9 +163,17 @@ export default {
         this.$message({message: "Les Groupes et Phases ont bien été enregistrés",
           type: "success"})
       }).
-        catch(() => {
-          this.$message({message: "Impossible d'enregistrer les groupes pour le moment",
-            type: "error"})
+        catch((err) => {
+          console.log(err)
+          if (err.response && err.response.status === 400) {
+            this.$message({message: "Le formulaire comporte des erreurs. Vérifiez les descriptions et les objectifs des phases (menu déroulant)",
+              type: "error",
+              offset: 40})
+          } else {
+            this.$message({message: "Impossible d'enregistrer les Groupes et Phases pour le moment",
+              type: "error",
+              offset: 40})
+          }
         }).
         finally(() => {
           this.loading = false
