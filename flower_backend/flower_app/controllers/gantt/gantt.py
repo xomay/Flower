@@ -12,10 +12,9 @@ locale.setlocale(locale.LC_TIME, "fr_FR.utf8")
 
 def computeJPGGanttFromEtude(etude):
     data = []
-    # TODO: Trier en fonction des indices
-    for groupe in etude.groupe_set.iterator():
+    for groupe in etude.groupe_set.order_by('index').iterator():
         print('Groupe : {}'.format(groupe))
-        for phase in groupe.phase_set.iterator():
+        for phase in groupe.phase_set.order_by('index').iterator():
             data.append(dict(Phase=phase.title + " ", Début=phase.beginDate, Fin=phase.finishDate))
 
     if len(data)>0 :
@@ -31,10 +30,9 @@ def computeJPGGanttFromEtude(etude):
 def computeGanttFromEtude(etude, image_format="jpg"):
 
     data = []
-    # TODO: Trier en fonction des indices
-    for groupe in etude.groupe_set.iterator():
+    for groupe in etude.groupe_set.order_by('index').iterator():
         print('Groupe : {}'.format(groupe))
-        for phase in groupe.phase_set.iterator():
+        for phase in groupe.phase_set.order_by('index').iterator():
             data.append(dict(Phase=phase.title + " ", Début=phase.beginDate, Fin=phase.finishDate))
 
     if len(data)>0 :
