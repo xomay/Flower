@@ -13,12 +13,12 @@ locale.setlocale(locale.LC_TIME, "fr_FR.utf8")
 def computeJPGGanttFromEtude(etude):
     data = []
     # TODO: Trier en fonction des indices
-    if etude.groupe_set.count() != 0:
-        for groupe in etude.groupe_set.iterator():
-            print('Groupe : {}'.format(groupe))
-            for phase in groupe.phase_set.iterator():
-                data.append(dict(Phase=phase.title + " ", Début=phase.beginDate, Fin=phase.finishDate))
+    for groupe in etude.groupe_set.iterator():
+        print('Groupe : {}'.format(groupe))
+        for phase in groupe.phase_set.iterator():
+            data.append(dict(Phase=phase.title + " ", Début=phase.beginDate, Fin=phase.finishDate))
 
+    if len(data)>0 :
         df = pd.DataFrame(data)
         fig = px.timeline(df, x_start="Début", x_end="Fin", y="Phase")
         fig.update_yaxes(autorange="reversed") # otherwise tasks are listed from the bottom up
@@ -32,12 +32,12 @@ def computeGanttFromEtude(etude, image_format="jpg"):
 
     data = []
     # TODO: Trier en fonction des indices
-    if etude.groupe_set.count() != 0 :
-        for groupe in etude.groupe_set.iterator():
-            print('Groupe : {}'.format(groupe))
-            for phase in groupe.phase_set.iterator():
-                data.append(dict(Phase=phase.title + " ", Début=phase.beginDate, Fin=phase.finishDate))
+    for groupe in etude.groupe_set.iterator():
+        print('Groupe : {}'.format(groupe))
+        for phase in groupe.phase_set.iterator():
+            data.append(dict(Phase=phase.title + " ", Début=phase.beginDate, Fin=phase.finishDate))
 
+    if len(data)>0 :
         df = pd.DataFrame(data)
         fig = px.timeline(df, x_start="Début", x_end="Fin", y="Phase")
         fig.update_yaxes(autorange="reversed", ticks="outside") # otherwise tasks are listed from the bottom up
