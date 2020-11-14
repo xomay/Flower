@@ -56,7 +56,6 @@ class FactureSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         instance = Facture.objects.create(**validated_data)
-        print(self.initial_data)
         details = self.initial_data.get('details')
         for detail in details:
             description = detail.get('description')
