@@ -28,19 +28,10 @@ class FactureLineView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Facture.objects.all()
 
     def update(self, request, pk):
-        serializer = FactureSerializer(data=request.data)
-        if (serializer.is_valid(raise_exception=True)):
-            Facture.objects.filter(id=pk).update(**serializer.data)
-        
-        # TODO: Use CustomListSerializer
-        for invoiceDetail in request.data['details']:
-            factureDetailId = invoiceDetail.get('id', None)
-            if not factureDetailId:
-                serializer = FactureDetailSerializer(data=invoiceDetail) # Create
-            else:
-                serializer = FactureDetailSerializer(FactureDetail.objects.get(id=factureDetailId), data=invoiceDetail) # Update
-            if (serializer.is_valid(raise_exception=True)):
-                serializer.save()
+        serializer = FactureSerializer(instance=Facture.objects.get(id=pk),data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
         return Response(request.data)
 
 class RemoveFactureLineView(generics.DestroyAPIView):
