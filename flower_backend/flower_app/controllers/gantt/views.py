@@ -8,7 +8,7 @@ from flower_app.models.Etude import Etude
 class GanttView(generics.RetrieveAPIView):
     permission_classes = [IsAuthenticated, HasGroupPermission]
     required_groups = {
-        'GET': ['ROLE_CA']
+        'GET': ['ROLE_CA']                                      #from modules/etudes/components/Summary.vue
     }
 
     def retrieve(self, request, etude_id):

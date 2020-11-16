@@ -1,6 +1,8 @@
 from django.urls import include, path
 from . import views
 
+#Base url for here is '/publish/'
+
 urlpatterns = [
     path('etude/<int:etude_id>/devis/', views.DevisView.as_view()),
     path('etude/<int:etude_id>/ce/', views.CEView.as_view()),

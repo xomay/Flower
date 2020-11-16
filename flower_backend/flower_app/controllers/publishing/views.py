@@ -16,7 +16,7 @@ import tempfile
 class DevisView(generics.RetrieveAPIView):
     permission_classes = [IsAuthenticated, HasGroupPermission]
     required_groups = {
-        'GET': ['ROLE_CA']
+        'GET': ['ROLE_CA']                                      #from modules/etudes/components/Generation.vue in modules/etudes/views/EtudeDetails.vue
     }
 
     def retrieve(request, self, etude_id):
@@ -26,7 +26,7 @@ class DevisView(generics.RetrieveAPIView):
 class CustomDevisView(generics.CreateAPIView):
     permission_classes = [IsAuthenticated, HasGroupPermission]
     required_groups = {
-        'POST': ['ROLE_CA']
+        'POST': ['ROLE_CA']                                     #from modules/prospects/views/Devis.vue
     }
 
     def create(self, request):
@@ -37,7 +37,7 @@ class CustomDevisView(generics.CreateAPIView):
 class CEView(generics.RetrieveAPIView):
     permission_classes = [IsAuthenticated, HasGroupPermission]
     required_groups = {
-        'GET': ['ROLE_CA']
+        'GET': ['ROLE_CA']                                      #from modules/etudes/components/Generation.vue in modules/etudes/views/EtudeDetails.vue
     }
 
     def retrieve(request, self, etude_id):
@@ -52,7 +52,7 @@ class CEView(generics.RetrieveAPIView):
 class RDMView(generics.RetrieveAPIView):
     permission_classes = [IsAuthenticated, HasGroupPermission]
     required_groups = {
-        'GET': ['ROLE_CA']
+        'GET': ['ROLE_CA']                                      #from modules/etudes/components/Generation.vue in modules/etudes/views/EtudeDetails.vue
     }
 
     def retrieve(request, self, rdm_id):
@@ -62,7 +62,7 @@ class RDMView(generics.RetrieveAPIView):
 class FactureView(generics.RetrieveAPIView):
     permission_classes = [IsAuthenticated, HasGroupPermission]
     required_groups = {
-        'GET': ['ROLE_CA']
+        'GET': ['ROLE_CA']                                      #from modules/etudes/components/Generation.vue in modules/etudes/views/EtudeDetails.vue
     }
 
     def retrieve(request, self, facture_id):
@@ -72,7 +72,7 @@ class FactureView(generics.RetrieveAPIView):
 class PVRView(generics.RetrieveAPIView):
     permission_classes = [IsAuthenticated, HasGroupPermission]
     required_groups = {
-        'GET': ['ROLE_CA']
+        'GET': ['ROLE_CA']                                      #from modules/etudes/components/Generation.vue in modules/etudes/views/EtudeDetails.vue
     }
 
     def retrieve(request, self, pvr_id):

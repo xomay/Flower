@@ -129,7 +129,7 @@ export default {
           type: "success"})
       }).
         catch(() => {
-          this.$message({message: "Impossible de supprimer cette phase pour le moment",
+          this.$message({message: "Impossible de supprimer ce groupe pour le moment",
             type: "error"})
         })
     },

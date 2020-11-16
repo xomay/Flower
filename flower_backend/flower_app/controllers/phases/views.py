@@ -10,7 +10,7 @@ class PhaseView(generics.ListCreateAPIView, generics.UpdateAPIView, generics.Des
     permission_classes = [IsAuthenticated, HasGroupPermission]
     required_groups = {
         'GET': ['ROLE_CA'],
-        'POST': ['ROLE_CA'],
+        'POST': ['ROLE_CA'],                                        #from modules/etudes/views/PhaseModifier.vue to add a phase
         'PUT': ['ROLE_CA'],
         'PATCH': ['ROLE_CA'],
         'DELETE': ['ROLE_CA']
@@ -27,7 +27,7 @@ class PhaseView(generics.ListCreateAPIView, generics.UpdateAPIView, generics.Des
 class PhaseDetailView(generics.DestroyAPIView):
     permission_classes = [IsAuthenticated, HasGroupPermission]
     required_groups = {
-        'DELETE': ['ROLE_CA']
+        'DELETE': ['ROLE_CA']                                       #from modules/etudes/views/PhaseModifier.vue to delete a phase
     }
     serializer_class = PhaseSerializer
     queryset = Phase.objects.all()
