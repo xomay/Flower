@@ -6,10 +6,12 @@ It will be util to Junior enterprise, and its vocation is to be simpler to enhan
 
 ##Installation for production
 To install Flower, you'll need the python libraries : \
-psutil, requests, kaleido, django-rest-passwordreset, django-cors-headers, docx, docxtpl, num2word, plotly, pandas  (use pip)\
-<pre>pip install psutil requests kaleido django-rest-passwordreset django-cors-headers docx docxtpl num2word plotly pandas</pre>
+psutil, requests, kaleido, django-rest-passwordreset, django-cors-headers, docx, docxtpl, num2word, plotly, pandas  (use pip) 
+<pre>pip install psutil requests kaleido django-rest-passwordreset 
+    django-cors-headers docx docxtpl num2word plotly pandas mysqlclient</pre>
 Then, install also npm library from -g electron@6.1.4 orca:
 <pre>npm install -g electron@6.1.4 orca</pre>
+set databases settings in flower_backend/flower_backend/setting.py (see https://docs.djangoproject.com/fr/3.1/ref/settings/#databases if you want to use other SGBD than mysql) \
 go in flower_frontend and do :
 <pre>
 npm install
