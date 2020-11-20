@@ -38,8 +38,8 @@ def computeDocx(context, doctypeFilename, name='undef', images=dict()):
         context[key] = InlineImage(doc, value, width=Mm(160))
 
     today = date.today()
-    context['date'] = today.__format__('%d %B %Y')
-    context['dateShort'] = today.__format__('%d/%m/%Y')
+    context['date'] = today.strftime('%d %B %Y')
+    context['dateShort'] = today.strftime('%d/%m/%Y')
     
     jinja_env = jinja2.Environment()
     jinja_env.filters['nbrToLetters'] = nbrToLetters
