@@ -1,0 +1,49 @@
+version: '3.4'
+
+services:
+
+  mariadb:
+    image: mariadb
+    restart: always
+    volumes:
+      - flower_database:/var/lib/mysql
+    env_file: 
+      - ./env.conf
+
+  maildev:
+    image: djfarrelly/maildev
+    ports:
+      - 1080:80
+      - 25:25
+
+  api:
+    build: 
+      context: ./flower_backend
+      dockerfile: Dockerfile
+    command: python /app/manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./flower_backend:/app
+    environment:
+      - DB_HOST=mariadb
+    ports: 
+      - '8000:8000'
+    depends_on: 
+      - mariadb
+
+  web:
+    build: 
+      context: ./flower_frontend
+      dockerfile: Dockerfile
+    command: npm run serve
+    volumes:
+      - ./flower_frontend/src:/app/src
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    ports: 
+      - '8080:8080'
+    depends_on: 
+      - api
+
+
+volumes:
+  flower_database:

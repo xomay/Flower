@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
@@ -95,6 +96,8 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+if (os.environ.get('DB_HOST', False)):
+    DATABASES['default']['HOST'] = os.environ.get('DB_HOST')
 
 # AUTH_USER_MODEL = 'flower_app.User'
 
