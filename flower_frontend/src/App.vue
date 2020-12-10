@@ -29,6 +29,11 @@ export default {
       this.loading = false
     }).
       catch(() => {
+        // Allowed unsigned users to go to password reset pages
+        if (this.$router.currentRoute.path.includes("passwordreset")) {
+          this.loading = false
+          return
+        }
         this.$router.push(
           "/login",
           () => {

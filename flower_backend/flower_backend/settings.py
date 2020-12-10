@@ -143,5 +143,6 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+FRONT_END = 'http://localhost:8080'
 EMAIL_PORT = 25
 EMAIL_HOST = 'maildev'

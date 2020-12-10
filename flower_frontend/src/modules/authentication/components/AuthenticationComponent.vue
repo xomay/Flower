@@ -30,6 +30,9 @@
           Connexion
         </el-button>
       </el-form-item>
+      <router-link :to="`/passwordreset`">
+        Mot de passe oublié
+      </router-link>
     </el-form>
     <el-alert
       v-if="errorMessage"

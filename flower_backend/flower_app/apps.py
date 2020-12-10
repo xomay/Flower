@@ -5,4 +5,4 @@ class FlowerAppConfig(AppConfig):
     name = 'flower_app'
 
     def ready(self):
-        import flower_app.mail_signal
+        import flower_app.email.mail_signal
