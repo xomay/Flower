@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'flower_app',
+    'flower_app.apps.FlowerAppConfig',
     'rest_framework',
     'corsheaders',
     'django_rest_passwordreset'
@@ -71,7 +71,9 @@ ROOT_URLCONF = 'flower_backend.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            os.path.join(BASE_DIR, 'flower_app', 'email'),
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -140,3 +142,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+FRONT_END = 'http://localhost:8080'
+EMAIL_PORT = 25
+EMAIL_HOST = 'maildev'
