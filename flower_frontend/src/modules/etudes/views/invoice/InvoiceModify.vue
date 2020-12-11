@@ -37,7 +37,7 @@ export default {
       this.loading = true
       this.errors = {}
       axios.put(
-        `${this.$server_url}/tresorerie/factures/${this.$route.params.facture_id}/`,
+        `/api/tresorerie/factures/${this.$route.params.facture_id}/`,
         this.invoice,
         {withCredentials: true}
       ).then(() => {
@@ -57,7 +57,7 @@ export default {
     },
     getInvoice () {
       axios.get(
-        `${this.$server_url}/tresorerie/factures/${this.$route.params.facture_id}`,
+        `/api/tresorerie/factures/${this.$route.params.facture_id}`,
         {withCredentials: true}
       ).then((res) => {
         this.invoice = res.data
@@ -83,7 +83,7 @@ export default {
     },
     getProspects () {
       return axios.get(
-        `${this.$server_url}/prospects`,
+        "/api/prospects",
         {withCredentials: true}
       )
     }

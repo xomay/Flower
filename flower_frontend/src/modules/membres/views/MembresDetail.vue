@@ -52,7 +52,7 @@ export default {
     getMember () {
       this.loading = true
       axios.get(
-        `${this.$server_url}/membres/${this.$route.params.id}`,
+        `/api/membres/${this.$route.params.id}`,
         {withCredentials: true}
       ).then((res) => {
         this.member = res.data

@@ -30,8 +30,6 @@ Vue.use(prospects)
 
 Vue.config.productionTip = false
 
-Vue.prototype.$server_url = "http://localhost:8000"
-
 new Vue({
   router,
   store,

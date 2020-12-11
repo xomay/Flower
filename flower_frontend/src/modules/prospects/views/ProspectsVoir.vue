@@ -54,7 +54,7 @@ export default {
   beforeCreate () {
     this.loading = true
     axios.get(
-      `${this.$server_url}/prospects/`,
+      "/api/prospects/",
       {withCredentials: true}
     ).then((res) => {
       this.prospects = res.data

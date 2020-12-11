@@ -31,7 +31,7 @@ export default {
   },
   created () {
     axios.get(
-      `${this.$server_url}/gantt/etude/${this.$route.params.id}/`,
+      `/api/gantt/etude/${this.$route.params.id}/`,
       {withCredentials: true,
         responseType: "arraybuffer"}
     ).then((res) => {

@@ -50,7 +50,7 @@ export default {
   methods: {
     getEmploye () {
       axios.get(
-        `${this.$server_url}/prospects/${this.$route.params.id}/employes/${this.$route.params.employe_id}/`,
+        `/api/prospects/${this.$route.params.id}/employes/${this.$route.params.employe_id}/`,
         {withCredentials: true}
       ).then((res) => {
         this.employe = res.data

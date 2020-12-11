@@ -38,7 +38,7 @@ export default {
     registerProspect () {
       this.loading = true
       axios.post(
-        `${this.$server_url}/prospects/`,
+        "/api/prospects/",
         this.prospect,
         {withCredentials: true}
       ).then(() => {

@@ -39,7 +39,7 @@ export default {
   },
   beforeCreate () {
     axios.get(
-      `${this.$server_url}/etudes/${this.$route.params.id}/`,
+      `/api/etudes/${this.$route.params.id}/`,
       {withCredentials: true}
     ).then((res) => {
       this.phases = res.data.groupes.map((groupe) => groupe.phases).flat()
@@ -55,7 +55,7 @@ export default {
   methods: {
     addMission () {
       axios.post(
-        `${this.$server_url}/etudes/${this.$route.params.id}/missions/`,
+        `/api/etudes/${this.$route.params.id}/missions/`,
         {project: this.$route.params.id},
         {withCredentials: true}
       ).then((res) => {
@@ -70,7 +70,7 @@ export default {
     saveMissions () {
       this.loading = true
       axios.put(
-        `${this.$server_url}/etudes/${this.$route.params.id}/missions/`,
+        `/api/etudes/${this.$route.params.id}/missions/`,
         this.missions,
         {withCredentials: true}
       ).then(() => {

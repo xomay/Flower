@@ -46,7 +46,7 @@ export default {
   methods: {
     getEmploye () {
       axios.get(
-        `${this.$server_url}/prospects/${this.$route.params.id}/employes/${this.$route.params.employe_id}/`,
+        `/api/prospects/${this.$route.params.id}/employes/${this.$route.params.employe_id}/`,
         {withCredentials: true}
       ).then((res) => {
         this.employe = res.data
@@ -60,7 +60,7 @@ export default {
     registerEmploye () {
       this.loading = true
       axios.put(
-        `${this.$server_url}/prospects/${this.$route.params.id}/employes/${this.$route.params.employe_id}/`,
+        `/api/prospects/${this.$route.params.id}/employes/${this.$route.params.employe_id}/`,
         this.employe,
         {withCredentials: true}
       ).then(() => {
@@ -77,7 +77,7 @@ export default {
     },
     deleteEmploye () {
       axios.delete(
-        `${this.$server_url}/prospects/${this.$route.params.id}/employes/${this.$route.params.employe_id}/`,
+        `/api/prospects/${this.$route.params.id}/employes/${this.$route.params.employe_id}/`,
         {withCredentials: true}
       ).then(() => {
         this.$message({message: "L'employé a bien été retiré",

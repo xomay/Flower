@@ -134,7 +134,7 @@ export default {
   methods: {
     getMembers () {
       axios.get(
-        `${this.$server_url}/membres`,
+        "/api/membres",
         {withCredentials: true}
       ).then((res) => {
         res.data.forEach((member) => member.value = `${member.firstname} ${member.lastname}`)
@@ -148,7 +148,7 @@ export default {
     },
     deleteMission (mission, index) {
       axios.delete(
-        `${this.$server_url}/etudes/${this.$route.params.id}/missions/${mission.id}/`,
+        `/api/etudes/${this.$route.params.id}/missions/${mission.id}/`,
         {withCredentials: true}
       ).then(() => {
         this.value.splice(
