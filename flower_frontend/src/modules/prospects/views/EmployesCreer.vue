@@ -29,7 +29,7 @@ export default {
     registerEmploye () {
       this.loading = true
       axios.post(
-        `${this.$server_url}/prospects/${this.$route.params.id}/employes/`,
+        `/api/prospects/${this.$route.params.id}/employes/`,
         this.employe,
         {withCredentials: true}
       ).then(() => {

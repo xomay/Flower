@@ -135,7 +135,7 @@ export default {
     },
     saveCE () {
       axios.put(
-        `${this.$server_url}/etudes/${this.etude.id}/ce/`,
+        `/api/etudes/${this.etude.id}/ce/`,
         this.ce,
         {withCredentials: true}
       ).then(() => {
@@ -149,7 +149,7 @@ export default {
     },
     getMembers () {
       axios.get(
-        `${this.$server_url}/membres`,
+        "/api/membres",
         {withCredentials: true}
       ).then((res) => {
         this.members = res.data
@@ -162,7 +162,7 @@ export default {
     },
     getEmployees (prospectId) {
       axios.get(
-        `${this.$server_url}/prospects/${prospectId}/employes/`,
+        `/api/prospects/${prospectId}/employes/`,
         {withCredentials: true}
       ).then((res) => {
         this.employees = res.data
@@ -175,7 +175,7 @@ export default {
     },
     getCE (projectId) {
       axios.get(
-        `${this.$server_url}/etudes/${projectId}/ce/`,
+        `/api/etudes/${projectId}/ce/`,
         {withCredentials: true}
       ).then((res) => {
         this.ce = res.data

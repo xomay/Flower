@@ -103,7 +103,7 @@ export default {
   methods: {
     getMembers () {
       axios.get(
-        `${this.$server_url}/membres`,
+        "/api/membres",
         {withCredentials: true}
       ).then((res) => {
         res.data.forEach((elt) => elt.value = `${elt.firstname} ${elt.lastname}`)
@@ -118,7 +118,7 @@ export default {
     },
     getEmployees (prospectId) {
       axios.get(
-        `${this.$server_url}/prospects/${prospectId}/employes/`,
+        `/api/prospects/${prospectId}/employes/`,
         {withCredentials: true}
       ).then((res) => {
         res.data.forEach((elt) => elt.value = `${elt.firstname} ${elt.lastname}`)

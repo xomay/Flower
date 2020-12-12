@@ -225,7 +225,7 @@ export default {
   methods: {
     downloadDevis () {
       this.loading = true
-      axios.get(`${this.$server_url}/publish/etude/${this.etude.id}/devis/`, { withCredentials: true, responseType: "blob" }).then((response) => {
+      axios.get(`/api/publish/etude/${this.etude.id}/devis/`, { withCredentials: true, responseType: "blob" }).then((response) => {
         this.createDownloadElement(response.data, "DEVIS-" + this.etude.name + ".docx")
       }).catch(err => {
         this.$message({ message: "Une erreur est survenue lors de la génération du devis : " + err, type: "error" })
@@ -235,7 +235,7 @@ export default {
     },
     downloadCE () {
       this.loadingCE = true
-      axios.get(`${this.$server_url}/publish/etude/${this.etude.id}/ce/`, { withCredentials: true, responseType: "blob" }).then((response) => {
+      axios.get(`/api/publish/etude/${this.etude.id}/ce/`, { withCredentials: true, responseType: "blob" }).then((response) => {
         this.createDownloadElement(response.data, "CE-" + this.etude.name + ".docx")
       }).catch(err => {
         this.$message({ message: "Une erreur est survenue lors de la génération du devis : " + err, type: "error" })
@@ -245,7 +245,7 @@ export default {
     },
     downloadRDM (rdmId) {
       this.loadingRDM = true
-      axios.get(`${this.$server_url}/publish/rdm/${rdmId}`, { withCredentials: true, responseType: "blob" }).then((response) => {
+      axios.get(`/api/publish/rdm/${rdmId}`, { withCredentials: true, responseType: "blob" }).then((response) => {
         this.createDownloadElement(response.data, "RDM-" + this.etude.name + ".docx")
       }).catch(err => {
         this.$message({ message: "Une erreur est survenue lors de la génération du RDM : " + err, type: "error" })
@@ -255,7 +255,7 @@ export default {
     },
     downloadInvoice (invoiceId) {
       this.loadingInvoice = true
-      axios.get(`${this.$server_url}/publish/facture/${invoiceId}`, { withCredentials: true, responseType: "blob" }).then((response) => {
+      axios.get(`/api/publish/facture/${invoiceId}`, { withCredentials: true, responseType: "blob" }).then((response) => {
         this.createDownloadElement(response.data, "FA-" + this.etude.name + ".docx")
       }).catch(err => {
         this.$message({ message: "Une erreur est survenue lors de la génération de la facture : " + err, type: "error" })
@@ -268,7 +268,7 @@ export default {
     },
     downloadPVR (pvrId) {
       this.loadingPVR = true
-      axios.get(`${this.$server_url}/publish/pvr/${pvrId}`, { withCredentials: true, responseType: "blob" }).then((response) => {
+      axios.get(`/api/publish/pvr/${pvrId}`, { withCredentials: true, responseType: "blob" }).then((response) => {
         this.createDownloadElement(response.data, "PVR-" + this.etude.name + ".docx")
       }).catch(err => {
         this.$message({ message: "Une erreur est survenue lors de la génération du PVR : " + err, type: "error" })
@@ -277,7 +277,7 @@ export default {
       })
     },
     deletePVR (pvrId, index) {
-      axios.delete(`${this.$server_url}/pvr/${pvrId}`, { withCredentials: true }).then(() => {
+      axios.delete(`/api/pvr/${pvrId}`, { withCredentials: true }).then(() => {
         this.etude.pvr.splice(index, 1)
       }).catch(err => {
         this.$message({ message: err, type: "error", offset: 40 })

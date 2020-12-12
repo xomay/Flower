@@ -196,7 +196,7 @@ export default {
         )
       } else {
         axios.delete(
-          `${this.$server_url}/tresorerie/factures/detail/${detailId}`,
+          `/api/tresorerie/factures/detail/${detailId}`,
           {withCredentials: true}
         ).then(() => {
           this.$message({message: "Ligne supprimée de la facture.",

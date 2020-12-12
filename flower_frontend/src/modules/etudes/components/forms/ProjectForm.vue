@@ -154,7 +154,7 @@ export default {
   },
   created () {
     axios.get(
-      `${this.$server_url}/prospects`,
+      "/api/prospects",
       {withCredentials: true}
     ).then((res) => {
       res.data.forEach((elt) => elt.value = elt.name)
@@ -167,7 +167,7 @@ export default {
           offset: 40})
       })
     axios.get(
-      `${this.$server_url}/membres`,
+      "/api/membres",
       {withCredentials: true}
     ).then((res) => {
       res.data.forEach((elt) => elt.value = `${elt.firstname} ${elt.lastname}`)

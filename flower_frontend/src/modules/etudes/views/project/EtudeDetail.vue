@@ -74,7 +74,7 @@ export default {
   beforeCreate () {
     this.loading = true
     axios.get(
-      `${this.$server_url}/etudes/${this.$route.params.id}/`,
+      `/api/etudes/${this.$route.params.id}/`,
       {withCredentials: true}
     ).then((res) => {
       this.etude = res.data
@@ -98,7 +98,7 @@ export default {
       })
 
     /*
-         * Axios.get(this.$server_url + '/etudes/' + this.$route.params.id + '/groupes', { withCredentials: true }).then(res => {
+         * Axios.get("/api/etudes/" + this.$route.params.id + '/groupes', { withCredentials: true }).then(res => {
          *   this.groupes = res.data
          * }).catch(() => {
          *   this.$message({ message: 'Impossible de récupérer les groupes pour le moment', type: 'error'})

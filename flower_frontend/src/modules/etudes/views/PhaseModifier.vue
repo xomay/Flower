@@ -36,7 +36,7 @@ export default {
   created () {
     this.loading = true
     axios.get(
-      `${this.$server_url}/etudes/${this.$route.params.id}/`,
+      `/api/etudes/${this.$route.params.id}/`,
       {withCredentials: true}
     ).then((res) => {
       res.data.groupes = res.data.groupes.sort((a, b) => a.index - b.index)
@@ -74,7 +74,7 @@ export default {
         phases: []
       }
       axios.post(
-        `${this.$server_url}/etudes/groupes/`,
+        "/api/etudes/groupes/",
         newGroup,
         {withCredentials: true}
       ).then((res) => {
@@ -100,7 +100,7 @@ export default {
           groupe: groupe.id
         }
       axios.post(
-        `${this.$server_url}/etudes/phases/`,
+        "/api/etudes/phases/",
         newPhase,
         {withCredentials: true}
       ).then((res) => {
@@ -118,7 +118,7 @@ export default {
     },
     deleteGroupe ({groupeId, groupeIndex}) {
       axios.delete(
-        `${this.$server_url}/etudes/groupes/${groupeId}/`,
+        `/api/etudes/groupes/${groupeId}/`,
         {withCredentials: true}
       ).then(() => {
         this.groupes.splice(
@@ -135,7 +135,7 @@ export default {
     },
     deletePhase ({phase, groupe}) {
       axios.delete(
-        `${this.$server_url}/etudes/phases/${phase.id}/`,
+        `/api/etudes/phases/${phase.id}/`,
         {withCredentials: true}
       ).then(() => {
         const index = groupe.phases.indexOf(phase)
@@ -156,7 +156,7 @@ export default {
     submitGroupesAndPhases () {
       // Let phases = this.groupes.map(groupe => groupe.phases).flat()
       axios.put(
-        `${this.$server_url}/etudes/groupes/`,
+        "/api/etudes/groupes/",
         this.groupes,
         {withCredentials: true}
       ).then(() => {

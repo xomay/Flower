@@ -90,7 +90,7 @@ export default {
   methods: {
     getProspect () {
       axios.get(
-        `${this.$server_url}/prospects/${this.$route.params.id}/`,
+        `/api/prospects/${this.$route.params.id}/`,
         {withCredentials: true}
       ).then((res) => {
         this.prospect = res.data
@@ -104,7 +104,7 @@ export default {
     updateProspect () {
       this.loading = true
       axios.put(
-        `${this.$server_url}/prospects/${this.$route.params.id}/`,
+        `/api/prospects/${this.$route.params.id}/`,
         this.prospect,
         {withCredentials: true}
       ).then(() => {
@@ -121,7 +121,7 @@ export default {
     },
     getEmployes () {
       axios.get(
-        `${this.$server_url}/prospects/${this.$route.params.id}/employes/`,
+        `/api/prospects/${this.$route.params.id}/employes/`,
         {withCredentials: true}
       ).then((res) => {
         this.employes = res.data

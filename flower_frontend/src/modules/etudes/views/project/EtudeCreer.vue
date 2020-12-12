@@ -49,7 +49,7 @@ export default {
       this.loading = true
       this.form.prospect = this.form.prospect.toString()
       axios.post(
-        `${this.$server_url}/etudes/`,
+        "/api/etudes/",
         this.form,
         {withCredentials: true}
       ).then(() => {

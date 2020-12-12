@@ -172,7 +172,7 @@ export default {
     },
     logout () {
       axios.get(
-        `${this.$server_url}/accounts/logout`,
+        "/api/accounts/logout",
         {withCredentials: true}
       ).then(() => {
         this.$router.push("/login")

@@ -30,7 +30,7 @@ export default {
   },
   created () {
     axios.get(
-      `${this.$server_url}/etudes/${this.$route.params.id}/`,
+      `/api/etudes/${this.$route.params.id}/`,
       {withCredentials: true}
     ).then((res) => {
       this.etude = res.data
@@ -58,7 +58,7 @@ export default {
   methods: {
     getPVR () {
       axios.get(
-        `${this.$server_url}/pvr/${this.$route.params.pvr_id}/`,
+        `/api/pvr/${this.$route.params.pvr_id}/`,
         {withCredentials: true}
       ).then((res) => {
         this.pvr = res.data
@@ -72,7 +72,7 @@ export default {
     updatePVR () {
       this.loading = true
       axios.put(
-        `${this.$server_url}/pvr/${this.$route.params.pvr_id}/`,
+        `/api/pvr/${this.$route.params.pvr_id}/`,
         this.pvr,
         {withCredentials: true}
       ).then(() => {

@@ -22,7 +22,7 @@ export default {
   },
   beforeCreate () {
     axios.get(
-      `${this.$server_url}/accounts/login`,
+      "/api/accounts/login",
       {withCredentials: true}
     ).then((res) => {
       console.log(res)

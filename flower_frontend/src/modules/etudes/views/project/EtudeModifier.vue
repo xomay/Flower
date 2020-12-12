@@ -46,7 +46,7 @@ export default {
   },
   beforeCreate () {
     axios.get(
-      `${this.$server_url}/etudes/${this.$route.params.id}/`,
+      `/api/etudes/${this.$route.params.id}/`,
       {withCredentials: true}
     ).then((res) => {
       this.etude = res.data
@@ -75,7 +75,7 @@ export default {
     saveProject () {
       this.loading = true
       axios.put(
-        `${this.$server_url}/etudes/${this.etude.id}/`,
+        `/api/etudes/${this.etude.id}/`,
         this.etude,
         {withCredentials: true}
       ).then(() => {

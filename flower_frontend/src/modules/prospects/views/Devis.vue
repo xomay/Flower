@@ -161,7 +161,7 @@ export default {
   },
   created () {
     axios.get(
-      `${this.$server_url}/membres`,
+      "/api/membres",
       {withCredentials: true}
     ).then((res) => {
       res.data.forEach((elt) => elt.value = `${elt.firstname} ${elt.lastname}`)
@@ -228,7 +228,7 @@ export default {
       this.etude.totalTaxes = (this.etude.totalPrice + this.etude.application_fees) * 0.2
       this.etude.totalPriceTaxes = (this.etude.totalPrice + this.etude.application_fees) * 1.2
       axios.post(
-        `${this.$server_url}/publish/devis/`,
+        "/api/publish/devis/",
         this.etude,
         {withCredentials: true,
           responseType: "blob"}

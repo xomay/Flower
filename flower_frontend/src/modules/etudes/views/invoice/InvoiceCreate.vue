@@ -34,7 +34,7 @@ export default {
       this.loading = true
       this.errors = {}
       axios.post(
-        `${this.$server_url}/tresorerie/factures/`,
+        "/api/tresorerie/factures/",
         this.invoice,
         {withCredentials: true}
       ).then(() => {
@@ -52,7 +52,7 @@ export default {
     },
     getProspects () {
       axios.get(
-        `${this.$server_url}/prospects`,
+        "/api/prospects",
         {withCredentials: true}
       ).then((res) => {
         this.prospects = res.data

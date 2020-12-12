@@ -30,7 +30,7 @@ export default {
   },
   created () {
     axios.get(
-      `${this.$server_url}/etudes/${this.$route.params.id}/`,
+      `/api/etudes/${this.$route.params.id}/`,
       {withCredentials: true}
     ).then((res) => {
       this.etude = res.data
@@ -59,7 +59,7 @@ export default {
       this.loading = true
       this.pvr.project = this.$route.params.id
       axios.post(
-        `${this.$server_url}/pvr/`,
+        "/api/pvr/",
         this.pvr,
         {withCredentials: true}
       ).then(() => {

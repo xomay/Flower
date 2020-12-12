@@ -56,7 +56,7 @@ export default {
   },
   beforeCreate () {
     axios.get(
-      `${this.$server_url}/membres/${this.$route.params.id}`,
+      `/api/membres/${this.$route.params.id}`,
       {withCredentials: true}
     ).then((res) => {
       this.member = res.data
@@ -71,7 +71,7 @@ export default {
     saveMember () {
       this.loading = true
       axios.put(
-        `${this.$server_url}/membres/${this.member.id}/`,
+        `/api/membres/${this.member.id}/`,
         this.member,
         {withCredentials: true}
       ).then(() => {

@@ -63,7 +63,7 @@ export default {
       this.connectionLoading = true
       this.errorMessage = ""
       axios.post(
-        `${this.$server_url}/accounts/login`,
+        "/api/accounts/login",
         this.authForm,
         {withCredentials: true}
       ).then(() => {

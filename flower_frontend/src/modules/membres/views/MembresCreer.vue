@@ -144,7 +144,7 @@ export default {
     registerMember () {
       this.loading = true
       axios.post(
-        `${this.$server_url}/membres/`,
+        "/api/membres/",
         this.form,
         {withCredentials: true}
       ).then(() => {

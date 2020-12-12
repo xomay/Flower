@@ -74,7 +74,7 @@ export default {
       this.errorMessage = ""
       this.successMessage = ""
       axios.post(
-        `${this.$server_url}/password_reset/confirm/`,
+        "/api/password_reset/confirm/",
         this.form,
         {withCredentials: true}
       ).then(() => {
