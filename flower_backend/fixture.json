@@ -1,0 +1,377 @@
+[
+{
+    "model": "auth.group",
+    "pk": 1,
+    "fields": {
+        "name": "ROLE_CA",
+        "permissions": []
+    }
+},
+{
+    "model": "auth.group",
+    "pk": 2,
+    "fields": {
+        "name": "ROLE_ADMIN",
+        "permissions": []
+    }
+},
+{
+    "model": "auth.group",
+    "pk": 3,
+    "fields": {
+        "name": "ROLE_QUALI",
+        "permissions": []
+    }
+},
+{
+    "model": "auth.group",
+    "pk": 4,
+    "fields": {
+        "name": "ROLE_TRESO",
+        "permissions": []
+    }
+},
+{
+    "model": "auth.group",
+    "pk": 5,
+    "fields": {
+        "name": "ROLE_BUREAU",
+        "permissions": []
+    }
+},
+{
+    "model": "auth.group",
+    "pk": 6,
+    "fields": {
+        "name": "ROLE_SUIVEUR",
+        "permissions": []
+    }
+},
+{
+    "model": "auth.user",
+    "pk": 3,
+    "fields": {
+        "password": "pbkdf2_sha256$216000$JsDppuPNCAug$nGC7UqDA+OzRpEwJTlNh1D0yRzy0zNqjpKlN4NFzE6U=",
+        "last_login": "2020-12-12T09:57:33.698Z",
+        "is_superuser": true,
+        "username": "admin",
+        "first_name": "",
+        "last_name": "",
+        "email": "si@ouest-insa.fr",
+        "is_staff": true,
+        "is_active": true,
+        "date_joined": "2020-12-12T09:55:16.662Z",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "auth.user",
+    "pk": 4,
+    "fields": {
+        "password": "pbkdf2_sha256$216000$nolmWBIRb00V$wpAqqkFy1L+hqJNSpiZqaaQydTqNz6481DAByBdbAfU=",
+        "last_login": "2020-12-12T12:04:10.298Z",
+        "is_superuser": false,
+        "username": "mhillair",
+        "first_name": "",
+        "last_name": "",
+        "email": "",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2020-12-12T09:58:04Z",
+        "groups": [
+            2,
+            5,
+            1,
+            3,
+            6,
+            4
+        ],
+        "user_permissions": []
+    }
+},
+{
+    "model": "flower_app.prospect",
+    "pk": 2,
+    "fields": {
+        "name": "Ouest-insa",
+        "address": "20 avenue des buttes de Coësmes",
+        "postcode": "35700",
+        "town": "Rennes"
+    }
+},
+{
+    "model": "flower_app.employe",
+    "pk": 2,
+    "fields": {
+        "gender": "Mme.",
+        "mobile": "00000000000",
+        "email": "lise.le-floch@ouest-insa.fr",
+        "prospect": 2,
+        "lastname": "Le floch",
+        "firstname": "LIse",
+        "position": "Présidente"
+    }
+},
+{
+    "model": "flower_app.membre",
+    "pk": 2,
+    "fields": {
+        "lastname": "Rosaz",
+        "firstname": "Timothé",
+        "gender": "M.",
+        "mobile": "0000000000000",
+        "email": "timothe.rosaz@insa-rennes.fr",
+        "user": null,
+        "promotion": 2023,
+        "email_junior": "timothe.rosaz@ouest-insa.fr",
+        "address": "secret",
+        "postcode": "000000",
+        "town": "Rennes",
+        "country": "France",
+        "nationality": "française",
+        "birth_date": "2000-01-01",
+        "birth_place": "Rennes"
+    }
+},
+{
+    "model": "flower_app.membre",
+    "pk": 3,
+    "fields": {
+        "lastname": "Hillairet",
+        "firstname": "matthieu",
+        "gender": "M.",
+        "mobile": "0629507063",
+        "email": "matthieu.hillairet@insa-rennes.fr",
+        "user": null,
+        "promotion": 2021,
+        "email_junior": "matthieu.hillairet@ouest-insa.fr",
+        "address": "880 avenue victor Hugo",
+        "postcode": "46400",
+        "town": "Saint-céré",
+        "country": "france",
+        "nationality": "française",
+        "birth_date": "2001-01-14",
+        "birth_place": "brive-la-gaillarde"
+    }
+},
+{
+    "model": "flower_app.membre",
+    "pk": 4,
+    "fields": {
+        "lastname": "Doppler",
+        "firstname": "Steeve",
+        "gender": "M.",
+        "mobile": "00000000",
+        "email": "steeve.doppler@insa-rennes.fr",
+        "user": null,
+        "promotion": 2021,
+        "email_junior": "steeve.doppler@ouest-insa.fr",
+        "address": "JSP",
+        "postcode": "00000",
+        "town": "Rennes",
+        "country": "France",
+        "nationality": "française",
+        "birth_date": "1998-03-03",
+        "birth_place": "alsace"
+    }
+},
+{
+    "model": "flower_app.ce",
+    "pk": 1,
+    "fields": {
+        "signer1": null,
+        "signer2": null,
+        "signDate": null,
+        "deposit": true,
+        "depositAmount": "30.00",
+        "consultantNumber": 1,
+        "description": ""
+    }
+},
+{
+    "model": "flower_app.etude",
+    "pk": 1,
+    "fields": {
+        "mandat": 2020,
+        "number": 1,
+        "name": "Flower",
+        "description": "Developpement d'un nouvel ERP",
+        "creation_date": "2020-12-12T12:17:06.682Z",
+        "modification_date": "2020-12-12T12:17:06.682Z",
+        "state": 0,
+        "confidential": false,
+        "audit_date": null,
+        "prospect": 2,
+        "qualityManager": 3,
+        "projectManager": 2,
+        "clientContact": null,
+        "ce": 1,
+        "deposit_percentage": "30.00",
+        "deposit_sum": "0.00",
+        "application_fees": "0.00"
+    }
+},
+{
+    "model": "flower_app.groupe",
+    "pk": 1,
+    "fields": {
+        "title": "Version 0",
+        "index": 1,
+        "description": "Travail du resp SI du mandat 2020",
+        "project": 1
+    }
+},
+{
+    "model": "flower_app.groupe",
+    "pk": 2,
+    "fields": {
+        "title": "Arrivée du pole SI",
+        "index": 2,
+        "description": "Amélioration et complétion du travail déjà réalisé",
+        "project": 1
+    }
+},
+{
+    "model": "flower_app.groupe",
+    "pk": 3,
+    "fields": {
+        "title": "Déploiement V1",
+        "index": 3,
+        "description": "Déploiement interne pour tester le logiciel dans la structure",
+        "project": 1
+    }
+},
+{
+    "model": "flower_app.phase",
+    "pk": 1,
+    "fields": {
+        "title": "Backend",
+        "index": 1,
+        "description": "Dev de la première version du backend",
+        "goals": "avoir une version basic permettant des actions de base, et pouvant être liée au front-end",
+        "beginDate": "2020-07-30",
+        "period": 90,
+        "nbJEH": 10,
+        "priceJEH": "400.00",
+        "groupe": 1
+    }
+},
+{
+    "model": "flower_app.phase",
+    "pk": 2,
+    "fields": {
+        "title": "Front-end",
+        "index": 2,
+        "description": "Dev de la première version du front-end",
+        "goals": "Lier le front au back et avoir une première interface, avec des formulaires, une interface de connexion, et une jolie navbar",
+        "beginDate": "2020-08-03",
+        "period": 90,
+        "nbJEH": 9,
+        "priceJEH": "400.00",
+        "groupe": 1
+    }
+},
+{
+    "model": "flower_app.phase",
+    "pk": 3,
+    "fields": {
+        "title": "Définition des besoins",
+        "index": 1,
+        "description": "Organiser des réunions avec chaque pole de la structure",
+        "goals": "Définir les besoins et voir comment améliorer l'erp",
+        "beginDate": "2020-10-27",
+        "period": 90,
+        "nbJEH": 3,
+        "priceJEH": "400.00",
+        "groupe": 2
+    }
+},
+{
+    "model": "flower_app.phase",
+    "pk": 4,
+    "fields": {
+        "title": "Améliorations du logiciel",
+        "index": 2,
+        "description": "Application des objectifs trouvés dans la phase précédente",
+        "goals": "Avoir le Meilleur ERP possible",
+        "beginDate": "2020-11-24",
+        "period": 90,
+        "nbJEH": 8,
+        "priceJEH": "400.00",
+        "groupe": 2
+    }
+},
+{
+    "model": "flower_app.phase",
+    "pk": 6,
+    "fields": {
+        "title": "Déploiement et mise en ligne",
+        "index": 1,
+        "description": "Déploiement sur le serveur, création des comptes, formation",
+        "goals": "Proposer une version béta aux administrateurs de Ouest-insa",
+        "beginDate": "2021-02-01",
+        "period": 60,
+        "nbJEH": 2,
+        "priceJEH": "400.00",
+        "groupe": 3
+    }
+},
+{
+    "model": "flower_app.phase",
+    "pk": 7,
+    "fields": {
+        "title": "Résolution des bugs et améliorations",
+        "index": 2,
+        "description": "Report les bug et les résoudre",
+        "goals": "Rendre l'ERP commercialisable",
+        "beginDate": "2021-02-01",
+        "period": 60,
+        "nbJEH": 4,
+        "priceJEH": "400.00",
+        "groupe": 3
+    }
+},
+{
+    "model": "flower_app.mission",
+    "pk": 1,
+    "fields": {
+        "project": 1,
+        "consultant": null,
+        "missionBegin": null,
+        "missionEnd": null,
+        "percentageJunior": 0.55,
+        "JEHNumber": 1,
+        "JEHPrice": "400.00",
+        "phases": []
+    }
+},
+{
+    "model": "flower_app.mission",
+    "pk": 2,
+    "fields": {
+        "project": 1,
+        "consultant": 4,
+        "missionBegin": "2020-07-01",
+        "missionEnd": "2020-12-31",
+        "percentageJunior": 0.55,
+        "JEHNumber": 30,
+        "JEHPrice": "400.00",
+        "phases": []
+    }
+},
+{
+    "model": "flower_app.mission",
+    "pk": 3,
+    "fields": {
+        "project": 1,
+        "consultant": 2,
+        "missionBegin": "2020-11-01",
+        "missionEnd": "2021-03-31",
+        "percentageJunior": 0.55,
+        "JEHNumber": 15,
+        "JEHPrice": "400.00",
+        "phases": []
+    }
+}
+]
