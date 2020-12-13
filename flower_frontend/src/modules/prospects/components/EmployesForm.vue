@@ -1,5 +1,6 @@
 <template>
   <el-form
+    ref="employeFormRef"
     :model="value"
     :rules="formRules"
     label-position="left"
@@ -73,7 +74,7 @@
         <el-button
           :loading="loading"
           type="success"
-          @click="$emit('save')"
+          @click="callValidateAll"
         >
           Enregistrer
         </el-button>
@@ -110,17 +111,27 @@ export default {
         firstname: [
           {required: true,
             message: "Obligatoire",
-            trigger: "blur"}
+            trigger: "blur"},
+          { min: 1, max: 60, message: "Nombre de caractères invalide", trigger: "blur" }
         ],
         lastname: [
           {required: true,
             message: "Obligatoire",
-            trigger: "blur"}
+            trigger: "blur"},
+          { min: 1, max: 60, message: "Nombre de caractères invalide", trigger: "blur" }
         ],
         email: [
-          {required: true,
+          {
+            required: true,
             message: "Obligatoire",
-            trigger: "blur"}
+            trigger: "blur"
+          },
+          {
+            required: true,
+            pattern: /^[\w\\.=-]+@[\w\\.-]+\.[\w]{2,3}$/,
+            message: "Cette valeur doit être un un email valide.",
+            trigger: "blur"
+          }
         ],
         position: [
           {required: true,
@@ -129,7 +140,20 @@ export default {
         ]
       }
     }
-  }
+  },
+  methods: {
+    callValidateAll () {
+      this.$refs.employeFormRef.validate((rslt) => {
+        if(rslt == true) {
+          this.$emit("save")
+        } else {
+          this.$message({message: "Certains champs ne sont pas valides.",
+            type: "error",
+            offset: 40})
+        }
+      })
+    }
+  },
 }
 </script>
 
