@@ -30,6 +30,11 @@
         label="Nom"
         sortable
       />
+      <el-table-column
+        prop="promotion"
+        label="Promotion"
+        sortable
+      />
     </el-table>
   </BaseComponent>
 </template>

@@ -12,7 +12,7 @@
 export default {
   name: "MemberPicker",
   props: {
-    value: { type: Object, required: true },
+    value: { type: [String, Number], required: true },
     itemList: { type: Array, required: true },
     placeholder: { type: String, required: true }
   },
@@ -23,7 +23,6 @@ export default {
   },
   watch: {
     itemList () {
-      console.log(this.itemList)
       const found = this.itemList.find((item) => item.id === this.value)
       this.autocompleteValue = found ? found.value : ""
     }

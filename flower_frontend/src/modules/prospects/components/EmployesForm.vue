@@ -100,6 +100,7 @@ export default {
   },
   data () {
     return {
+      breadcrumb: [],
       formRules: {
         gender: [
           {required: true,

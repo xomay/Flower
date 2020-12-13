@@ -9,14 +9,22 @@
     <el-form
       :model="etude.prospect"
       label-position="left"
+      @change="checkIfProspectExists"
     >
       <el-col :span="24">
         <el-form-item
           label="Nom du prospect"
           prop="name"
           label-width="200px"
+          change="checkIfProspectExists"
         >
-          <el-input v-model="etude.prospect.name" />
+          <MemberPicker
+            v-model="etude.prospect.name"
+            :item-list="prospects"
+            placeholder="Entrez le nom du prospect"
+            @input="finishedSelectProspect"
+            @change="checkIfProspectExists"
+          />
         </el-form-item>
       </el-col>
       <el-col :span="24">
@@ -28,24 +36,26 @@
           <el-input v-model="etude.prospect.address" />
         </el-form-item>
       </el-col>
-      <el-col :span="12">
-        <el-form-item
-          label="Code postal"
-          prop="postcode"
-          label-width="200px"
-        >
-          <el-input v-model="etude.prospect.postcode" />
-        </el-form-item>
-      </el-col>
-      <el-col :span="12">
-        <el-form-item
-          label="Ville"
-          prop="town"
-          label-width="200px"
-        >
-          <el-input v-model="etude.prospect.town" />
-        </el-form-item>
-      </el-col>
+      <el-row :gutter="20">
+        <el-col :span="12">
+          <el-form-item
+            label="Code postal"
+            prop="postcode"
+            label-width="200px"
+          >
+            <el-input v-model="etude.prospect.postcode" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item
+            label="Ville"
+            prop="town"
+            label-width="200px"
+          >
+            <el-input v-model="etude.prospect.town" />
+          </el-form-item>
+        </el-col>
+      </el-row>
     </el-form>
     <h1 class="text-xl">
       Contact client
@@ -95,6 +105,7 @@
         <MemberPicker
           v-model="etude.projectManager"
           :item-list="members"
+          placeholder="Nom du suiveur"
         />
       </el-form-item>
       <el-form-item
@@ -156,10 +167,38 @@ export default {
         },
         groupes: []
       },
-      members: []
+      members: [],
+      prospects: [],
+      etudes: []
     }
   },
   created () {
+    axios.get(
+      "/api/prospects",
+      {withCredentials: true}
+    ).then((res) => {
+      res.data.forEach((elt) => elt.value = elt.name)
+      this.prospects = res.data
+    }).
+      catch((err) => {
+        console.log(err)
+        this.$message({message: "Impossible de récupérer la liste des prospects.",
+          type: "error",
+          offset: 40})
+      })
+    axios.get(
+      "/api/etudes",
+      {withCredentials: true}
+    ).then((res) => {
+      res.data.forEach((elt) => elt.value = elt.name)
+      this.etudes = res.data
+    }).
+      catch((err) => {
+        console.log(err)
+        this.$message({message: "Impossible de récupérer la liste des études.",
+          type: "error",
+          offset: 40})
+      })
     axios.get(
       "/api/membres",
       {withCredentials: true}
@@ -169,12 +208,30 @@ export default {
     }).
       catch((err) => {
         console.log(err)
-        this.$message({message: "Impossible de récupérer la liste des Membres",
+        this.$message({message: "Impossible de récupérer la liste des membres.",
           type: "error",
           offset: 40})
       })
   },
   methods: {
+    finishedSelectProspect (idPR) {
+      var pr = this.prospects.find(pre => pre.id == idPR)
+      if(pr != undefined) {
+        this.forceProspectValues(pr)
+      } else {
+        this.$message({message: "Prospect inconnu. ID="+idPR+".",
+          type: "error"})
+      }
+    },
+    forceProspectValues (pr) {
+      console.log("Nouveau prospect : " + pr.name)
+      this.etude.prospect.address = pr.address
+      this.etude.prospect.postcode = pr.postcode
+      this.etude.prospect.town = pr.town
+    },
+    checkIfProspectExists (d) {
+      console.log("if exists. " + d)
+    },
     addGroupe () {
       const newGroup = {
         title: "Titre",
