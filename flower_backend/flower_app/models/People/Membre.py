@@ -9,7 +9,7 @@ from flower_app.models.People.Personne import Personne
 class Membre(Personne):
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
     promotion = models.IntegerField()
-    email_junior = models.EmailField()
+    email_junior = models.EmailField(blank=True)
     address = models.CharField(max_length=200)
     postcode = models.CharField(max_length=20)
     town = models.CharField(max_length=60)
