@@ -9,21 +9,20 @@
     <el-form
       :model="etude.prospect"
       label-position="left"
-      @change="checkIfProspectExists"
+      :gutter="20"
     >
       <el-col :span="24">
         <el-form-item
           label="Nom du prospect"
           prop="name"
           label-width="200px"
-          change="checkIfProspectExists"
         >
           <MemberPicker
             v-model="etude.prospect.name"
             :item-list="prospects"
             placeholder="Entrez le nom du prospect"
+            :style="{width:'100%'}"
             @input="finishedSelectProspect"
-            @change="checkIfProspectExists"
           />
         </el-form-item>
       </el-col>
@@ -36,26 +35,25 @@
           <el-input v-model="etude.prospect.address" />
         </el-form-item>
       </el-col>
-      <el-row :gutter="20">
-        <el-col :span="12">
-          <el-form-item
-            label="Code postal"
-            prop="postcode"
-            label-width="200px"
-          >
-            <el-input v-model="etude.prospect.postcode" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item
-            label="Ville"
-            prop="town"
-            label-width="200px"
-          >
-            <el-input v-model="etude.prospect.town" />
-          </el-form-item>
-        </el-col>
-      </el-row>
+      <el-col :span="12">
+        <el-form-item
+          label="Code postal"
+          prop="postcode"
+          label-width="200px"
+        >
+          <el-input v-model="etude.prospect.postcode" />
+        </el-form-item>
+      </el-col>
+      <el-col :span="12">
+        <el-form-item
+          label="Ville"
+          prop="town"
+          label-width="200px"
+          :style="'margin-left: 20px'"
+        >
+          <el-input v-model="etude.prospect.town" />
+        </el-form-item>
+      </el-col>
     </el-form>
     <h1 class="text-xl">
       Contact client
@@ -106,6 +104,7 @@
           v-model="etude.projectManager"
           :item-list="members"
           placeholder="Nom du suiveur"
+          :style="{width:'100%'}"
         />
       </el-form-item>
       <el-form-item
