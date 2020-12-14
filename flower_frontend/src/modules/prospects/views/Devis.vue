@@ -67,7 +67,7 @@
     </h1>
     <el-form
       ref="devisForm2"
-      :model="etude.prospect"
+      :model="etude.clientContact"
       label-position="left"
       size="small"
     >
@@ -264,14 +264,16 @@ export default {
     },
     // Valide tout le form, appelle le 'downloadDevis' en cas de réussite.
     validateAllFields () {
+      var result = true
+      this.$refs.devisForm1.validate((r) => result = (r ? result : false ))
+      this.$refs.devisForm2.validate((r) => result = (r ? result : false ))
+      this.$refs.devisForm3.validate((r) => result = (r ? result : false ))
+
       if(this.etude.groupes.length == 0) {
         this.$message({message: "Erreur : Le devis ne présente aucun groupe !", type: "error", offset: 40})
         return
       }
-      var result = true
-      this.$refs.devisForm1.validate((r) => result = r ? result : false )
-      this.$refs.devisForm2.validate((r) => result = r ? result : false )
-      this.$refs.devisForm3.validate((r) => result = r ? result : false )
+
       if(result == true) {
         this.downloadDevis()
         //TODO push en arrière ?
