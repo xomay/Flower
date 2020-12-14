@@ -30,9 +30,9 @@ class TypeActionSerializer(serializers.ModelSerializer):
 class Action(models.Model):
     type = models.ForeignKey(TypeAction, on_delete=models.RESTRICT)
     date = models.DateField(auto_now_add=True)
-    comments = models.CharField(max_length=10000, blank=True)       #to add some stats and comments after the event
+    comments = models.TextField(blank=True)             #to add some stats and comments after the event
     participants = models.ManyToManyField(Membre)
-    instructions = models.CharField(max_length=10000)   #from the responsible
+    instructions = models.TextField()                   #from the responsible
     appointments = models.IntegerField(blank=True)      #to create stats to show
     studies = models.IntegerField(blank=True)           #to create stats to show
 
