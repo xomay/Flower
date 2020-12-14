@@ -31,6 +31,10 @@ export default {
     queryValue (queryString, cb) {
       const results = queryString ? this.itemList.filter((item) => item.value.toLowerCase().includes(queryString.toLowerCase())) : this.itemList
       cb(results)
+      this.$emit(
+        "checkEvent",
+        this.autocompleteValue
+      )
     },
     handleSelectvalue (value) {
       this.autocompleteValue = value.value

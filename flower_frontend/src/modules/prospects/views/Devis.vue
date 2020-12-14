@@ -7,22 +7,25 @@
       Prospect
     </h1>
     <el-form
+      ref="devisForm1"
       :model="etude.prospect"
       label-position="left"
-      :gutter="20"
+      size="small"
     >
       <el-col :span="24">
         <el-form-item
           label="Nom du prospect"
           prop="name"
           label-width="200px"
+          :rules="[{ required: true, message: 'Obligatoire' , trigger: 'blur' }, { validator: notEmptyCheck, trigger: 'change' }]"
         >
           <MemberPicker
             v-model="etude.prospect.name"
             :item-list="prospects"
             placeholder="Entrez le nom du prospect"
-            :style="{width:'100%'}"
+            :style="'width: 100%'"
             @input="finishedSelectProspect"
+            @checkEvent="checkIfProspectExists"
           />
         </el-form-item>
       </el-col>
@@ -31,6 +34,7 @@
           label="Adresse"
           prop="address"
           label-width="200px"
+          :rules="[{ required: true, message: 'Obligatoire' , trigger: 'blur' }]"
         >
           <el-input v-model="etude.prospect.address" />
         </el-form-item>
@@ -40,6 +44,7 @@
           label="Code postal"
           prop="postcode"
           label-width="200px"
+          :rules="[{ required: true, message: 'Obligatoire' , trigger: 'blur' }]"
         >
           <el-input v-model="etude.prospect.postcode" />
         </el-form-item>
@@ -49,7 +54,9 @@
           label="Ville"
           prop="town"
           label-width="200px"
+          disabled="true"
           :style="'margin-left: 20px'"
+          :rules="[{ required: true, message: 'Obligatoire' , trigger: 'blur' }]"
         >
           <el-input v-model="etude.prospect.town" />
         </el-form-item>
@@ -59,14 +66,17 @@
       Contact client
     </h1>
     <el-form
+      ref="devisForm2"
       :model="etude.prospect"
       label-position="left"
+      size="small"
     >
       <el-col :span="24">
         <el-form-item
           label="Nom du contact client"
           prop="name"
           label-width="200px"
+          :rules="[{ required: true, message: 'Obligatoire' , trigger: 'blur' }]"
         >
           <el-input v-model="etude.clientContact.name" />
         </el-form-item>
@@ -76,6 +86,7 @@
           label="Poste du contact client"
           prop="name"
           label-width="200px"
+          :rules="[{ required: true, message: 'Obligatoire' , trigger: 'blur' }]"
         >
           <el-input v-model="etude.clientContact.position" />
         </el-form-item>
@@ -85,13 +96,16 @@
       Etude
     </h1>
     <el-form
+      ref="devisForm3"
       :model="etude"
       label-position="left"
+      size="small"
     >
       <el-form-item
         label="Nom de l'étude"
         prop="name"
         label-width="140px"
+        :rules="[{ required: true, message: 'Obligatoire' , trigger: 'blur' }]"
       >
         <el-input v-model="etude.name" />
       </el-form-item>
@@ -99,6 +113,7 @@
         label="Suiveur de projet"
         prop="projectManager"
         label-width="140px"
+        :rules="[{ required: true, message: 'Obligatoire' , trigger: 'blur' }]"
       >
         <MemberPicker
           v-model="etude.projectManager"
@@ -111,6 +126,7 @@
         label="Frais de dossier"
         prop="application_fees"
         label-width="140px"
+        :rules="[{ required: true, message: 'Obligatoire' , trigger: 'blur' }]"
       >
         <el-input v-model="etude.application_fees" />
       </el-form-item>
@@ -129,7 +145,7 @@
     <el-button
       :loading="loading"
       type="primary"
-      @click="downloadDevis"
+      @click="validateAllFields"
     >
       Générer le devis
     </el-button>
@@ -150,6 +166,7 @@ export default {
     return {
       breadcrumb: [],
       loading: false,
+      // Données exportées au final
       etude: {
         name: "",
         projectManager: "",
@@ -166,6 +183,7 @@ export default {
         },
         groupes: []
       },
+      // Fields pour stocker les données.
       members: [],
       prospects: [],
       etudes: []
@@ -213,6 +231,7 @@ export default {
       })
   },
   methods: {
+    // Récupère le prospect avec l'ID de ce dernier
     finishedSelectProspect (idPR) {
       var pr = this.prospects.find(pre => pre.id == idPR)
       if(pr != undefined) {
@@ -222,14 +241,45 @@ export default {
           type: "error"})
       }
     },
+    // Vérifie que le nom de prospect n'est pas vide (ce champs est rempli avec l'ID sous forme de string)
+    notEmptyCheck (rule, value, callback) {
+      if (value == "") {
+        callback(new Error("Nom de prospect inconnu."))
+      } else {
+        callback()
+      }
+    },
+    // Force les valeurs des champs du prospect avec ce dernier
     forceProspectValues (pr) {
-      console.log("Nouveau prospect : " + pr.name)
       this.etude.prospect.address = pr.address
       this.etude.prospect.postcode = pr.postcode
       this.etude.prospect.town = pr.town
     },
-    checkIfProspectExists (d) {
-      console.log("if exists. " + d)
+    // Vide le contenu du name de prospect si il n'est pas valide.
+    checkIfProspectExists (fieldValue) {
+      var pr = this.prospects.find(pre => pre.id == fieldValue)
+      if(pr == undefined) {
+        this.etude.prospect.name = ""
+      }
+    },
+    // Valide tout le form, appelle le 'downloadDevis' en cas de réussite.
+    validateAllFields () {
+      if(this.etude.groupes.length == 0) {
+        this.$message({message: "Erreur : Le devis ne présente aucun groupe !", type: "error", offset: 40})
+        return
+      }
+      var result = true
+      this.$refs.devisForm1.validate((r) => result = r ? result : false )
+      this.$refs.devisForm2.validate((r) => result = r ? result : false )
+      this.$refs.devisForm3.validate((r) => result = r ? result : false )
+      if(result == true) {
+        this.downloadDevis()
+        //TODO push en arrière ?
+      } else {
+        this.$message({message: "Erreur : Certains champs ne sont pas valides !",
+          type: "error",
+          offset: 40})
+      }
     },
     addGroupe () {
       const newGroup = {
@@ -269,6 +319,7 @@ export default {
     },
     downloadDevis () {
       this.loading = true
+      // Calcule les données liées aux taxes
       this.etude.totalPrice = 0
       this.etude.nbJEH = 0
       this.etude.groupes.forEach((groupe) => {
@@ -283,6 +334,9 @@ export default {
       this.etude.application_fees = parseInt(this.etude.application_fees)
       this.etude.totalTaxes = (this.etude.totalPrice + this.etude.application_fees) * 0.2
       this.etude.totalPriceTaxes = (this.etude.totalPrice + this.etude.application_fees) * 1.2
+      // Insertion du nom de prospect au lieu de l'ID
+      this.etude.prospect.name = this.prospects.find((pr) => pr.id == this.etude.prospect.name).name
+      // Génération réelle
       axios.post(
         "/api/publish/devis/",
         this.etude,
