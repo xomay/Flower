@@ -126,7 +126,10 @@
         label="Frais de dossier"
         prop="application_fees"
         label-width="140px"
-        :rules="[{ required: true, message: 'Obligatoire' , trigger: 'blur' }]"
+        :rules="[
+          { required: true, message: 'Obligatoire' , trigger: 'blur' },
+          { required: true, pattern: /^[0-9]+((\.|,){1}[0-9]+|)$/, message: 'Entrez un nombre valide.', trigger: 'change'}
+        ]"
       >
         <el-input v-model="etude.application_fees" />
       </el-form-item>
