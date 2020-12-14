@@ -146,3 +146,5 @@ STATIC_URL = '/static/'
 FRONT_END = 'http://localhost:8080'
 EMAIL_PORT = 25
 EMAIL_HOST = 'maildev'
+
+DJANGO_REST_LOOKUP_FIELD = 'membre__email_junior'
