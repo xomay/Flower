@@ -42,7 +42,7 @@ class OpenAccountView(generics.UpdateAPIView):
     }
     serializer_class = MembreSerializer
     queryset = Membre.objects.all()
-    def update(self, request, pk):                            #from TODO
+    def update(self, request, pk):                            #from modules/membres/views/MembresModifier.vue
         membre = Membre.objects.get(id=pk)
         newAccount = User(
             username="{firstname}.{lastname}".format(firstname=membre.firstname, lastname=membre.lastname).replace(" ", "").lower(),
