@@ -21,7 +21,15 @@ class Membre(Personne):
     def __str__(self):
         return self.firstname + ' ' + self.lastname
 
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('username', )
+
 class MembreSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+
     class Meta:
         model = Membre
-        fields = ('id', 'lastname', 'firstname', 'gender', 'promotion', 'email_junior', 'mobile', 'address', 'postcode', 'town', 'country', 'nationality', 'birth_date', 'birth_place', 'email')
+        fields = ('id', 'lastname', 'firstname', 'gender', 'promotion', 'email_junior', 'mobile', 'address', 'postcode', 'town', 'country', 'nationality', 'birth_date', 'birth_place', 'email', 'user')
+

@@ -6,7 +6,9 @@
     <MemberForm
       v-model="member"
       :loading="loading"
+      :loadingopenaccount="loadingOpenAccount"
       @save="saveMember"
+      @openaccount="openAccount"
     />
   </BaseComponent>
 </template>
@@ -38,6 +40,7 @@ export default {
         birth_place: ""
       },
       loading: false,
+      loadingOpenAccount: false,
       breadcrumb: [
         {
           name: "Liste des membres",
@@ -85,6 +88,23 @@ export default {
         finally(() => {
           this.loading = false
         })
+    },
+    openAccount () {
+      this.loadingOpenAccount = true
+      axios.put(
+        `/api/membres/openaccount/${this.member.id}/`,
+        {},
+        {withCredentials: true}
+      ).then((res) => {
+        this.member.user = {
+          username: res.data.username
+        }
+        this.$message({message: `Le compte utilisateur a bien été créé ${res.data.username}`, type: "success"})
+      }).catch((err) => {
+        this.$message({message: err, type: "error"})
+      }).finally(() => {
+        this.loadingOpenAccount = false
+      })
     }
   }
 }

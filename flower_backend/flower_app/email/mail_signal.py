@@ -23,7 +23,7 @@ def password_reset_token_created(sender, instance, reset_password_token, *args, 
     context = {
         'current_user': reset_password_token.user,
         'username': reset_password_token.user.username,
-        'email': reset_password_token.user.email,
+        'email': reset_password_token.user.membre.email_junior,
         'reset_password_url': "{}/#/passwordreset/confirm/{}".format(settings.FRONT_END, reset_password_token.key)
     }
 
@@ -39,7 +39,7 @@ def password_reset_token_created(sender, instance, reset_password_token, *args, 
         # from:
         "noreply@somehost.local",
         # to:
-        [reset_password_token.user.email]
+        [reset_password_token.user.membre.email_junior]
     )
     msg.attach_alternative(email_html_message, "text/html")
     msg.send()

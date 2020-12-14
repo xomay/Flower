@@ -164,6 +164,20 @@
           </el-button>
         </el-form-item>
       </el-col>
+      <el-col
+        v-if="!value.user"
+        :span="24"
+      >
+        <el-form-item>
+          <el-button
+            :loading="loadingopenaccount"
+            type="success"
+            @click="$emit('openaccount')"
+          >
+            Ouvrir un compte utilisateur
+          </el-button>
+        </el-form-item>
+      </el-col>
     </el-row>
   </el-form>
 </template>
@@ -173,7 +187,8 @@ export default {
   name: "MemberForm",
   props: {
     value: { type: Object, required: true },
-    loading: { type: Boolean, required: true }
+    loading: { type: Boolean, required: true },
+    loadingopenaccount: { type: Boolean, required: true },
   },
   data () {
     return {

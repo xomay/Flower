@@ -1,7 +1,11 @@
+from django.contrib.auth.models import User
+
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import generics
+
+from http import HTTPStatus
 
 from flower_app.controllers.permissions import HasGroupPermission
 from flower_app.models.People.Membre import Membre, MembreSerializer
@@ -29,3 +33,22 @@ class MembreDetailView(generics.RetrieveUpdateAPIView):
     }
     serializer_class = MembreSerializer
     queryset = Membre.objects.all()
+
+class OpenAccountView(generics.UpdateAPIView):
+    permission_classes = [IsAuthenticated, HasGroupPermission]
+    # lookup_field = 'id'
+    required_groups = {
+        'POST': ['ROLE_ADMIN'],
+    }
+    serializer_class = MembreSerializer
+    queryset = Membre.objects.all()
+    def update(self, request, pk):                            #from modules/membres/views/MembresModifier.vue
+        membre = Membre.objects.get(id=pk)
+        newAccount = User(
+            username="{firstname}.{lastname}".format(firstname=membre.firstname, lastname=membre.lastname).replace(" ", "").lower(),
+            password="",
+        )
+        newAccount.save()
+        membre.user = newAccount
+        membre.save()
+        return Response(data={"username": newAccount.username}, status=HTTPStatus.CREATED)
