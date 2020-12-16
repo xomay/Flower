@@ -35,18 +35,39 @@
         label="Promotion"
         sortable
       />
+      <el-table-column
+        style="width: 80%"
+        label="Créer un compte"
+      >
+        <template
+          slot-scope="scope"
+        >
+          <el-button
+            v-if="isButtonOn(scope.$index)"
+            ref="btn_{{scope.$index}}"
+            size="medium"
+            type="warning"
+            @click="openAccount(scope.$index)"
+          >
+            Ouvrir un compte utilisateur
+          </el-button>
+        </template>
+      </el-table-column>
     </el-table>
   </BaseComponent>
 </template>
 
 <script>
+import { registerMemberMixin } from "../mixins/RegisterMember.js"
 const axios = require("axios")
 
 export default {
-  name: "EtudeVoir",
+  name: "MembresVoir",
+  mixins: [registerMemberMixin],
   data () {
     return {
       membres: [],
+      btnsDesactivated: [],
       loading: true,
       breadcrumb: [
         {
@@ -66,7 +87,8 @@ export default {
     }).
       catch(() => {
         this.$message({message: "Impossible de récupérer les membres pour le moment",
-          type: "error"})
+          type: "error",
+          offset: 40})
       }).
       finally(() => {
         this.loading = false
@@ -75,6 +97,21 @@ export default {
   methods: {
     display (scope) {
       console.log(scope)
+    },
+    openAccount (memberID) {
+      this.$refs.ref
+      if( ! this.membres[memberID].user ) {
+        this.mixinRegisterMember(axios, this.membres[memberID])
+      } else {
+        this.$message({
+          message: "Une erreur est survenue : le compte était déjà présent.",
+          type: "error",
+          offset: 40
+        })
+      }
+    },
+    isButtonOn (memberID) {
+      return ! this.membres[memberID].user
     }
   }
 }
