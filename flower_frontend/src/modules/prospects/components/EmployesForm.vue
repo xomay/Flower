@@ -129,7 +129,7 @@ export default {
           {
             required: true,
             pattern: /^[\w\\.=-]+@[\w\\.-]+\.[\w]{2,3}$/,
-            message: "Cette valeur doit être un un email valide.",
+            message: "Cette valeur doit être un email valide.",
             trigger: "blur"
           }
         ],
