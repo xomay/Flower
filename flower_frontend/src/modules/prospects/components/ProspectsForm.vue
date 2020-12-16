@@ -72,6 +72,7 @@ export default {
   },
   data () {
     return {
+      breadcrumb: [],
       formRules: {
         name: [
           {required: true,

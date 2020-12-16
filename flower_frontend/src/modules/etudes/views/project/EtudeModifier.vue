@@ -82,7 +82,7 @@ export default {
         this.$message({message: "L'étude a bien été modifié.",
           type: "success",
           offset: 40})
-        // This.$router.push('/etudes')
+        //this.$router.push("/etudes/"+this.etude.id+"/voir") // uncomment it to go back to etude after editing
       }).
         catch((err) => {
           console.log(err)

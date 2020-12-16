@@ -68,7 +68,6 @@ export default {
   data () {
     return {
       prospect: {},
-
       employes: [],
       loading: false,
       breadcrumb: [

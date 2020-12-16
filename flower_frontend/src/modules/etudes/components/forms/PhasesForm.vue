@@ -157,7 +157,7 @@
 export default {
   name: "PhasesForm",
   props: {
-    value: { type: Object, required: true },
+    value: { type: Array, required: true },
     small: { type: Boolean, required: true }
   },
 
