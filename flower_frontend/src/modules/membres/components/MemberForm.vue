@@ -267,7 +267,7 @@ export default {
           {
             required: true,
             pattern: /^[ 0-9]+$/,
-            message: "Cette valeur droit être un code postal valide"
+            message: "Cette valeur doit être un code postal valide"
           }
         ],
         town: [
