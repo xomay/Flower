@@ -1,0 +1,17 @@
+<svg id="Flower" data-name="Flower" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 445.11 316">
+	<defs>
+		<style>.cls-1,.cls-3{fill:none;}.cls-2{clip-path:url(#clip-path);}.cls-3{stroke:#000;stroke-width:4px;}</style>
+		<clipPath id="clip-path" transform="translate(-465.01 -210.3)">
+			<rect class="cls-1" x="465.01" y="210.3" width="445.11" height="316"/>
+		
+		</clipPath>
+	</defs>
+	<title>Flower Logo SVG</title>
+	<g class="cls-2">
+		<ellipse class="cls-3" cx="221.84" cy="158" rx="47" ry="156"/>
+		<path class="cls-3" d="M685.51,523.21c24.07,9.73,69.74-47.15,102-127s38.92-152.52,14.86-162.25-69.74,47.15-102,127S661.44,513.49,685.51,523.21Z" transform="translate(-465.01 -210.3)"/>
+		<path class="cls-3" d="M684.69,522.16c24.07-9.72,17.41-82.36-14.86-162.25s-78-136.75-102-127-17.41,82.36,14.86,162.25S660.62,531.88,684.69,522.16Z" transform="translate(-465.01 -210.3)"/>
+		<ellipse class="cls-3" cx="789.58" cy="408.85" rx="156" ry="47" transform="translate(-531.73 438.03) rotate(-43)"/>
+		<path class="cls-3" d="M694.35,518.19c18.19-18.51-16.87-82.48-78.32-142.87S490,281,471.82,299.51,488.69,382,550.14,442.37,676.16,536.7,694.35,518.19Z" transform="translate(-465.01 -210.3)"/>
+	</g>
+</svg>
