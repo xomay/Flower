@@ -32,6 +32,9 @@
           <img src="@/assets/flower.svg">
         </div>
       </el-row>
+      <el-row>
+        Bienvenue {{ getUsername() }}
+      </el-row>
     </el-col>
   </BaseComponent>
 </template>
@@ -41,7 +44,12 @@ import DashGraphic from "../components/DashGraphic"
 
 export default {
   name: "Authentication",
-  components: {DashGraphic}
+  components: {DashGraphic},
+  methods: {
+    getUsername () {
+      return this.$store.currentUsername
+    }
+  }
 }
 </script>
 

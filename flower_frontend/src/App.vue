@@ -26,6 +26,7 @@ export default {
       {withCredentials: true}
     ).then((res) => {
       console.log(res)
+      this.$store.currentUsername = res.data
       this.loading = false
     }).
       catch(() => {
