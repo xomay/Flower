@@ -3,37 +3,43 @@
     title="Dashboard"
     :breadcrumb="[]"
   >
-    <el-col :span="8">
+    <el-col :span="10">
       <DashGraphic
-        fill-percentage="53"
+        :fill-percentage="getDataCA()"
         aside-size="70%"
         description="Objectif CA 2021"
       />
       <DashGraphic
-        type="circle"
         aside-size="70%"
-        fill-percentage="24"
+        :fill-percentage="getDataQuali()"
         description="Participation aux questionnaires qualité"
       />
     </el-col>
     <el-col
       :span="12"
-      :offset="4"
+      :offset="2"
     >
       <el-row
         justify="center"
       >
-        <h1>
+        <h1 style="margin: auto auto auto 35%;">
           Bienvenue sur Flower
+          <font color="blue">
+            {{ getUsername() }}
+          </font>
         </h1>
       </el-row>
+      <el-divider />
       <el-row>
         <div width="80%">
           <img src="@/assets/flower.svg">
         </div>
       </el-row>
+      <el-divider />
       <el-row>
-        Bienvenue {{ getUsername() }}
+        <i class="versionText">
+          Version actuelle : <u>alpha-34</u>
+        </i>
       </el-row>
     </el-col>
   </BaseComponent>
@@ -48,6 +54,12 @@ export default {
   methods: {
     getUsername () {
       return this.$store.currentUsername
+    },
+    getDataCA () {
+      return 56
+    },
+    getDataQuali () {
+      return 23
     }
   }
 }
@@ -66,5 +78,9 @@ export default {
     margin-right: auto;
     max-width: 50%;
     height: auto;
+  }
+  .versionText {
+    margin: 0 auto 0 36em;
+    font-size: 1em;
   }
 </style>
