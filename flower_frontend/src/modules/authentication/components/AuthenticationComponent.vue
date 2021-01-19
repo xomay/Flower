@@ -66,7 +66,8 @@ export default {
         "/api/accounts/login",
         this.authForm,
         {withCredentials: true}
-      ).then(() => {
+      ).then((res) => {
+        this.$store.currentUsername = res.data
         this.$router.push("/")
       }).
         catch((err) => {
