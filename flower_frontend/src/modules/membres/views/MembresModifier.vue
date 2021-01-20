@@ -15,12 +15,14 @@
 
 <script>
 import MemberForm from "../components/MemberForm"
+import { registerMemberMixin } from "../mixins/RegisterMember.js"
 
 const axios = require("axios")
 
 export default {
   name: "EtudeCreer",
   components: {MemberForm},
+  mixins: [registerMemberMixin],
   data () {
     return {
       member: {
@@ -91,20 +93,8 @@ export default {
     },
     openAccount () {
       this.loadingOpenAccount = true
-      axios.put(
-        `/api/membres/openaccount/${this.member.id}/`,
-        {},
-        {withCredentials: true}
-      ).then((res) => {
-        this.member.user = {
-          username: res.data.username
-        }
-        this.$message({message: `Le compte utilisateur a bien été créé ${res.data.username}`, type: "success"})
-      }).catch((err) => {
-        this.$message({message: err, type: "error"})
-      }).finally(() => {
-        this.loadingOpenAccount = false
-      })
+      this.mixinRegisterMember(axios, this.member)
+      this.loadingOpenAccount = false
     }
   }
 }

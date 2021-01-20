@@ -1,5 +1,6 @@
 <template>
   <el-form
+    ref="memFormRef"
     :model="value"
     :rules="formRules"
     label-position="left"
@@ -158,7 +159,7 @@
           <el-button
             :loading="loading"
             type="success"
-            @click="$emit('save')"
+            @click="validateForm('save')"
           >
             Enregistrer
           </el-button>
@@ -171,8 +172,8 @@
         <el-form-item>
           <el-button
             :loading="loadingopenaccount"
-            type="success"
-            @click="$emit('openaccount')"
+            type="warning"
+            @click="validateForm('openaccount')"
           >
             Ouvrir un compte utilisateur
           </el-button>
@@ -214,19 +215,43 @@ export default {
             trigger: "blur"}
         ],
         email: [
-          {required: true,
+          {
+            required: true,
             message: "Obligatoire",
-            trigger: "blur"}
+            trigger: "blur"
+          },
+          {
+            required: true,
+            pattern: /^[\w\\.=-]+@insa-rennes.fr$/,
+            message: "Cette valeur doit être un email INSA valide.",
+            trigger: "change"
+          }
         ],
         email_junior: [
-          {required: true,
+          {
+            required: true,
             message: "Obligatoire",
-            trigger: "blur"}
+            trigger: "blur"
+          },
+          {
+            required: true,
+            pattern: /^[\w\\.=-]+@ouest-insa.fr$/,
+            message: "Cette valeur doit être un email ouest-insa valide.",
+            trigger: "change"
+          }
         ],
         mobile: [
-          {required: true,
+          {
+            required: true,
             message: "Obligatoire",
-            trigger: "blur"}
+            trigger: "blur"
+          },
+          {
+            required: true,
+            pattern: /^(?:(?:\+|00)33[\s.-]{0,3}(?:\(0\)[\s.-]{0,3})?|0)[1-9](?:(?:[\s.-]?\d{2}){4}|\d{2}(?:[\s.-]?\d{3}){2})$/,
+            message: "Cette valeur doit être un numéro de téléphone valide.",
+            trigger: "change"
+          }
         ],
         address: [
           {required: true,
@@ -234,9 +259,16 @@ export default {
             trigger: "blur"}
         ],
         postcode: [
-          {required: true,
+          {
+            required: true,
             message: "Obligatoire",
-            trigger: "blur"}
+            trigger: "blur"
+          },
+          {
+            required: true,
+            pattern: /^[ 0-9]+$/,
+            message: "Cette valeur doit être un code postal valide"
+          }
         ],
         town: [
           {required: true,
@@ -264,6 +296,24 @@ export default {
             trigger: "blur"}
         ]
       }
+    }
+  },
+  methods: {
+    validateForm (mode) {
+      this.$refs.memFormRef.validate((r) => {
+        if(r) {
+          if(mode == "save")
+            this.$emit("save")
+          else if(mode == "openaccount")
+            this.$emit("openaccount")
+        } else {
+          this.$message({
+            message: "Certains champs ne sont pas valides !",
+            type:"error",
+            offset: 40
+          })
+        }
+      })
     }
   }
 }
