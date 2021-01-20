@@ -12,6 +12,7 @@
           <img
             class="inline-block"
             src="@/assets/logo_longueur_crop.png"
+            style="max-width: 100%"
           >
         </el-menu-item>
       </router-link>
@@ -73,6 +74,9 @@
             <i class="el-icon-s-tools" />
           </el-button>
           <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item>
+              <i class="el-icon-user" />{{ this.$store.currentUsername }}
+            </el-dropdown-item>
             <el-dropdown-item command="logout">
               <i class="el-icon-close" />Se déconnecter
             </el-dropdown-item>

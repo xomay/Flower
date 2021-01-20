@@ -10,7 +10,7 @@ from rest_framework.views import APIView
 class LoginView(APIView):
     def get(self, request):                             #from App.vue beforeCreate (so even on /login) -> redirection to login if 401
         if request.user.is_authenticated:
-            return Response(None, status=HTTPStatus.ACCEPTED)
+            return Response(request.user.username, status=HTTPStatus.ACCEPTED)
         else:
             return Response(None, status=HTTPStatus.UNAUTHORIZED)
 
@@ -20,10 +20,9 @@ class LoginView(APIView):
         user = authenticate(username=request.data['username'], password=request.data['password'])
         if user is not None:
             login(request, user)
-            return Response(None, status=HTTPStatus.ACCEPTED)
+            return Response(request.data['username'], status=HTTPStatus.ACCEPTED)
         else:
             return Response(None, status=HTTPStatus.UNAUTHORIZED)
-
 
 class LogoutView(APIView):                              #from logout button (modules/navigation/Navigation.vue)
     def get(self, request):
