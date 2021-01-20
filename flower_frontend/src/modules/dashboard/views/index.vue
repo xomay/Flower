@@ -4,7 +4,7 @@
     :breadcrumb="[]"
   >
     <el-col :span="10">
-      <DashGraphic
+      <!--<DashGraphic
         :fill-percentage="getDataCA()"
         aside-size="70%"
         description="Objectif CA 2021"
@@ -13,11 +13,11 @@
         aside-size="70%"
         :fill-percentage="getDataQuali()"
         description="Participation aux questionnaires qualité"
-      />
+      />-->
     </el-col>
     <el-col
       :span="12"
-      :offset="2"
+      :offset="12"
     >
       <el-row
         justify="center"
@@ -46,11 +46,11 @@
 </template>
 
 <script>
-import DashGraphic from "../components/DashGraphic"
+//import DashGraphic from "../components/DashGraphic"
 
 export default {
   name: "Authentication",
-  components: {DashGraphic},
+  //components: {DashGraphic},
   methods: {
     getUsername () {
       return this.$store.currentUsername
