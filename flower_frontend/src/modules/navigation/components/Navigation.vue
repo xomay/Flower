@@ -12,6 +12,7 @@
           <img
             class="inline-block"
             src="@/assets/logo_longueur_crop.png"
+            style="max-width: 100%"
           >
         </el-menu-item>
       </router-link>
