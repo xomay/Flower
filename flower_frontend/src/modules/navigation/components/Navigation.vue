@@ -143,6 +143,14 @@ export default {
           ]
         },
         {
+          icon: "el-icon-data-line",
+          title: "Performance",
+          children: [
+            {name: "Suivi Dev'co",
+              url: "/performance/devco"}
+          ]
+        },
+        {
           icon: "el-icon-s-custom",
           title: "Prospection",
           children: [
