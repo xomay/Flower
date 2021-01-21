@@ -156,6 +156,13 @@ export default {
               ]
             },
             {
+              title: "Actions commerciales",
+              children: [
+                {name: "Créer une action commerciale",
+                  url: "/prospects/actionCommerciale/ajouter"}
+              ]
+            },
+            {
               title: "Génération",
               children: [
                 {name: "Devis",
