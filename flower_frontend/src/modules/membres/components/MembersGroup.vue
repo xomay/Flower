@@ -80,10 +80,6 @@ export default {
     },
     removeLocalGroup (index) {
       this.$emit("delete-participant", index)
-      /*if(this.value.length > 1) {
-        this.value.splice(index, 1)
-      }
-      console.log("> ["+this.value+"]")*/
     },
     inputed (groupIndex, listID) {
       var itemName = undefined
@@ -98,10 +94,8 @@ export default {
         return
       }
       // TODO invalidate field car membre non trouvé.
-      console.log("input: ("+groupIndex + ") => " + listID + ", " + itemName)
       this.value[groupIndex] = listID
       this.textes[groupIndex] = itemName
-      console.log("> ["+this.value+"] , "+this.textes[groupIndex])
     },
   }
 }

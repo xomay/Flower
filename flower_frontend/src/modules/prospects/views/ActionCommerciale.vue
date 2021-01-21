@@ -7,7 +7,7 @@
       Action commerciale
     </h1>
     <el-form
-      ref="devisForm1"
+      ref="acForm"
       :model="actionCommerciale"
       label-position="left"
       size="small"
@@ -194,16 +194,41 @@ export default {
   },
   methods: {
     validateAllFields () {
+      var valid = true
+      this.$refs.acForm.validate((r) => {
+        if(!r) {
+          this.$message({message: "Erreur : Ce devis présente des erreurs.", type: "error", offset: 40})
+          valid = false
+        }
+      })
+
+      if(this.actionCommerciale.participants.length < 1) {
+        this.$message({message: "Erreur : Il faut ajouter au moins un participant.", type: "error", offset: 40})
+        valid = false
+      }
+      for(var i = 0; i < this.actionCommerciale.participants.length; i++) {
+        console.log("test " + i + " : " + this.actionCommerciale.participants[i])
+        if(this.actionCommerciale.participants[i] < 1) {
+          this.$message({message: `Erreur : Le participant [${i+1}] n'est pas défini.`, type: "error", offset: 40})
+          valid = false
+        }
+      }
+
+      // Les return ne quittent pas la fonction....
+
       console.log("====> ["+this.actionCommerciale.participants+"]")
+      if(valid) {
+        this.sendForm()
+      }
+    },
+    sendForm () {
+      //TODO send to the API
+      console.log("TODO")
     },
     addParticipant () {
-      const newParticipant = {
-        idMembre: NaN,
-        display: "",
-        arrayIndex: this.actionCommerciale.participants.length
-      }
+      const newParticipant = - this.actionCommerciale.participants.length
       this.actionCommerciale.participants.push(newParticipant)
-      console.log("Group added ("+newParticipant.arrayIndex+")")
+      console.log("Group added ("+newParticipant+") => ["+this.actionCommerciale.participants+"]")
     },
     deleteParticipant (participantIndex) {
       console.log("Delete id="+participantIndex)
@@ -211,7 +236,7 @@ export default {
         participantIndex,
         1
       )
-    },
+    }
   }
 }
 </script>
