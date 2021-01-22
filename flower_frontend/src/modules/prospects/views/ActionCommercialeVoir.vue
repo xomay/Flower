@@ -8,7 +8,7 @@
     >
       <el-col :span="8">
         <h2 class="labelSlide">
-          Afficher uniquement les actions commerciales pas encore passées :
+          Cacher les <u>anciennes</u> actions commerciales :
         </h2>
       </el-col>
       <el-col
@@ -20,6 +20,13 @@
         />
       </el-col>
     </el-row>
+    <router-link to="/prospects/actionCommerciale/ajouter">
+      <el-button
+        type="primary"
+      >
+        Créer une action commerciale
+      </el-button>
+    </router-link>
     <el-divider />
     <el-table
       v-loading="loading"
@@ -63,7 +70,12 @@ export default {
   name: "ActionCommerciale",
   data () {
     return {
-      breadcrumb: [],
+      breadcrumb: [
+        {
+          name: "Lister des actions commerciales",
+          link: "/prospects/actionCommerciale/"
+        }
+      ],
       loading: false,
       onlyFuture: false,
       displayedData: [],
@@ -128,6 +140,9 @@ export default {
         this.displayedData = this.actionComsFuture
       else
         this.displayedData = this.actionsComs
+    },
+    goCreateAC () {
+      console.log("create")
     }
   }
 }

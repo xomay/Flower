@@ -10,19 +10,29 @@
       Actions commerciales :
     </h1>
     <el-row>
-      <el-col>
-        <el-button
-          type="primary"
-          @click="goVoirAC()"
-        >
-          Voir les actions commerciales
-        </el-button>
-        <el-button
-          type="success"
-          @click="goCreateAC()"
-        >
-          Créer une action commerciale
-        </el-button>
+      <el-col
+        :span="3"
+        :offset="1"
+      >
+        <router-link to="/prospects/actionCommerciale/">
+          <el-button
+            type="primary"
+          >
+            Voir les actions commerciales
+          </el-button>
+        </router-link>
+      </el-col>
+      <el-col
+        :span="8"
+        :offset="1"
+      >
+        <router-link to="/prospects/actionCommerciale/ajouter">
+          <el-button
+            type="success"
+          >
+            Créer une action commerciale
+          </el-button>
+        </router-link>
       </el-col>
     </el-row>
     <h1
@@ -94,14 +104,6 @@ export default {
       finally(() => {
         this.loading = false
       })
-  },
-  methods: {
-    goVoirAC () {
-      console.log("voir")
-    },
-    goCreateAC () {
-      console.log("create")
-    }
   }
 }
 </script>

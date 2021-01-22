@@ -70,7 +70,7 @@ export default {
   },
   methods: {
     label (i) {
-      return "Participant " + i
+      return "Participant " + (i+1)
     },
     labelRef (i) {
       return "p" + i

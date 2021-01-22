@@ -140,7 +140,16 @@ export default {
   components: {MemberPicker, MembersGroup},
   data () {
     return {
-      breadcrumb: [],
+      breadcrumb: [
+        {
+          name: "Lister des actions commerciales",
+          link: "/prospects/actionCommerciale/"
+        },
+        {
+          name: "Créer une action commerciale",
+          link: "/prospects/actionCommerciale/ajouter"
+        }
+      ],
       loading: false,
       // Données exportées au final
       actionCommerciale: {
