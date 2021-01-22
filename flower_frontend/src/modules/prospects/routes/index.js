@@ -10,6 +10,11 @@ const routes = [
     component: () => import("../views/ProspectsCreer")
   },
   {
+    path: "prospects/actionCommerciale/:id/voir",
+    name: "actionCommerciale-detail",
+    component: () => import("../views/ActionCommercialeDetail")
+  },
+  {
     path: "prospects/actionCommerciale/ajouter",
     name: "actionCommerciale-ajouter",
     component: () => import("../views/ActionCommercialeCreer")

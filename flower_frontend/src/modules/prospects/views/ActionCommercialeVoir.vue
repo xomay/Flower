@@ -23,6 +23,7 @@
     <router-link to="/prospects/actionCommerciale/ajouter">
       <el-button
         type="primary"
+        :style="{margin:'2vh 0 0 1vh'}"
       >
         Créer une action commerciale
       </el-button>
@@ -33,12 +34,19 @@
       :data="displayedData"
       :default-sort="{prop: 'date', order: 'descending'}"
       :row-class-name="colorRow"
+      @row-click="rowClicked"
     >
       <el-table-column
         prop="name"
         label="Nom de l'action"
         sortable
-      />
+      >
+        <template slot-scope="scope">
+          <font style="color: #333333;">
+            <b>{{ scope.row.name }}</b>
+          </font>
+        </template>
+      </el-table-column>
       <el-table-column
         prop="date"
         label="Date"
@@ -141,23 +149,36 @@ export default {
       else
         this.displayedData = this.actionsComs
     },
-    goCreateAC () {
-      console.log("create")
+    rowClicked (a) {
+      this.$router.push("/prospects/actionCommerciale/"+a.id+"/voir")
     }
   }
 }
 </script>
 
 <style>
+  /* Ligne où la date est dépassée. Teinte grisée */
   .el-table .old-row {
-    background: rgba(94, 93, 92, 0.336);
+    background: rgba(75, 73, 72, .25);
   }
+  .el-table .old-row:hover {
+    background: rgba(196, 194, 192, .25);
+  }
+  /* Ligne où la date est dans 2 jours. Teinte orangée */
   .el-table .almost-row {
-    background: rgba(167, 139, 14, 0.486);
+    background: rgba(167, 139, 14, .25);
   }
+  .el-table .almost-row:hover {
+    background: rgba(240, 200, 21, .25);
+  }
+  /* Ligne où la date est dans plus de 2 jours. Teinte bleue/verte */
   .el-table .future-row {
-    background: rgba(66, 153, 153, 0.336);
+    background: rgba(94, 155, 155, .25);
   }
+  .el-table .future-row:hover {
+    background: rgba(151, 247, 247, .25);
+  }
+  /* style tu texte à gauche du slider */
   .labelSlide {
     font-size: 1.01em;
   }
