@@ -12,7 +12,7 @@ const routes = [
   {
     path: "prospects/actionCommerciale/ajouter",
     name: "actionCommerciale-ajouter",
-    component: () => import("../views/ActionCommerciale")
+    component: () => import("../views/ActionCommercialeCreer")
   },
   {
     path: "prospects/actionCommerciale/",
