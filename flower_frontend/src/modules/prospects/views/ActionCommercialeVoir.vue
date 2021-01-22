@@ -3,9 +3,27 @@
     title="Lister les actions commerciales"
     :breadcrumb="breadcrumb"
   >
+    <el-row
+      :style="{margin:'100px, 100px, 0, 1em'}"
+    >
+      <el-col :span="8">
+        <h2 class="labelSlide">
+          Afficher uniquement les actions commerciales pas encore passées :
+        </h2>
+      </el-col>
+      <el-col
+        :span="8"
+      >
+        <el-switch
+          v-model="onlyFuture"
+          @change="updateData"
+        />
+      </el-col>
+    </el-row>
+    <el-divider />
     <el-table
       v-loading="loading"
-      :data="actionsComs"
+      :data="displayedData"
       :default-sort="{prop: 'date', order: 'descending'}"
       :row-class-name="colorRow"
     >
@@ -47,7 +65,11 @@ export default {
     return {
       breadcrumb: [],
       loading: false,
+      onlyFuture: false,
+      displayedData: [],
+      // Tableaux de valeurs, générés au chargement de la page
       actionsComs: [],
+      actionComsFuture: [],
       prospects: []
     }
   },
@@ -58,6 +80,11 @@ export default {
     ).then((res) => {
       res.data.forEach((elt) => elt.value = elt.name)
       this.actionsComs = res.data
+      this.actionComsFuture = Array.from(res.data).filter(ac => {
+        const tokens = ac.date.split("-")
+        return Date.parse(new Date(tokens[1]+" "+tokens[2]+" "+tokens[0])) >= Date.now()
+      })
+      this.updateData()
     }).
       catch((err) => {
         console.log(err)
@@ -88,9 +115,6 @@ export default {
       const tokens = row.date.split("-")
       const actionDate = Date.parse(new Date(tokens[1]+" "+tokens[2]+" "+tokens[0]))
       const twoDays = 1000*60*60*24 * 2
-      if(!(actionDate < todayDate)) {
-        console.log(row.name+" => d="+(actionDate - todayDate)+", 2jours=" + twoDays+". Diff =  " + (actionDate - todayDate - twoDays))
-      }
       if(actionDate < todayDate) {
         return "old-row"
       } else if ((actionDate - todayDate - twoDays) < 0) {
@@ -98,6 +122,12 @@ export default {
       } else {
         return "future-row"
       }
+    },
+    updateData () {
+      if(this.onlyFuture)
+        this.displayedData = this.actionComsFuture
+      else
+        this.displayedData = this.actionsComs
     }
   }
 }
@@ -112,5 +142,8 @@ export default {
   }
   .el-table .future-row {
     background: rgba(66, 153, 153, 0.336);
+  }
+  .labelSlide {
+    font-size: 1.01em;
   }
 </style>
