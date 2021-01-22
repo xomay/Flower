@@ -166,6 +166,8 @@ export default {
             {
               title: "Actions commerciales",
               children: [
+                {name: "Voir les actions commerciales",
+                  url: "/prospects/actionCommerciale/"},
                 {name: "Créer une action commerciale",
                   url: "/prospects/actionCommerciale/ajouter"}
               ]

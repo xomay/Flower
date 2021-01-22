@@ -32,11 +32,11 @@
         >
           <el-form-item
             label="Type d'action :"
-            prop="type"
+            prop="actionType"
             label-width="10vw"
             :rules="[{ required: true, message: 'Obligatoire' , trigger: 'blur' }]"
           >
-            <el-select v-model="actionCommerciale.type">
+            <el-select v-model="actionCommerciale.actionType">
               <el-option value="Linked In">
                 Linked In
               </el-option>
@@ -144,7 +144,7 @@ export default {
       loading: false,
       // Données exportées au final
       actionCommerciale: {
-        type: "",
+        actionType: "",
         name: "",
         date: "",
         prospect: "",
@@ -222,8 +222,24 @@ export default {
       }
     },
     sendForm () {
-      //TODO send to the API
-      console.log("TODO")
+      this.loading = true
+      console.log(this.actionCommerciale)
+      axios.post(
+        "/api/actioncom/",
+        this.actionCommerciale,
+        {withCredentials: true}
+      ).then(() => {
+        this.$message({message: "L'action commerciale a bien été ajouté",
+          type: "success"})
+        this.$router.push("/prospects/actionCommerciale/")
+      }).
+        catch((err) => {
+          this.$message({message: err,
+            type: "error"})
+        }).
+        finally(() => {
+          this.loading = false
+        })
     },
     addParticipant () {
       const newParticipant = - this.actionCommerciale.participants.length

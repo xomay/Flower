@@ -1,8 +1,36 @@
 <template>
   <BaseComponent
-    title="Liste des Prospects"
+    title="Prospection"
     :breadcrumb="breadcrumb"
   >
+    <h1
+      class="text-xl"
+      :style="{margin:'3vh auto 2vh 1vw'}"
+    >
+      Actions commerciales :
+    </h1>
+    <el-row>
+      <el-col>
+        <el-button
+          type="primary"
+          @click="goVoirAC()"
+        >
+          Voir les actions commerciales
+        </el-button>
+        <el-button
+          type="success"
+          @click="goCreateAC()"
+        >
+          Créer une action commerciale
+        </el-button>
+      </el-col>
+    </el-row>
+    <h1
+      class="text-xl"
+      :style="{margin:'3vh auto 2vh 1vw'}"
+    >
+      Lister les prospects :
+    </h1>
     <el-table
       v-loading="loading"
       class="grid"
@@ -68,13 +96,12 @@ export default {
       })
   },
   methods: {
-    display (scope) {
-      console.log(scope)
+    goVoirAC () {
+      console.log("voir")
+    },
+    goCreateAC () {
+      console.log("create")
     }
   }
 }
 </script>
-
-<style>
-
-</style>
