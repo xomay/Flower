@@ -3,13 +3,18 @@
     title="Prospection"
     :breadcrumb="breadcrumb"
   >
-    <h1
-      class="text-xl"
+    <el-row
       :style="{margin:'3vh auto 2vh 1vw'}"
     >
-      Actions commerciales :
-    </h1>
-    <el-row>
+      <el-col
+        :span="3"
+      >
+        <h1
+          class="text-xl"
+        >
+          Actions commerciales
+        </h1>
+      </el-col>
       <el-col
         :span="3"
         :offset="1"
@@ -22,28 +27,35 @@
           </el-button>
         </router-link>
       </el-col>
+    </el-row>
+    <el-row
+      :style="{margin:'3vh auto 2vh 1vw'}"
+    >
       <el-col
-        :span="8"
+        :span="3"
+      >
+        <h1
+          class="text-xl"
+        >
+          Ajouter un prospect :
+        </h1>
+      </el-col>
+      <el-col
+        :span="3"
         :offset="1"
       >
-        <router-link to="/prospects/actionCommerciale/ajouter">
+        <router-link to="/prospects/ajouter/">
           <el-button
             type="success"
-          >
-            Créer une action commerciale
-          </el-button>
+            icon="el-icon-plus"
+          />
         </router-link>
       </el-col>
     </el-row>
-    <h1
-      class="text-xl"
-      :style="{margin:'3vh auto 2vh 1vw'}"
-    >
-      Lister les prospects :
-    </h1>
     <el-table
       v-loading="loading"
       class="grid"
+      :style="{margin:'1vh auto 2vh 1vw'}"
       :data="prospects"
       :stripe="true"
     >
@@ -83,7 +95,7 @@ export default {
       loading: true,
       breadcrumb: [
         {
-          name: "Lister des prospects",
+          name: "Liste des prospects",
           link: "/prospects"
         }
       ]
