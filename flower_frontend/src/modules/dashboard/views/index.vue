@@ -1,8 +1,5 @@
 <template>
-  <BaseComponent
-    title="Dashboard"
-    :breadcrumb="[]"
-  >
+  <div>
     <el-col :span="10">
       <!--<DashGraphic
         :fill-percentage="getDataCA()"
@@ -32,7 +29,7 @@
       <el-divider />
       <el-row>
         <div width="80%">
-          <img src="@/assets/flower.svg">
+          <img src="@/assets/flower.jpg">
         </div>
       </el-row>
       <el-divider />
@@ -42,24 +39,27 @@
         </i>
       </el-row>
     </el-col>
-  </BaseComponent>
+    <GraphicsBlock
+      :data="getData()"
+    />
+  </div>
 </template>
 
 <script>
-//import DashGraphic from "../components/DashGraphic"
+import GraphicsBlock from "../components/GraphicsBlock"
 
 export default {
   name: "Authentication",
-  //components: {DashGraphic},
+  components: {GraphicsBlock},
   methods: {
     getUsername () {
       return this.$store.currentUsername
     },
-    getDataCA () {
-      return 56
-    },
-    getDataQuali () {
-      return 23
+    getData () {
+      return [
+        {name: "Objectif CA 2021", fill: 77},
+        {name: "Participation aux questionnaires qualité", fill: 23}
+      ]
     }
   }
 }
