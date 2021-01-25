@@ -225,7 +225,7 @@ export default {
 
       // Les return ne quittent pas la fonction....
 
-      console.log("====> ["+this.actionCommerciale.participants+"]")
+      //console.log("====> ["+this.actionCommerciale.participants+"]")
       if(valid) {
         this.sendForm()
       }

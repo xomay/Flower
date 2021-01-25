@@ -1,5 +1,6 @@
 <template>
   <el-form
+    ref="prosFormRef"
     :model="value"
     :rules="formRules"
     label-position="left"
@@ -22,7 +23,7 @@
         <el-input v-model="value.address" />
       </el-form-item>
     </el-col>
-    <el-col :span="12">
+    <el-col :span="10">
       <el-form-item
         label="Code postal"
         prop="postcode"
@@ -31,7 +32,10 @@
         <el-input v-model="value.postcode" />
       </el-form-item>
     </el-col>
-    <el-col :span="12">
+    <el-col
+      :span="12"
+      :offset="2"
+    >
       <el-form-item
         label="Ville"
         prop="town"
@@ -41,11 +45,18 @@
       </el-form-item>
     </el-col>
     <el-col :span="24">
+      <ContactsGroup
+        :value="contactsRaw"
+        @add-field="contactsAddField"
+        @delete-field="contactsRemoveField"
+      />
+    </el-col>
+    <el-col :span="24">
       <el-form-item>
         <el-button
           :loading="loading"
           type="success"
-          @click="saveProspect"
+          @click="validateForm"
         >
           Enregistrer
         </el-button>
@@ -63,8 +74,11 @@
 </template>
 
 <script>
+import ContactsGroup from "./ContactsGroup.vue"
+
 export default {
   name: "ProspectsForm",
+  components: {ContactsGroup},
   props: {
     value: { type: Object, required: true },
     loading: Boolean,
@@ -73,6 +87,7 @@ export default {
   data () {
     return {
       breadcrumb: [],
+      contactsRaw: [""],
       formRules: {
         name: [
           {required: true,
@@ -97,20 +112,31 @@ export default {
       }
     }
   },
-  watch: {
-
-    /*
-     * Value: {
-     *   handler () {
-     *     console.log('value changed !')
-     *   },
-     *   deep: true
-     * }
-     */
-  },
   methods: {
+    validateForm () {
+      this.$refs.prosFormRef.validate((r) => {
+        if(r) {
+          this.saveProspect()
+        } else {
+          this.$message({
+            message: "Certains champs ne sont pas valides !",
+            type:"error",
+            offset: 40
+          })
+        }
+      })
+    },
     saveProspect () {
-      this.$emit("save")
+      this.$emit("save", this.contactsRaw)
+    },
+    contactsAddField () {
+      this.contactsRaw.push("")
+    },
+    contactsRemoveField (index) {
+      this.contactsRaw.splice(
+        index,
+        1
+      )
     }
   }
 }

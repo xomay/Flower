@@ -47,6 +47,7 @@ export default {
   created () {
     this.getProspect()
     this.getEmployes()
+    this.getAllContactWays()
   },
   methods: {
     getProspect () {
