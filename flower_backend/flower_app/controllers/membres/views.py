@@ -1,4 +1,4 @@
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -46,9 +46,11 @@ class OpenAccountView(generics.UpdateAPIView):
         membre = Membre.objects.get(id=pk)
         newAccount = User(
             username="{firstname}.{lastname}".format(firstname=membre.firstname, lastname=membre.lastname).replace(" ", "").lower(),
-            password="",
+            password=""
         )
         newAccount.save()
         membre.user = newAccount
         membre.save()
+        groupCA = Group.objects.get(name='ROLE_CA') 
+        groupCA.user_set.add(newAccount)
         return Response(data={"username": newAccount.username}, status=HTTPStatus.CREATED)
