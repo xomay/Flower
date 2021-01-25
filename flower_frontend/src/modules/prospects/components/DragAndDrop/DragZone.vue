@@ -18,7 +18,16 @@
       @dragstart="startDrag($event, item)"
     >
       <el-card>
-        {{ item.title }}
+        <u>Prospect :</u>
+        <router-link :to="'/prospects/' + item.id + '/voir'">
+          <el-button
+            type="text"
+            size="medium"
+          >
+            {{ item.prospect.name }}
+          </el-button>
+        </router-link>
+        <p><u>Addresse :</u> {{ item.prospect.address }}, {{ item.prospect.town }} ({{ item.prospect.postcode }})</p>
       </el-card>
     </div>
   </div>
@@ -28,7 +37,7 @@
 export default {
   name: "DragZone",
   props: {
-    listId: { type: Number, required: true },
+    listId: { type: String, required: true },
     title: { type: String, required: true },
     content: { type: Array, required: true }
   },

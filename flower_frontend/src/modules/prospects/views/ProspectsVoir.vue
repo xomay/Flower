@@ -54,7 +54,7 @@
         </router-link>
       </el-col>
     </el-row>
-    <el-table
+    <!--<el-table
       v-loading="loading"
       class="grid"
       :style="{margin:'1vh auto 2vh 1vw'}"
@@ -82,22 +82,22 @@
         label="Ville"
         sortable
       />
-    </el-table>
+    </el-table>-->
     <div class="rowStyle">
       <DragZone
-        :list-id="1"
+        list-id="NC"
         :content="prospectsNouveaux"
         title="Nouveaux prospects"
         @dropped="acceptDrop"
       />
       <DragZone
-        :list-id="2"
+        list-id="AR"
         :content="prospectToRelancer"
         title="Prospects à relancer"
         @dropped="acceptDrop"
       />
       <DragZone
-        :list-id="3"
+        list-id="RDV"
         :content="prospectWithRDV"
         title="Devis à envoyer / Rendez-vous obtenu"
         @dropped="acceptDrop"
@@ -129,13 +129,13 @@ export default {
   },
   computed: {
     prospectsNouveaux () {
-      return this.items.filter(item => item.list === 1)
+      return this.items.filter(item => item.list == "NC")
     },
     prospectToRelancer () {
-      return this.items.filter(item => item.list === 2)
+      return this.items.filter(item => item.list == "AR")
     },
     prospectWithRDV () {
-      return this.items.filter(item => item.list === 3)
+      return this.items.filter(item => (item.list == "RDV" || item.list == "DS"))
     }
   },
   beforeCreate () {
@@ -161,12 +161,13 @@ export default {
       item.list = listID
 
       const prospect = this.prospects.find(i => i.id == itemID)
-      prospect.advancement = this.idToAdvancement(listID)
-      this.updateProspect(prospect)
+      if(listID != prospect.advancement) { // Pas de call d'API si on ne change rien :D
+        prospect.advancement = listID
+        this.updateProspect(prospect)
+      }
     },
     updateProspect (prospect) {
       this.loading = true
-      console.log(prospect)
       axios.put(
         `/api/prospects/${prospect.id}/`,
         prospect,
@@ -187,39 +188,10 @@ export default {
       for (const pr of this.prospects) {
         this.items.push({
           id: pr.id,
-          title: pr.name,
-          list: this.advancementToID(pr.advancement)
+          prospect: pr,
+          list: pr.advancement
         })
       }
-    },
-    advancementToID (adv) {
-      var listID = -1
-      switch (adv) {
-      // Les constantes sont définies dans le back : models/People/Prospect.py
-      case "NC":
-        listID = 1
-        break
-      case "AR":
-        listID = 2
-        break
-      case "RDV":
-      case "DS":
-        listID = 3
-        break
-      default:
-        console.log(`Erreur avec le back : l'avancement [${adv}] n'est pas connu.`)
-      }
-      return listID
-    },
-    idToAdvancement (id) {
-      if(id == 1)
-        return "NC"
-      else if (id == 2)
-        return "AR"
-      else if (id == 3)
-        return "RDV"
-      else
-        return "ERROR"
     }
   }
 }

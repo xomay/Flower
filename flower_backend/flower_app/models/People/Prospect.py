@@ -18,8 +18,8 @@ class Prospect(models.Model):
     ]
     advancement = models.CharField(max_length=3, choices=AV_LEVELS, default='NC')
     nextDate = models.DateField(blank=True, null = True)
-    prospectAction = models.ManyToManyField(Action, blank=True, null = True)
-    contactWay = models.ManyToManyField(ContactWay, blank=True, null = True)
+    prospectAction = models.ManyToManyField(Action, blank=True)
+    contactWay = models.ManyToManyField(ContactWay, blank=True)
 
 
     def __str__(self):
