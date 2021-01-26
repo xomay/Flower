@@ -86,7 +86,7 @@
 </template>
 
 <script>
-import DragZone from "../components/DragAndDrop/DragZone"
+import DragZone from "../components/DragZone"
 
 const axios = require("axios")
 
