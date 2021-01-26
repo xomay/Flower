@@ -10,7 +10,7 @@ class Facture(models.Model):
     project = models.ForeignKey(Etude, on_delete=models.RESTRICT)
     accountingPeriod = models.IntegerField(default=2020)
     payee = models.ForeignKey(Prospect, on_delete=models.RESTRICT)
-    invoiceNumber = models.IntegerField()
+    invoiceNumber = models.CharField(max_length=20)
 
     INVOICE_CHOICES = [
         ('FA', 'Facture d\'achat'),
