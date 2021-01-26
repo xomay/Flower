@@ -65,6 +65,7 @@
         :content="prospectsNouveaux"
         title="Nouveaux prospects"
         :membres-list="membres"
+        :contacts-list="contacts"
         @dropped="acceptDrop"
       />
       <DragZone
@@ -72,6 +73,7 @@
         :content="prospectToRelancer"
         title="Prospects à relancer"
         :membres-list="membres"
+        :contacts-list="contacts"
         @dropped="acceptDrop"
       />
       <DragZone
@@ -79,6 +81,7 @@
         :content="prospectWithRDV"
         title="Devis à envoyer / Rendez-vous obtenu"
         :membres-list="membres"
+        :contacts-list="contacts"
         @dropped="acceptDrop"
       />
     </div>
@@ -97,6 +100,7 @@ export default {
     return {
       prospects: [],
       membres: [],
+      contacts: [],
       items: [],
       loading: true,
       breadcrumb: [
@@ -133,13 +137,24 @@ export default {
       }).
       finally(() => {})
     axios.get(
+      "/api/contactway/",
+      {withCredentials: true}
+    ).then((res) => {
+      this.contacts = res.data
+    }).
+      catch(() => {
+        this.$message({message: "Impossible de récupérer les contacts pour le moment",
+          type: "error"})
+      }).
+      finally(() => {})
+    axios.get(
       "/api/membres/",
       {withCredentials: true}
     ).then((res) => {
       this.membres = res.data
     }).
       catch(() => {
-        this.$message({message: "Impossible de récupérer les prospects pour le moment",
+        this.$message({message: "Impossible de récupérer les membres pour le moment",
           type: "error"})
       }).
       finally(() => {

@@ -44,20 +44,26 @@
             />
           </el-col>
         </el-row>
-        <p><u>Addresse :</u> {{ item.prospect.address }}, {{ item.prospect.town }} ({{ item.prospect.postcode }})</p>
+        <p><i class="el-icon-office-building" /> <u>Addresse :</u> {{ item.prospect.address }}, {{ item.prospect.town }} ({{ item.prospect.postcode }})</p>
         <p v-if="item.list === 'NC'">
-          <u>Dev'co :</u>
+          <i class="el-icon-user" /> <u>Dev'co :</u>
           <span v-if="item.prospect.charge == null"><i>  aucun</i></span>
           <span v-else> {{ findMembre(item.prospect.charge) }}</span>
         </p>
         <p v-if="item.list === 'AR'">
-          <u>Dernier contact :</u> {{ item.prospect.nextDate }}
+          <i class="el-icon-view" /> <u>Dernier contact :</u> {{ niceDate (item.prospect.nextDate) }}
         </p>
         <p v-if="item.list === 'RDV'">
-          <u>Date du rendez-vous :</u> {{ item.prospect.nextDate }}
+          <i class="el-icon-date" /> <u>Date du rendez-vous :</u> {{ niceDate (item.prospect.nextDate) }}
         </p>
         <p v-if="item.list === 'DS'">
-          <u>Deadline du devis :</u> {{ item.prospect.nextDate }}
+          <i class="el-icon-date" /> <u>Deadline du devis :</u> {{ niceDate (item.prospect.nextDate) }}
+        </p>
+        <p
+          v-for="(contact,n) in item.prospect.contactWay"
+          :key="contact"
+        >
+          <i class="el-icon-message" /> <u>Contact {{ n+1 }} :</u> {{ getContact(contact) }}
         </p>
       </el-card>
     </div>
@@ -71,6 +77,7 @@ export default {
     listId: { type: String, required: true },
     title: { type: String, required: true },
     membresList: { type: Array, required: true },
+    contactsList: { type: Array, required: true },
     content: { type: Array, required: true }
   },
   methods: {
@@ -78,6 +85,7 @@ export default {
       evt.dataTransfer.dropEffect = "move"
       evt.dataTransfer.effectAllowed = "move"
       evt.dataTransfer.setData("itemID", item.id)
+      console.log(item.prospect)
     },
     onDrop (evt) {
       const itemID = evt.dataTransfer.getData("itemID")
@@ -101,6 +109,13 @@ export default {
         newAdv,
         true
       )
+    },
+    getContact (contactID) {
+      return this.contactsList.find(c => c.id === contactID).contactWay
+    },
+    niceDate (dateString) {
+      const tokens = dateString.split("-")
+      return tokens[2] + "/" + tokens[1] + "/" + tokens[0]
     }
   }
 }
