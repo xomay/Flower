@@ -1,44 +1,29 @@
 <template>
   <div>
-    <el-col :span="10">
-      <!--<DashGraphic
-        :fill-percentage="getDataCA()"
-        aside-size="70%"
-        description="Objectif CA 2021"
-      />
-      <DashGraphic
-        aside-size="70%"
-        :fill-percentage="getDataQuali()"
-        description="Participation aux questionnaires qualité"
-      />-->
-    </el-col>
-    <el-col
-      :span="12"
-      :offset="12"
+    <el-divider />
+    <el-row
+      justify="center"
     >
-      <el-row
-        justify="center"
-      >
-        <h1 style="margin: auto auto auto 35%;">
-          Bienvenue sur Flower
-          <font color="blue">
-            {{ getUsername() }}
-          </font>
-        </h1>
-      </el-row>
-      <el-divider />
-      <el-row>
-        <div width="80%">
-          <img src="@/assets/flower.jpg">
-        </div>
-      </el-row>
-      <el-divider />
-      <el-row>
-        <i class="versionText">
-          Version actuelle : <u>alpha-34</u>
-        </i>
-      </el-row>
-    </el-col>
+      <h1 style="margin: auto auto auto 35%;">
+        Bienvenue
+        <font color="blue">
+          {{ getUsername() }}
+        </font>
+      </h1>
+    </el-row>
+    <el-divider />
+    <el-row>
+      <div width="80%">
+        <img src="@/assets/flower.jpg">
+      </div>
+    </el-row>
+    <el-divider />
+    <el-row>
+      <i class="versionText">
+        Version actuelle : <u>alpha-32</u>
+      </i>
+    </el-row>
+    <el-divider />
     <GraphicsBlock
       :data="getData()"
     />
@@ -80,7 +65,7 @@ export default {
     height: auto;
   }
   .versionText {
-    margin: 0 auto 0 36em;
+    margin: 0 auto 0 90em;
     font-size: 1em;
   }
 </style>
