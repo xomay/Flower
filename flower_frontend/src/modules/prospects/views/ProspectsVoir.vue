@@ -4,6 +4,13 @@
     :v-loading="loading"
     :breadcrumb="breadcrumb"
   >
+    <DatePopup
+      popup-title="Entrez la nouvelle date"
+      :date-name="tampon.dateTitle"
+      :visibility="popupVisible"
+      :placeholder="tampon.nextDate"
+      @finish="popupClosed"
+    />
     <el-row
       :style="{margin:'3vh auto 2vh 1vw'}"
     >
@@ -54,10 +61,8 @@
         </router-link>
       </el-col>
     </el-row>
-    <div
-      :style="{width:'95%',height:'10vh',border:'1px solid black',margin:'1em'}"
-    >
-      Filtres
+    <div class="filtresDiv">
+      Les filtres seront là dans une future mise à jour.
     </div>
     <div class="rowStyle">
       <DragZone
@@ -89,13 +94,14 @@
 </template>
 
 <script>
+import DatePopup from "../components/DatePopup"
 import DragZone from "../components/DragZone"
 
 const axios = require("axios")
 
 export default {
   name: "ProspectsVoir",
-  components: {DragZone},
+  components: {DragZone, DatePopup},
   data () {
     return {
       prospects: [],
@@ -103,6 +109,19 @@ export default {
       contacts: [],
       items: [],
       loading: true,
+      popupVisible: false,
+      constantsDate: {
+        NC: "texte impossible à afficher !",
+        AR: "Date du dernier contact :",
+        RDV: "Date du rendez-vous :",
+        DS: "Deadline du devis :"
+      },
+      tampon: {
+        item: {},
+        listID: "",
+        dateTitle: "",
+        nextDate: this.createDate()
+      },
       breadcrumb: [
         {
           name: "Liste des prospects",
@@ -167,17 +186,40 @@ export default {
     // forced : si sur true, il y aura une update sur l'API même si aucun changement de source de liste n'est détecté. Utile pour le cas de la dernière colonne.
     acceptDrop (itemID, listID, forced) {
       const item = this.items.find(item => item.id == itemID)
-      item.list = listID
-
       const prospect = this.prospects.find(i => i.id == itemID)
       if(listID != prospect.advancement || forced) { // Pas de call d'API si on ne change rien :D
-        prospect.advancement = listID
-        if(prospect.nextDate == null && listID != "NC") {
-          prospect.nextDate = this.createDate()
+        // Mise à jour du "tampon"
+        this.tampon = {
+          item: item,
+          listID: listID,
+          dateTitle: this.constantsDate[listID],
+          nextDate: this.createDate()
         }
-        this.updateProspect(prospect)
+        if(listID == "NC") {
+          // si on va dans la 1ère colonne, il n'y a aucun intéret à demander de date.
+          this.popupClosed(true, this.tampon.nextDate)
+        } else {
+          // sinon, on ouvre le popup
+          this.startPopup()
+        }
       }
     },
+    // ouvre le popup
+    startPopup () {
+      this.popupVisible = true
+    },
+    // Referme le popup
+    popupClosed (success, out) {
+      const prospect = this.tampon.item.prospect
+      if(success) {
+        this.tampon.item.list = this.tampon.listID
+        prospect.nextDate = out
+        prospect.advancement = this.tampon.listID
+        this.updateProspect(prospect)
+      }
+      this.popupVisible = false
+    },
+    // Met à jour le prospect sur le back
     updateProspect (prospect) {
       this.loading = true
       axios.put(
@@ -196,6 +238,7 @@ export default {
           this.loading = false
         })
     },
+    // transforme les prospects en objets qui sont draggables
     calculateItems () {
       for (const pr of this.prospects) {
         this.items.push({
@@ -206,17 +249,19 @@ export default {
         })
       }
     },
-    add15DaysToDay (date) {
+    // modifie le prototype de Date pour ajouter des jours
+    addDaysToDate (date, days) {
       Date.prototype.addDays = function (days) {
         var date = new Date(this.valueOf())
         date.setDate(date.getDate() + days)
         return date
       }
-      return date.addDays(15)
+      return date.addDays(days)
     },
+    // créer une date 15 jours après aujourd'hui
     createDate () {
       var today = new Date()
-      today = this.add15DaysToDay(today)
+      today = this.addDaysToDate(today, 15)
       var dd = String(today.getDate())
       dd = dd.padStart(2, "0")
       var mm = String(today.getMonth() + 1).padStart(2, "0")
@@ -226,3 +271,13 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.filtresDiv {
+  width: 95%;
+  height: 5vh;
+  border: 1px solid black;
+  margin: 1em;
+  text-align: center;
+}
+</style>

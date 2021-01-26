@@ -85,7 +85,6 @@ export default {
       evt.dataTransfer.dropEffect = "move"
       evt.dataTransfer.effectAllowed = "move"
       evt.dataTransfer.setData("itemID", item.id)
-      console.log(item.prospect)
     },
     onDrop (evt) {
       const itemID = evt.dataTransfer.getData("itemID")
@@ -98,7 +97,11 @@ export default {
     },
     findMembre (membreID) {
       const membre = this.membresList.find(m => m.id === membreID)
-      return membre.firstname + " " + membre.lastname
+      if(membre == undefined) {
+        return "Aucun"
+      } else {
+        return membre.firstname + " " + membre.lastname
+      }
     },
     updateDevisRdv (item) {
       const newAdv = (item.prospect.advancement === "DS") ? "RDV" : "DS"
@@ -114,8 +117,12 @@ export default {
       return this.contactsList.find(c => c.id === contactID).contactWay
     },
     niceDate (dateString) {
-      const tokens = dateString.split("-")
-      return tokens[2] + "/" + tokens[1] + "/" + tokens[0]
+      if(dateString == undefined || dateString == null) {
+        return "non défini."
+      } else {
+        const tokens = dateString.split("-")
+        return tokens[2] + "/" + tokens[1] + "/" + tokens[0]
+      }
     }
   }
 }
