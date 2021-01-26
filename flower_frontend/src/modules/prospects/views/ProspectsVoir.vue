@@ -147,12 +147,15 @@ export default {
       })
   },
   methods: {
-    acceptDrop (itemID, listID) {
+    // itemID : l'id de l'item
+    // listID : l'id de la liste (NC, AR, [DS, RDV])
+    // forced : si sur true, il y aura une update sur l'API même si aucun changement de source de liste n'est détecté. Utile pour le cas de la dernière colonne.
+    acceptDrop (itemID, listID, forced) {
       const item = this.items.find(item => item.id == itemID)
       item.list = listID
 
       const prospect = this.prospects.find(i => i.id == itemID)
-      if(listID != prospect.advancement) { // Pas de call d'API si on ne change rien :D
+      if(listID != prospect.advancement || forced) { // Pas de call d'API si on ne change rien :D
         prospect.advancement = listID
         if(prospect.nextDate == null && listID != "NC") {
           prospect.nextDate = this.createDate()
@@ -183,7 +186,8 @@ export default {
         this.items.push({
           id: pr.id,
           prospect: pr,
-          list: pr.advancement
+          list: pr.advancement,
+          devisOn: (pr.advancement === "DS")
         })
       }
     },

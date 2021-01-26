@@ -18,15 +18,32 @@
       @dragstart="startDrag($event, item)"
     >
       <el-card>
-        <u>Prospect :</u>
-        <router-link :to="'/prospects/' + item.id + '/voir'">
-          <el-button
-            type="text"
-            size="medium"
+        <el-row>
+          <el-col :span="11">
+            <u>Prospect :</u>
+            <router-link :to="'/prospects/' + item.id + '/voir'">
+              <el-button
+                type="text"
+                size="medium"
+              >
+                {{ item.prospect.name }}
+              </el-button>
+            </router-link>
+          </el-col>
+          <el-col
+            v-if="item.list === 'RDV' || item.list === 'DS'"
+            :span="13"
           >
-            {{ item.prospect.name }}
-          </el-button>
-        </router-link>
+            <el-switch
+              v-model="item.devisOn"
+              active-color="#137566"
+              inactive-color="#494949"
+              active-text="Devis"
+              inactive-text="RdV"
+              @change="updateDevisRdv(item)"
+            />
+          </el-col>
+        </el-row>
         <p><u>Addresse :</u> {{ item.prospect.address }}, {{ item.prospect.town }} ({{ item.prospect.postcode }})</p>
         <p v-if="item.list === 'NC'">
           <u>Dev'co :</u>
@@ -61,20 +78,29 @@ export default {
       evt.dataTransfer.dropEffect = "move"
       evt.dataTransfer.effectAllowed = "move"
       evt.dataTransfer.setData("itemID", item.id)
-
-      console.log(item.prospect)
     },
     onDrop (evt) {
       const itemID = evt.dataTransfer.getData("itemID")
       this.$emit(
         "dropped",
         itemID,
-        this.listId
+        this.listId,
+        false
       )
     },
     findMembre (membreID) {
       const membre = this.membresList.find(m => m.id === membreID)
       return membre.firstname + " " + membre.lastname
+    },
+    updateDevisRdv (item) {
+      const newAdv = (item.prospect.advancement === "DS") ? "RDV" : "DS"
+      item.prospect.advancement = newAdv
+      this.$emit(
+        "dropped",
+        item.id,
+        newAdv,
+        true
+      )
     }
   }
 }
