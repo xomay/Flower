@@ -1,7 +1,7 @@
 <template>
   <BaseComponent
     title="Prospection"
-    :loading="loading"
+    :v-loading="loading"
     :breadcrumb="breadcrumb"
   >
     <el-row
@@ -54,52 +54,31 @@
         </router-link>
       </el-col>
     </el-row>
-    <!--<el-table
-      v-loading="loading"
-      class="grid"
-      :style="{margin:'1vh auto 2vh 1vw'}"
-      :data="prospects"
-      :stripe="true"
+    <div
+      :style="{width:'95%',height:'10vh',border:'1px solid black',margin:'1em'}"
     >
-      <el-table-column
-        prop="name"
-        label="Nom"
-        sortable
-      >
-        <template slot-scope="scope">
-          <router-link :to="'/prospects/' + scope.row.id + '/voir'">
-            <el-button
-              type="text"
-              size="small"
-            >
-              {{ scope.row.name }}
-            </el-button>
-          </router-link>
-        </template>
-      </el-table-column>
-      <el-table-column
-        prop="town"
-        label="Ville"
-        sortable
-      />
-    </el-table>-->
+      Filtres
+    </div>
     <div class="rowStyle">
       <DragZone
         list-id="NC"
         :content="prospectsNouveaux"
         title="Nouveaux prospects"
+        :membres-list="membres"
         @dropped="acceptDrop"
       />
       <DragZone
         list-id="AR"
         :content="prospectToRelancer"
         title="Prospects à relancer"
+        :membres-list="membres"
         @dropped="acceptDrop"
       />
       <DragZone
         list-id="RDV"
         :content="prospectWithRDV"
         title="Devis à envoyer / Rendez-vous obtenu"
+        :membres-list="membres"
         @dropped="acceptDrop"
       />
     </div>
@@ -117,6 +96,7 @@ export default {
   data () {
     return {
       prospects: [],
+      membres: [],
       items: [],
       loading: true,
       breadcrumb: [
@@ -151,6 +131,17 @@ export default {
         this.$message({message: "Impossible de récupérer les prospects pour le moment",
           type: "error"})
       }).
+      finally(() => {})
+    axios.get(
+      "/api/membres/",
+      {withCredentials: true}
+    ).then((res) => {
+      this.membres = res.data
+    }).
+      catch(() => {
+        this.$message({message: "Impossible de récupérer les prospects pour le moment",
+          type: "error"})
+      }).
       finally(() => {
         this.loading = false
       })
@@ -163,6 +154,9 @@ export default {
       const prospect = this.prospects.find(i => i.id == itemID)
       if(listID != prospect.advancement) { // Pas de call d'API si on ne change rien :D
         prospect.advancement = listID
+        if(prospect.nextDate == null && listID != "NC") {
+          prospect.nextDate = this.createDate()
+        }
         this.updateProspect(prospect)
       }
     },
@@ -192,6 +186,23 @@ export default {
           list: pr.advancement
         })
       }
+    },
+    add15DaysToDay (date) {
+      Date.prototype.addDays = function (days) {
+        var date = new Date(this.valueOf())
+        date.setDate(date.getDate() + days)
+        return date
+      }
+      return date.addDays(15)
+    },
+    createDate () {
+      var today = new Date()
+      today = this.add15DaysToDay(today)
+      var dd = String(today.getDate())
+      dd = dd.padStart(2, "0")
+      var mm = String(today.getMonth() + 1).padStart(2, "0")
+      var yyyy = today.getFullYear()
+      return yyyy + "-" + mm + "-" + dd
     }
   }
 }

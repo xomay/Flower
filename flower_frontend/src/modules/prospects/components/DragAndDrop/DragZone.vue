@@ -28,6 +28,20 @@
           </el-button>
         </router-link>
         <p><u>Addresse :</u> {{ item.prospect.address }}, {{ item.prospect.town }} ({{ item.prospect.postcode }})</p>
+        <p v-if="item.list === 'NC'">
+          <u>Dev'co :</u>
+          <span v-if="item.prospect.charge == null"><i>  aucun</i></span>
+          <span v-else> {{ findMembre(item.prospect.charge) }}</span>
+        </p>
+        <p v-if="item.list === 'AR'">
+          <u>Dernier contact :</u> {{ item.prospect.nextDate }}
+        </p>
+        <p v-if="item.list === 'RDV'">
+          <u>Date du rendez-vous :</u> {{ item.prospect.nextDate }}
+        </p>
+        <p v-if="item.list === 'DS'">
+          <u>Deadline du devis :</u> {{ item.prospect.nextDate }}
+        </p>
       </el-card>
     </div>
   </div>
@@ -39,6 +53,7 @@ export default {
   props: {
     listId: { type: String, required: true },
     title: { type: String, required: true },
+    membresList: { type: Array, required: true },
     content: { type: Array, required: true }
   },
   methods: {
@@ -46,6 +61,8 @@ export default {
       evt.dataTransfer.dropEffect = "move"
       evt.dataTransfer.effectAllowed = "move"
       evt.dataTransfer.setData("itemID", item.id)
+
+      console.log(item.prospect)
     },
     onDrop (evt) {
       const itemID = evt.dataTransfer.getData("itemID")
@@ -54,6 +71,10 @@ export default {
         itemID,
         this.listId
       )
+    },
+    findMembre (membreID) {
+      const membre = this.membresList.find(m => m.id === membreID)
+      return membre.firstname + " " + membre.lastname
     }
   }
 }
