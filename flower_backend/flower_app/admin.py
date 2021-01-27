@@ -11,6 +11,7 @@ from .models.PVR import PVR
 from .models.GroupePhase import Groupe, Phase
 from .models.People.Prospect import Prospect
 from .models.Prospection import Action, TypeAction, ContactWay
+from .models.ActionCommerciale import ActionCommerciale
 
 # Register your models here.
 admin.site.register(CE)
@@ -27,4 +28,5 @@ admin.site.register(Prospect)
 admin.site.register(ContactWay)
 admin.site.register(TypeAction)
 admin.site.register(Action)
+admin.site.register(ActionCommerciale)
 

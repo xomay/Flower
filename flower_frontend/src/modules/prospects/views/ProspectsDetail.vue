@@ -16,7 +16,10 @@
       </template>
       <ProspectsView :prospect="prospect" />
     </BaseComponent>
-    <BaseComponent title="Employés">
+    <BaseComponent
+      title="Employés"
+      :breadcrumb="[]"
+    >
       <template v-slot:action>
         <router-link :to="`/prospects/${$route.params.id}/employes/ajouter`">
           <el-button

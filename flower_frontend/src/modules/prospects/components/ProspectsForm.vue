@@ -46,7 +46,7 @@
     </el-col>
     <el-col :span="24">
       <ContactsGroup
-        :value="contactsRaw"
+        :value="contactsFields"
         @add-field="contactsAddField"
         @delete-field="contactsRemoveField"
       />
@@ -81,13 +81,15 @@ export default {
   components: {ContactsGroup},
   props: {
     value: { type: Object, required: true },
+    allContacts: { type: Array, required: true },
     loading: Boolean,
     deletable: Boolean
   },
   data () {
     return {
       breadcrumb: [],
-      contactsRaw: [""],
+      contactsFields: [],
+      firstWatch: true,
       formRules: {
         name: [
           {required: true,
@@ -112,6 +114,22 @@ export default {
       }
     }
   },
+  watch: {
+    allContacts (v) {
+      console.log("all: ["+v+"]")
+      this.value.contactWay.forEach(c_id => {
+        const found = v.find(c_o => c_o.id === c_id)
+        if(found == undefined) {
+          this.contactsFields.push("")
+        } else {
+          this.contactsFields.push(found.contactWay)
+        }
+      })
+      if(this.contactsFields.length == 0) {
+        this.contactsFields = [""]
+      }
+    }
+  },
   methods: {
     validateForm () {
       this.$refs.prosFormRef.validate((r) => {
@@ -127,13 +145,14 @@ export default {
       })
     },
     saveProspect () {
-      this.$emit("save", this.contactsRaw)
+      console.log("ARRAY : (" + this.contactsFields+")")
+      this.$emit("save", this.contactsFields)
     },
     contactsAddField () {
-      this.contactsRaw.push("")
+      this.contactsFields.push("")
     },
     contactsRemoveField (index) {
-      this.contactsRaw.splice(
+      this.contactsFields.splice(
         index,
         1
       )

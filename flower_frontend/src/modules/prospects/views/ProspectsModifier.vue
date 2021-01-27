@@ -8,6 +8,7 @@
         v-model="prospect"
         :loading="false"
         :deletable="true"
+        :all-contacts="contactsWays"
         @save="updateProspect"
         @delete="deleteProspect"
       />
@@ -25,7 +26,7 @@ export default {
   data () {
     return {
       prospect: {},
-
+      contactsWays: [],
       employes: [],
       loading: false,
       breadcrumb: [
@@ -63,23 +64,47 @@ export default {
             type: "error"})
         })
     },
-    updateProspect () {
+    async updateProspect (contactsList) {
       this.loading = true
-      axios.put(
-        `/api/prospects/${this.$route.params.id}/`,
-        this.prospect,
-        {withCredentials: true}
-      ).then(() => {
-        this.$message({message: "Le prospect a bien été mis à jour",
-          type: "success"})
-      }).
-        catch((err) => {
-          this.$message({message: err,
-            type: "error"})
-        }).
-        finally(() => {
+      await this.verifContacts(contactsList).then((result) => {
+        console.log("FIN :" +result)
+        console.log("envoie de : ["+this.prospect.contactWay+"]")
+        axios.put(
+          `/api/prospects/${this.$route.params.id}/`,
+          this.prospect,
+          {withCredentials: true}
+        ).then(() => {
+          this.$message({message: "Le prospect a bien été mis à jour", type: "success"})
+        }).catch((err) => {
+          this.$message({message: err, type: "error"})
+        }).finally(() => {
           this.loading = false
         })
+      })
+    },
+    async verifContacts (contactList) {
+      this.prospect.contactWay = []
+      return Promise.all(contactList.map(contact => {
+        new Promise( (resolve) => {
+          const contactObject = this.contactsWays.find(c => c.contactWay === contact)
+          (
+            async function () {
+            if(contactObject == undefined) {
+              await this.createContact(contact).then((result) => {
+                console.log("2 - resolve add ("+result+")")
+                //this.prospect.contactWay.push(result.id)
+                resolve(result.id)
+              })
+            } else {
+              console.log("recup")
+              //this.prospect.contactWay.push(contactObject.id)
+              resolve(contactObject.id)
+            }
+          })().then(v => {
+            console.log("3 - watata : "+v)
+          })
+        })
+      }))
     },
     deleteProspect () {
       axios.delete(
@@ -106,6 +131,39 @@ export default {
           this.$message({message: err,
             type: "error"})
         })
+    },
+    getAllContactWays () {
+      this.loading = true
+      axios.get(
+        "/api/contactway/",
+        {withCredentials: true}
+      ).then((res) => {
+        this.contactsWays = res.data
+      }).
+        catch((err) => {
+          this.$message({message: "Erreur lors de la récupération des contactways : "+err,
+            type: "error"})
+        }).
+        finally(() => {
+          this.loading = false
+        })
+    },
+    createContact (content) {
+      return new Promise( (resolve, reject) => {
+        axios.post(
+          "/api/contactway/",
+          { contactWay: content},
+          {withCredentials: true}
+        ).then((res) => {
+          console.log("1 - FIN DE AXIOS CONTACT")
+          resolve(res.data)
+        }).catch((err) => {
+          this.$message({message: "Impossible d'ajouter un contactway :"+err,type: "error"})
+          reject(err)
+        }).finally(() => {
+          this.loading = false
+        })
+      })
     }
   }
 }

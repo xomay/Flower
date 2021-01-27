@@ -6,6 +6,7 @@
     <ProspectsForm
       v-model="prospect"
       :loading="loading"
+      :all-contacts="contactsWays"
       @save="registerProspect"
     />
   </BaseComponent>
@@ -21,6 +22,7 @@ export default {
   data () {
     return {
       prospect: {},
+      contactsWays: [],
       loading: false,
       breadcrumb: [
         {
