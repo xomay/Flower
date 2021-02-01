@@ -13,7 +13,11 @@
         </el-button>
       </router-link>
     </template>
-    <ACView :action-commerciale="actionCom" />
+    <ACView
+      :action-commerciale="actionCom"
+      :membres-list="membres"
+      :actions-types="typesActions"
+    />
   </BaseComponent>
 </template>
 
@@ -37,7 +41,9 @@ export default {
           name: "",
           link: "/prospects/actionCommerciale/ajouter"
         }
-      ]
+      ],
+      typesActions: [],
+      membres: []
     }
   },
   created () {
@@ -51,11 +57,29 @@ export default {
       ).then((res) => {
         this.actionCom = res.data
         this.breadcrumb[1].name = this.actionCom.name
-      }).
-        catch((err) => {
-          this.$message({message: err,
-            type: "error"})
-        })
+      }).catch((err) => {
+        this.$message({message: "Impossible de récupérer l'action commerciale : "+ err, type: "error"})
+      })
+      axios.get(
+        "/api/actioncom/types",
+        {withCredentials: true}
+      ).then((res) => {
+        this.typesActions = res.data
+      }).catch((err) => {
+        this.$message({message: "Impossible de récupérer la liste des prospects : " + err,
+          type: "error",
+          offset: 40})
+      })
+      axios.get(
+        "/api/membres/",
+        {withCredentials: true}
+      ).then((res) => {
+        this.membres = res.data
+      }).catch((err) => {
+        this.$message({message: "Impossible de récupérer la liste des membres : " + err,
+          type: "error",
+          offset: 40})
+      })
     },
     updateProspect () {
       this.loading = true
