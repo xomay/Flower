@@ -53,7 +53,7 @@ export default {
   name: "MembersGroup",
   components: {MemberGElem},
   props: {
-    value: {type: Array, required: true},
+    value: {type: undefined, required: true},
     itemList: { type: Array, required: true },
   },
   data () {

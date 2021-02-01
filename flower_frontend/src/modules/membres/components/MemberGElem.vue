@@ -3,6 +3,7 @@
     v-model="ret"
     :item-list="itemList"
     :placeholder="placeholder"
+    :force-value="begin"
     :style="{width:'100%'}"
     @input="inputed"
   />
@@ -22,7 +23,22 @@ export default {
   },
   data () {
     return {
-      ret: ""
+      ret: "",
+      begin: ""
+    }
+  },
+  watch: {
+    itemList () {
+      const found = this.itemList.find((item) => item.id === this.outValue)
+      if(found == undefined) {
+        this.begin = ""
+      } else {
+        if(found.value == undefined) {
+          this.begin = found
+        } else {
+          this.begin = found.value
+        }
+      }
     }
   },
   methods: {

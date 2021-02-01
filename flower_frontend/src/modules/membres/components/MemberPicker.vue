@@ -12,19 +12,28 @@
 export default {
   name: "MemberPicker",
   props: {
-    value: { type: [String, Number], required: true },
+    value: { type: undefined, required: true },
     itemList: { type: Array, required: true },
-    placeholder: { type: String, required: true }
+    placeholder: { type: String, required: true },
+    forceValue: { type: String, default () { return null } }
   },
   data () {
     return {
-      autocompleteValue: ""
+      autocompleteValue: "",
+      forcedSync: null
     }
   },
   watch: {
     itemList () {
       const found = this.itemList.find((item) => item.id === this.value)
       this.autocompleteValue = found ? found.value : ""
+      if(this.forcedSync !== null) {
+        this.autocompleteValue = this.forcedSync
+      }
+    },
+    forceValue (v) {
+      this.forcedSync = v
+      this.autocompleteValue = this.forcedSync
     }
   },
   methods: {
