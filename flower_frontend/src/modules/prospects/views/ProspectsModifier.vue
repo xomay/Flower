@@ -64,11 +64,12 @@ export default {
             type: "error"})
         })
     },
-    async updateProspect (contactsList) {
+    updateProspect (contactsList) {
       this.loading = true
-      await this.verifContacts(contactsList).then((result) => {
-        console.log("FIN :" +result)
-        console.log("envoie de : ["+this.prospect.contactWay+"]")
+      this.verifContacts(contactsList).then((result) => {
+        result.forEach(contact_o => {
+          this.prospect.contactWay.push(contact_o.id)
+        })
         axios.put(
           `/api/prospects/${this.$route.params.id}/`,
           this.prospect,
@@ -82,28 +83,15 @@ export default {
         })
       })
     },
-    async verifContacts (contactList) {
+    verifContacts (contactList) {
       this.prospect.contactWay = []
       return Promise.all(contactList.map(contact => {
-        new Promise( (resolve) => {
-          const contactObject = this.contactsWays.find(c => c.contactWay === contact)
-          (
-            async function () {
-            if(contactObject == undefined) {
-              await this.createContact(contact).then((result) => {
-                console.log("2 - resolve add ("+result+")")
-                //this.prospect.contactWay.push(result.id)
-                resolve(result.id)
-              })
-            } else {
-              console.log("recup")
-              //this.prospect.contactWay.push(contactObject.id)
-              resolve(contactObject.id)
-            }
-          })().then(v => {
-            console.log("3 - watata : "+v)
-          })
-        })
+        const contactObject = this.contactsWays.find(c => c.contactWay === contact)
+        if(contactObject == undefined) {
+          return this.createContact(contact)
+        } else {
+          return new Promise((resolve) => resolve(contactObject.id))
+        }
       }))
     },
     deleteProspect () {
@@ -155,7 +143,6 @@ export default {
           { contactWay: content},
           {withCredentials: true}
         ).then((res) => {
-          console.log("1 - FIN DE AXIOS CONTACT")
           resolve(res.data)
         }).catch((err) => {
           this.$message({message: "Impossible d'ajouter un contactway :"+err,type: "error"})

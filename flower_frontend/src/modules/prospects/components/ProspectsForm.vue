@@ -116,7 +116,6 @@ export default {
   },
   watch: {
     allContacts (v) {
-      console.log("all: ["+v+"]")
       this.value.contactWay.forEach(c_id => {
         const found = v.find(c_o => c_o.id === c_id)
         if(found == undefined) {
@@ -145,7 +144,6 @@ export default {
       })
     },
     saveProspect () {
-      console.log("ARRAY : (" + this.contactsFields+")")
       this.$emit("save", this.contactsFields)
     },
     contactsAddField () {
