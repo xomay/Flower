@@ -32,24 +32,16 @@
         >
           <el-form-item
             label="Type d'action :"
-            prop="actionType"
+            prop="type"
             label-width="10vw"
             :rules="[{ required: true, message: 'Obligatoire' , trigger: 'blur' }]"
           >
-            <el-select v-model="actionCommerciale.actionType">
-              <el-option value="Linked In">
-                Linked In
-              </el-option>
-              <el-option value="Salon">
-                Salon
-              </el-option>
-              <el-option value="Téléphone">
-                Téléphone
-              </el-option>
-              <el-option value="Mailing">
-                Mailing
-              </el-option>
-            </el-select>
+            <MemberPicker
+              v-model="actionCommerciale.type"
+              :item-list="typesAction"
+              placeholder="Type d'action"
+              :style="'width: 100%'"
+            />
           </el-form-item>
         </el-col>
       </el-row>
@@ -72,23 +64,6 @@
           </el-form-item>
         </el-col>
       </el-row>
-      <el-row>
-        <el-col :span="8">
-          <el-form-item
-            label="Prospect cible :"
-            prop="prospect"
-            label-width="10vw"
-            :rules="[{ required: true, message: 'Obligatoire' , trigger: 'change' }]"
-          >
-            <MemberPicker
-              v-model="actionCommerciale.prospect"
-              :item-list="prospects"
-              placeholder="Nom du prospect"
-              :style="{width:'100%'}"
-            />
-          </el-form-item>
-        </el-col>
-      </el-row>
       <h1 class="text-xl">
         Participants :
       </h1>
@@ -107,12 +82,12 @@
       </h1>
       <el-form-item
         label="Consignes du BU :"
-        prop="consignes"
+        prop="instructions"
         label-width="10vw"
         :rules="[{ required: true, message: 'Obligatoire' , trigger: 'blur' }]"
       >
         <el-input
-          v-model="actionCommerciale.consignes"
+          v-model="actionCommerciale.instructions"
           type="textarea"
           placeholder="Consignes supplémentaires"
         />
@@ -153,45 +128,44 @@ export default {
       loading: false,
       // Données exportées au final
       actionCommerciale: {
-        actionType: "",
+        type: "",
         name: "",
         date: "",
-        prospect: "",
         participants: [],
-        consignes: ""
+        instructions: ""
       },
       // Fields pour stocker les données.
-      prospects: [],
+      typesAction: [],
       members: []
     }
   },
   created () {
-    axios.get(
-      "/api/prospects",
-      {withCredentials: true}
-    ).then((res) => {
-      res.data.forEach((elt) => elt.value = elt.name)
-      this.prospects = res.data
-    }).
-      catch((err) => {
-        console.log(err)
-        this.$message({message: "Impossible de récupérer la liste des prospects.",
-          type: "error",
-          offset: 40})
-      })
     axios.get(
       "/api/membres",
       {withCredentials: true}
     ).then((res) => {
       res.data.forEach((elt) => elt.value = `${elt.firstname} ${elt.lastname}`)
       this.members = res.data
-    }).
-      catch((err) => {
-        console.log(err)
-        this.$message({message: "Impossible de récupérer la liste des membres.",
-          type: "error",
-          offset: 40})
+    }).catch((err) => {
+      this.$message({message: "Impossible de récupérer la liste des membres : " + err,
+        type: "error",
+        offset: 40})
+    })
+    axios.get(
+      "/api/actioncom/types",
+      {withCredentials: true}
+    ).then((res) => {
+      this.typesAction = res.data.map(d => {
+        return {
+          id: d.id,
+          value: d.type
+        }
       })
+    }).catch((err) => {
+      this.$message({message: "Impossible de récupérer la liste des types d'actions : " + err,
+        type: "error",
+        offset: 40})
+    })
   },
   mounted: function () {
     this.$nextTick(
@@ -216,16 +190,12 @@ export default {
         valid = false
       }
       for(var i = 0; i < this.actionCommerciale.participants.length; i++) {
-        console.log("test " + i + " : " + this.actionCommerciale.participants[i])
         if(this.actionCommerciale.participants[i] < 1) {
           this.$message({message: `Erreur : Le participant [${i+1}] n'est pas défini.`, type: "error", offset: 40})
           valid = false
         }
       }
-
       // Les return ne quittent pas la fonction....
-
-      //console.log("====> ["+this.actionCommerciale.participants+"]")
       if(valid) {
         this.sendForm()
       }
@@ -253,10 +223,8 @@ export default {
     addParticipant () {
       const newParticipant = - this.actionCommerciale.participants.length
       this.actionCommerciale.participants.push(newParticipant)
-      console.log("Group added ("+newParticipant+") => ["+this.actionCommerciale.participants+"]")
     },
     deleteParticipant (participantIndex) {
-      console.log("Delete id="+participantIndex)
       this.actionCommerciale.participants.splice(
         participantIndex,
         1

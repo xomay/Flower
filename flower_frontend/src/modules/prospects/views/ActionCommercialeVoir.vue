@@ -53,17 +53,41 @@
         sortable
       />
       <el-table-column
-        prop="prospect"
-        label="Prospect"
+        prop="type"
+        label="Type d'action"
         sortable
       >
         <template slot-scope="scope">
-          {{ getProspect(scope.row.prospect) }}
+          {{ getActionType(scope.row.type) }}
         </template>
       </el-table-column>
       <el-table-column
-        prop="actionType"
-        label="Type d'action"
+        prop="participants"
+        label="Participants"
+        sortable
+      >
+        <template slot-scope="scope">
+          <el-popover
+            placement="top-start"
+            :title="participantsToTitle(scope.row.participants.length)"
+            width="200"
+            trigger="hover"
+            :content="participantsToContent(scope.row.participants)"
+          >
+            <p slot="reference">
+              {{ participantsToTitle(scope.row.participants.length) }}
+            </p>
+          </el-popover>
+        </template>
+      </el-table-column>
+      <el-table-column
+        prop="appointments"
+        label="Nombre de RDV issus"
+        sortable
+      />
+      <el-table-column
+        prop="studies"
+        label="Nombre d'études issues"
         sortable
       />
     </el-table>
@@ -90,7 +114,8 @@ export default {
       // Tableaux de valeurs, générés au chargement de la page
       actionsComs: [],
       actionComsFuture: [],
-      prospects: []
+      membres: [],
+      typesActions: []
     }
   },
   created () {
@@ -105,30 +130,36 @@ export default {
         return Date.parse(new Date(tokens[1]+" "+tokens[2]+" "+tokens[0])) >= Date.now()
       })
       this.updateData()
-    }).
-      catch((err) => {
-        console.log(err)
-        this.$message({message: "Impossible de récupérer la liste des actions commerciales.",
-          type: "error",
-          offset: 40})
-      })
+    }).catch((err) => {
+      this.$message({message: "Impossible de récupérer la liste des actions commerciales : " + err,
+        type: "error",
+        offset: 40})
+    })
     axios.get(
-      "/api/prospects",
+      "/api/actioncom/types",
       {withCredentials: true}
     ).then((res) => {
-      res.data.forEach((elt) => elt.value = elt.name)
-      this.prospects = res.data
-    }).
-      catch((err) => {
-        console.log(err)
-        this.$message({message: "Impossible de récupérer la liste des prospects.",
-          type: "error",
-          offset: 40})
-      })
+      this.typesActions = res.data
+    }).catch((err) => {
+      this.$message({message: "Impossible de récupérer la liste des prospects : " + err,
+        type: "error",
+        offset: 40})
+    })
+    axios.get(
+      "/api/membres/",
+      {withCredentials: true}
+    ).then((res) => {
+      this.membres = res.data
+    }).catch((err) => {
+      this.$message({message: "Impossible de récupérer la liste des membres : " + err,
+        type: "error",
+        offset: 40})
+    })
   },
   methods: {
-    getProspect (id) {
-      return this.prospects.find(pr => pr.id === id).name
+    getActionType (id) {
+      const at = this.typesActions.find(a => a.id === id)
+      return at == undefined ? "<ERROR>" : at.type
     },
     colorRow ({row}) {
       const todayDate = Date.now()
@@ -151,6 +182,22 @@ export default {
     },
     rowClicked (a) {
       this.$router.push("/prospects/actionCommerciale/"+a.id+"/voir")
+    },
+    participantsToTitle (size) {
+      return size + " participant" + (size > 1 ? "s":"")
+    },
+    participantsToContent (array) {
+      var str = ""
+      array.forEach(p => {
+        if(str !== "")
+          str += ", "
+        str += this.getMembre(p)
+      })
+      return str
+    },
+    getMembre (id) {
+      const mb = this.membres.find(m => m.id === id)
+      return mb == undefined ? "<ERROR>" : mb.firstname + " " + mb.lastname
     }
   }
 }
