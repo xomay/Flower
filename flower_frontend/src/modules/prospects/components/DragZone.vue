@@ -114,7 +114,8 @@ export default {
       )
     },
     getContact (contactID) {
-      return this.contactsList.find(c => c.id === contactID).contactWay
+      const ctt = this.contactsList.find(c => c.id === contactID)
+      return ctt == undefined ? "" : ctt.contactWay
     },
     niceDate (dateString) {
       if(dateString == undefined || dateString == null) {
