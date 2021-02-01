@@ -116,15 +116,19 @@ export default {
   },
   watch: {
     allContacts (v) {
-      this.value.contactWay.forEach(c_id => {
-        const found = v.find(c_o => c_o.id === c_id)
-        if(found == undefined) {
-          this.contactsFields.push("")
-        } else {
-          this.contactsFields.push(found.contactWay)
+      if(this.value.contactWay != undefined) {
+        this.value.contactWay.forEach(c_id => {
+          const found = v.find(c_o => c_o.id === c_id)
+          if(found == undefined) {
+            this.contactsFields.push("")
+          } else {
+            this.contactsFields.push(found.contactWay)
+          }
+        })
+        if(this.contactsFields.length == 0) {
+          this.contactsFields = [""]
         }
-      })
-      if(this.contactsFields.length == 0) {
+      } else {
         this.contactsFields = [""]
       }
     }
