@@ -21,7 +21,6 @@ class Prospect(models.Model):
     prospectAction = models.ManyToManyField(Action, blank=True)
     contactWay = models.ManyToManyField(ContactWay, blank=True)
 
-
     def __str__(self):
         return self.name
 

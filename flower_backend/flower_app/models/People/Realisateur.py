@@ -11,6 +11,9 @@ class RealisateurComment(models.Model):
     content = models.TextField()
     date = models.DateField(default=date.today)
     rating = models.PositiveSmallIntegerField(default=1)
+    def __str__(self):
+        return self.date.strftime("%m/%d/%Y") +"_"+ str(self.rating)
+    
 
 class RealisateurCommentSerializer(serializers.ModelSerializer):
     class Meta:
@@ -57,10 +60,23 @@ class Realisateur(Personne):
             rate += comment.rating
         return rate / len(self.comments.all())
     
+    @property
+    def etudesAmount(self):
+        return len(self.comments.all())
+        
+    @property
+    def skillsArray(self):
+        skillsArr = []
+        for skill in self.skills.all():
+            skillsArr.append(str(skill))
+        return skillsArr
+    
     #TODO ajouter un moyen de calculer le nombre d'études.
 
 class RealisateurSerializer(serializers.ModelSerializer):
     rating = serializers.ReadOnlyField()
+    etudesAmount = serializers.ReadOnlyField()
+    skillsArray = serializers.ReadOnlyField()
     class Meta:
         model = Realisateur
         fields = '__all__'

@@ -113,6 +113,13 @@ export default {
                 {name: "Ajouter un membre",
                   url: "/membres/ajouter"}
               ]
+            },
+            {
+              title: "Intervenants",
+              children: [
+                {name: "Lister les réalisateurs",
+                  url: "/realisateurs"}
+              ]
             }
           ]
         },

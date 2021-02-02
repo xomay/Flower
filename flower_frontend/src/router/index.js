@@ -8,6 +8,7 @@ import membresRoutes from "@/modules/membres/routes"
 import prospectsRoutes from "@/modules/prospects/routes"
 import dashboardRoutes from "@/modules/dashboard/routes"
 import performancesRoutes from "@/modules/performances/routes"
+import realisateursRoutes from "@/modules/realisateurs/routes"
 
 Vue.use(VueRouter)
 
@@ -21,7 +22,8 @@ const routes = [
         membresRoutes,
         prospectsRoutes,
         dashboardRoutes,
-        performancesRoutes
+        performancesRoutes,
+        realisateursRoutes
       ].flat()
     }
   ],
