@@ -71,7 +71,7 @@ export default {
       loading: true,
       breadcrumb: [
         {
-          name: "Lister des membres",
+          name: "Liste des membres",
           link: "/membres"
         }
       ]
@@ -95,9 +95,6 @@ export default {
       })
   },
   methods: {
-    display (scope) {
-      console.log(scope)
-    },
     openAccount (memberID) {
       this.$refs.ref
       if( ! this.membres[memberID].user ) {
