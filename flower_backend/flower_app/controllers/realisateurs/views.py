@@ -59,6 +59,7 @@ class SkillsRetrieveUpdateDestroyView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated, HasGroupPermission]
     required_groups = {
         'GET': ['ROLE_CA'],                                         #
+        'POST': ['ROLE_CA']                                         #
     }
     serializer_class = CompetenceSerializer
     queryset = Competence.objects.all()
