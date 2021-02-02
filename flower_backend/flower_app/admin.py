@@ -6,6 +6,7 @@ from .models.Facture import Facture
 from .models.FactureDetail import FactureDetail
 # from .models.Groupe import Groupe
 from .models.People.Membre import Membre
+from .models.People.Realisateur import Realisateur, RealisateurComment
 from .models.Mission import Mission
 from .models.PVR import PVR
 from .models.GroupePhase import Groupe, Phase
@@ -27,4 +28,5 @@ admin.site.register(Prospect)
 admin.site.register(ContactWay)
 admin.site.register(TypeAction)
 admin.site.register(Action)
-
+admin.site.register(Realisateur)
+admin.site.register(RealisateurComment)
