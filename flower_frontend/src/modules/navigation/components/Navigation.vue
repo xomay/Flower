@@ -159,8 +159,8 @@ export default {
               children: [
                 {name: "Voir les prospects",
                   url: "/prospects"},
-                {name: "Ajouter un prospect",
-                  url: "/prospects/ajouter"}
+              /*  {name: "Ajouter un prospect",
+                  url: "/prospects/ajouter"}*/
               ]
             },
             {
@@ -168,8 +168,8 @@ export default {
               children: [
                 {name: "Voir les actions commerciales",
                   url: "/prospects/actionCommerciale/"},
-                {name: "Créer une action commerciale",
-                  url: "/prospects/actionCommerciale/ajouter"}
+              /*  {name: "Créer une action commerciale",
+                  url: "/prospects/actionCommerciale/ajouter"}*/
               ]
             },
             {
