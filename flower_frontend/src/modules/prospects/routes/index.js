@@ -10,6 +10,26 @@ const routes = [
     component: () => import("../views/ProspectsCreer")
   },
   {
+    path: "prospects/actionCommerciale/:id/voir",
+    name: "actionCommerciale-detail",
+    component: () => import("../views/ActionCommercialeDetail")
+  },
+  {
+    path: "prospects/actionCommerciale/:id/modifier",
+    name: "actionCommerciale-modifier",
+    component: () => import("../views/ActionCommercialeModifier")
+  },
+  {
+    path: "prospects/actionCommerciale/ajouter",
+    name: "actionCommerciale-ajouter",
+    component: () => import("../views/ActionCommercialeCreer")
+  },
+  {
+    path: "prospects/actionCommerciale/",
+    name: "actionCommerciale-voir",
+    component: () => import("../views/ActionCommercialeVoir")
+  },
+  {
     path: "prospects/:id/voir",
     name: "prospects-detail",
     component: () => import("../views/ProspectsDetail")

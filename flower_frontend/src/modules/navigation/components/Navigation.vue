@@ -143,6 +143,14 @@ export default {
           ]
         },
         {
+          icon: "el-icon-data-line",
+          title: "Performance",
+          children: [
+            {name: "Suivi Dev'co",
+              url: "/performance/devco"}
+          ]
+        },
+        {
           icon: "el-icon-s-custom",
           title: "Prospection",
           children: [
@@ -151,8 +159,17 @@ export default {
               children: [
                 {name: "Voir les prospects",
                   url: "/prospects"},
-                {name: "Ajouter un prospect",
-                  url: "/prospects/ajouter"}
+              /*  {name: "Ajouter un prospect",
+                  url: "/prospects/ajouter"}*/
+              ]
+            },
+            {
+              title: "Actions commerciales",
+              children: [
+                {name: "Voir les actions commerciales",
+                  url: "/prospects/actionCommerciale/"},
+              /*  {name: "Créer une action commerciale",
+                  url: "/prospects/actionCommerciale/ajouter"}*/
               ]
             },
             {

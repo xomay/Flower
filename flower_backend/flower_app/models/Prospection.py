@@ -29,15 +29,16 @@ class TypeActionSerializer(serializers.ModelSerializer):
 
 class Action(models.Model):
     type = models.ForeignKey(TypeAction, on_delete=models.RESTRICT)
+    name = models.CharField(max_length=80, default="ActionCom")
     date = models.DateField(auto_now_add=True)
-    comments = models.TextField(blank=True)             #to add some stats and comments after the event
+    comments = models.TextField(blank=True)                        #to add some stats and comments after the event
     participants = models.ManyToManyField(Membre)
-    instructions = models.TextField()                   #from the responsible
-    appointments = models.IntegerField(blank=True)      #to create stats to show
-    studies = models.IntegerField(blank=True)           #to create stats to show
+    instructions = models.TextField()                              #from the responsible
+    appointments = models.IntegerField(blank=True, default=0)      #to create stats to show
+    studies = models.IntegerField(blank=True, default=0)           #to create stats to show
 
     def __str__(self):
-        return str(self.type) + self.date.isoformat()
+        return self.name + str(self.type) + self.date.isoformat()
 
 class ActionSerializer(serializers.ModelSerializer):
     class Meta:

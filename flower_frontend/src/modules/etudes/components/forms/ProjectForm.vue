@@ -61,6 +61,7 @@
       <MemberPicker
         v-model="value.projectManager"
         :item-list="members"
+        placeholder="Suiveur de projet"
       />
     </el-form-item>
     <el-form-item
@@ -71,6 +72,7 @@
       <MemberPicker
         v-model="value.qualityManager"
         :item-list="members"
+        placeholder="Suiveur qualité"
       />
     </el-form-item>
     <el-form-item>

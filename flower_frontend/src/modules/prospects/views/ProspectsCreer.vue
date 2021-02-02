@@ -6,6 +6,7 @@
     <ProspectsForm
       v-model="prospect"
       :loading="loading"
+      :all-contacts="contactsWays"
       @save="registerProspect"
     />
   </BaseComponent>
@@ -21,6 +22,7 @@ export default {
   data () {
     return {
       prospect: {},
+      contactsWays: [],
       loading: false,
       breadcrumb: [
         {
@@ -34,9 +36,13 @@ export default {
       ]
     }
   },
+  created () {
+    this.getAllContactWays()
+  },
   methods: {
-    registerProspect () {
+    registerProspect (contactsList) {
       this.loading = true
+      this.verifContacts(contactsList)
       axios.post(
         "/api/prospects/",
         this.prospect,
@@ -49,6 +55,55 @@ export default {
         catch((err) => {
           this.$message({message: err,
             type: "error"})
+        }).
+        finally(() => {
+          this.loading = false
+        })
+    },
+    getAllContactWays () {
+      this.loading = true
+      axios.get(
+        "/api/contactway/",
+        {withCredentials: true}
+      ).then((res) => {
+        this.contactsWays = res.data
+      }).
+        catch((err) => {
+          this.$message({message: "Erreur lors de la récupération des contactways : "+err,
+            type: "error"})
+        }).
+        finally(() => {
+          this.loading = false
+        })
+    },
+    verifContacts (contactList) {
+      this.prospect.contactWay = []
+      contactList.forEach(contact => {
+        var contactObject = this.contactsWays.find(c => c.contactWay === contact)
+        if(contactObject == undefined) {
+          // non trouvé
+          contactObject = this.createContact(contact)
+        }
+        if(contactObject != undefined) {
+          this.prospect.contactWay.push(contactObject.id)
+        }
+      })
+    },
+    createContact (content) {
+      const newObject = {
+        contactWay: content
+      }
+      axios.post(
+        "/api/contactway/",
+        newObject,
+        {withCredentials: true}
+      ).then((res) => {
+        return res.data
+      }).
+        catch((err) => {
+          this.$message({message: "Impossible d'ajouter un contactway :"+err,
+            type: "error"})
+          return undefined
         }).
         finally(() => {
           this.loading = false
