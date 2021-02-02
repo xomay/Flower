@@ -74,7 +74,7 @@
       Autre :
     </h1>
     <el-form-item
-      label="Consignes du BU :"
+      label="Consignes du resp BU :"
       prop="instructions"
       label-width="10vw"
       :rules="[{ required: true, message: 'Obligatoire' , trigger: 'blur' }]"

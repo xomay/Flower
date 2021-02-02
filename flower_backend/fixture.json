@@ -1124,14 +1124,6 @@
     }
 },
 {
-    "model": "contenttypes.contenttype",
-    "pk": 21,
-    "fields": {
-        "app_label": "django_rest_passwordreset",
-        "model": "resetpasswordtoken"
-    }
-},
-{
     "model": "sessions.session",
     "pk": "wor1rsccx02ukmvrwzrb9h6e8suh6jjz",
     "fields": {
