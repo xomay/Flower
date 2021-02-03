@@ -17,8 +17,14 @@
           </span>
         </div>
         <div style="width: 50%; float:right">
-          <StarRate
+          <el-rate
             :value="getComment(item).rating"
+            :max="10"
+            :disabled="true"
+            :allow-half="true"
+            :low-threshold="3.33"
+            :high-threshold="6.66"
+            :colors="['#ff1111', '#ffa200', '#62da05']"
           />
         </div>
       </div>
@@ -32,13 +38,10 @@
 </template>
 
 <script>
-import StarRate from "./StarRate.vue"
-
 const axios = require("axios")
 
 export default {
   name: "RealisateurCommentsView",
-  components: {StarRate},
   props: {
     realisateur: { type: Object, required: true }
   },
