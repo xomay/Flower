@@ -108,8 +108,8 @@ export default {
       {withCredentials: true}
     ).then((res) => {
       this.reas = res.data
-    }).catch(() => {
-      this.$message({message: "Impossible de récupérer les membres pour le moment",
+    }).catch((err) => {
+      this.$message({message: "Impossible de récupérer les réalisateurs pour le moment : " +err,
         type: "error",
         offset: 40})
     }).finally(() => {
