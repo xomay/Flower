@@ -9,11 +9,11 @@ const routes = [
     name: "realisateurs-details",
     component: () => import("../views/RealisateursDetail")
   },
-  /*{
+  {
     path: "realisateurs/:id/modifier",
     name: "realisateurs-modifier",
     component: () => import("../views/RealisateursModifier")
-  },*/
+  },
 ]
 
 export default routes

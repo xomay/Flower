@@ -3,6 +3,16 @@
     title="Voir le réalisateur"
     :breadcrumb="breadcrumb"
   >
+    <template v-slot:action>
+      <router-link :to="`/realisateurs/${$route.params.id}/modifier`">
+        <el-button
+          type="text"
+          icon="el-icon-edit"
+        >
+          Modifier
+        </el-button>
+      </router-link>
+    </template>
     <div style="width: 35%; float:left">
       <RealisateurView
         :realisateur="realisateur"
