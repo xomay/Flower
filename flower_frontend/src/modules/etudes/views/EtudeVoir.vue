@@ -1,6 +1,6 @@
 <template>
   <BaseComponent
-    title="Suivi d'Etudes"
+    title="Suivi d'études"
     :breadcrumb="breadcrumb"
   >
     <el-table
