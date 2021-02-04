@@ -36,6 +36,7 @@
           <MemberPicker
             v-model="value.signer1"
             :item-list="members"
+            placeholder="Signataire Junior"
           />
         </el-form-item>
       </el-col>
@@ -44,6 +45,7 @@
           <MemberPicker
             v-model="value.signer2"
             :item-list="employees"
+            placeholder="Signataire Prospect"
           />
         </el-form-item>
       </el-col>
@@ -64,7 +66,7 @@
             :loading="loading"
             icon="el-icon-plus"
             type="success"
-            @click="$emit('save')"
+            @click="validateForm"
           >
             Enregistrer le PVR
           </el-button>
@@ -146,6 +148,21 @@ export default {
             type: "error",
             offset: 40})
         })
+    },
+    validateForm () {
+      console.log("coucou")
+      this.$refs.PVRFormRef.validate((r) => {
+        console.log("wouaf" + r)
+        if(r) {
+          this.$emit("save")
+        } else {
+          this.$message({
+            message: "Certains champs ne sont pas valides !",
+            type:"error",
+            offset: 40
+          })
+        }
+      })
     },
     getEmployees (prospectId) {
       axios.get(

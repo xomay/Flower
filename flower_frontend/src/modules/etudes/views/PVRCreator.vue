@@ -22,7 +22,7 @@ export default {
   components: {PVRForm},
   data () {
     return {
-      etude: null,
+      etude: {},
       pvr: {},
       breadcrumb: [],
       loading: false
