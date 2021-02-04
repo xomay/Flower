@@ -4,6 +4,7 @@
     :model="value"
     label-position="left"
     size="small"
+    :rules="formRules"
   >
     <el-row :gutter="5">
       <el-col :span="12">
@@ -241,6 +242,96 @@ export default {
     value: { type: Object, required: true },
     deletable: { type: Boolean, default: false },
     loading: { type: Boolean, default: false }
+  },
+  data () {
+    return {
+      formRules: {
+        firstname: [
+          {required: true, message: "Obligatoire", trigger: "blur"}
+        ],
+        lastname: [
+          {required: true, message: "Obligatoire", trigger: "blur"}
+        ],
+        gender: [
+          {required: true, message: "Obligatoire", trigger: "blur"}
+        ],
+        promotion: [
+          {required: true, message: "Obligatoire", trigger: "blur"},
+          {
+            required: true,
+            pattern: /^20[23][0-9]$/,
+            message: "Entrez une année cohérente.",
+            trigger: "change"
+          }
+        ],
+        filiere: [
+          {required: true, message: "Obligatoire", trigger: "blur"}
+        ],
+        security_social_number: [
+          {required: true, message: "Obligatoire", trigger: "blur"},
+          {
+            required: true,
+            pattern: /^[12][0-9]{14}$/,
+            message: "Entrez un numéro de sécurité sociale valide.",
+            trigger: "change"
+          }
+        ],
+        email: [
+          {required: true, message: "Obligatoire", trigger: "blur"},
+          {
+            required: true,
+            pattern: /^[\w\\.=-]+@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+            message: "Cette valeur doit être un email valide.",
+            trigger: "change"
+          }
+        ],
+        email_insa: [
+          {required: true, message: "Obligatoire", trigger: "blur"},
+          {
+            required: true,
+            pattern: /^[\w\\.=-]+@insa-rennes.fr$/,
+            message: "Cette valeur doit être un email insa-rennes valide.",
+            trigger: "change"
+          }
+        ],
+        mobile: [
+          {required: true, message: "Obligatoire", trigger: "blur"},
+          {
+            required: true,
+            pattern: /^(?:(?:\+|00)33[\s.-]{0,3}(?:\(0\)[\s.-]{0,3})?|0)[1-9](?:(?:[\s.-]?\d{2}){4}|\d{2}(?:[\s.-]?\d{3}){2})$/,
+            message: "Cette valeur doit être un numéro de téléphone valide.",
+            trigger: "change"
+          }
+        ],
+        address: [
+          {required: true, message: "Obligatoire", trigger: "blur"}
+        ],
+        postcode: [
+          {required: true, message: "Obligatoire", trigger: "blur"},
+          {
+            required: true,
+            pattern: /^[ 0-9]+$/,
+            message: "Cette valeur doit être un code postal valide",
+            trigger: "change"
+          }
+        ],
+        town: [
+          {required: true, message: "Obligatoire", trigger: "blur"}
+        ],
+        country: [
+          {required: true, message: "Obligatoire", trigger: "blur"}
+        ],
+        nationality: [
+          {required: true, message: "Obligatoire", trigger: "blur"}
+        ],
+        birth_date: [
+          {required: true, message: "Obligatoire", trigger: "blur"}
+        ],
+        birth_place: [
+          {required: true, message: "Obligatoire", trigger: "blur"}
+        ]
+      }
+    }
   },
   methods: {
     validateForm () {
