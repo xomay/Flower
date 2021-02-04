@@ -212,6 +212,16 @@
         </el-form-item>
       </el-col>
       <el-col :span="24">
+        <el-transfer
+          v-model="value.skills"
+          :data="competences_objs"
+          filterable
+          :filter-method="filterSkill"
+          filter-placeholder="Recherche"
+          :titles="['Liste', 'Compétences']"
+        />
+      </el-col>
+      <el-col :span="24">
         <el-form-item>
           <el-button
             :loading="loading"
@@ -236,6 +246,7 @@
 </template>
 
 <script>
+const axios = require("axios")
 export default {
   name: "RealisateurForm",
   props: {
@@ -245,6 +256,7 @@ export default {
   },
   data () {
     return {
+      competences_objs: [],
       formRules: {
         firstname: [
           {required: true, message: "Obligatoire", trigger: "blur"}
@@ -333,6 +345,24 @@ export default {
       }
     }
   },
+  beforeCreate () {
+    axios.get(
+      "/api/realisateurs/skills",
+      {withCredentials: true}
+    ).then((res) => {
+      for (const skill of res.data) {
+        this.competences_objs.push({
+          key: skill.id,
+          label: skill.name,
+          disabled: false
+        })
+      }
+    }).catch((err) => {
+      this.$message({message: "Impossible de récupérer les compétences : " + err,
+        type: "error",
+        offset: 40})
+    })
+  },
   methods: {
     validateForm () {
       var valid = true
@@ -345,6 +375,9 @@ export default {
       if(valid) {
         this.$emit("edited")
       }
+    },
+    filterSkill (query, item) {
+      return item.label.toLowerCase().indexOf(query.toLowerCase()) > -1
     }
   }
 }
