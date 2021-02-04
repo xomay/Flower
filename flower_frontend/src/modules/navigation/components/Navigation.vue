@@ -118,7 +118,9 @@ export default {
               title: "Intervenants",
               children: [
                 {name: "Lister les réalisateurs",
-                  url: "/realisateurs"}
+                  url: "/realisateurs"},
+                {name: "Ajouter un réalisateur",
+                  url: "/realisateurs/ajouter"}
               ]
             }
           ]

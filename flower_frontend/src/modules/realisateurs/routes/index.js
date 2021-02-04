@@ -14,6 +14,11 @@ const routes = [
     name: "realisateurs-modifier",
     component: () => import("../views/RealisateursModifier")
   },
+  {
+    path: "realisateurs/ajouter",
+    name: "realisateurs-ajouter",
+    component: () => import("../views/RealisateursCreer")
+  },
 ]
 
 export default routes
