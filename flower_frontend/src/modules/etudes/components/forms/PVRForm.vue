@@ -1,5 +1,8 @@
 <template>
   <el-form
+    ref="PVRFormRef"
+    :model="value"
+    :rules="formRules"
     label-width="30%"
     label-position="left"
   >
@@ -87,7 +90,35 @@ export default {
   data () {
     return {
       members: [],
-      employees: []
+      employees: [],
+      formRules: {
+        documentType: [
+          {required: true,
+            message: "Obligatoire",
+            trigger: "blur"}
+        ],
+        signingDate: [
+          {required: true,
+            message: "Obligatoire",
+            trigger: "blur"}
+        ],
+        signer1: [
+          {required: true,
+            message: "Obligatoire",
+            trigger: "blur"}
+        ],
+        signer2: [
+          {required: true,
+            message: "Obligatoire",
+            trigger: "blur"}
+        ],
+        deliverable: [
+          {required: true,
+            message: "Obligatoire",
+            trigger: "blur"}
+        ]
+      }
+
     }
   },
   watch: {
