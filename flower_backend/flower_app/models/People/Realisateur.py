@@ -1,18 +1,21 @@
 from django.db import models
 from datetime import date
 from rest_framework import serializers
+from django.core.validators import MaxValueValidator, MinValueValidator
 
 from flower_app.models.People.Personne import Personne
 from flower_app.models.Competence import Competence
+from flower_app.models.Etude import Etude
 
 # Commentaire
 
 class RealisateurComment(models.Model):
     content = models.TextField()
+    associatedEtude = models.ForeignKey(Etude, on_delete=models.CASCADE) # je n'ai pas mis OneToOne car on peut avoir plusieurs réas pour 1 étude
     date = models.DateField(default=date.today)
-    rating = models.PositiveSmallIntegerField(default=1)
+    rating = models.PositiveSmallIntegerField(default=1, validators=[MinValueValidator(0), MaxValueValidator(10)])
     def __str__(self):
-        return self.date.strftime("%m/%d/%Y") +"_"+ str(self.rating)
+        return self.associatedEtude.name + "_"+ str(self.rating)
     
 
 class RealisateurCommentSerializer(serializers.ModelSerializer):
