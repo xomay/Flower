@@ -186,7 +186,7 @@ export default {
       }
 
       if(result) {
-        //this.$emit("save", this.deletedMissions)
+        this.$emit("save", this.deletedMissions)
       } else {
         this.$message({message: "Certains champs sont invalides !", type: "error"})
       }

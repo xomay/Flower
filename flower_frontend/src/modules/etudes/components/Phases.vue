@@ -8,11 +8,6 @@
         Modifier les phases
       </el-button>
     </router-link>
-    <!-- <el-card v-for="(groupe, index) in groupes" :key="index">
-            <h1>{{ groupe.title }}</h1>
-            <p>{{ groupe.description }}</p>
-        </el-card> -->
-
     <div
       v-for="(groupe, index) in groupes"
       :key="index"

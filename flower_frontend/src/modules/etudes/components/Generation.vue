@@ -55,7 +55,13 @@
             label="Consultant"
           >
             <template slot-scope="scope">
-              <span>{{ getConsultant (scope.row) }}</span>
+              <el-link
+                type="primary"
+                :style="'margin-left: 6px'"
+                @click="pushToConsultant(scope.row)"
+              >
+                {{ getConsultantName(scope.row) }}
+              </el-link>
             </template>
           </el-table-column>
           <el-table-column
@@ -300,11 +306,16 @@ export default {
 
       fileLink.click()
     },
-    getConsultant (mission) {
+    getConsultantName (mission) {
       if(mission.consultant == undefined) {
         return "(vide)"
       } else {
         return mission.consultant.firstname + " " + mission.consultant.lastname
+      }
+    },
+    pushToConsultant (mission) {
+      if(mission.consultant != undefined) {
+        this.$router.push(`/realisateurs/${mission.consultant.id}/voir`)
       }
     }
   }

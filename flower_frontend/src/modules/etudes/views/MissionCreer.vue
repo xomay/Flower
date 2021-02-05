@@ -68,18 +68,6 @@ export default {
       this.missions = res.data.missions.slice()
       this.originalIDs = this.missions.map(m => m.id)
       this.breadcrumb[1].name = res.data.name
-      axios.get(
-        "/api/etudes/groupes/",
-        {withCredentials: true}
-      ).then((res) => {
-        this.etudesGroupes = res.data
-        const groupID = res.data.find(g => g.project == this.$route.params.id).project
-        this.phases = this.phases.filter(p => p.groupe == groupID)
-      }).catch((err) => {
-        this.$message({message: "Impossible de récupérer les membres : "+err,
-          type: "error",
-          offset: 40})
-      })
     }).catch((err) => {
       this.$message({message: "Impossible de récupérer l'étude : "+err,
         type: "error",
