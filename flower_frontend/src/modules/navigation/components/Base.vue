@@ -1,5 +1,4 @@
 <template>
-  <!-- <el-card class="mx-auto my-2 w-98"> -->
   <div class="p-4">
     <el-breadcrumb
       class="float-right"
@@ -19,7 +18,6 @@
     </el-divider>
     <slot />
   </div>
-  <!-- </el-card> -->
 </template>
 
 <script>
