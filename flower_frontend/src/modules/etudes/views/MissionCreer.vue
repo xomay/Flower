@@ -31,7 +31,20 @@ export default {
   components: {MissionForm},
   data () {
     return {
-      breadcrumb: [],
+      breadcrumb: [
+        {
+          name: "Suivi d'étude",
+          link: "/etudes"
+        },
+        {
+          name: "<loading>",
+          link: `/etudes/${this.$route.params.id}/voir`
+        },
+        {
+          name: "Gérer les missions",
+          link: `/etudes/${this.$route.params.id}/missions`
+        }
+      ],
       missions: [],
       phases: [],
       loading: false
@@ -47,6 +60,7 @@ export default {
         mission.consultant = mission.consultant.id
       })
       this.missions = res.data.missions
+      this.breadcrumb[1].name = res.data.name
     }).
       catch((err) => {
         console.error(err)
@@ -54,18 +68,26 @@ export default {
   },
   methods: {
     addMission () {
-      axios.post(
+      this.missions.push({
+        consultant: "",
+        missionBegin: "",
+        missionEnd: "",
+        percentageJunior: "0.55",
+        JEHNumber: 1,
+        JEHPrice: 400,
+        phases: []
+      })
+      /*axios.post(
         `/api/etudes/${this.$route.params.id}/missions/`,
         {project: this.$route.params.id},
         {withCredentials: true}
       ).then((res) => {
         this.missions.push(res.data)
-      }).
-        catch((err) => {
-          this.$message({message: err,
-            type: "error",
-            offset: 40})
-        })
+      }).catch((err) => {
+        this.$message({message: err,
+          type: "error",
+          offset: 40})
+      })*/
     },
     saveMissions () {
       this.loading = true

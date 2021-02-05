@@ -55,7 +55,7 @@
             label="Consultant"
           >
             <template slot-scope="scope">
-              <span>{{ scope.row.consultant.firstname }} {{ scope.row.consultant.lastname }}</span>
+              <span>{{ getConsultant (scope.row) }}</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -292,6 +292,13 @@ export default {
       document.body.appendChild(fileLink)
 
       fileLink.click()
+    },
+    getConsultant (mission) {
+      if(mission.consultant == undefined) {
+        return "(vide)"
+      } else {
+        return mission.consultant.firstname + " " + mission.consultant.lastname
+      }
     }
   }
 }

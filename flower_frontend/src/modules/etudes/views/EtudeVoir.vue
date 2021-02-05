@@ -53,7 +53,7 @@ export default {
       loading: true,
       breadcrumb: [
         {
-          name: "Suivi d'Etude",
+          name: "Suivi d'étude",
           link: "/etudes"
         }
       ]
