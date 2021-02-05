@@ -13,11 +13,11 @@
           <el-form-item
             label="Consultant"
             prop="consultant"
-            :rules="[{required: true, message: 'Champs obligatoire', trigger: 'blur'}]"
+            :rules="[{required: true, message: 'Champs obligatoire', trigger: 'change'}]"
           >
             <MemberPicker
               v-model="mission.consultant"
-              :item-list="members"
+              :item-list="consultants"
               placeholder="Membre de la JE"
             />
           </el-form-item>
@@ -144,11 +144,19 @@
       <el-divider />
     </el-form>
     <el-button
+      v-if="haveData()"
       :loading="loading"
       type="primary"
       @click="validateForm"
     >
       Enregistrer
+    </el-button>
+    <el-button
+      v-else
+      type="info"
+      @click="goBack"
+    >
+      Retour
     </el-button>
   </div>
 </template>
@@ -156,54 +164,28 @@
 <script>
 import MemberPicker from "@/modules/membres/components/MemberPicker"
 
-const axios = require("axios")
-
 export default {
   name: "MissionForm",
   components: {MemberPicker},
   props: {
     value: { type: Array, required: true },
     loading: { type: Boolean, required: true },
-    phases: { type: Array, required: true }
+    phases: { type: Array, required: true },
+    consultants: { type: Array, required: true }
   },
   data () {
     return {
-      members: []
+      deletedMissions: []
     }
   },
-  created () {
-    this.getMembers()
-  },
   methods: {
-    getMembers () {
-      axios.get(
-        "/api/membres",
-        {withCredentials: true}
-      ).then((res) => {
-        res.data.forEach((member) => member.value = `${member.firstname} ${member.lastname}`)
-        this.members = res.data
-      }).catch((err) => {
-        this.$message({message: "Impossible de récupérer les membres : "+err,
-          type: "error",
-          offset: 40})
-      })
-    },
     deleteMission (mission, index) {
+      if(mission.id != undefined)
+        this.deletedMissions.push(mission.id)
       this.value.splice(index, 1)
-      console.log("Deleted index " + index + " of mission " + mission)
-      /*axios.delete(
-        `/api/etudes/${this.$route.params.id}/missions/${mission.id}/`,
-        {withCredentials: true}
-      ).then(() => {
-        this.value.splice(index, 1)
-      }).catch((err) => {
-        this.$message({message: "Impossible de supprimer la mission : "+err,
-          type: "error",
-          offset: 40})
-      })*/
     },
     validateForm () {
-      var result = this.$refs.refFormMission.length > 0
+      var result = true
       for(const form of this.$refs.refFormMission) {
         form.validate((r) => {
           if(!r)
@@ -211,10 +193,16 @@ export default {
         })
       }
       if(result) {
-        //$emit('save')
+        this.$emit("save", this.deletedMissions)
       } else {
         this.$message({message: "Cerains champs sont invalides !", type: "error"})
       }
+    },
+    goBack () {
+      this.$router.push(`/etudes/${this.$route.params.id}/voir?active=Rédaction`)
+    },
+    haveData () {
+      return this.value.length > 0
     }
   }
 }
