@@ -12,6 +12,7 @@
         <li
           v-for="item in prospect.contactWay"
           :key="item"
+          class="liPrView"
         >
           {{ getContact(item) }}
         </li>
@@ -36,8 +37,8 @@ export default {
 }
 </script>
 
-<style>
-  li {
+<style scoped>
+  .liPrView {
     list-style-type: square;
     margin-left: 40px
   }
