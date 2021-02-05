@@ -3,9 +3,6 @@
     :title="etude.name"
     :breadcrumb="breadcrumb"
   >
-    <!-- <el-divider content-position="left">
-            <span class="text-lg"><i class="el-icon-collection"/> {{ etude.name }}</span>
-        </el-divider> -->
     <template v-slot:action>
       <router-link :to="`/etudes/${$route.params.id}/modifier`">
         <el-button
@@ -40,6 +37,7 @@
     <Phases
       v-show="currentTab === 'Phases'"
       :groupes="etude.groupes"
+      :etude="etude"
     />
     <Generation
       v-show="currentTab === 'Rédaction'"
@@ -61,11 +59,13 @@ export default {
   data () {
     return {
       currentTab: this.$route.query.active || "Récapitulatif",
-      etude: {},
-      // Groupes: [],
+      etude: {
+        name: "", // valeurs par défault afin d'éviter des warnings inutiles.
+        groupes: []
+      },
       breadcrumb: [
         {
-          name: "Suivi d'Etude",
+          name: "Suivi d'étude",
           link: "/etudes"
         }
       ]

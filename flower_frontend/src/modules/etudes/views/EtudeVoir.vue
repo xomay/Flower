@@ -1,6 +1,6 @@
 <template>
   <BaseComponent
-    title="Suivi d'Etudes"
+    title="Suivi d'études"
     :breadcrumb="breadcrumb"
   >
     <el-table
@@ -16,15 +16,28 @@
       >
         <template slot-scope="scope">
           <router-link :to="`/etudes/${scope.row.id}/voir`">
-            <el-button
-              type="text"
-              size="small"
-            >
+            <el-button type="text">
               {{ scope.row.name }}
             </el-button>
+            <span
+              v-if="scope.row.confidential"
+              class="confiStyle"
+            >
+              Confidentielle
+            </span>
           </router-link>
         </template>
       </el-table-column>
+      <el-table-column
+        prop="number"
+        label="Numéro de l'étude"
+        sortable
+      />
+      <el-table-column
+        prop="mandat"
+        label="Mandat"
+        sortable
+      />
     </el-table>
   </BaseComponent>
 </template>
@@ -66,5 +79,8 @@ export default {
 </script>
 
 <style>
-
+  .confiStyle {
+    color: rgb(165, 27, 27);
+    font-weight: bold;
+  }
 </style>

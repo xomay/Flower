@@ -20,5 +20,6 @@ urlpatterns = [
     path('password_reset/', include('django_rest_passwordreset.urls', namespace='password_reset')),
     path('actioncom/', include('flower_app.controllers.actioncom.urls')),
     path('contactway/', include('flower_app.controllers.contactway.urls')),
+    path('realisateurs/', include('flower_app.controllers.realisateurs.urls')),
     # path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 ]

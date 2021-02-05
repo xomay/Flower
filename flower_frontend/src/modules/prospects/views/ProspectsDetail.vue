@@ -14,7 +14,10 @@
           </el-button>
         </router-link>
       </template>
-      <ProspectsView :prospect="prospect" />
+      <ProspectsView
+        :prospect="prospect"
+        :contacts="contactsWays"
+      />
     </BaseComponent>
     <BaseComponent
       title="Employés"
@@ -72,6 +75,7 @@ export default {
     return {
       prospect: {},
       employes: [],
+      contactsWays: [],
       loading: false,
       breadcrumb: [
         {
@@ -88,6 +92,7 @@ export default {
   created () {
     this.getProspect()
     this.getEmployes()
+    this.getContactWays()
   },
   methods: {
     getProspect () {
@@ -97,11 +102,10 @@ export default {
       ).then((res) => {
         this.prospect = res.data
         this.breadcrumb[1].name = this.prospect.name
-      }).
-        catch((err) => {
-          this.$message({message: err,
-            type: "error"})
-        })
+      }).catch((err) => {
+        this.$message({message: "Impossible de récupérer les prospects : "+err,
+          type: "error"})
+      })
     },
     updateProspect () {
       this.loading = true
@@ -110,16 +114,26 @@ export default {
         this.prospect,
         {withCredentials: true}
       ).then(() => {
-        this.$message({message: "Le prospect a bien été mis à jour",
-          type: "success"})
-      }).
-        catch((err) => {
-          this.$message({message: err,
-            type: "error"})
-        }).
-        finally(() => {
-          this.loading = false
-        })
+        this.$message({message: "Le prospect a bien été mis à jour", type: "success"})
+      }). catch((err) => {
+        this.$message({message: "Impossible d'update le prospect ("+this.$route.params.id+") : "+err, type: "error"})
+      }). finally(() => {
+        this.loading = false
+      })
+    },
+    getContactWays () {
+      this.loading = true
+      axios.get(
+        "/api/contactway/",
+        {withCredentials: true}
+      ).then((res) => {
+        this.contactsWays = res.data
+      }).catch((err) => {
+        this.$message({message: "Erreur lors de la récupération des contactways : "+err,
+          type: "error"})
+      }).finally(() => {
+        this.loading = false
+      })
     },
     getEmployes () {
       axios.get(
@@ -127,11 +141,9 @@ export default {
         {withCredentials: true}
       ).then((res) => {
         this.employes = res.data
-      }).
-        catch((err) => {
-          this.$message({message: err,
-            type: "error"})
-        })
+      }).catch((err) => {
+        this.$message({message: "Erreur lors de la récupération des employés : "+err, type: "error"})
+      })
     }
   }
 }
