@@ -67,6 +67,13 @@
             label="Date de fin"
           />
           <el-table-column
+            label="Nombre de phases"
+          >
+            <template slot-scope="scope">
+              <span>{{ scope.row.phases.length }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column
             prop="JEHNumber"
             label="Nombre de JEH"
           />

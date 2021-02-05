@@ -39,7 +39,7 @@ export default {
         },
         {
           name: "<loading>",
-          link: `/etudes/${this.$route.params.id}/voir`
+          link: `/etudes/${this.$route.params.id}/voir?active=Rédaction`
         },
         {
           name: "Gérer les missions",

@@ -18,7 +18,7 @@
             <MemberPicker
               v-model="mission.consultant"
               :item-list="consultants"
-              placeholder="Membre de la JE"
+              placeholder="Consultant"
             />
           </el-form-item>
         </el-col>
@@ -144,19 +144,11 @@
       <el-divider />
     </el-form>
     <el-button
-      v-if="haveData()"
       :loading="loading"
       type="primary"
       @click="validateForm"
     >
       Enregistrer
-    </el-button>
-    <el-button
-      v-else
-      type="info"
-      @click="goBack"
-    >
-      Retour
     </el-button>
   </div>
 </template>
@@ -192,17 +184,15 @@ export default {
             result = false
         })
       }
+
       if(result) {
-        this.$emit("save", this.deletedMissions)
+        //this.$emit("save", this.deletedMissions)
       } else {
-        this.$message({message: "Cerains champs sont invalides !", type: "error"})
+        this.$message({message: "Certains champs sont invalides !", type: "error"})
       }
     },
     goBack () {
       this.$router.push(`/etudes/${this.$route.params.id}/voir?active=Rédaction`)
-    },
-    haveData () {
-      return this.value.length > 0
     }
   }
 }
