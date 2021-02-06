@@ -3,32 +3,43 @@
     <el-form
       v-for="(mission, index) in value"
       :key="index"
+      ref="refFormMission"
       :model="mission"
       class="mb-4"
+      label-position="left"
     >
       <el-row>
-        <el-col :span="24">
-          <el-form-item label="Consultant">
+        <el-col :span="10">
+          <el-form-item
+            label="Consultant"
+            prop="consultant"
+            :rules="[{required: true, message: 'Champs obligatoire', trigger: 'change'}]"
+          >
             <MemberPicker
               v-model="mission.consultant"
-              :item-list="members"
+              :item-list="consultants"
+              placeholder="Consultant"
             />
-            <el-button
-              type="danger"
-              icon="el-icon-delete"
-              @click="deleteMission(mission, index)"
-            >
-              Supprimer la mission
-            </el-button>
           </el-form-item>
         </el-col>
-        <!-- <el-col :span="24">
-                    <el-form-item label="Période">
-                        <el-date-picker type="daterange" v-model="[mission.missionBegin, mission.missionBegin]"/>
-                    </el-form-item>
-                </el-col> -->
         <el-col :span="12">
-          <el-form-item label="Date de début">
+          <el-button
+            type="danger"
+            icon="el-icon-delete"
+            :style="'margin-left: 5%'"
+            @click="deleteMission(mission, index)"
+          >
+            Supprimer la mission
+          </el-button>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="12">
+          <el-form-item
+            label="Date de début"
+            prop="missionBegin"
+            :rules="[{required: true, message: 'Date obligatoire', trigger: 'change'}]"
+          >
             <el-date-picker
               v-model="mission.missionBegin"
               format="dd-MM-yyyy"
@@ -38,29 +49,50 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="Date de fin">
+          <el-form-item
+            label="Date de fin"
+            prop="missionEnd"
+            :rules="[{required: true, message: 'Date obligatoire', trigger: 'change'}]"
+          >
             <el-date-picker
               v-model="mission.missionEnd"
-              format="dd-MM-yyyy"
+              format="dd/MM/yyyy"
               value-format="yyyy-MM-dd"
               type="date"
             />
           </el-form-item>
         </el-col>
+      </el-row>
+      <el-row>
         <el-col :span="8">
-          <el-form-item label="Pourcentage Junior">
-            <el-input-number
+          <el-form-item
+            label="Pourcentage Junior"
+            prop="percentageJunior"
+            label-width="50%"
+            :rows="1"
+            :rules="[
+              {required: true, message: 'Pourcentage obligatoire', trigger: 'blur'},
+              {required: true, pattern: /^(1(|\.[0]+)|0\.[0-9]+)$/, message: 'Entrez une valeur entre 0 et 1.', trigger: 'change'}
+            ]"
+          >
+            <el-input
               v-model="mission.percentageJunior"
-              :precision="2"
-              :step="1"
-              :min="0"
-              :max="100"
-              controls-position="right"
+              label="%"
             />
           </el-form-item>
         </el-col>
-        <el-col :span="8">
-          <el-form-item label="Nombre de JEH">
+        <el-col
+          :span="7"
+          :offset="1"
+        >
+          <el-form-item
+            label="Nombre de JEH"
+            prop="JEHNumber"
+            :rules="[
+              {required: true, message: 'Valeur obligatoire', trigger: 'blur'},
+              {required: true, pattern: /^[0-9]+$/, message: 'Entrez un nombre entier positif', trigger: 'change'}
+            ]"
+          >
             <el-input-number
               v-model="mission.JEHNumber"
               :min="0"
@@ -70,19 +102,29 @@
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="Prix d'un JEH">
+          <el-form-item
+            label="Prix d'un JEH"
+            prop="JEHPrice"
+            :rules="[{required: true, message: 'Valeur obligatoire', trigger: 'blur'}]"
+          >
             <el-input-number
               v-model="mission.JEHPrice"
               :precision="2"
-              :step="1"
-              :min="0"
+              :step="50"
+              :min="50"
               :max="400"
               controls-position="right"
             />
           </el-form-item>
         </el-col>
         <el-col :span="24">
-          <el-form-item label="Phases">
+          <el-form-item
+            label="Phases"
+            prop="phases"
+            :rules="[
+              {required: true, message: 'Entrez au moins une phase.', trigger: 'blur'}
+            ]"
+          >
             <el-select
               v-model="mission.phases"
               class="w-full"
@@ -104,7 +146,7 @@
     <el-button
       :loading="loading"
       type="primary"
-      @click="$emit('save')"
+      @click="validateForm"
     >
       Enregistrer
     </el-button>
@@ -114,56 +156,44 @@
 <script>
 import MemberPicker from "@/modules/membres/components/MemberPicker"
 
-const axios = require("axios")
-
 export default {
   name: "MissionForm",
   components: {MemberPicker},
   props: {
-    value: { type: Object, required: true },
-    loading: { type: Boolean, required: true }
+    value: { type: Array, required: true },
+    loading: { type: Boolean, required: true },
+    phases: { type: Array, required: true },
+    consultants: { type: Array, required: true }
   },
   data () {
     return {
-      members: []
+      deletedMissions: []
     }
   },
-  created () {
-    this.getMembers()
-  },
   methods: {
-    getMembers () {
-      axios.get(
-        "/api/membres",
-        {withCredentials: true}
-      ).then((res) => {
-        res.data.forEach((member) => member.value = `${member.firstname} ${member.lastname}`)
-        this.members = res.data
-      }).
-        catch((err) => {
-          this.$message({message: err,
-            type: "error",
-            offset: 40})
-        })
-    },
     deleteMission (mission, index) {
-      axios.delete(
-        `/api/etudes/${this.$route.params.id}/missions/${mission.id}/`,
-        {withCredentials: true}
-      ).then(() => {
-        this.value.splice(
-          index,
-          1
-        )
-      }).
-        catch((err) => {
-          console.error(err)
+      if(mission.id != undefined)
+        this.deletedMissions.push(mission.id)
+      this.value.splice(index, 1)
+    },
+    validateForm () {
+      var result = true
+      for(const form of this.$refs.refFormMission) {
+        form.validate((r) => {
+          if(!r)
+            result = false
         })
+      }
+
+      if(result) {
+        this.$emit("save", this.deletedMissions)
+      } else {
+        this.$message({message: "Certains champs sont invalides !", type: "error"})
+      }
+    },
+    goBack () {
+      this.$router.push(`/etudes/${this.$route.params.id}/voir?active=Rédaction`)
     }
   }
 }
 </script>
-
-<style>
-
-</style>

@@ -5,6 +5,7 @@
   >
     <PhasesForm
       v-model="groupes"
+      :small="true"
       @add-groupe="addGroupe"
       @add-phase="addPhase"
       @delete-groupe="deleteGroupe"
