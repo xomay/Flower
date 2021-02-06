@@ -89,7 +89,6 @@
 </template>
 
 <script>
-const axios = require("axios")
 import MemberPicker from "@/modules/membres/components/MemberPicker"
 
 export default {
@@ -97,94 +96,39 @@ export default {
   components: {MemberPicker},
   props: {
     value: { type: Object, required: true },
-    loading: { type: Boolean, required: true }
+    loading: { type: Boolean, required: true },
+    members: { type: Array, required: true },
+    prospects: { type: Array, required: true }
   },
   data () {
     return {
       formRules: {
         prospect: [
-          {required: true,
-            message: "Obligatoire",
-            trigger: "change"}
+          {required: true,message: "Obligatoire", trigger: "change"}
         ],
         name: [
-          {required: true,
-            message: "Obligatoire",
-            trigger: "blur"}
+          {required: true,message: "Obligatoire", trigger: "blur"}
         ],
         description: [
-          {required: true,
-            message: "Obligatoire",
-            trigger: "blur"}
+          {required: true,message: "Obligatoire", trigger: "blur"}
         ],
         mandat: [
-          {required: true,
-            message: "Obligatoire",
-            trigger: "blur"}
+          {required: true,message: "Obligatoire", trigger: "blur"}
         ],
         number: [
-          {required: true,
-            message: "Obligatoire",
-            trigger: "blur"}
+          {required: true,message: "Obligatoire", trigger: "blur"}
         ],
         confidential: [
-          {required: true,
-            message: "Obligatoire",
-            trigger: "blur"}
+          {required: true,message: "Obligatoire", trigger: "blur"}
         ],
         projectManager: [
-          {required: true,
-            message: "Obligatoire",
-            trigger: "change"}
+          {required: true,message: "Obligatoire", trigger: "blur"}
         ],
         qualityManager: [
-          {required: true,
-            message: "Obligatoire",
-            trigger: "change"}
+          {required: true,message: "Obligatoire", trigger: "blur"}
         ]
-      },
-      prospects: [],
-      members: []
+      }
     }
-  },
-  watch: {
-    value () {
-      this.value.prospect = this.value.prospect ? this.value.prospect.id : null
-      this.value.projectManager = this.value.projectManager ? this.value.projectManager.id : null
-      this.value.qualityManager = this.value.qualityManager ? this.value.qualityManager.id : null
-    }
-  },
-  created () {
-    axios.get(
-      "/api/prospects",
-      {withCredentials: true}
-    ).then((res) => {
-      res.data.forEach((elt) => elt.value = elt.name)
-      this.prospects = res.data
-    }).
-      catch((err) => {
-        console.log(err)
-        this.$message({message: "Impossible de récupérer la liste des prospects",
-          type: "error",
-          offset: 40})
-      })
-    axios.get(
-      "/api/membres",
-      {withCredentials: true}
-    ).then((res) => {
-      res.data.forEach((elt) => elt.value = `${elt.firstname} ${elt.lastname}`)
-      this.members = res.data
-    }).
-      catch((err) => {
-        console.log(err)
-        this.$message({message: "Impossible de récupérer la liste des Membres",
-          type: "error",
-          offset: 40})
-      })
   }
 }
 </script>
-
-<style>
-
-</style>

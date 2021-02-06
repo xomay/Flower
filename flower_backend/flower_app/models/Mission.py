@@ -1,7 +1,7 @@
 from django.db import models
 from rest_framework import serializers
 
-from flower_app.models.People.Membre import Membre, MembreSerializer
+from flower_app.models.People.Realisateur import Realisateur, RealisateurSerializer
 from flower_app.models.Etude import Etude
 from flower_app.models.GroupePhase import Phase
 from flower_app.serializers import CustomListSerializer
@@ -12,7 +12,7 @@ def emptyList():
 # Create your models here.
 class Mission(models.Model):
     project = models.ForeignKey(Etude, on_delete=models.RESTRICT)
-    consultant = models.ForeignKey(Membre, on_delete=models.RESTRICT, blank=True, null=True)
+    consultant = models.ForeignKey(Realisateur, on_delete=models.RESTRICT, blank=True, null=True)
     missionBegin = models.DateField(blank=True, null=True)
     missionEnd = models.DateField(blank=True, null=True)
     percentageJunior = models.FloatField(default=0.55)
@@ -36,7 +36,7 @@ class MissionSerializer(serializers.ModelSerializer):
 
 class MissionDetailSerializer(serializers.ModelSerializer):
     # project = EtudeSerializer(read_only=True)
-    consultant = MembreSerializer(read_only=True)
+    consultant = RealisateurSerializer(read_only=True)
     # phase_ids = serializers.PrimaryKeyRelatedField(many=True, read_only=False, queryset=Phase.objects.all(), source='phases')
     class Meta:
         model = Mission

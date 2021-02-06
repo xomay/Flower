@@ -55,7 +55,13 @@
             label="Consultant"
           >
             <template slot-scope="scope">
-              <span>{{ scope.row.consultant.firstname }} {{ scope.row.consultant.lastname }}</span>
+              <el-link
+                type="primary"
+                :style="'margin-left: 6px'"
+                @click="pushToConsultant(scope.row)"
+              >
+                {{ getConsultantName(scope.row) }}
+              </el-link>
             </template>
           </el-table-column>
           <el-table-column
@@ -66,6 +72,13 @@
             prop="missionEnd"
             label="Date de fin"
           />
+          <el-table-column
+            label="Nombre de phases"
+          >
+            <template slot-scope="scope">
+              <span>{{ scope.row.phases.length }}</span>
+            </template>
+          </el-table-column>
           <el-table-column
             prop="JEHNumber"
             label="Nombre de JEH"
@@ -292,6 +305,18 @@ export default {
       document.body.appendChild(fileLink)
 
       fileLink.click()
+    },
+    getConsultantName (mission) {
+      if(mission.consultant == undefined) {
+        return "(vide)"
+      } else {
+        return mission.consultant.firstname + " " + mission.consultant.lastname
+      }
+    },
+    pushToConsultant (mission) {
+      if(mission.consultant != undefined) {
+        this.$router.push(`/realisateurs/${mission.consultant.id}/voir`)
+      }
     }
   }
 }

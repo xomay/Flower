@@ -6,6 +6,8 @@
     <ProjectForm
       v-model="etude"
       :loading="loading"
+      :members="membres"
+      :prospects="prospects"
       @save="saveProject"
     />
   </BaseComponent>
@@ -28,48 +30,57 @@ export default {
           link: "/etudes"
         },
         {
+          name: "<loading>",
+          link: `/etudes/${this.$route.params.id}/voir`
+        },
+        {
           name: "Modifier une étude",
           link: `/etudes/${this.$route.params.id}/modifier`
         }
       ],
       etude: {
-        prospect: "",
+        prospect: 0,
         name: "",
         description: "",
         mandat: "",
         number: "",
         confidential: false,
-        projectManager: "",
-        qualityManager: ""
-      }
+        projectManager: 0,
+        qualityManager: 0
+      },
+      membres: [],
+      prospects: []
     }
   },
-  beforeCreate () {
+  created () {
     axios.get(
       `/api/etudes/${this.$route.params.id}/`,
       {withCredentials: true}
     ).then((res) => {
       this.etude = res.data
-      this.breadcrumb = [
-        {
-          name: "Suivi d'Etude",
-          link: "/etudes"
-        },
-        {
-          name: this.etude.name,
-          link: `/etudes/${this.etude.id}/voir`
-        },
-        {
-          name: "Modifier une étude",
-          link: `/etudes/${this.etude.id}/modifier`
-        }
-      ]
-    }).
-      catch(() => {
-        this.$message({
-          message: "Impossible de récupérer l'études pour le moment",
-          type: "error"})
+      this.etude.projectManager = this.etude.projectManager.id
+      this.etude.qualityManager = this.etude.qualityManager.id
+      this.etude.prospect = this.etude.prospect.id
+      this.breadcrumb[1].name = this.etude.name
+      axios.get(
+        "/api/membres/",
+        {withCredentials: true}
+      ).then((res) => {
+        this.membres = res.data.map(obj => ({...obj, value: obj.firstname+" "+obj.lastname}))
+      }).catch((err) => {
+        this.$message({message: "Impossible de récupérer les membres pour le moment : "+err, type: "error"})
       })
+      axios.get(
+        "/api/prospects/",
+        {withCredentials: true}
+      ).then((res) => {
+        this.prospects = res.data.map(obj => ({...obj, value: obj.name}))
+      }).catch((err) => {
+        this.$message({message: "Impossible de récupérer les prospects pour le moment : "+err, type: "error"})
+      })
+    }).catch((err) => {
+      this.$message({message: "Impossible de récupérer l'étude :" + err, type: "error"})
+    })
   },
   methods: {
     saveProject () {
@@ -79,10 +90,8 @@ export default {
         this.etude,
         {withCredentials: true}
       ).then(() => {
-        this.$message({message: "L'étude a bien été modifié.",
-          type: "success",
-          offset: 40})
-        //this.$router.push("/etudes/"+this.etude.id+"/voir") // uncomment it to go back to etude after editing
+        this.$message({message: "L'étude a bien été modifié.", type: "success", offset: 40})
+        this.$router.push("/etudes/"+this.etude.id+"/voir")
       }).
         catch((err) => {
           console.log(err)
