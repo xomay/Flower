@@ -2,7 +2,7 @@ import Vue from "vue"
 import VueRouter from "vue-router"
 import Home from "../views/Home.vue"
 
-import authenticationRoutes from "@/modules/authentication/routes"
+//import authenticationRoutes from "@/modules/authentication/routes"
 import etudesRoutes from "@/modules/etudes/routes"
 import membresRoutes from "@/modules/membres/routes"
 import prospectsRoutes from "@/modules/prospects/routes"
@@ -14,6 +14,13 @@ import error404Routes from "@/modules/error404/routes"
 Vue.use(VueRouter)
 
 const routes = [
+    // Alors, à cause du système de E404 qui va tout gober, on ne doit mettre les authentificationavant le reste. Désolé :(
+    {path: "/login", name: "Login",
+      component: () => import("@/modules/authentication/views")},
+    {path: "/passwordreset", name: "password-reset",
+      component: () => import("@/modules/authentication/views/PasswordReset")},
+    {path: "/passwordreset/confirm/:token", name: "password-reset-confirm",
+      component: () => import("@/modules/authentication/views/NewPassword")},
     {
       path: "/",
       name: "Home",
@@ -33,11 +40,6 @@ const routes = [
   router = new VueRouter({
     routes
   })
-router.addRoutes(authenticationRoutes)
-
-/*
- * Router.options.routes.find(r => r.path === '/').children.addRoutes(etudesRoutes)
- * router.addRoutes(etudesRoutes)
- */
+//router.addRoutes(authenticationRoutes)
 
 export default router
