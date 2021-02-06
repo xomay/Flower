@@ -4,6 +4,7 @@
     class="inline-input"
     :fetch-suggestions="queryValue"
     :placeholder="placeholder"
+    clearable
     @select="handleSelectvalue"
   />
 </template>
