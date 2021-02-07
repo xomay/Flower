@@ -8,7 +8,10 @@
   >
     <el-row :gutter="20">
       <el-col :span="12">
-        <el-form-item label="Type de PVR">
+        <el-form-item
+          label="Type de PVR"
+          prop="documentType"
+        >
           <el-select v-model="value.documentType">
             <el-option
               value="I"
@@ -22,7 +25,10 @@
         </el-form-item>
       </el-col>
       <el-col :span="12">
-        <el-form-item label="Date de signature">
+        <el-form-item
+          label="Date de signature"
+          prop="signingDate"
+        >
           <el-date-picker
             v-model="value.signingDate"
             format="dd-MM-yyyy"
@@ -32,7 +38,10 @@
         </el-form-item>
       </el-col>
       <el-col :span="12">
-        <el-form-item label="Signataire Junior">
+        <el-form-item
+          label="Signataire Junior"
+          prop="signer1"
+        >
           <MemberPicker
             v-model="value.signer1"
             :item-list="members"
@@ -41,7 +50,10 @@
         </el-form-item>
       </el-col>
       <el-col :span="12">
-        <el-form-item label="Signataire Prospect">
+        <el-form-item
+          label="Signataire Prospect"
+          prop="signer2"
+        >
           <MemberPicker
             v-model="value.signer2"
             :item-list="employees"
@@ -52,6 +64,7 @@
       <el-col :span="24">
         <el-form-item
           label="Description des livrables"
+          prop="deliverable"
           label-width="auto"
         >
           <el-input
@@ -61,16 +74,14 @@
         </el-form-item>
       </el-col>
       <el-col :span="24">
-        <el-form-item label-width="0">
-          <el-button
-            :loading="loading"
-            icon="el-icon-plus"
-            type="success"
-            @click="validateForm"
-          >
-            Enregistrer le PVR
-          </el-button>
-        </el-form-item>
+        <el-button
+          :loading="loading"
+          icon="el-icon-plus"
+          type="success"
+          @click="validateForm"
+        >
+          Enregistrer le PVR
+        </el-button>
       </el-col>
     </el-row>
   </el-form>
@@ -95,32 +106,21 @@ export default {
       employees: [],
       formRules: {
         documentType: [
-          {required: true,
-            message: "Obligatoire",
-            trigger: "blur"}
+          {required: true, message: "Obligatoire", trigger: "blur"}
         ],
         signingDate: [
-          {required: true,
-            message: "Obligatoire",
-            trigger: "blur"}
+          {required: true, message: "Obligatoire", trigger: "blur"}
         ],
         signer1: [
-          {required: true,
-            message: "Obligatoire",
-            trigger: "blur"}
+          {required: true, message: "Obligatoire", trigger: "change"}
         ],
         signer2: [
-          {required: true,
-            message: "Obligatoire",
-            trigger: "blur"}
+          {required: true, message: "Obligatoire", trigger: "change"}
         ],
         deliverable: [
-          {required: true,
-            message: "Obligatoire",
-            trigger: "blur"}
+          {required: true, message: "Obligatoire", trigger: "blur"}
         ]
       }
-
     }
   },
   watch: {
@@ -141,18 +141,14 @@ export default {
       ).then((res) => {
         res.data.forEach((elt) => elt.value = `${elt.firstname} ${elt.lastname}`)
         this.members = res.data
-      }).
-        catch((err) => {
-          console.log(err)
-          this.$message({message: "Impossible de récupérer la liste des Membres",
-            type: "error",
-            offset: 40})
-        })
+      }).catch(() => {
+        this.$message({message: "Impossible de récupérer la liste des Membres",
+          type: "error",
+          offset: 40})
+      })
     },
     validateForm () {
-      console.log("coucou")
       this.$refs.PVRFormRef.validate((r) => {
-        console.log("wouaf" + r)
         if(r) {
           this.$emit("save")
         } else {
@@ -171,17 +167,12 @@ export default {
       ).then((res) => {
         res.data.forEach((elt) => elt.value = `${elt.firstname} ${elt.lastname}`)
         this.employees = res.data
-      }).
-        catch((err) => {
-          this.$message({message: err,
-            type: "error",
-            offset: 40})
-        })
+      }).catch((err) => {
+        this.$message({message: "Impossible de récupérer les employés : "+err,
+          type: "error",
+          offset: 40})
+      })
     }
   }
 }
 </script>
-
-<style>
-
-</style>
