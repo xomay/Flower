@@ -13,6 +13,7 @@ from .models.GroupePhase import Groupe, Phase
 from .models.People.Prospect import Prospect
 from .models.Prospection import Action, TypeAction, ContactWay
 from .models.Competence import Competence
+from .models.ParamsJE import ParamsJE
 
 # Register your models here.
 admin.site.register(CE)
@@ -32,3 +33,4 @@ admin.site.register(Action)
 admin.site.register(Realisateur)
 admin.site.register(RealisateurComment)
 admin.site.register(Competence)
+admin.site.register(ParamsJE)
