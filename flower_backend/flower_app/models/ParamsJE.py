@@ -42,10 +42,15 @@ class ParamsJE(models.Model):
     def __str__(self):
         return "PARAMS_JE: " + self.je_name
 
+    class Meta: # Affichage custom dans l'onglet d'administration
+       verbose_name = 'Paramètres JE'
+       verbose_name_plural = 'Paramètres JE'
+
     # On ne veut que une instance de paramètres.
     def save(self, *args, **kwargs):
         if not self.pk and ParamsJE.objects.exists():
             raise ValidationError("Il ne peut il y avoir qu'une instance de ParamsJe.")
+        self.id = 1
         return super(ParamsJE, self).save(*args, **kwargs)
 
 class ParamsJESerializer(serializers.ModelSerializer):
