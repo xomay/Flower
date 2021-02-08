@@ -38,7 +38,7 @@ export default {
   components: {GraphicsBlock},
   methods: {
     getUsername () {
-      return this.$store.currentUsername
+      return this.$store.currentUser.username
     },
     getData () {
       return [
