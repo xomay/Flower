@@ -67,7 +67,7 @@ export default {
         this.authForm,
         {withCredentials: true}
       ).then((res) => {
-        this.$store.currentUsername = res.data
+        this.$store.currentUser = res.data
         this.$router.push("/")
       }).
         catch((err) => {

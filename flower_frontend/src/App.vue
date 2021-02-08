@@ -26,25 +26,24 @@ export default {
       {withCredentials: true}
     ).then((res) => {
       console.log(res)
-      this.$store.currentUsername = res.data
+      this.$store.currentUser = res.data
       this.loading = false
-    }).
-      catch(() => {
-        // Allows unsigned users to go to password reset pages
-        if (this.$router.currentRoute.path.includes("passwordreset")) {
+    }).catch(() => {
+      // Allows unsigned users to go to password reset pages
+      if (this.$router.currentRoute.path.includes("passwordreset")) {
+        this.loading = false
+        return
+      }
+      this.$router.push(
+        "/login",
+        () => {
           this.loading = false
-          return
+        },
+        () => {
+          this.loading = false
         }
-        this.$router.push(
-          "/login",
-          () => {
-            this.loading = false
-          },
-          () => {
-            this.loading = false
-          }
-        )
-      })
+      )
+    })
   }
 }
 </script>

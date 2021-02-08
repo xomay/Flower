@@ -75,7 +75,7 @@
           </el-button>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item>
-              <i class="el-icon-user" />{{ this.$store.currentUsername }}
+              <i class="el-icon-user" />{{ this.$store.currentUser.username }}
             </el-dropdown-item>
             <el-dropdown-item command="logout">
               <i class="el-icon-close" />Se déconnecter
@@ -194,6 +194,9 @@ export default {
       collapse: false
     }
   },
+  created () {
+    this.addAdminStuff()
+  },
   methods: {
     handleCommand (command) {
       if (command === "logout") {
@@ -206,11 +209,29 @@ export default {
         {withCredentials: true}
       ).then(() => {
         this.$router.push("/login")
-      }).
-        catch(() => {
-          this.$message({message: "Une erreur est survenue lors de la déconnexion",
-            type: "error"})
+      }).catch(() => {
+        this.$message({message: "Une erreur est survenue lors de la déconnexion", type: "error"})
+      })
+    },
+    addAdminStuff () {
+      if ( this.isAdmin() ) {
+        this.menu.push({
+          icon: "el-icon-setting",
+          title: "Administration",
+          children: [
+            {
+              title: "Général",
+              children: [
+                {name: "Paramètres de la JE",
+                  url: "/administration/params"}
+              ]
+            }
+          ]
         })
+      }
+    },
+    isAdmin () {
+      return this.$store.currentUser.isAdmin
     }
   }
 }

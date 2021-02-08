@@ -1,6 +1,6 @@
 const routes = [
   {
-    path: "administration/ajouter",
+    path: "administration/params",
     name: "parametres-je",
     component: () => import("../views/ParamsJEView")
   }
