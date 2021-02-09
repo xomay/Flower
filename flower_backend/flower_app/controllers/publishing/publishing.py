@@ -3,12 +3,12 @@ from django.http import HttpResponse
 from docxtpl import DocxTemplate, InlineImage
 from docx.shared import Mm
 
-import locale
+import locale, io, sys
 locale.setlocale(locale.LC_TIME, "fr_FR.utf8")
 from datetime import date, timedelta
 import jinja2
 from num2words import num2words
-import io
+from ...models.ParamsJE import ParamsJE
 
 def nbrToLetters(number):
     return num2words(number, lang='fr')
@@ -29,14 +29,18 @@ parameters = {
 }
 
 def param(value):
-    return parameters[value]
+    try:
+        return getattr(ParamsJE.objects.get(pk=1), value)
+    except:
+        print("ERROR : parameter ["+value+"] doesn't exist.", file=sys.stderr)
+        return "(!! ERROR : bad field name: '"+value+"' !!)"
 
 def computeDocx(context, doctypeFilename, name='undef', images=dict()):
-    doc = DocxTemplate('doctypes/' + doctypeFilename)
+    doc = DocxTemplate("flower/flower_backend/doctypes/" + doctypeFilename)
     docBytes = io.BytesIO()
     for key, value in images.items():
         context[key] = InlineImage(doc, value, width=Mm(160))
-
+    
     today = date.today()
     context['date'] = today.strftime('%d %B %Y')
     context['dateShort'] = today.strftime('%d/%m/%Y')
