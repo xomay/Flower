@@ -29,13 +29,15 @@ parameters = {
 }
 
 def param(value):
-    return parameters[value]
+    return "oui" #getattr(GLOBAL_PARAMS_JE, value)
 
 def computeDocx(context, doctypeFilename, name='undef', images=dict()):
     doc = DocxTemplate('doctypes/' + doctypeFilename)
     docBytes = io.BytesIO()
     for key, value in images.items():
         context[key] = InlineImage(doc, value, width=Mm(160))
+
+    #print("ouais ouais ouais > " + param("je_name"))
 
     today = date.today()
     context['date'] = today.strftime('%d %B %Y')
