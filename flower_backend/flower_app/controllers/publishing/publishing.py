@@ -19,15 +19,6 @@ def shortDate(isodate):
 def addMonths(isodate, numberOfMonths):
     return (date.fromisoformat(str(isodate)) + timedelta(days=numberOfMonths * 30)).isoformat()
 
-parameters = {
-    'nom': 'Ouest INSA',
-    'adresse': '20 avenue des Buttes de Coësmes, 35708 Rennes, CS 70839 Cedex 7',
-    'email': 'contact@ouest-insa.fr',
-    'presidentPrenom': 'presidentPrenom',
-    'presidentNom': 'presidentNom',
-    'tva': 0.2
-}
-
 def param(value):
     try:
         return getattr(ParamsJE.objects.get(pk=1), value)
