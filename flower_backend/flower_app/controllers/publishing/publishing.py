@@ -3,12 +3,11 @@ from django.http import HttpResponse
 from docxtpl import DocxTemplate, InlineImage
 from docx.shared import Mm
 
-import locale
+import locale, io, sys
 locale.setlocale(locale.LC_TIME, "fr_FR.utf8")
 from datetime import date, timedelta
 import jinja2
 from num2words import num2words
-import io
 from ...models.ParamsJE import ParamsJE
 
 def nbrToLetters(number):
@@ -30,7 +29,11 @@ parameters = {
 }
 
 def param(value):
-    return getattr(ParamsJE.objects.get(pk=1), value)
+    try:
+        return getattr(ParamsJE.objects.get(pk=1), value)
+    except:
+        print("ERROR : parameter ["+value+"] doesn't exist.", file=sys.stderr)
+        return "(!! ERROR : bad field name: '"+value+"' !!)"
 
 def computeDocx(context, doctypeFilename, name='undef', images=dict()):
     doc = DocxTemplate("flower/flower_backend/doctypes/" + doctypeFilename)
