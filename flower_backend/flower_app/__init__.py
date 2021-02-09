@@ -1,1 +1,0 @@
-GLOBAL_PARAMS_JE = None
