@@ -38,19 +38,19 @@ export default {
           link: `/etudes/${this.$route.params.id}/voir?active=Rédaction`
         },
         {
-          name: "Modifier une facture",
-          link: `/etudes/${this.$route.params.id}/factures/ajouter`
+          name: "Modifier une facture"
+          // pas la peine d'en mettre : par défaut c'est là où on se trouve.
         }
       ]
     }
   },
   created () {
     this.getInvoice()
+    this.getEtude()
   },
   methods: {
     saveInvoice () {
       this.loading = true
-      this.errors = {}
       axios.put(
         `/api/tresorerie/factures/${this.$route.params.facture_id}/`,
         this.invoice,
@@ -70,6 +70,7 @@ export default {
         {withCredentials: true}
       ).then((res) => {
         this.invoice = res.data
+        console.log(this.invoice)
         this.getProspects().then((res) => {
           this.prospects = res.data
           this.$set(
@@ -89,6 +90,16 @@ export default {
         "/api/prospects",
         {withCredentials: true}
       )
+    },
+    getEtude () {
+      axios.get(
+        `/api/etudes/${this.$route.params.id}/`,
+        {withCredentials: true}
+      ).then((res) => {
+        this.breadcrumb[1].name = res.data.name
+      }).catch(() => {
+        this.$message({message: "Impossible de récupérer la liste des prospects", type: "error", offset: 40})
+      })
     }
   }
 }

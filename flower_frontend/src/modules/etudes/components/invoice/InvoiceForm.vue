@@ -123,16 +123,6 @@
       >
         <el-col :span="24">
           <el-form-item
-            label="Catégorie"
-            label-width="15%"
-            prop="category"
-            :rules="[{required: true, message: 'Obligatoire', trigger: 'blur'}]"
-          >
-            <el-input v-model="detail.category" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="24">
-          <el-form-item
             label="Description"
             label-width="15%"
             prop="description"
