@@ -6,6 +6,8 @@
     <ProjectForm
       v-model="form"
       :loading="loading"
+      :members="members"
+      :prospects="prospects"
       @save="submitProject"
     />
   </BaseComponent>
@@ -41,8 +43,30 @@ export default {
         confidential: false,
         projectManager: "",
         qualityManager: ""
-      }
+      },
+      members: [],
+      prospects: []
     }
+  },
+  created () {
+    axios.get(
+      "/api/prospects",
+      {withCredentials: true}
+    ).then((res) => {
+      res.data.forEach((elt) => elt.value = elt.name)
+      this.prospects = res.data
+    }).catch((err) => {
+      this.$message({message: "Impossible de récupérer la liste des prospects : " + err, type: "error", offset: 40})
+    })
+    axios.get(
+      "/api/membres",
+      {withCredentials: true}
+    ).then((res) => {
+      res.data.forEach((elt) => elt.value = elt.firstname + " " + elt.lastname)
+      this.members = res.data
+    }).catch((err) => {
+      this.$message({message: "Impossible de récupérer la liste des prospects : " + err, type: "error", offset: 40})
+    })
   },
   methods: {
     submitProject () {

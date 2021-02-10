@@ -5,8 +5,7 @@ from flower_app.models.Facture import Facture
 
 # Create your models here.
 class FactureDetail(models.Model):
-
-    invoice = models.ForeignKey(Facture, on_delete=models.RESTRICT)
+    invoice = models.ForeignKey(Facture, on_delete=models.CASCADE)
     description = models.TextField()
     taxFreeAmount = models.DecimalField(decimal_places=2, max_digits=10)
     taxes = models.DecimalField(decimal_places=2, default=0.2,max_digits=10)

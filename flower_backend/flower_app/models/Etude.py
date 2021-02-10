@@ -29,7 +29,7 @@ class Etude(models.Model):
     projectManager = models.ForeignKey(Membre, on_delete=models.RESTRICT, related_name="projectManager", blank=True, null=True)
     clientContact = models.ForeignKey(Employe, on_delete=models.RESTRICT, blank=True, null=True)
     
-    ce = models.OneToOneField(CE, default=create_ce, on_delete=models.RESTRICT)
+    ce = models.OneToOneField(CE, default=create_ce, on_delete=models.CASCADE)
     # ce
     # facture
     # avenants

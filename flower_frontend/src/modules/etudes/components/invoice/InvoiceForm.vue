@@ -1,34 +1,39 @@
 <template>
   <el-form
+    ref="refFacture"
     :model="value"
     label-position="left"
     label-width="30%"
+    :rules="formRules"
   >
     <el-row :gutter="20">
       <el-col :span="12">
-        <el-form-item label="Exercice comptable">
-          <el-input
+        <el-form-item
+          label="Exercice comptable"
+          prop="accountingPeriod"
+        >
+          <el-input-number
             v-model="value.accountingPeriod"
-            :class="{'error': errors.accountingPeriod }"
+            controls-position="right"
           />
         </el-form-item>
       </el-col>
       <el-col :span="12">
-        <el-form-item label="Numéro de la facture">
-          <el-input
-            v-model="value.invoiceNumber"
-            :class="{'error': errors.invoiceNumber }"
-          />
+        <el-form-item
+          label="Numéro de la facture"
+          prop="invoiceNumber"
+        >
+          <el-input v-model="value.invoiceNumber" />
         </el-form-item>
       </el-col>
       <el-col :span="24">
         <el-form-item
           label="Facture émise pour"
           label-width="15%"
+          prop="autocompletePayee"
         >
           <el-autocomplete
             v-model="value.autocompletePayee"
-            :class="{'error': errors.payee }"
             class="inline-input"
             :fetch-suggestions="querySearchProspects"
             placeholder="Entrez le nom du prospect"
@@ -37,33 +42,39 @@
         </el-form-item>
       </el-col>
       <el-col :span="12">
-        <el-form-item label="Date d'émission">
+        <el-form-item
+          label="Date d'émission"
+          prop="issueDate"
+        >
           <el-date-picker
             v-model="value.issueDate"
-            :class="{'error': errors.issueDate }"
             format="dd-MM-yyyy"
             value-format="yyyy-MM-dd"
+            placeholder="Date d'émission"
             type="date"
           />
         </el-form-item>
       </el-col>
       <el-col :span="12">
-        <el-form-item label="Date de versement">
+        <el-form-item
+          label="Date de versement"
+          prop="paymentDate"
+        >
           <el-date-picker
             v-model="value.paymentDate"
-            :class="{'error': errors.paymentDate }"
             format="dd-MM-yyyy"
             value-format="yyyy-MM-dd"
+            placeholder="Date de paiement"
             type="date"
           />
         </el-form-item>
       </el-col>
       <el-col :span="12">
-        <el-form-item label="Type de la facture">
-          <el-select
-            v-model="value.invoiceType"
-            :class="{'error': errors.invoiceType }"
-          >
+        <el-form-item
+          label="Type de la facture"
+          prop="invoiceType"
+        >
+          <el-select v-model="value.invoiceType">
             <el-option
               value="FA"
               label="Facture d'Achat"
@@ -83,11 +94,9 @@
         <el-form-item
           label="Objet de la facture"
           label-width="15%"
+          prop="description"
         >
-          <el-input
-            v-model="value.description"
-            :class="{'error': errors.description }"
-          />
+          <el-input v-model="value.description" />
         </el-form-item>
       </el-col>
     </el-row>
@@ -107,44 +116,50 @@
       :key="index"
       :gutter="20"
     >
-      <el-col :span="24">
-        <el-form-item
-          label="Catégorie"
-          label-width="15%"
-        >
-          <el-input
-            v-model="detail.category"
-            :class="{'error': errors.category }"
-          />
-        </el-form-item>
-      </el-col>
-      <el-col :span="24">
-        <el-form-item
-          label="Description"
-          label-width="15%"
-        >
-          <el-input
-            v-model="detail.description"
-            :class="{'error': errors.description }"
-          />
-        </el-form-item>
-      </el-col>
-      <el-col :span="12">
-        <el-form-item label="Prix HT">
-          <el-input
-            v-model="detail.taxFreeAmount"
-            :class="{'error': errors.taxFreeAmount }"
-          />
-        </el-form-item>
-      </el-col>
-      <el-col :span="12">
-        <el-form-item label="TVA">
-          <el-input
-            v-model="detail.taxes"
-            :class="{'error': errors.taxes }"
-          />
-        </el-form-item>
-      </el-col>
+      <!-- DETAILS -->
+      <el-form
+        ref="refFactureDetails"
+        :model="detail"
+      >
+        <el-col :span="24">
+          <el-form-item
+            label="Description"
+            label-width="15%"
+            prop="description"
+            :rules="[{required: true, message: 'Obligatoire', trigger: 'blur'}]"
+          >
+            <el-input v-model="detail.description" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item
+            label="Prix HT"
+            prop="taxFreeAmount"
+            :rules="[
+              {required: true, pattern: /^[0-9]+(|.[0-9]+)$/, message: 'Entrez un prix valide.', trigger: 'change'},
+              {required: true, message: 'Obligatoire', trigger: 'change'}
+            ]"
+          >
+            <el-input
+              v-model="detail.taxFreeAmount"
+            />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item
+            label="TVA"
+            prop="taxes"
+            :rules="[
+              {required: true, pattern: /^0.[0-9]+$/, message: 'Entrez un pourcentage valide.', trigger: 'change'},
+              {required: true, message: 'Obligatoire', trigger: 'change'}
+            ]"
+          >
+            <el-input
+              v-model="detail.taxes"
+            />
+          </el-form-item>
+        </el-col>
+      </el-form>
       <el-col :span="24">
         <el-form-item label-width="0">
           <el-button
@@ -162,7 +177,7 @@
     <el-button
       type="success"
       :loading="loading"
-      @click="$emit('save')"
+      @click="validateForm"
     >
       Enregistrer la facture
     </el-button>
@@ -177,15 +192,60 @@ export default {
   props: {
     value: { type: Object, required: true },
     loading: { type: Boolean, required: true },
-    prospects: { type: Array, required: true },
-    errors: { type: Object, required: true }
+    prospects: { type: Array, required: true }
   },
-  watch: {
+  data () {
+    return {
+      formRules: {
+        invoiceNumber: [
+          {required: true, message: "Obligatoire", trigger: "blur"}
+        ],
+        accountingPeriod: [
+          {required: true, message: "Obligatoire", trigger: "blur"},
+          {
+            required: true,
+            pattern: /^20[0-9]{2}$/,
+            message: "Entrez une année cohérente.",
+            trigger: "change"
+          }
+        ],
+        autocompletePayee: [
+          {required: true, message: "Obligatoire", trigger: "change"}
+        ],
+        issueDate: [
+          {required: true, message: "Obligatoire", trigger: "blur"}
+        ],
+        paymentDate: [
+          {required: true, message: "Obligatoire", trigger: "blur"}
+        ],
+        invoiceType: [
+          {required: true, message: "Obligatoire", trigger: "change"}
+        ],
+        description: [
+          {required: true, message: "Obligatoire", trigger: "blur"}
+        ]
+      }
+    }
   },
   methods: {
+    validateForm () {
+      var result = true
+      this.$refs.refFacture.validate(r => result = r)
+      if(this.$refs.refFactureDetails != undefined) { // C'est undefined avant d'avoir ajouté des détails.
+        this.$refs.refFactureDetails.forEach(f => {
+          f.validate(r => result = (r ? result : false))
+        })
+      }
+      if(result) {
+        this.$emit("save")
+      } else {
+        this.$message({message: "Le formulaire contient des erreurs.", type:"error", offset:40})
+      }
+    },
     addDetail () {
       this.value.details.push({
-        invoice: this.value.id
+        invoice: this.value.id,
+        taxes: 0.2
       })
     },
     removeDetail (index, detailId) {
@@ -206,10 +266,11 @@ export default {
             index,
             1
           )
-        }).
-          catch((err) => {
-            console.error(err)
-          })
+        }).catch((err) => {
+          this.$message({message: "Impossible de supprimer la ligne de la facture : " + err,
+            type: "error",
+            offset: 40})
+        })
       }
     },
     querySearchProspects (queryString, cb) {
@@ -223,9 +284,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-::v-deep .error .el-input__inner {
-    @apply border-2 border-red-600;
-}
-</style>

@@ -28,10 +28,19 @@
           </el-button>
         </router-link>
         <el-button
+          v-if="displaysCE"
           type="success"
           :loading="loadingCE"
           icon="el-icon-download"
           @click="downloadCE"
+        >
+          Générer la CE
+        </el-button>
+        <el-button
+          v-else
+          type="success"
+          plain
+          disabled
         >
           Générer la CE
         </el-button>
@@ -124,15 +133,24 @@
           <el-table-column
             prop="invoiceNumber"
             label="Référence"
-            width="100"
+            sortable
           />
           <el-table-column
             prop="description"
             label="Objet"
           />
           <el-table-column
+            prop="invoiceNumber"
+            label="N° de facture"
+            sortable
+          />
+          <el-table-column
+            prop="accountingPeriod"
+            label="Exercice comptable"
+            sortable
+          />
+          <el-table-column
             label="Opérations"
-            width="200"
           >
             <template slot-scope="scope">
               <el-button
@@ -147,12 +165,23 @@
                   icon="el-icon-edit"
                 />
               </router-link>
-              <el-button
-                type="text"
+              <el-popconfirm
+                confirm-button-text="Oui"
+                confirm-button-type="error"
+                cancel-button-text="Finalement non"
+                cancel-button-type="primary"
                 icon="el-icon-delete"
-                :loading="loadingInvoice"
-                @click="deleteInvoice(scope.row.id)"
-              />
+                icon-color="red"
+                title="Voulez-vous vraiment supprimer cette facture ?"
+                @onConfirm="deleteInvoice(scope.row.id)"
+              >
+                <el-button
+                  slot="reference"
+                  type="text"
+                  icon="el-icon-delete"
+                  :loading="loadingInvoice"
+                />
+              </el-popconfirm>
             </template>
           </el-table-column>
         </el-table>
@@ -175,7 +204,6 @@
           <el-table-column
             prop="documentType"
             label="Type de PVR"
-            width="200"
           >
             <template slot-scope="scope">
               <span v-if="scope.row.documentType === 'I'">PVRI</span>
@@ -183,12 +211,15 @@
             </template>
           </el-table-column>
           <el-table-column
+            prop="deliverable"
+            label="Description"
+          />
+          <el-table-column
             prop="signingDate"
             label="Date de signature"
           />
           <el-table-column
             label="Opérations"
-            width="200"
           >
             <template slot-scope="scope">
               <el-button
@@ -227,6 +258,7 @@ export default {
   },
   data () {
     return {
+      displaysCE: null,
       loading: false,
       loadingCE: false,
       loadingRDM: false,
@@ -234,6 +266,13 @@ export default {
       loadingPVR: false,
       activeCollapses: []
     }
+  },
+  created () {
+    axios.get(`/api/etudes/${this.$route.params.id}/ce/`, { withCredentials: true }).then((response) => {
+      this.displaysCE = response.data.description != ""
+    }).catch(err => {
+      this.$message({ message: "Une erreur est survenue lors de la récupération de la CE : " + err, type: "error" })
+    })
   },
   methods: {
     downloadDevis () {
@@ -277,7 +316,18 @@ export default {
       })
     },
     deleteInvoice (invoiceId) {
-      console.log("delete invoice id " + invoiceId)
+      this.loadingInvoice = true
+      axios.delete(
+        `/api/tresorerie/factures/${invoiceId}/`,
+        { withCredentials: true}
+      ).then(() => {
+        this.$message({message: "Facture supprimée avec succès.", type: "success"})
+        this.$emit("deleteInvoice", invoiceId)
+      }).catch((err) => {
+        this.$message({message: "Impossible de supprimer la facture : " + err, type: "error"})
+      }).finally(() => {
+        this.loadingInvoice = false
+      })
     },
     downloadPVR (pvrId) {
       this.loadingPVR = true
@@ -321,7 +371,3 @@ export default {
   }
 }
 </script>
-
-<style>
-
-</style>
