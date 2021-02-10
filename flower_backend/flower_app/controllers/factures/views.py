@@ -31,7 +31,6 @@ class FactureLineView(generics.RetrieveUpdateDestroyAPIView):
         serializer = FactureSerializer(instance=Facture.objects.get(id=pk),data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-
         return Response(request.data)
 
 class RemoveFactureLineView(generics.DestroyAPIView):
