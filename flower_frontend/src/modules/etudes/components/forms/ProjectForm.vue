@@ -122,10 +122,10 @@ export default {
           {required: true,message: "Obligatoire", trigger: "blur"}
         ],
         projectManager: [
-          {required: true,message: "Obligatoire", trigger: "blur"}
+          {required: true,message: "Obligatoire", trigger: "change"}
         ],
         qualityManager: [
-          {required: true,message: "Obligatoire", trigger: "blur"}
+          {required: true,message: "Obligatoire", trigger: "change"}
         ]
       }
     }

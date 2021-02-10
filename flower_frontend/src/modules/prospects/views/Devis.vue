@@ -113,7 +113,7 @@
         label="Suiveur de projet"
         prop="projectManager"
         label-width="140px"
-        :rules="[{ required: true, message: 'Obligatoire' , trigger: 'blur' }]"
+        :rules="[{ required: true, message: 'Obligatoire' , trigger: 'change' }]"
       >
         <MemberPicker
           v-model="etude.projectManager"
