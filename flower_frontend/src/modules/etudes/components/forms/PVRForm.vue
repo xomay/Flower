@@ -65,7 +65,6 @@
         <el-form-item
           label="Description des livrables"
           prop="deliverable"
-          label-width="auto"
         >
           <el-input
             v-model="value.deliverable"

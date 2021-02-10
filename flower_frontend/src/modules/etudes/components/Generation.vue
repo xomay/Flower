@@ -133,7 +133,6 @@
           <el-table-column
             prop="invoiceNumber"
             label="Référence"
-            width="100"
             sortable
           />
           <el-table-column
@@ -152,7 +151,6 @@
           />
           <el-table-column
             label="Opérations"
-            width="200"
           >
             <template slot-scope="scope">
               <el-button
@@ -206,7 +204,6 @@
           <el-table-column
             prop="documentType"
             label="Type de PVR"
-            width="200"
           >
             <template slot-scope="scope">
               <span v-if="scope.row.documentType === 'I'">PVRI</span>
@@ -214,12 +211,15 @@
             </template>
           </el-table-column>
           <el-table-column
+            prop="deliverable"
+            label="Description"
+          />
+          <el-table-column
             prop="signingDate"
             label="Date de signature"
           />
           <el-table-column
             label="Opérations"
-            width="200"
           >
             <template slot-scope="scope">
               <el-button
