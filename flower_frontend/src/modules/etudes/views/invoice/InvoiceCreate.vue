@@ -1,10 +1,12 @@
 <template>
-  <BaseComponent :title="'Ajouter une facture'">
+  <BaseComponent
+    title="Ajouter une facture"
+    :breadcrumb="breadcrumb"
+  >
     <InvoiceForm
       v-model="invoice"
       :loading="loading"
       :prospects="prospects"
-      :errors="errors"
       @save="createInvoice"
     />
   </BaseComponent>
@@ -23,32 +25,50 @@ export default {
       loading: false,
       invoice: {
         project: this.$route.params.id,
+        accountingPeriod: 2021,
+        invoiceNumber: "",
+        invoiceType: "",
+        issueDate: "",
+        paymentDate: "",
+        description: "",
         details: []
       },
-      errors: {},
-      prospects: this.getProspects()
+      prospects: [],
+      breadcrumb: [
+        {
+          name: "Suivi d'étude",
+          link: "/etudes"
+        },
+        {
+          name: "<loading>",
+          link: `/etudes/${this.$route.params.id}/voir?active=Rédaction`
+        },
+        {
+          name: "Ajouter une facture",
+          link: `/etudes/${this.$route.params.id}/factures/ajouter`
+        }
+      ]
     }
+  },
+  created () {
+    this.getProspects()
+    this.getEtude()
   },
   methods: {
     createInvoice () {
       this.loading = true
-      this.errors = {}
       axios.post(
         "/api/tresorerie/factures/",
         this.invoice,
         {withCredentials: true}
       ).then(() => {
-        this.$message({message: "Facture créée.",
-          type: "success",
-          offset: 40})
-        this.$router.push(`/etudes/${this.route.params.id}/voir?active=Rédaction`)
-      }).
-        catch((err) => {
-          this.errors = err.response.data
-        }).
-        finally(() => {
-          this.loading = false
-        })
+        this.$message({message: "Facture créée avec succès.", type: "success", offset: 40})
+        this.$router.push(`/etudes/${this.$route.params.id}/voir?active=Rédaction`)
+      }).catch((err) => {
+        this.$message({message: "Impossible de créer la facture : " + err, type: "error", offset: 40})
+      }).finally(() => {
+        this.loading = false
+      })
     },
     getProspects () {
       axios.get(
@@ -56,17 +76,20 @@ export default {
         {withCredentials: true}
       ).then((res) => {
         this.prospects = res.data
-      }).
-        catch(() => {
-          this.$message({message: "Impossible de récupérer la liste des prospects",
-            type: "error",
-            offset: 40})
-        })
+      }).catch(() => {
+        this.$message({message: "Impossible de récupérer la liste des prospects", type: "error", offset: 40})
+      })
+    },
+    getEtude () {
+      axios.get(
+        `/api/etudes/${this.$route.params.id}/`,
+        {withCredentials: true}
+      ).then((res) => {
+        this.breadcrumb[1].name = res.data.name
+      }).catch(() => {
+        this.$message({message: "Impossible de récupérer la liste des prospects", type: "error", offset: 40})
+      })
     }
   }
 }
 </script>
-
-<style>
-
-</style>

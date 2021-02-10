@@ -1,10 +1,12 @@
 <template>
-  <BaseComponent :title="'Modifier une facture'">
+  <BaseComponent
+    title="Modifier une facture"
+    :breadcrumb="breadcrumb"
+  >
     <InvoiceForm
       v-model="invoice"
       :loading="loading"
       :prospects="prospects"
-      :errors="errors"
       @save="saveInvoice"
     />
   </BaseComponent>
@@ -25,8 +27,21 @@ export default {
         project: this.$route.params.id,
         details: []
       },
-      errors: {},
-      prospects: []
+      prospects: [],
+      breadcrumb: [
+        {
+          name: "Suivi d'étude",
+          link: "/etudes"
+        },
+        {
+          name: "<loading>",
+          link: `/etudes/${this.$route.params.id}/voir?active=Rédaction`
+        },
+        {
+          name: "Modifier une facture",
+          link: `/etudes/${this.$route.params.id}/factures/ajouter`
+        }
+      ]
     }
   },
   created () {
@@ -41,19 +56,13 @@ export default {
         this.invoice,
         {withCredentials: true}
       ).then(() => {
-        this.$message({message: "Facture enregistrée",
-          type: "success",
-          offset: 40})
-      }).
-        catch((err) => {
-          this.errors = err.response.data
-          this.$message({message: err,
-            type: "error",
-            offset: 40})
-        }).
-        finally(() => {
-          this.loading = false
-        })
+        this.$message({message: "Facture enregistrée", type: "success", offset: 40})
+        this.$router.push(`/etudes/${this.$route.params.id}/voir?active=Rédaction`)
+      }).catch((err) => {
+        this.$message({message: "Impossible d'enregister la facture : "+err, type: "error", offset: 40})
+      }).finally(() => {
+        this.loading = false
+      })
     },
     getInvoice () {
       axios.get(
@@ -68,18 +77,12 @@ export default {
             "autocompletePayee",
             this.prospects.find((prospect) => prospect.id === this.invoice.payee).name
           )
-        }).
-          catch(() => {
-            this.$message({message: "Impossible de récupérer la liste des prospects",
-              type: "error",
-              offset: 40})
-          })
-      }).
-        catch(() => {
-          this.$message({message: "Impossible de récupérer la facture",
-            type: "error",
-            offset: 40})
+        }).catch((err) => {
+          this.$message({message: "Impossible de récupérer la liste des prospects : " + err, type: "error", offset: 40})
         })
+      }).catch((err) => {
+        this.$message({message: "Impossible de récupérer la facture : " + err, type: "error", offset: 40})
+      })
     },
     getProspects () {
       return axios.get(

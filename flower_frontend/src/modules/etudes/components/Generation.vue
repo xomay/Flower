@@ -278,6 +278,7 @@ export default {
     },
     deleteInvoice (invoiceId) {
       console.log("delete invoice id " + invoiceId)
+      //TODO add confirmation popup then do the axios
     },
     downloadPVR (pvrId) {
       this.loadingPVR = true
