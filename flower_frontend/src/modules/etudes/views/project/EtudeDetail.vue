@@ -42,6 +42,7 @@
     <Generation
       v-show="currentTab === 'Rédaction'"
       :etude="etude"
+      @deleteInvoice="deleteInvoice"
     />
   </BaseComponent>
 </template>
@@ -67,6 +68,10 @@ export default {
         {
           name: "Suivi d'étude",
           link: "/etudes"
+        },
+        {
+          name: "<loading>",
+          link: `/etudes/${this.$route.params.id}/voir`
         }
       ]
     }
@@ -78,38 +83,19 @@ export default {
       {withCredentials: true}
     ).then((res) => {
       this.etude = res.data
-      this.breadcrumb = [
-        {
-          name: "Suivi d'Etude",
-          link: "/etudes"
-        },
-        {
-          name: this.etude.name,
-          link: `/etudes/${this.etude.id}/voir`
-        }
-      ]
-    }).
-      catch(() => {
-        this.$message({
-          message: "Impossible de récupérer l'études pour le moment", type: "error"})
-      }).
-      finally(() => {
-        this.loading = false
-      })
-
-    /*
-         * Axios.get("/api/etudes/" + this.$route.params.id + '/groupes', { withCredentials: true }).then(res => {
-         *   this.groupes = res.data
-         * }).catch(() => {
-         *   this.$message({ message: 'Impossible de récupérer les groupes pour le moment', type: 'error'})
-         * }).finally(() => {
-         *   this.loading = false
-         * })
-         */
+      this.breadcrumb[1].name = this.etude.name
+    }).catch(() => {
+      this.$message({ message: "Impossible de récupérer l'études pour le moment", type: "error" })
+    }).finally(() => {
+      this.loading = false
+    })
   },
   methods: {
     handleTabChange (tab) {
       this.$router.push({query: {active: tab.label}})
+    },
+    deleteInvoice (invoiceId) {
+      this.etude.invoices = this.etude.invoices.filter(i => i.id !== invoiceId)
     }
   }
 }
