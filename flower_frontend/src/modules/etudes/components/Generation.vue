@@ -28,10 +28,19 @@
           </el-button>
         </router-link>
         <el-button
+          v-if="displaysCE"
           type="success"
           :loading="loadingCE"
           icon="el-icon-download"
           @click="downloadCE"
+        >
+          Générer la CE
+        </el-button>
+        <el-button
+          v-else
+          type="success"
+          plain
+          disabled
         >
           Générer la CE
         </el-button>
@@ -249,6 +258,7 @@ export default {
   },
   data () {
     return {
+      displaysCE: null,
       loading: false,
       loadingCE: false,
       loadingRDM: false,
@@ -256,6 +266,13 @@ export default {
       loadingPVR: false,
       activeCollapses: []
     }
+  },
+  created () {
+    axios.get(`/api/etudes/${this.$route.params.id}/ce/`, { withCredentials: true }).then((response) => {
+      this.displaysCE = response.data.description != ""
+    }).catch(err => {
+      this.$message({ message: "Une erreur est survenue lors de la récupération de la CE : " + err, type: "error" })
+    })
   },
   methods: {
     downloadDevis () {
@@ -354,7 +371,3 @@ export default {
   }
 }
 </script>
-
-<style>
-
-</style>
