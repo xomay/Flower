@@ -1,8 +1,8 @@
 <template>
   <div>
-    <span><i class="el-icon-user-solid" />Nom : {{ prospect.name }}</span><br>
-    <span><i class="el-icon-location" />Adresse : {{ prospect.address }}; {{ prospect.postcode }}, {{ prospect.town }}</span><br><br>
-    <span v-if="prospect.charge">
+    <span><i class="el-icon-user-solid" /> Nom : {{ prospect.name }}</span><br>
+    <span><i class="el-icon-location" /> Adresse : {{ prospect.address }}; {{ prospect.postcode }}, {{ prospect.town }}</span><br><br>
+    <span v-show="displayCharge">
       <i class="el-icon-user" /> Chargé dev'co :
       <el-link
         type="primary"
@@ -12,6 +12,15 @@
         {{ chargeName }}
       </el-link>
     </span><br><br>
+    <p v-if="prospect.advancement === 'AR'">
+      <i class="el-icon-view" /> <u>Dernier contact :</u> {{ niceDate (prospect.nextDate) }}
+    </p>
+    <p v-if="prospect.advancement === 'RDV'">
+      <i class="el-icon-date" /> <u>Date du rendez-vous :</u> {{ niceDate (prospect.nextDate) }}
+    </p>
+    <p v-if="prospect.advancement === 'DS'">
+      <i class="el-icon-date" /> <u>Deadline du devis :</u> {{ niceDate (prospect.nextDate) }}
+    </p>
     <span
       v-if="prospect.contactWay && prospect.contactWay.length > 0"
     >
@@ -39,19 +48,33 @@ export default {
   },
   data () {
     return {
-      chargeName: ""
+      chargeName: "",
+      displayCharge: false
     }
   },
   watch: {
     prospect (nv) {
-      axios.get(
-        `/api/membres/${nv.charge}/`,
-        {withCredentials: true}
-      ).then((res) => {
-        this.chargeName = res.data.firstname + " " + res.data.lastname
-      }).catch((err) => {
-        this.$message({message: "Impossible de récupérer le dev'co : "+err, type: "error", offset: 40})
-      })
+      if(nv.charge != null && nv.charge != undefined && nv.charge > 0) {
+        axios.get(
+          `/api/membres/${nv.charge}/`,
+          {withCredentials: true}
+        ).then((res) => {
+          this.chargeName = res.data.firstname + " " + res.data.lastname
+          this.displayCharge = true
+        }).catch((err) => {
+          this.$message({message: "Impossible de récupérer le dev'co : "+err, type: "error", offset: 40})
+        })
+      }
+    }
+  },
+  methods: {
+    niceDate (dateString) {
+      if(dateString == undefined || dateString == null) {
+        return "non défini."
+      } else {
+        const tokens = dateString.split("-")
+        return tokens[2] + "/" + tokens[1] + "/" + tokens[0]
+      }
     }
   }
 }
