@@ -46,7 +46,7 @@
     </el-col>
     <el-col :span="24">
       <ContactsGroup
-        :value="contactsFields"
+        :value="value.contactWay"
         @add-field="contactsAddField"
         @delete-field="contactsRemoveField"
       />
@@ -81,55 +81,26 @@ export default {
   components: {ContactsGroup},
   props: {
     value: { type: Object, required: true },
-    allContacts: { type: Array, required: true },
     loading: Boolean,
     deletable: Boolean
   },
   data () {
     return {
       breadcrumb: [],
-      contactsFields: [],
       firstWatch: true,
       formRules: {
         name: [
-          {required: true,
-            message: "Obligatoire",
-            trigger: "blur"}
+          {required: true, message: "Obligatoire", trigger: "blur"}
         ],
         address: [
-          {required: true,
-            message: "Obligatoire",
-            trigger: "blur"}
+          {required: true, message: "Obligatoire", trigger: "blur"}
         ],
         postcode: [
-          {required: true,
-            message: "Obligatoire",
-            trigger: "blur"}
+          {required: true, message: "Obligatoire", trigger: "blur"}
         ],
         town: [
-          {required: true,
-            message: "Obligatoire",
-            trigger: "blur"}
+          {required: true, message: "Obligatoire", trigger: "blur"}
         ]
-      }
-    }
-  },
-  watch: {
-    allContacts (v) {
-      if(this.value.contactWay != undefined) {
-        this.value.contactWay.forEach(c_id => {
-          const found = v.find(c_o => c_o.id === c_id)
-          if(found == undefined) {
-            this.contactsFields.push("")
-          } else {
-            this.contactsFields.push(found.contactWay)
-          }
-        })
-        if(this.contactsFields.length == 0) {
-          this.contactsFields = [""]
-        }
-      } else {
-        this.contactsFields = [""]
       }
     }
   },
@@ -148,13 +119,13 @@ export default {
       })
     },
     saveProspect () {
-      this.$emit("save", this.contactsFields)
+      this.$emit("save")
     },
     contactsAddField () {
-      this.contactsFields.push("")
+      this.value.contactWay.push("")
     },
     contactsRemoveField (index) {
-      this.contactsFields.splice(
+      this.value.contactWay.splice(
         index,
         1
       )
@@ -162,7 +133,3 @@ export default {
   }
 }
 </script>
-
-<style>
-
-</style>

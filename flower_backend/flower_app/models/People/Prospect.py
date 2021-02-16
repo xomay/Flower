@@ -1,5 +1,4 @@
 from django.db import models
-
 from rest_framework import serializers
 from flower_app.models.People.Membre import Membre
 from flower_app.models.Prospection import Action, ContactWay

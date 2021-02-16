@@ -61,8 +61,7 @@ class FactureSerializer(serializers.ModelSerializer):
             description = detail.get('description')
             taxFreeAmount = detail.get('taxFreeAmount')
             taxes = detail.get('taxes')
-            FactureDetail.objects.create(invoice=instance, description=description, taxFreeAmount=taxFreeAmount,
-                                         taxes=taxes)
+            FactureDetail.objects.create(invoice=instance, description=description, taxFreeAmount=taxFreeAmount, taxes=taxes)
         return instance
 
     def update(self, instance, validated_data):

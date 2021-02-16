@@ -14,7 +14,7 @@
           :key="item"
           class="liPrView"
         >
-          {{ getContact(item) }}
+          {{ item }}
         </li>
       </ul>
     </span>
@@ -25,14 +25,7 @@
 export default {
   name: "ProspectView",
   props: {
-    prospect: { type: Object, required: true },
-    contacts: { type: Array, required: true }
-  },
-  methods: {
-    getContact (id) {
-      const found = this.contacts.find(c => c.id === id)
-      return found != undefined ? found.contactWay : "<loading>"
-    }
+    prospect: { type: Object, required: true }
   }
 }
 </script>

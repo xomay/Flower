@@ -47,7 +47,7 @@
 export default {
   name: "ContactsGroup",
   props: {
-    value: {type: Array, required: true}
+    value: {type: undefined, required: true}
   },
   data () {
     return {
