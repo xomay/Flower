@@ -8,6 +8,7 @@
       :loading="loading"
       :members="members"
       :prospects="prospects"
+      :taken-ids="takenIds"
       @save="submitProject"
     />
   </BaseComponent>
@@ -38,15 +39,31 @@ export default {
         prospect: "",
         name: "",
         description: "",
-        mandat: "",
+        mandat: 2021,
         number: "",
         confidential: false,
         projectManager: "",
         qualityManager: ""
       },
       members: [],
-      prospects: []
+      prospects: [],
+      takenIds: []
     }
+  },
+  beforeCreate () {
+    axios.get(
+      "/api/etudes/",
+      {withCredentials: true}
+    ).then((res) => {
+      const year = new Date().getFullYear()
+      const baseInt = parseInt(year.toString().slice(-2) + "000", 10)
+      this.takenIds = res.data.filter(etu => etu.mandat == year).map(etu => etu.number)
+      const amount = this.takenIds.length
+      const result = amount + baseInt
+      this.form.number = result
+    }).catch((err) => {
+      this.$message({message: "Impossible de récupérer la liste des prospects : " + err, type: "error", offset: 40})
+    })
   },
   created () {
     axios.get(
@@ -92,10 +109,9 @@ export default {
             type: "error",
             offset: 40})
         }
-      }).
-        finally(() => {
-          this.loading = false
-        })
+      }).finally(() => {
+        this.loading = false
+      })
     }
   }
 }

@@ -19,7 +19,9 @@
     >
       <el-card>
         <el-row>
-          <el-col :span="11">
+          <div
+            :style="'width: 100%;'"
+          >
             <u>Prospect :</u>
             <router-link :to="'/prospects/' + item.id + '/voir'">
               <el-button
@@ -29,7 +31,7 @@
                 {{ item.prospect.name }}
               </el-button>
             </router-link>
-          </el-col>
+          </div>
           <el-col
             v-if="item.list === 'RDV' || item.list === 'DS'"
             :span="13"

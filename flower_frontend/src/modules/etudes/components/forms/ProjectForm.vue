@@ -1,5 +1,6 @@
 <template>
   <el-form
+    ref="formProject"
     :model="value"
     :rules="formRules"
     label-position="left"
@@ -32,20 +33,34 @@
         type="textarea"
       />
     </el-form-item>
-    <el-form-item
-      label="Mandat"
-      prop="mandat"
-      label-width="140px"
-    >
-      <el-input v-model="value.mandat" />
-    </el-form-item>
-    <el-form-item
-      label="Numéro de l'étude"
-      prop="number"
-      label-width="140px"
-    >
-      <el-input v-model="value.number" />
-    </el-form-item>
+    <el-col :span="12">
+      <el-form-item
+        label="Mandat"
+        prop="mandat"
+        label-width="140px"
+      >
+        <el-input-number
+          v-model="value.mandat"
+          controls-position="right"
+          :min="2020"
+          :max="2050"
+        />
+      </el-form-item>
+    </el-col>
+    <el-col :span="12">
+      <el-form-item
+        label="Numéro de l'étude"
+        prop="number"
+        label-width="140px"
+      >
+        <el-input-number
+          v-model="value.number"
+          controls-position="right"
+          :min="21000"
+          :max="50000"
+        />
+      </el-form-item>
+    </el-col>
     <el-form-item
       label="Confidentialité"
       prop="confidential"
@@ -80,7 +95,7 @@
         :loading="loading"
         icon="el-icon-plus"
         type="success"
-        @click="$emit('save')"
+        @click="validateForm"
       >
         Enregistrer l'étude
       </el-button>
@@ -98,35 +113,55 @@ export default {
     value: { type: Object, required: true },
     loading: { type: Boolean, required: true },
     members: { type: Array, required: true },
-    prospects: { type: Array, required: true }
+    prospects: { type: Array, required: true },
+    takenIds: { type: Array, default () { return [] } }
   },
   data () {
     return {
       formRules: {
         prospect: [
-          {required: true,message: "Obligatoire", trigger: "change"}
+          {required: true, message: "Obligatoire", trigger: "change"}
         ],
         name: [
-          {required: true,message: "Obligatoire", trigger: "blur"}
+          {required: true, message: "Obligatoire", trigger: "blur"}
         ],
         description: [
-          {required: true,message: "Obligatoire", trigger: "blur"}
+          {required: true, message: "Obligatoire", trigger: "blur"}
         ],
         mandat: [
-          {required: true,message: "Obligatoire", trigger: "blur"}
+          {required: true, message: "Obligatoire", trigger: "blur"}
         ],
         number: [
-          {required: true,message: "Obligatoire", trigger: "blur"}
+          {required: true, message: "Obligatoire", trigger: "blur"},
+          {required: true, validator: this.checkNumber, trigger: "change"}
         ],
         confidential: [
-          {required: true,message: "Obligatoire", trigger: "blur"}
+          {required: true, message: "Obligatoire", trigger: "blur"}
         ],
         projectManager: [
-          {required: true,message: "Obligatoire", trigger: "change"}
+          {required: true, message: "Obligatoire", trigger: "change"}
         ],
         qualityManager: [
-          {required: true,message: "Obligatoire", trigger: "change"}
+          {required: true, message: "Obligatoire", trigger: "change"}
         ]
+      }
+    }
+  },
+  methods: {
+    validateForm () {
+      this.$refs.formProject.validate((r) => {
+        if(r) {
+          this.$emit("save")
+        } else {
+          this.$message({ message: "Le formulaire n'est pas valide.", type: "error" })
+        }
+      })
+    },
+    checkNumber (rule, value, callback) {
+      if (this.takenIds.includes(value)) {
+        callback(new Error("Ce nom d'étude est déjà pris."))
+      } else {
+        callback()
       }
     }
   }

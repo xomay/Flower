@@ -8,6 +8,7 @@
         v-model="prospect"
         :loading="loading"
         :deletable="true"
+        :members="members"
         @save="updateProspect"
         @delete="deleteProspect"
       />
@@ -25,7 +26,7 @@ export default {
   data () {
     return {
       prospect: {},
-      employes: [],
+      members: [],
       loading: false,
       breadcrumb: [
         {
@@ -45,7 +46,7 @@ export default {
   },
   created () {
     this.getProspect()
-    this.getEmployes()
+    this.getMembers()
   },
   methods: {
     getProspect () {
@@ -84,17 +85,18 @@ export default {
         this.$message({message: "Le prospect a bien été retiré", type: "success"})
         this.$router.push("/prospects")
       }).catch((err) => {
-        this.$message({message: err, type: "error"})
+        this.$message({message: "Impossible de récupérer le prospect : "+err, type: "error"})
       })
     },
-    getEmployes () {
+    getMembers () {
       axios.get(
-        `/api/prospects/${this.$route.params.id}/employes/`,
+        "/api/membres/",
         {withCredentials: true}
       ).then((res) => {
-        this.employes = res.data
+        res.data.forEach((mem) => mem.value = `${mem.firstname} ${mem.lastname}`)
+        this.members = res.data
       }).catch((err) => {
-        this.$message({message: err, type: "error"})
+        this.$message({message: "Impossible de récupérer les membres : "+err, type: "error"})
       })
     }
   }

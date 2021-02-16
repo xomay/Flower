@@ -16,6 +16,19 @@
     </el-col>
     <el-col :span="24">
       <el-form-item
+        label="Chargé dev'co"
+        prop="charge"
+        label-width="200px"
+      >
+        <MemberPicker
+          v-model="value.charge"
+          :item-list="members"
+          placeholder="Chargé dev'co"
+        />
+      </el-form-item>
+    </el-col>
+    <el-col :span="24">
+      <el-form-item
         label="Adresse"
         prop="address"
         label-width="200px"
@@ -74,13 +87,15 @@
 </template>
 
 <script>
+import MemberPicker from "../../membres/components/MemberPicker.vue"
 import ContactsGroup from "./ContactsGroup.vue"
 
 export default {
   name: "ProspectsForm",
-  components: {ContactsGroup},
+  components: {ContactsGroup, MemberPicker},
   props: {
     value: { type: Object, required: true },
+    members: { type: Array, required: true },
     loading: Boolean,
     deletable: Boolean
   },
@@ -91,6 +106,9 @@ export default {
       formRules: {
         name: [
           {required: true, message: "Obligatoire", trigger: "blur"}
+        ],
+        charge: [
+          {required: true, message: "Obligatoire", trigger: "change"}
         ],
         address: [
           {required: true, message: "Obligatoire", trigger: "blur"}
@@ -110,15 +128,14 @@ export default {
         if(r) {
           this.saveProspect()
         } else {
-          this.$message({
-            message: "Certains champs ne sont pas valides !",
-            type:"error",
-            offset: 40
-          })
+          this.$message({ message: "Certains champs ne sont pas valides !", type:"error", offset: 40 })
         }
       })
     },
     saveProspect () {
+      console.log(this.value.contactWay)
+      this.value.contactWay = this.value.contactWay.filter(str => /\S/.test(str))
+      console.log(this.value.contactWay)
       this.$emit("save")
     },
     contactsAddField () {
