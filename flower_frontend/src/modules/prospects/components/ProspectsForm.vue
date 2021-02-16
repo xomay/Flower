@@ -124,20 +124,18 @@ export default {
   },
   methods: {
     validateForm () {
-      console.log(this.members)
       this.$refs.prosFormRef.validate((r) => {
         if(r) {
           this.saveProspect()
         } else {
-          this.$message({
-            message: "Certains champs ne sont pas valides !",
-            type:"error",
-            offset: 40
-          })
+          this.$message({ message: "Certains champs ne sont pas valides !", type:"error", offset: 40 })
         }
       })
     },
     saveProspect () {
+      console.log(this.value.contactWay)
+      this.value.contactWay = this.value.contactWay.filter(str => /\S/.test(str))
+      console.log(this.value.contactWay)
       this.$emit("save")
     },
     contactsAddField () {

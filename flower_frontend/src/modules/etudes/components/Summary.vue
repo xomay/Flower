@@ -67,19 +67,18 @@ export default {
   created () {
     axios.get(
       `/api/gantt/etude/${this.$route.params.id}/`,
-      {withCredentials: true,
-        responseType: "arraybuffer"}
+      {
+        withCredentials: true,
+        responseType: "arraybuffer"
+      }
     ).then((res) => {
       this.ganttJPG = Buffer.from(
         res.data,
         "binary"
       ).toString("base64")
-    }).
-      catch((err) => {
-        this.$message({message: err,
-          type: "error",
-          offset: 40})
-      })
+    }).catch((err) => {
+      this.$message({message: "Impossible de récupérer le graphe : "+err, type: "error", offset: 40})
+    })
   }
 }
 </script>

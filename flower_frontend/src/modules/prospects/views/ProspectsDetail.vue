@@ -58,6 +58,16 @@
           prop="position"
           sortable
         />
+        <el-table-column
+          label="Email"
+          prop="email"
+          sortable
+        />
+        <el-table-column
+          label="Mobile"
+          prop="mobile"
+          sortable
+        />
       </el-table>
     </BaseComponent>
   </div>
