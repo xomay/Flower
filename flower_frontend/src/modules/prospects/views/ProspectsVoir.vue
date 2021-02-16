@@ -149,36 +149,27 @@ export default {
     ).then((res) => {
       this.prospects = res.data
       this.calculateItems()
-    }).
-      catch(() => {
-        this.$message({message: "Impossible de récupérer les prospects pour le moment",
-          type: "error"})
-      }).
-      finally(() => {})
+    }).catch((err) => {
+      this.$message({message: "Impossible de récupérer les prospects pour le moment: "+err, type: "error"})
+    })
     axios.get(
       "/api/contactway/",
       {withCredentials: true}
     ).then((res) => {
       this.contacts = res.data
-    }).
-      catch(() => {
-        this.$message({message: "Impossible de récupérer les contacts pour le moment",
-          type: "error"})
-      }).
-      finally(() => {})
+    }).catch((err) => {
+      this.$message({message: "Impossible de récupérer les contacts pour le moment: "+err, type: "error"})
+    })
     axios.get(
       "/api/membres/",
       {withCredentials: true}
     ).then((res) => {
       this.membres = res.data
-    }).
-      catch(() => {
-        this.$message({message: "Impossible de récupérer les membres pour le moment",
-          type: "error"})
-      }).
-      finally(() => {
-        this.loading = false
-      })
+    }).catch((err) => {
+      this.$message({message: "Impossible de récupérer les membres pour le moment: "+err, type: "error"})
+    }).finally(() => {
+      this.loading = false
+    })
   },
   methods: {
     // itemID : l'id de l'item
@@ -227,16 +218,12 @@ export default {
         prospect,
         {withCredentials: true}
       ).then(() => {
-        this.$message({message: "Le prospect a bien été mis à jour",
-          type: "success"})
-      }).
-        catch((err) => {
-          this.$message({message: err,
-            type: "error"})
-        }).
-        finally(() => {
-          this.loading = false
-        })
+        this.$message({message: "Le prospect a bien été mis à jour", type: "success"})
+      }).catch((err) => {
+        this.$message({message: "Impossible d'update le prospect : "+err, type: "error"})
+      }).finally(() => {
+        this.loading = false
+      })
     },
     // transforme les prospects en objets qui sont draggables
     calculateItems () {
@@ -273,11 +260,11 @@ export default {
 </script>
 
 <style scoped>
-.filtresDiv {
-  width: 95%;
-  height: 5vh;
-  border: 1px solid black;
-  margin: 1em;
-  text-align: center;
-}
+  .filtresDiv {
+    width: 95%;
+    height: 5vh;
+    border: 1px solid black;
+    margin: 1em;
+    text-align: center;
+  }
 </style>

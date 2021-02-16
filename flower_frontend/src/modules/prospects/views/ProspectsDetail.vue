@@ -1,7 +1,7 @@
 <template>
   <div>
     <BaseComponent
-      title="Prospect"
+      :title="titleProspect"
       :breadcrumb="breadcrumb"
     >
       <template v-slot:action>
@@ -16,7 +16,6 @@
       </template>
       <ProspectsView
         :prospect="prospect"
-        :contacts="contactsWays"
       />
     </BaseComponent>
     <BaseComponent
@@ -75,15 +74,15 @@ export default {
     return {
       prospect: {},
       employes: [],
-      contactsWays: [],
       loading: false,
+      titleProspect: "<loading>",
       breadcrumb: [
         {
           name: "Lister des prospects",
           link: "/prospects"
         },
         {
-          name: "",
+          name: "<loading>",
           link: "/prospects/ajouter"
         }
       ]
@@ -92,7 +91,6 @@ export default {
   created () {
     this.getProspect()
     this.getEmployes()
-    this.getContactWays()
   },
   methods: {
     getProspect () {
@@ -102,37 +100,9 @@ export default {
       ).then((res) => {
         this.prospect = res.data
         this.breadcrumb[1].name = this.prospect.name
+        this.titleProspect = this.prospect.name
       }).catch((err) => {
-        this.$message({message: "Impossible de récupérer les prospects : "+err,
-          type: "error"})
-      })
-    },
-    updateProspect () {
-      this.loading = true
-      axios.put(
-        `/api/prospects/${this.$route.params.id}/`,
-        this.prospect,
-        {withCredentials: true}
-      ).then(() => {
-        this.$message({message: "Le prospect a bien été mis à jour", type: "success"})
-      }). catch((err) => {
-        this.$message({message: "Impossible d'update le prospect ("+this.$route.params.id+") : "+err, type: "error"})
-      }). finally(() => {
-        this.loading = false
-      })
-    },
-    getContactWays () {
-      this.loading = true
-      axios.get(
-        "/api/contactway/",
-        {withCredentials: true}
-      ).then((res) => {
-        this.contactsWays = res.data
-      }).catch((err) => {
-        this.$message({message: "Erreur lors de la récupération des contactways : "+err,
-          type: "error"})
-      }).finally(() => {
-        this.loading = false
+        this.$message({message: "Impossible de récupérer les prospects : "+err, type: "error"})
       })
     },
     getEmployes () {
@@ -148,7 +118,3 @@ export default {
   }
 }
 </script>
-
-<style>
-
-</style>

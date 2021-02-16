@@ -19,7 +19,7 @@ class ProspectListCreateView(generics.ListCreateAPIView):
     serializer_class = ProspectSerializer
     queryset = Prospect.objects.all()
 
-# Méthode pour remplacer un l'array d'ids par les valeurs textuelles qui leur sont associés.
+# Méthode pour remplacer un l'array d'ids par les valeurs textuelles qui leur sont associés. 
 def remplaceContactsIdByValue(response):
     if "contactWay" in response.data:
         ctts = []
