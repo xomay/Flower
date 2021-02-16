@@ -6,6 +6,7 @@
     <ProspectsForm
       v-model="prospect"
       :loading="loading"
+      :members="members"
       @save="registerProspect"
     />
   </BaseComponent>
@@ -23,6 +24,7 @@ export default {
       prospect: {
         contactWay: [""]
       },
+      members: [],
       loading: false,
       breadcrumb: [
         {
@@ -35,6 +37,9 @@ export default {
         }
       ]
     }
+  },
+  created () {
+    this.getMembers()
   },
   methods: {
     registerProspect () {
@@ -50,6 +55,17 @@ export default {
         this.$message({message: "Impossible de récupérer le prospect : "+err, type: "error"})
       }).finally(() => {
         this.loading = false
+      })
+    },
+    getMembers () {
+      axios.get(
+        "/api/membres/",
+        {withCredentials: true}
+      ).then((res) => {
+        res.data.forEach((mem) => mem.value = `${mem.firstname} ${mem.lastname}`)
+        this.members = res.data
+      }).catch((err) => {
+        this.$message({message: "Impossible de récupérer les membres : "+err, type: "error"})
       })
     }
   }
