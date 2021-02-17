@@ -49,7 +49,6 @@ export default {
   methods: {
     sendForm () {
       this.loading = true
-      console.log(this.actionCommerciale)
       axios.post(
         "/api/actioncom/",
         this.actionCommerciale,

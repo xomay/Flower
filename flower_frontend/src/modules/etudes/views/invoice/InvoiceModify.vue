@@ -70,7 +70,7 @@ export default {
         {withCredentials: true}
       ).then((res) => {
         this.invoice = res.data
-        console.log(this.invoice)
+        //console.log(this.invoice)
         this.getProspects().then((res) => {
           this.prospects = res.data
           this.$set(

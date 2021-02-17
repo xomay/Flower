@@ -109,27 +109,21 @@ export default {
       ).then(() => {
         this.$message({message: "L'étude a bien été modifié.", type: "success", offset: 40})
         this.$router.push("/etudes/"+this.etude.id+"/voir")
-      }).
-        catch((err) => {
-          console.log(err)
-          if (err.response && err.response.status === 400) {
-            this.$message({message: "Le formulaire comporte des erreurs.",
-              type: "error",
-              offset: 40})
-          } else {
-            this.$message({message: "Impossible de créer l'étude pour le moment.",
-              type: "error",
-              offset: 40})
-          }
-        }).
-        finally(() => {
-          this.loading = false
-        })
+      }).catch((err) => {
+        this.$message({message: "Erreur lors de l'enregistrement : " + err, type: "error"})
+        if (err.response && err.response.status === 400) {
+          this.$message({message: "Le formulaire comporte des erreurs.",
+            type: "error",
+            offset: 40})
+        } else {
+          this.$message({message: "Impossible de créer l'étude pour le moment.",
+            type: "error",
+            offset: 40})
+        }
+      }).finally(() => {
+        this.loading = false
+      })
     }
   }
 }
 </script>
-
-<style>
-
-</style>

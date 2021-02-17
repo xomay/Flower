@@ -99,7 +99,7 @@ export default {
           offset: 40})
         this.$router.push("/etudes")
       }).catch((err) => {
-        console.log(err)
+        this.$message({message: "Erreur lors de l'enregistrement : " + err, type: "error"})
         if (err.response && err.response.status === 400) {
           this.$message({message: "Le formulaire comporte des erreurs.",
             type: "error",

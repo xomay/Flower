@@ -149,7 +149,7 @@ export default {
         this.$message({message: "Les Groupes et Phases ont bien été enregistrés", type: "success"})
         this.$router.push(`/etudes/${this.$route.params.id}/voir?active=Phases`)
       }).catch((err) => {
-        console.log(err)
+        this.$message({message: "Erreur lors de l'enregistrement : " + err, type: "error"})
         if (err.response && err.response.status === 400) {
           this.$message({message: "Le formulaire comporte des erreurs. Vérifiez les descriptions et les objectifs des phases (menu déroulant)",
             type: "error",
