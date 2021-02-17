@@ -62,12 +62,18 @@
           </template>
         </el-table-column>
         <el-table-column
-          width="70"
+          width="110"
           label="Nb JEH"
         >
           <template slot-scope="props">
-            <el-input v-model="props.row.nbJEH" />
-            <!-- <el-input-number v-model="props.row.nbJEH" controls-position="right" :min="1" size="small"></el-input-number> -->
+            <el-input-number
+              v-model="props.row.nbJEH"
+              controls-position="right"
+              :min="1"
+              :max="99"
+              style="width: 90%"
+              size="small"
+            />
           </template>
         </el-table-column>
         <el-table-column
@@ -98,11 +104,18 @@
         </el-table-column>
         <el-table-column
           v-if="!small"
-          width="70"
-          label="Durée"
+          width="110"
+          label="Durée (jours)"
         >
           <template slot-scope="props">
-            <el-input v-model="props.row.period" />
+            <el-input-number
+              v-model="props.row.period"
+              controls-position="right"
+              :min="1"
+              :max="99"
+              style="width: 90%"
+              size="small"
+            />
           </template>
         </el-table-column>
         <el-table-column
@@ -152,15 +165,12 @@
 </template>
 
 <script>
-// Const axios = require('axios')
-
 export default {
   name: "PhasesForm",
   props: {
     value: { type: Array, required: true },
     small: { type: Boolean, required: true }
   },
-
   methods: {
     addGroupe () {
       this.$emit("add-groupe")
@@ -216,7 +226,3 @@ export default {
   }
 }
 </script>
-
-<style>
-
-</style>
