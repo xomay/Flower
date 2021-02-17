@@ -62,12 +62,18 @@
           </template>
         </el-table-column>
         <el-table-column
-          width="70"
+          width="110"
           label="Nb JEH"
         >
           <template slot-scope="props">
-            <el-input v-model="props.row.nbJEH" />
-            <!-- <el-input-number v-model="props.row.nbJEH" controls-position="right" :min="1" size="small"></el-input-number> -->
+            <el-input-number
+              v-model="props.row.nbJEH"
+              controls-position="right"
+              :min="1"
+              :max="99"
+              style="width: 90%"
+              size="small"
+            />
           </template>
         </el-table-column>
         <el-table-column
@@ -98,11 +104,18 @@
         </el-table-column>
         <el-table-column
           v-if="!small"
-          width="70"
-          label="Durée"
+          width="110"
+          label="Durée (jours)"
         >
           <template slot-scope="props">
-            <el-input v-model="props.row.period" />
+            <el-input-number
+              v-model="props.row.period"
+              controls-position="right"
+              :min="1"
+              :max="99"
+              style="width: 90%"
+              size="small"
+            />
           </template>
         </el-table-column>
         <el-table-column
@@ -152,15 +165,12 @@
 </template>
 
 <script>
-// Const axios = require('axios')
-
 export default {
   name: "PhasesForm",
   props: {
     value: { type: Array, required: true },
     small: { type: Boolean, required: true }
   },
-
   methods: {
     addGroupe () {
       this.$emit("add-groupe")
@@ -185,7 +195,7 @@ export default {
       this.value = this.value.sort((a, b) => a.index - b.index)
     },
     exchangeItems (groupe_index, index1, index2) {
-      console.log(`inverting ${index1} and ${index2} in array of length ${this.value[groupe_index].phases.length}`)
+      //console.log(`inverting ${index1} and ${index2} in array of length ${this.value[groupe_index].phases.length}`)
       if (index1 < 0 || index1 >= this.value[groupe_index].phases.length || index2 < 0 || index2 >= this.value[groupe_index].phases.length) {
         return
       }
@@ -197,7 +207,7 @@ export default {
         this.value[groupe_index].phases[index1].index
       ]
       this.value[groupe_index].phases = this.value[groupe_index].phases.sort((a, b) => a.index - b.index)
-      console.log(this.value[groupe_index].phases)
+      //console.log(this.value[groupe_index].phases)
     },
     deleteGroupe (groupeId, groupeIndex) {
       this.$emit(
@@ -216,7 +226,3 @@ export default {
   }
 }
 </script>
-
-<style>
-
-</style>

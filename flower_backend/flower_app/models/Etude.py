@@ -77,7 +77,7 @@ class EtudeSerializer(serializers.ModelSerializer):
 
 # Can only be imported once the Etude model is completely defined ! 
 from flower_app.models.Mission import Mission, MissionSerializer, MissionDetailSerializer
-# from flower_app.models.Groupe import Groupe
+
 from flower_app.models.GroupePhase import Groupe, GroupeDetailSerializer
 from flower_app.models.Facture import FactureSerializer
 from flower_app.models.PVR import PVRSerializer

@@ -44,6 +44,7 @@
           controls-position="right"
           :min="2020"
           :max="2050"
+          @change="mandatEdited"
         />
       </el-form-item>
     </el-col>
@@ -163,6 +164,11 @@ export default {
       } else {
         callback()
       }
+    },
+    mandatEdited (nv) {
+      const lastYear = nv.toString().slice(-2)
+      const lastNumber = this.value.number.toString().slice(-3)
+      this.value.number = parseInt(lastYear+lastNumber)
     }
   }
 }

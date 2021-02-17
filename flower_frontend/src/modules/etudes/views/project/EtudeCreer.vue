@@ -62,7 +62,7 @@ export default {
       const result = amount + baseInt
       this.form.number = result
     }).catch((err) => {
-      this.$message({message: "Impossible de récupérer la liste des prospects : " + err, type: "error", offset: 40})
+      this.$message({message: "Impossible de récupérer la liste des études : " + err, type: "error", offset: 40})
     })
   },
   created () {
@@ -99,7 +99,7 @@ export default {
           offset: 40})
         this.$router.push("/etudes")
       }).catch((err) => {
-        console.log(err)
+        this.$message({message: "Erreur lors de l'enregistrement : " + err, type: "error"})
         if (err.response && err.response.status === 400) {
           this.$message({message: "Le formulaire comporte des erreurs.",
             type: "error",

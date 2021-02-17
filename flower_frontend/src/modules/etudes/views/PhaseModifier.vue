@@ -5,7 +5,7 @@
   >
     <PhasesForm
       v-model="groupes"
-      :small="true"
+      :small="false"
       @add-groupe="addGroupe"
       @add-phase="addPhase"
       @delete-groupe="deleteGroupe"
@@ -15,7 +15,7 @@
       type="primary"
       @click="submitGroupesAndPhases"
     >
-      Enregister
+      Enregistrer
     </el-button>
   </BaseComponent>
 </template>
@@ -31,7 +31,20 @@ export default {
     return {
       loading: true,
       groupes: [],
-      breadcrumb: []
+      breadcrumb: [
+        {
+          name: "Suivi d'Etude",
+          link: "/etudes"
+        },
+        {
+          name: "<loading>",
+          link: `/etudes/${this.$route.params.id}/voir`
+        },
+        {
+          name: "Phases",
+          link: `/etudes/${this.$route.params.id}/phases`
+        }
+      ]
     }
   },
   created () {
@@ -45,25 +58,10 @@ export default {
         groupe.phases = groupe.phases.sort((a, b) => a.index - b.index)
       })
       this.groupes = res.data.groupes
-      this.breadcrumb = [
-        {
-          name: "Suivi d'Etude",
-          link: "/etudes"
-        },
-        {
-          name: res.data.name,
-          link: `/etudes/${this.$route.params.id}/voir`
-        },
-        {
-          name: "Phases",
-          link: `/etudes/${this.$route.params.id}/phases`
-        }
-      ]
-    }).
-      catch(() => {
-        this.$message({message: "Impossible de récupérer les groupes pour le moment",
-          type: "error"})
-      })
+      this.breadcrumb[1].name = res.data.name
+    }).catch(() => {
+      this.$message({message: "Impossible de récupérer les groupes pour le moment", type: "error"})
+    })
   },
   methods: {
     addGroupe () {
@@ -79,17 +77,13 @@ export default {
         newGroup,
         {withCredentials: true}
       ).then((res) => {
-        this.$message({message: "Le groupe a bien été créé",
-          type: "success"})
+        this.$message({message: "Le groupe a bien été créé", type: "success"})
         this.groupes.push(res.data)
-      }).
-        catch(() => {
-          this.$message({message: "Impossible de créer un groupe pour le moment",
-            type: "error"})
-        }).
-        finally(() => {
-          this.loading = false
-        })
+      }).catch(() => {
+        this.$message({message: "Impossible de créer un groupe pour le moment", type: "error"})
+      }).finally(() => {
+        this.loading = false
+      })
     },
     addPhase (groupe) {
       const newIndex = (Math.max.apply(
@@ -105,17 +99,13 @@ export default {
         newPhase,
         {withCredentials: true}
       ).then((res) => {
-        this.$message({message: "La phase a bien été créé",
-          type: "success"})
+        this.$message({message: "La phase a bien été créée", type: "success"})
         groupe.phases.push(res.data)
-      }).
-        catch(() => {
-          this.$message({message: "Impossible de créer une phase pour le moment",
-            type: "error"})
-        }).
-        finally(() => {
-          this.loading = false
-        })
+      }).catch(() => {
+        this.$message({message: "Impossible de créer une phase pour le moment", type: "error"})
+      }).finally(() => {
+        this.loading = false
+      })
     },
     deleteGroupe ({groupeId, groupeIndex}) {
       axios.delete(
@@ -128,11 +118,9 @@ export default {
         )
         this.$message({message: "Le groupe a bien été supprimé",
           type: "success"})
-      }).
-        catch(() => {
-          this.$message({message: "Impossible de supprimer ce groupe pour le moment",
-            type: "error"})
-        })
+      }).catch((err) => {
+        this.$message({message: "Impossible de supprimer ce groupe pour le moment :"+err, type: "error"})
+      })
     },
     deletePhase ({phase, groupe}) {
       axios.delete(
@@ -148,37 +136,32 @@ export default {
         }
         this.$message({message: "La phase a bien été supprimé",
           type: "success"})
-      }).
-        catch(() => {
-          this.$message({message: "Impossible de supprimer cette phase pour le moment",
-            type: "error"})
-        })
+      }).catch(() => {
+        this.$message({message: "Impossible de supprimer cette phase pour le moment", type: "error"})
+      })
     },
     submitGroupesAndPhases () {
-      // Let phases = this.groupes.map(groupe => groupe.phases).flat()
       axios.put(
         "/api/etudes/groupes/",
         this.groupes,
         {withCredentials: true}
       ).then(() => {
-        this.$message({message: "Les Groupes et Phases ont bien été enregistrés",
-          type: "success"})
-      }).
-        catch((err) => {
-          console.log(err)
-          if (err.response && err.response.status === 400) {
-            this.$message({message: "Le formulaire comporte des erreurs. Vérifiez les descriptions et les objectifs des phases (menu déroulant)",
-              type: "error",
-              offset: 40})
-          } else {
-            this.$message({message: "Impossible d'enregistrer les Groupes et Phases pour le moment",
-              type: "error",
-              offset: 40})
-          }
-        }).
-        finally(() => {
-          this.loading = false
-        })
+        this.$message({message: "Les Groupes et Phases ont bien été enregistrés", type: "success"})
+        this.$router.push(`/etudes/${this.$route.params.id}/voir?active=Phases`)
+      }).catch((err) => {
+        this.$message({message: "Erreur lors de l'enregistrement : " + err, type: "error"})
+        if (err.response && err.response.status === 400) {
+          this.$message({message: "Le formulaire comporte des erreurs. Vérifiez les descriptions et les objectifs des phases (menu déroulant)",
+            type: "error",
+            offset: 40})
+        } else {
+          this.$message({message: "Impossible d'enregistrer les Groupes et Phases pour le moment",
+            type: "error",
+            offset: 40})
+        }
+      }).finally(() => {
+        this.loading = false
+      })
     }
   }
 }
