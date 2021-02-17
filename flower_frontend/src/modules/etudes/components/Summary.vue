@@ -46,7 +46,10 @@
       v-loading="!ganttJPG"
       class="flex-1"
     >
-      <img :src="`data:image/jpeg;base64,${ganttJPG}`">
+      <img
+        :src="`data:image/jpeg;base64,${ganttJPG}`"
+        width="55%"
+      >
     </div>
   </div>
 </template>
