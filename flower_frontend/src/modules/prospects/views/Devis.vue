@@ -201,8 +201,7 @@ export default {
       this.prospects = res.data
     }).
       catch((err) => {
-        console.log(err)
-        this.$message({message: "Impossible de récupérer la liste des prospects.",
+        this.$message({message: "Impossible de récupérer la liste des prospects:" + err,
           type: "error",
           offset: 40})
       })
@@ -214,8 +213,7 @@ export default {
       this.etudes = res.data
     }).
       catch((err) => {
-        console.log(err)
-        this.$message({message: "Impossible de récupérer la liste des études.",
+        this.$message({message: "Impossible de récupérer la liste des études:" +err,
           type: "error",
           offset: 40})
       })
@@ -227,8 +225,7 @@ export default {
       this.members = res.data
     }).
       catch((err) => {
-        console.log(err)
-        this.$message({message: "Impossible de récupérer la liste des membres.",
+        this.$message({message: "Impossible de récupérer la liste des membres:" + err,
           type: "error",
           offset: 40})
       })
