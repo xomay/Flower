@@ -8,6 +8,7 @@
       :loading="loading"
       :members="membres"
       :prospects="prospects"
+      :taken-ids="takenIds"
       @save="saveProject"
     />
   </BaseComponent>
@@ -49,8 +50,24 @@ export default {
         qualityManager: 0
       },
       membres: [],
-      prospects: []
+      prospects: [],
+      takenIds: []
     }
+  },
+  beforeCreate () {
+    axios.get(
+      "/api/etudes/",
+      {withCredentials: true}
+    ).then((res) => {
+      const year = new Date().getFullYear()
+      const baseInt = parseInt(year.toString().slice(-2) + "000", 10)
+      this.takenIds = res.data.filter(etu => etu.mandat == year).map(etu => etu.number)
+      const amount = this.takenIds.length
+      const result = amount + baseInt
+      this.etude.number = result
+    }).catch((err) => {
+      this.$message({message: "Impossible de récupérer la liste des études : " + err, type: "error", offset: 40})
+    })
   },
   created () {
     axios.get(

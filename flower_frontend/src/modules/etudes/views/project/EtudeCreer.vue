@@ -62,7 +62,7 @@ export default {
       const result = amount + baseInt
       this.form.number = result
     }).catch((err) => {
-      this.$message({message: "Impossible de récupérer la liste des prospects : " + err, type: "error", offset: 40})
+      this.$message({message: "Impossible de récupérer la liste des études : " + err, type: "error", offset: 40})
     })
   },
   created () {
