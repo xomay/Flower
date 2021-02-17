@@ -57,10 +57,16 @@ class Phase(models.Model):
 
 class PhaseSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False, write_only=False)
+    finishDate = serializers.SerializerMethodField()
+    totalPrice = serializers.SerializerMethodField()
     class Meta:
         model = Phase
         fields = '__all__'
         list_serializer_class = CustomListSerializer
+    def get_finishDate(self, obj):
+        return obj.finishDate
+    def get_totalPrice(self, obj):
+        return obj.totalPrice
 
 class GroupeSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False, write_only=False)
@@ -90,7 +96,7 @@ class GroupeSerializer(serializers.ModelSerializer):
 
                 phase_instance.beginDate = phase.get('beginDate', phase_instance.beginDate)
                 phase_instance.period = phase.get('period', phase_instance.period)
-                
+
                 phase_instance.nbJEH = phase.get('nbJEH', phase_instance.nbJEH)
                 phase_instance.priceJEH = phase.get('priceJEH', phase_instance.priceJEH)
 
