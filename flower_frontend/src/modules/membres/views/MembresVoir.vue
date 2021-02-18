@@ -139,11 +139,12 @@
 
 <script>
 import { registerMemberMixin } from "../mixins/RegisterMember.js"
+import { Permissions } from "@/mixins/Permissions"
 const axios = require("axios")
 
 export default {
   name: "MembresVoir",
-  mixins: [registerMemberMixin],
+  mixins: [registerMemberMixin, Permissions],
   data () {
     return {
       membres: [],
@@ -203,9 +204,6 @@ export default {
     },
     isButtonOn (memberID) {
       return ! this.membres[memberID].user
-    },
-    isAdmin () {
-      return this.$store.currentUser.isAdmin
     },
     refilterUser (displayWithUser) {
       if(displayWithUser)

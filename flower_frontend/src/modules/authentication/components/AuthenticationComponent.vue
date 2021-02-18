@@ -69,18 +69,12 @@ export default {
       ).then((res) => {
         this.$store.currentUser = res.data
         this.$router.push("/")
-      }).
-        catch((err) => {
-          this.errorMessage = err
-        }).
-        finally(() => {
-          this.connectionLoading = false
-        })
+      }).catch((err) => {
+        this.errorMessage = err
+      }).finally(() => {
+        this.connectionLoading = false
+      })
     }
   }
 }
 </script>
-
-<style>
-
-</style>

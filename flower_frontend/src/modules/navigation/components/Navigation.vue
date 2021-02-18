@@ -90,9 +90,10 @@
 
 <script>
 const axios = require("axios")
-
+import { Permissions } from "@/mixins/Permissions"
 export default {
   name: "Navigation",
+  mixins: [Permissions],
   data () {
     return {
       menu: [
@@ -229,9 +230,6 @@ export default {
           ]
         })
       }
-    },
-    isAdmin () {
-      return this.$store.currentUser.isAdmin
     }
   }
 }

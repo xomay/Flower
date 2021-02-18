@@ -5,7 +5,7 @@ import json
 from http import HTTPStatus
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from ..permissions import is_in_group
+from ..permissions import is_in_group, get_groups
 
 
 class LoginView(APIView):
@@ -13,7 +13,7 @@ class LoginView(APIView):
         if request.user.is_authenticated:
             return Response({
                 'username': request.user.username,
-                'isAdmin': is_in_group(request.user, 'ROLE_ADMIN')
+                'roles': get_groups(request.user)
             }, status=HTTPStatus.ACCEPTED)
         else:
             return Response(None, status=HTTPStatus.UNAUTHORIZED)
@@ -27,7 +27,7 @@ class LoginView(APIView):
         login(request, user)
         return Response({
             'username': request.data['username'],
-            'isAdmin': is_in_group(user, 'ROLE_ADMIN')
+            'roles': get_groups(user)
         }, status=HTTPStatus.ACCEPTED)
 
 class LogoutView(APIView):                              #from logout button (modules/navigation/Navigation.vue)
