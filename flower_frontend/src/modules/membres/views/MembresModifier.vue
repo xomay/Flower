@@ -66,11 +66,9 @@ export default {
     ).then((res) => {
       this.member = res.data
       this.breadcrumb[1].name = `${this.member.firstname} ${this.member.lastname}`
-    }).
-      catch((err) => {
-        this.$message({message: err,
-          type: "error"})
-      })
+    }).catch((err) => {
+      this.$message({message: "Impossible de récupérer le membre : "+ err, type: "error"})
+    })
   },
   methods: {
     saveMember () {
@@ -80,16 +78,13 @@ export default {
         this.member,
         {withCredentials: true}
       ).then(() => {
-        this.$message({message: "Le membre a bien été enregistré",
-          type: "success"})
-      }).
-        catch((err) => {
-          this.$message({message: err,
-            type: "error"})
-        }).
-        finally(() => {
-          this.loading = false
-        })
+        this.$message({message: "Le membre a bien été enregistré", type: "success"})
+        this.$router.push(`/membres/${this.member.id}/voir`)
+      }).catch((err) => {
+        this.$message({message: "Erreur lors de l'enregistrement : "+err,type: "error"})
+      }).finally(() => {
+        this.loading = false
+      })
     },
     openAccount () {
       this.loadingOpenAccount = true
@@ -99,7 +94,3 @@ export default {
   }
 }
 </script>
-
-<style>
-
-</style>

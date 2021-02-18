@@ -133,9 +133,7 @@ export default {
       })
     },
     saveProspect () {
-      console.log(this.value.contactWay)
       this.value.contactWay = this.value.contactWay.filter(str => /\S/.test(str))
-      console.log(this.value.contactWay)
       this.$emit("save")
     },
     contactsAddField () {
