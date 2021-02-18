@@ -28,7 +28,9 @@
           @change="updateFilters"
         />
       </el-col>
-      <el-col>
+      <el-col
+        v-if="isAdmin()"
+      >
         <el-checkbox
           v-model="doesFilterUser"
           class="marginL"
@@ -110,6 +112,7 @@
         sortable
       />
       <el-table-column
+        v-if="isAdmin()"
         style="width: 80%"
         label="Créer un compte"
       >
@@ -200,6 +203,9 @@ export default {
     },
     isButtonOn (memberID) {
       return ! this.membres[memberID].user
+    },
+    isAdmin () {
+      return this.$store.currentUser.isAdmin
     },
     refilterUser (displayWithUser) {
       if(displayWithUser)
