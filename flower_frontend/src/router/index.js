@@ -10,6 +10,7 @@ import dashboardRoutes from "@/modules/dashboard/routes"
 import performancesRoutes from "@/modules/performances/routes"
 import realisateursRoutes from "@/modules/realisateurs/routes"
 import administrationRoutes from "@/modules/administration/routes"
+import tresorerieRoutes from "@/modules/tresorerie/routes"
 import error404Routes from "@/modules/error404/routes"
 
 Vue.use(VueRouter)
@@ -34,6 +35,7 @@ const routes = [
         dashboardRoutes,
         performancesRoutes,
         realisateursRoutes,
+        tresorerieRoutes,
         error404Routes
       ].flat()
     }

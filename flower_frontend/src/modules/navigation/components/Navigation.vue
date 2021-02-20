@@ -169,8 +169,8 @@ export default {
               children: [
                 {name: "Voir les prospects",
                   url: "/prospects"},
-              /*  {name: "Ajouter un prospect",
-                  url: "/prospects/ajouter"}*/
+                {name: "Ajouter un prospect",
+                  url: "/prospects/ajouter"}
               ]
             },
             {
@@ -178,8 +178,8 @@ export default {
               children: [
                 {name: "Voir les actions commerciales",
                   url: "/prospects/actionCommerciale/"},
-              /*  {name: "Créer une action commerciale",
-                  url: "/prospects/actionCommerciale/ajouter"}*/
+                {name: "Créer une action commerciale",
+                  url: "/prospects/actionCommerciale/ajouter"}
               ]
             },
             {
@@ -187,6 +187,19 @@ export default {
               children: [
                 {name: "Devis",
                   url: "/generation/devis"}
+              ]
+            }
+          ]
+        },
+        {
+          icon: "el-icon-money",
+          title: "Trésorerie",
+          children: [
+            {
+              title: "Factures",
+              children: [
+                {name: "Gérer les factures",
+                  url: "/tresorerie/factures"},
               ]
             }
           ]

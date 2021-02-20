@@ -3,50 +3,21 @@
     title="Suivi d'études"
     :breadcrumb="breadcrumb"
   >
-    <el-table
-      v-loading="loading"
-      class="grid"
-      :data="etudes"
-      :stripe="true"
-    >
-      <el-table-column
-        prop="name"
-        label="Nom de l'étude"
-        sortable
-      >
-        <template slot-scope="scope">
-          <router-link :to="`/etudes/${scope.row.id}/voir`">
-            <el-button type="text">
-              {{ scope.row.name }}
-            </el-button>
-            <span
-              v-if="scope.row.confidential"
-              class="confiStyle"
-            >
-              Confidentielle
-            </span>
-          </router-link>
-        </template>
-      </el-table-column>
-      <el-table-column
-        prop="number"
-        label="Numéro de l'étude"
-        sortable
-      />
-      <el-table-column
-        prop="mandat"
-        label="Mandat"
-        sortable
-      />
-    </el-table>
+    <EtudesList
+      :etudes="etudes"
+      :loading="loading"
+      @select="goToEtude"
+    />
   </BaseComponent>
 </template>
 
 <script>
+import EtudesList from "../components/EtudesList.vue"
 const axios = require("axios")
 
 export default {
   name: "EtudeVoir",
+  components: { EtudesList },
   data () {
     return {
       etudes: [],
@@ -74,6 +45,11 @@ export default {
       finally(() => {
         this.loading = false
       })
+  },
+  methods: {
+    goToEtude (id) {
+      this.$router.push(`/etudes/${id}/voir`)
+    }
   }
 }
 </script>
