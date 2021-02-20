@@ -134,7 +134,11 @@
             prop="invoiceNumber"
             label="Référence"
             sortable
-          />
+          >
+            <template slot-scope="scope">
+              {{ scope.row.invoiceType }}_{{ scope.row.invoiceNumber }}
+            </template>
+          </el-table-column>
           <el-table-column
             prop="description"
             label="Objet"

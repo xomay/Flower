@@ -23,7 +23,11 @@
           label="Numéro de la facture"
           prop="invoiceNumber"
         >
-          <el-input v-model="value.invoiceNumber" />
+          <el-input v-model="value.invoiceNumber">
+            <template slot="prepend">
+              {{ value.invoiceType }}_
+            </template>
+          </el-input>
         </el-form-item>
       </el-col>
       <el-col :span="24">
