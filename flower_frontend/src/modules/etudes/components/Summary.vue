@@ -1,6 +1,9 @@
 <template>
   <div class="flex flex-col">
-    <EtudeSteps :etude="etude" />
+    <EtudeSteps
+      :etude="etude"
+      :descriptions="getgantt"
+    />
     <div class="flex-1">
       <span v-if="etude.prospect">
         <i class="el-icon-user-solid" /> <u>Prospect :</u>

@@ -9,43 +9,43 @@
     >
       <el-step
         title="Devis"
-        description="Devis rédigé et envoyé"
+        :description="descriptions ? 'Devis rédigé et envoyé' : ''"
       />
       <el-step
         title="CE"
-        description="Convention d'Étude rédigée et envoyée"
+        :description="descriptions ? 'Convention d\'Étude rédigée et envoyée' : ''"
       />
       <el-step
         title="RDM"
-        description="Revelé De Mission rédigé et envoyé"
+        :description="descriptions ? 'Revelé De Mission rédigé et envoyé' : ''"
       />
       <el-step
         title="FA"
-        description="Facture d'accompte payéee"
+        :description="descriptions ? 'Facture d\'accompte payéee' : ''"
       />
       <el-step
         title="PVRI"
-        description="PVR rédigée et envoyée"
+        :description="descriptions ? 'PVR rédigée et envoyée' : ''"
       />
       <el-step
         title="FI"
-        description="Facture intermédiaire payée"
+        :description="descriptions ? 'Facture intermédiaire payée' : ''"
       />
       <el-step
         title="PVRF"
-        description="PVR Final rédigé et envoyé"
+        :description="descriptions ? 'PVR Final rédigé et envoyé' : ''"
       />
       <el-step
         title="FS"
-        description="Facture de solde payée"
+        :description="descriptions ? 'Facture de solde payée' : ''"
       />
       <el-step
         title="Péda"
-        description="Rapport péda rendu par le réa"
+        :description="descriptions ? 'Rapports péda rendu par les réas' : ''"
       />
       <el-step
         title="BV"
-        description="Buletin de versement"
+        :description="descriptions ? 'Buletin de versement' : ''"
       />
     </el-steps>
   </el-row>
@@ -55,7 +55,8 @@
 export default {
   name: "EtudeSteps",
   props: {
-    etude: { type: Object, required: true }
+    etude: { type: Object, required: true },
+    descriptions: { type: Boolean, default: true }
   },
   methods: {
     getCurrentEtudeStep () {

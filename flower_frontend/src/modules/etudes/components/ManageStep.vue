@@ -513,7 +513,6 @@
       <!-- FIN (10) -->
       <el-step
         title="Fin"
-        :status="getEnding()"
       >
         <template slot="description">
           <el-card style="font-size: 120%;">
@@ -602,6 +601,12 @@ export default {
     btn_bv_alert () { return this.etude.state == 9 },
     // Fin
     is_over () { return this.etude.state == 10 },
+  },
+  watch: {
+    etude (nv) {
+      if(nv.state == 10)
+        this.etude.state = 11
+    }
   },
   created () {
     axios.get(`/api/etudes/${this.$route.params.id}/ce/`, { withCredentials: true }).then((response) => {
