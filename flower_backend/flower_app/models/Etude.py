@@ -2,6 +2,7 @@ from django.db import models
 from rest_framework import serializers
 
 from flower_app.models.CE import CE
+
 from flower_app.models.People.Employe import Employe
 from flower_app.models.People.Membre import Membre, MembreSerializer
 from flower_app.models.People.Prospect import Prospect, ProspectSerializer

@@ -15,6 +15,7 @@ class Facture(models.Model):
     INVOICE_CHOICES = [
         ('FA', 'Facture d\'achat'),
         ('FVA', 'Facture d\'acompte'),
+        ('FVI', 'Facture intermédiaire'),
         ('FVS', 'Facture de solde')
     ]
     invoiceType = models.CharField(max_length=3, choices=INVOICE_CHOICES)
