@@ -3,6 +3,7 @@
     <el-button
       type="success"
       :loading="loading"
+      :disabled="!allowDevisGenerate"
       icon="el-icon-download"
       @click="downloadDevis"
     >
@@ -195,6 +196,9 @@ export default {
       loadingPVR: false,
       activeCollapses: []
     }
+  },
+  computed: {
+    allowDevisGenerate () { return this.etude.groupes != undefined && this.etude.groupes.length > 0 }
   },
   created () {
     axios.get(`/api/etudes/${this.$route.params.id}/ce/`, { withCredentials: true }).then((response) => {

@@ -450,6 +450,13 @@
                 </el-table-column>
               </el-table>
             </el-row>
+            <el-row
+              v-show="(! etude.qualiValidatePeda) && etude.state >= 8"
+              class="stCardRw"
+              style="color: red; font-size: 120%"
+            >
+              <b>ATTENTION : </b>La quali n'a pas validé le rapport pédagogique.
+            </el-row>
             <el-row class="stCardRw">
               <el-button
                 v-show="btn_peda_levelup"

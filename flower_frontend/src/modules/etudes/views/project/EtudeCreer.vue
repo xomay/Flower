@@ -42,6 +42,7 @@ export default {
         mandat: 2021,
         number: "",
         confidential: false,
+        qualiValidatePeda: false,
         projectManager: "",
         qualityManager: ""
       },
