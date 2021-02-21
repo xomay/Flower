@@ -37,14 +37,11 @@ export default {
       {withCredentials: true}
     ).then((res) => {
       this.etudes = res.data
-    }).
-      catch(() => {
-        this.$message({message: "Impossible de récupérer les études pour le moment",
-          type: "error"})
-      }).
-      finally(() => {
-        this.loading = false
-      })
+    }).catch((err) => {
+      this.$message({message: "Impossible de récupérer les études pour le moment: "+err, type: "error"})
+    }).finally(() => {
+      this.loading = false
+    })
   },
   methods: {
     goToEtude (id) {

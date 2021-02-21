@@ -29,6 +29,10 @@
         label="Rédaction"
         name="Rédaction"
       />
+      <el-tab-pane
+        label="Avancement"
+        name="Avancement"
+      />
     </el-tabs>
     <Summary
       v-show="currentTab === 'Récapitulatif'"
@@ -44,6 +48,10 @@
       :etude="etude"
       @deleteInvoice="deleteInvoice"
     />
+    <ManageStep
+      v-show="currentTab === 'Avancement'"
+      :etude="etude"
+    />
   </BaseComponent>
 </template>
 
@@ -51,12 +59,13 @@
 import Summary from "../../components/Summary"
 import Phases from "../../components/Phases"
 import Generation from "../../components/Generation"
+import ManageStep from "../../components/ManageStep"
 
 const axios = require("axios")
 
 export default {
   name: "EtudeDetail",
-  components: {Summary, Phases, Generation},
+  components: {Summary, Phases, Generation, ManageStep},
   data () {
     return {
       currentTab: this.$route.query.active || "Récapitulatif",

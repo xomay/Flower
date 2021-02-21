@@ -61,6 +61,8 @@ export default {
       this.breadcrumb[1].name = res.data.name
     }).catch(() => {
       this.$message({message: "Impossible de récupérer les groupes pour le moment", type: "error"})
+    }).finally(() => {
+      this.loading = false
     })
   },
   methods: {

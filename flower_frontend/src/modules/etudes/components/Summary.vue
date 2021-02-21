@@ -1,5 +1,6 @@
 <template>
   <div class="flex flex-col">
+    <EtudeSteps :etude="etude" />
     <div class="flex-1">
       <span v-if="etude.prospect">
         <i class="el-icon-user-solid" /> <u>Prospect :</u>
@@ -43,6 +44,7 @@
       </span><br>
     </div>
     <div
+      v-if="getgantt"
       v-loading="!ganttJPG"
       class="flex-1"
     >
@@ -55,37 +57,38 @@
 </template>
 
 <script>
+import EtudeSteps from "./graphics/EtudeSteps"
 const axios = require("axios")
 
 export default {
   name: "Summary",
+  components: { EtudeSteps },
   props: {
-    etude: { type: Object, required: true }
+    etude: { type: Object, required: true },
+    getgantt: { type: Boolean, default: true }
   },
   data () {
     return {
-      ganttJPG: ""
+      ganttJPG: "",
     }
   },
   created () {
-    axios.get(
-      `/api/gantt/etude/${this.$route.params.id}/`,
-      {
-        withCredentials: true,
-        responseType: "arraybuffer"
-      }
-    ).then((res) => {
-      this.ganttJPG = Buffer.from(
-        res.data,
-        "binary"
-      ).toString("base64")
-    }).catch((err) => {
-      this.$message({message: "Impossible de récupérer le graphe : "+err, type: "error", offset: 40})
-    })
+    if(this.getgantt) {
+      axios.get(
+        `/api/gantt/etude/${this.$route.params.id}/`,
+        {
+          withCredentials: true,
+          responseType: "arraybuffer"
+        }
+      ).then((res) => {
+        this.ganttJPG = Buffer.from(
+          res.data,
+          "binary"
+        ).toString("base64")
+      }).catch((err) => {
+        this.$message({message: "Impossible de récupérer le graphe : "+err, type: "error", offset: 40})
+      })
+    }
   }
 }
 </script>
-
-<style>
-
-</style>

@@ -53,6 +53,11 @@ const routes = [
     path: "etudes/:id/pvr/modifier/:pvr_id",
     name: "etudes-pvr-modifier",
     component: () => import("../views/PVREditor")
+  },
+  {
+    path: "etudes/:id/commentaires/:realisateur_id/ajouter",
+    name: "etudes-commentaire-ajouter",
+    component: () => import("../views/comments/NewComment")
   }
 ]
 
