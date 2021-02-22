@@ -48,10 +48,13 @@
         </template>
       </el-table-column>
       <el-table-column
-        prop="date"
         label="Date"
         sortable
-      />
+      >
+        <template slot-scope="scope">
+          {{ niceDate(scope.row.date) }}
+        </template>
+      </el-table-column>
       <el-table-column
         prop="type"
         label="Type d'action"
@@ -97,9 +100,10 @@
 <script>
 
 const axios = require("axios")
-
+import UtilsMixin from "@/mixins/Utils"
 export default {
   name: "ActionCommerciale",
+  mixins: [UtilsMixin],
   data () {
     return {
       breadcrumb: [

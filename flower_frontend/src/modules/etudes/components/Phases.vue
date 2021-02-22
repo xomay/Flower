@@ -91,17 +91,13 @@
 </template>
 
 <script>
+import UtilsMixin from "@/mixins/Utils"
 export default {
   name: "Phases",
+  mixins: [UtilsMixin],
   props: {
     etude: { type: Object, required: true },
     groupes: { type: Array, required: true }
-  },
-  methods: {
-    niceDate (date) {
-      const tokens = date.split("-", 3)
-      return tokens[2] + "/" + tokens[1] + "/" + tokens[0]
-    }
   }
 }
 </script>
