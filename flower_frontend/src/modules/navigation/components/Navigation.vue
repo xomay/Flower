@@ -201,6 +201,17 @@ export default {
                 {name: "Gérer les factures",
                   url: "/tresorerie/factures"},
               ]
+            },
+            {
+              title: "Notes de Frais",
+              children: [
+                {name: "NF standardes",
+                  url: "/tresorerie/nfs/voir/normales"},
+                {name: "NF kilométriques",
+                  url: "/tresorerie/nfs/voir/kilometriques"},
+                {name: "Ajouter une NF",
+                  url: "/tresorerie/nfs/ajouter"},
+              ]
             }
           ]
         }
