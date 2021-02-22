@@ -6,6 +6,7 @@
     :placeholder="placeholder"
     clearable
     @select="handleSelectvalue"
+    @clear="$emit('clear')"
   />
 </template>
 
@@ -52,6 +53,10 @@ export default {
         "input",
         value.id
       )
+    },
+    // Used by reference to manually clear the content.
+    clear () {
+      this.autocompleteValue = ""
     }
   }
 }

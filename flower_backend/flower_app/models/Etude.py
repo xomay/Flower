@@ -3,7 +3,7 @@ from rest_framework import serializers
 
 from flower_app.models.CE import CE
 
-from flower_app.models.People.Employe import Employe
+from flower_app.models.People.Employe import Employe, EmployeSerializer
 from flower_app.models.People.Membre import Membre, MembreSerializer
 from flower_app.models.People.Prospect import Prospect, ProspectSerializer
 
@@ -88,6 +88,7 @@ class EtudeDetailSerializer(serializers.ModelSerializer):
     projectManager = MembreSerializer(read_only=True)
     qualityManager = MembreSerializer(read_only=True)
     prospect = ProspectSerializer(read_only=True)
+    clientContact = EmployeSerializer(read_only=True)
     missions = MissionDetailSerializer(source='mission_set', many=True, read_only=True)
     groupes = GroupeDetailSerializer(source='groupe_set', many=True, read_only=True)
     invoices = FactureSerializer(source='facture_set', many=True, read_only=True)

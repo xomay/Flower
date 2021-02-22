@@ -13,7 +13,21 @@
       <MemberPicker
         v-model="value.prospect"
         :item-list="prospects"
-        placeholder="Entrez le nom du prospect"
+        placeholder="Prospect"
+        @input="updateEmployes(true)"
+        @clear="clearEmploye()"
+      />
+    </el-form-item>
+    <el-form-item
+      label="Contact client"
+      prop="clientContact"
+      label-width="140px"
+    >
+      <MemberPicker
+        ref="employesInput"
+        v-model="value.clientContact"
+        :item-list="employes"
+        placeholder="Contact client"
       />
     </el-form-item>
     <el-form-item
@@ -31,6 +45,7 @@
       <el-input
         v-model="value.description"
         type="textarea"
+        placeholder="Description succincte de l'étude"
       />
     </el-form-item>
     <el-col :span="12">
@@ -106,7 +121,7 @@
 
 <script>
 import MemberPicker from "@/modules/membres/components/MemberPicker"
-
+const axios = require("axios")
 export default {
   name: "ProjectForm",
   components: {MemberPicker},
@@ -119,8 +134,12 @@ export default {
   },
   data () {
     return {
+      employes: [],
       formRules: {
         prospect: [
+          {required: true, message: "Obligatoire", trigger: "change"}
+        ],
+        clientContact: [
           {required: true, message: "Obligatoire", trigger: "change"}
         ],
         name: [
@@ -148,6 +167,11 @@ export default {
       }
     }
   },
+  watch: {
+    prospects () {
+      this.updateEmployes(false)
+    }
+  },
   methods: {
     validateForm () {
       this.$refs.formProject.validate((r) => {
@@ -169,6 +193,28 @@ export default {
       const lastYear = nv.toString().slice(-2)
       const lastNumber = this.value.number.toString().slice(-3)
       this.value.number = parseInt(lastYear+lastNumber)
+    },
+    updateEmployes (remove) {
+      if(remove) {
+        this.value.clientContact = ""
+      }
+      if(this.value.prospect != undefined && this.value.prospect > 0) {
+        axios.get(
+          `api/prospects/${this.value.prospect}/employes/`,
+          { withCredentials: true }
+        ).then((res) => {
+          res.data.forEach((elt) => elt.value = `${elt.firstname} ${elt.lastname}`)
+          this.employes = res.data
+          if(this.employes.length == 0)
+            this.$message({message: "Ce prospect n'a aucun employé...", trype: "warning"})
+        }).catch((err) => {
+          this.$message({message: "Impossible de récupérer les employés de ce prospect : " + err, type: "error"})
+        })
+      }
+    },
+    clearEmploye () {
+      this.$refs.employesInput.clear()
+      this.value.clientContact = ""
     }
   }
 }

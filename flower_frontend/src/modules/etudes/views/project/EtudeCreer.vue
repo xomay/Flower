@@ -37,6 +37,7 @@ export default {
       ],
       form: {
         prospect: "",
+        clientContact: "",
         name: "",
         description: "",
         mandat: 2021,

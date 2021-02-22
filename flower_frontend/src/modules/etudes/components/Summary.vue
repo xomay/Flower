@@ -10,9 +10,19 @@
         <el-link
           type="primary"
           :style="'margin-left: 12px'"
-          @click="$router.push('/prospects/'+etude.prospect.id+'/voir')"
+          @click="$router.push(`/prospects/${etude.prospect.id}/voir`)"
         >
           {{ etude.prospect.name }}
+        </el-link>
+      </span><br>
+      <span v-if="etude.clientContact">
+        <i class="el-icon-user-solid" /> <u>Contact client :</u>
+        <el-link
+          type="primary"
+          :style="'margin-left: 12px'"
+          @click="$router.push(`/prospects/${etude.prospect.id}/employes/${etude.clientContact.id}/voir`)"
+        >
+          {{ etude.clientContact.firstname + " " + etude.clientContact.lastname }}
         </el-link>
       </span><br><br>
       <span>

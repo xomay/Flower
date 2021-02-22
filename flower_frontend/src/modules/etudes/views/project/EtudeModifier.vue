@@ -41,6 +41,7 @@ export default {
       ],
       etude: {
         prospect: 0,
+        clientContact: 0,
         name: "",
         description: "",
         mandat: "",
@@ -61,7 +62,7 @@ export default {
     ).then((res) => {
       const year = new Date().getFullYear()
       const baseInt = parseInt(year.toString().slice(-2) + "000", 10)
-      this.takenIds = res.data.filter(etu => etu.mandat == year).map(etu => etu.number)
+      this.takenIds = res.data.filter(etu => etu.id != this.$route.params.id).filter(etu => etu.mandat == year).map(etu => etu.number)
       const amount = this.takenIds.length
       const result = amount + baseInt
       this.etude.number = result
@@ -77,6 +78,7 @@ export default {
       this.etude = res.data
       this.etude.projectManager = this.etude.projectManager.id
       this.etude.qualityManager = this.etude.qualityManager.id
+      this.etude.clientContact = this.etude.clientContact.id
       this.etude.prospect = this.etude.prospect.id
       this.breadcrumb[1].name = this.etude.name
       axios.get(
