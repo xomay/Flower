@@ -13,10 +13,14 @@ class NdF(models.Model):
     @property
     def montantHT(self):
         return 0
-    
+
     @property
-    def documentName(self):
-      return 'Note de frais'
+    def montantTVA(self):
+        return 0
+
+    @property
+    def montantTTC(self):
+        return self.montantHT + self.montantTVA
 
     @property
     def nfType(self): # Il faut regarder tous les blocs de détail, si il y en a au moins un kilométrique HOP ça part en kilométrique.
@@ -47,8 +51,25 @@ class NdF(models.Model):
 from flower_app.models.NdFDetail import NdFDetailSerializer
 
 class NdFSerializer(serializers.ModelSerializer):
+    # Ajout des propeties
+    reference = serializers.SerializerMethodField()
+    nfType = serializers.SerializerMethodField()
+    montantHT = serializers.SerializerMethodField()
+    montantTVA = serializers.SerializerMethodField()
+    montantTTC = serializers.SerializerMethodField()
+    # Re-sérialisation
     demandeur = MembreSerializer(read_only=True)
     details = NdFDetailSerializer(source='ndfdetail_set', many=True, read_only=True)
     class Meta:
         model = NdF
         fields = '__all__'
+    def get_reference(self, obj):
+        return obj.reference
+    def get_nfType(self, obj):
+        return obj.nfType
+    def get_montantHT(self, obj):
+        return obj.montantHT
+    def get_montantTVA(self, obj):
+        return obj.montantTVA
+    def get_montantTTC(self, obj):
+        return obj.montantTTC
