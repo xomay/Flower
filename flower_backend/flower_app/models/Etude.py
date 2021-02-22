@@ -22,6 +22,7 @@ class Etude(models.Model):
     creation_date = models.DateTimeField(auto_now_add=True)
     modification_date = models.DateTimeField(auto_now=True)
     state = models.IntegerField(default=0)
+    qualiValidatePeda = models.BooleanField(default=False)
     confidential = models.BooleanField()
     audit_date = models.DateField(blank=True, null=True)
 

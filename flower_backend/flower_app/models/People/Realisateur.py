@@ -2,6 +2,7 @@ from django.db import models
 from datetime import date
 from rest_framework import serializers
 from django.core.validators import MaxValueValidator, MinValueValidator
+from django.core.exceptions import ValidationError
 
 from flower_app.models.People.Personne import Personne
 from flower_app.models.Competence import Competence
@@ -16,7 +17,6 @@ class RealisateurComment(models.Model):
     rating = models.PositiveSmallIntegerField(default=1, validators=[MinValueValidator(0), MaxValueValidator(10)])
     def __str__(self):
         return self.associatedEtude.name + "_"+ str(self.rating)
-    
 
 class RealisateurCommentSerializer(serializers.ModelSerializer):
     class Meta:
@@ -80,6 +80,21 @@ class RealisateurSerializer(serializers.ModelSerializer):
     rating = serializers.ReadOnlyField()
     etudesAmount = serializers.ReadOnlyField()
     skillsArray = serializers.ReadOnlyField()
+
+    def create(self, validated_data):
+        return Realisateur(**validated_data)
+
+    # On ne veut pas plusieurs comments pour même réa et même étude.
+    def update(self, instance, validated_data):
+        passed = list()
+        for comment in validated_data['comments']:
+            print("TEST pour ("+str(comment.associatedEtude.id)+"-"+comment.associatedEtude.name+")")
+            if(comment.associatedEtude.id in passed):
+                raise ValidationError("Cannot accept more than 1 comment for 1 Etude & 1 Realisateur.")
+            passed.append(comment.associatedEtude.id)
+            print("ok pour ("+str(comment.associatedEtude.id)+")")
+        return super().update(instance, validated_data)
+
     class Meta:
         model = Realisateur
         fields = '__all__'

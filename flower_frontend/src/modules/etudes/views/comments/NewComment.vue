@@ -65,7 +65,7 @@
       icon="el-icon-check"
       @click="validateForm()"
     >
-      Sauvegarer le commentaire
+      Sauvegarder le commentaire
     </el-button>
   </BaseComponent>
 </template>
@@ -153,9 +153,7 @@ export default {
         this.comment,
         { withCredentials: true }
       ).then((res) => {
-        console.log(res.data)
         const newID = res.data.id
-        console.log(">>"+newID)
         this.realisateur.comments.push(newID)
         axios.put(
           `/api/realisateurs/${this.$route.params.realisateur_id}/`,
@@ -164,8 +162,18 @@ export default {
         ).then(() => {
           this.$message({message: "Commentaire sauvegardé avec succès.", type: "success"})
           this.$router.push(`/etudes/${this.$route.params.id}/voir?active=Avancement`)
-        }).catch((err) => {
-          this.$message({message: "Impossible de sauvegarder le réalisateur : " +err, type: "error"})
+        }).catch(() => {
+          this.$message({message: "Il y a déjà un commentaire pour ce réa et cette étude ! ", type: "error"})
+          axios.delete(
+            `api/realisateurs/cmts/${newID}/`,
+            { withCredentials: true }
+          ).then(() => {
+            this.$message({message: "Action annulée. ", type: "warning"})
+          }).catch((err) => {
+            this.$message({message: "Impossible de supprimer le commentaire : " +err, type: "error"})
+          }).finally(() => {
+            this.$router.push(`/etudes/${this.$route.params.id}/voir?active=Avancement`)
+          })
         })
       }).catch((err) => {
         this.$message({message: "Impossible de sauvegarder le commentaire : " +err, type: "error"})
