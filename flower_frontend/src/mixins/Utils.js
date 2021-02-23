@@ -3,8 +3,15 @@ export default {
     // @param 'date': date de format dd-mm-yyyy
     // @returns une date de format yyyy/mm/dd
     niceDate (date) {
+      if(date == undefined || date == "")
+        return ""
       const tokens = date.split("-", 3)
       return tokens[2] + "/" + tokens[1] + "/" + tokens[0]
+    },
+    nicePeople (entity) {
+      if(entity == undefined)
+        return "undefined"
+      return entity.firstname + " " + entity.lastname
     },
     // À utiliser en 'formatter' dans les tableaux.
     // Renvoie la valeur normale suivie de ' €'.

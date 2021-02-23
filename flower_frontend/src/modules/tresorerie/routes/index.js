@@ -15,6 +15,11 @@ const routes = [
     path: "tresorerie/nfs/voir/normales",
     name: "nfs-voir-normales",
     component: () => import("../views/NFsVoir")
+  },
+  {
+    path: "tresorerie/nfs/:id/voir",
+    name: "nfs-detail",
+    component: () => import("../views/NFsDetail")
   }
 ]
 
