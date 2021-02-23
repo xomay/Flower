@@ -9,22 +9,27 @@
       class="grid"
       :stripe="true"
       :border="true"
+      :default-sort="{prop: 'reference', order: 'descending'}"
     >
       <el-table-column
         label="Date"
+        prop="date"
+        fixed="left"
+        width="100px"
+        align="center"
+        :formatter="niceDateFormatter"
         sortable
-      >
-        <template slot-scope="scope">
-          {{ niceDate(scope.row.date) }}
-        </template>
-      </el-table-column>
+      />
       <el-table-column
         prop="reference"
         label="Référence"
+        fixed="left"
+        width="120px"
+        align="center"
         sortable
       >
         <template slot-scope="scope">
-          <router-link :to="`tresorerie/nfs/${scope.row.id}/voir`">
+          <router-link :to="`/tresorerie/nfs/${scope.row.id}/voir`">
             <el-button
               type="text"
               size="small"
@@ -36,6 +41,9 @@
       </el-table-column>
       <el-table-column
         label="Demandeur"
+        fixed="left"
+        width="160px"
+        align="center"
         sortable
       >
         <template slot-scope="scope">
@@ -55,26 +63,29 @@
       />
       <el-table-column
         label="Montant HT"
-      >
-        <template slot-scope="scope">
-          {{ scope.row.montantHT + " €" }}
-        </template>
-      </el-table-column>
+        fixed="right"
+        prop="montantHT"
+        :formatter="euroFormatter"
+        align="center"
+        width="120px"
+      />>
       <el-table-column
         label="Montant TVA"
-      >
-        <template slot-scope="scope">
-          {{ scope.row.montantTVA + " €" }}
-        </template>
-      </el-table-column>
+        fixed="right"
+        prop="montantTVA"
+        :formatter="euroFormatter"
+        align="center"
+        width="120px"
+      />
       <el-table-column
         label="Montant TTC"
+        fixed="right"
+        prop="montantTTC"
+        :formatter="euroFormatter"
+        align="center"
+        width="130px"
         sortable
-      >
-        <template slot-scope="scope">
-          {{ scope.row.montantTTC + " €" }}
-        </template>
-      </el-table-column>
+      />
     </el-table>
   </BaseComponent>
 </template>
@@ -105,7 +116,6 @@ export default {
       this.nfs = res.data
       if(this.nfs.length == 0)
         this.$message({message: "Aucune NF n'est enregistrée.", type: "warning"})
-      console.log(this.nfs[0])
     }).catch((err) => {
       this.$message({message: "Impossible de récupérer les NF : " + err, type: "error"})
     })
