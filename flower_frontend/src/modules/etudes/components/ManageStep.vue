@@ -634,6 +634,7 @@ export default {
           prospect: this.etude.prospect.id,
           qualityManager: this.etude.qualityManager.id,
           projectManager: this.etude.projectManager.id,
+          clientContact: this.etude.clientContact.id
         },
         { withCredentials: true }
       ).then(() => {
