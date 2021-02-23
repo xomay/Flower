@@ -25,14 +25,33 @@ class NdFDetail(models.Model):
         return '[Détail](' + self.ndf.reference + ')[' + str(self.index) + ']'
 
     @property
-    def montantHT(self):
-        return 0
+    def isKilometrique(self):
+        return self.detailType == 'K'
+
+    @property
+    def montantTVA(self):
+        return self.tva * self.prixHT
+
+    @property
+    def montantTTC(self):
+        if(self.isKilometrique):
+            return self.nbKilometres * self.prixCentimesKilometres
+        return self.prixHT + self.montantTVA
 
     class Meta:
        verbose_name = 'Note de Frais (détails)'
        verbose_name_plural = 'Notes de Frais (détails)'
 
 class NdFDetailSerializer(serializers.ModelSerializer):
+    isKilometrique = serializers.SerializerMethodField()
+    montantTVA = serializers.SerializerMethodField()
+    montantTTC = serializers.SerializerMethodField()
     class Meta:
         model = NdFDetail
         fields = '__all__'
+    def get_isKilometrique(self, obj):
+        return obj.isKilometrique
+    def get_montantTVA(self, obj):
+        return obj.montantTVA
+    def get_montantTTC(self, obj):
+        return obj.montantTTC
