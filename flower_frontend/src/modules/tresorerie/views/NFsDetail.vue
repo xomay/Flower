@@ -3,6 +3,16 @@
     :title="title"
     :breadcrumb="breadcrumb"
   >
+    <template v-slot:action>
+      <router-link :to="`/tresorerie/nfs/${$route.params.id}/modifier/`">
+        <el-button
+          type="text"
+          icon="el-icon-edit"
+        >
+          Modifier
+        </el-button>
+      </router-link>
+    </template>
     <!-- PRÉSENTATION -->
     <div class="nfsdTableau">
       <el-row

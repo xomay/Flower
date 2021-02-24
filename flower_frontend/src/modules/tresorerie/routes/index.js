@@ -20,6 +20,11 @@ const routes = [
     path: "tresorerie/nfs/:id/voir",
     name: "nfs-detail",
     component: () => import("../views/NFsDetail")
+  },
+  {
+    path: "tresorerie/nfs/:id/modifier",
+    name: "nfs-modifier",
+    component: () => import("../views/NFsModifier")
   }
 ]
 
