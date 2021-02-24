@@ -3,18 +3,196 @@
     :title="title"
     :breadcrumb="breadcrumb"
   >
-    <table class="styled-table">
-      <tbody>
-        <tr>
-          <td>
-            Demandeur : {{ nicePeople(nf.demandeur) }}
-          </td>
-          <td>
-            Date : {{ niceDate(nf.date) }}
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <!-- PRÉSENTATION -->
+    <div class="nfsdTableau">
+      <el-row
+        class="ctn"
+      >
+        <el-col
+          :span="3"
+          class="nfLabel"
+        >
+          Demandeur :
+        </el-col>
+        <el-col
+          :span="5"
+        >
+          <el-link
+            :href="`/membres/${nf.demandeur.id}/voir`"
+            type="primary"
+            size="small"
+          >
+            {{ nicePeople(nf.demandeur) }}
+          </el-link>
+        </el-col>
+        <el-col
+          :span="3"
+          class="nfLabel"
+        >
+          Date :
+        </el-col>
+        <el-col
+          :span="5"
+        >
+          {{ niceDate(nf.date) }}
+        </el-col>
+        <el-col
+          :span="3"
+          class="nfLabel"
+        >
+          Type :
+        </el-col>
+        <el-col
+          v-show="nf.isKilometrique"
+          :span="5"
+          style="background: rgba(112, 177, 157, 0.2);;"
+        >
+          <b>Kilométrique</b>
+        </el-col>
+        <el-col
+          v-show="!nf.isKilometrique"
+          :span="5"
+          style="background: rgba(177, 168, 168, 0.2);"
+        >
+          <b>Normale</b>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col
+          :span="3"
+          class="ctn nfLabel"
+        >
+          Objet :
+        </el-col>
+        <el-col :span="21">
+          {{ nf.objet }}
+        </el-col>
+      </el-row>
+      <el-row
+        style="border-bottom: none;"
+        class="ctn"
+      >
+        <el-col
+          :span="3"
+          class="nfLabel"
+        >
+          Montant HT :
+        </el-col>
+        <el-col :span="5">
+          {{ nf.montantHT }} €
+        </el-col>
+        <el-col
+          :span="3"
+          class="nfLabel"
+        >
+          Montant TVA :
+        </el-col>
+        <el-col :span="5">
+          {{ nf.montantTVA }} €
+        </el-col>
+        <el-col
+          :span="3"
+          class="nfLabel"
+        >
+          Montant TTC :
+        </el-col>
+        <el-col :span="5">
+          {{ nf.montantTTC }} €
+        </el-col>
+      </el-row>
+    </div>
+    <!-- DÉTAILS TYPE (NORMAUX) -->
+    <el-table
+      v-show="detailsN.length > 0"
+      :data="detailsN"
+      :striped="true"
+      :border="true"
+      row-class-name="nfTabRow"
+      header-row-class-name="nfTabHeader"
+    >
+      <el-table-column
+        label="Description"
+        prop="description"
+      />
+      <el-table-column
+        label="Montant HT"
+        prop="prixHT"
+        fixed="right"
+        width="120px"
+        align="center"
+        :formatter="euroFormatter"
+      />
+      <el-table-column
+        label="TVA"
+        fixed="right"
+        width="90px"
+        align="center"
+      >
+        <template slot-scope="scope">
+          {{ scope.row.tva * 100 }} %
+        </template>
+      </el-table-column>
+      <el-table-column
+        label="Montant TVA"
+        prop="montantTVA"
+        fixed="right"
+        width="120px"
+        align="center"
+        :formatter="euroFormatter"
+      />
+      <el-table-column
+        label="Montant TTC"
+        prop="montantTTC"
+        style="font-weight: bold;"
+        fixed="right"
+        width="120px"
+        align="center"
+        class-name="nfBolded"
+        :formatter="euroFormatter"
+      />
+    </el-table>
+    <!-- DÉTAILS TYPE (KILOMETRIQUES) -->
+    <el-table
+      v-show="detailsK.length > 0"
+      :data="detailsK"
+      :striped="true"
+      :border="true"
+      style="margin-top: 20px;"
+      row-class-name="nfTabRow"
+      header-row-class-name="nfTabHeader"
+      cell-class-name=""
+    >
+      <el-table-column
+        label="Description"
+        prop="description"
+      />
+      <el-table-column
+        label="Nombre de kilomètres"
+        prop="nbKilometres"
+        fixed="right"
+        width="190px"
+        align="center"
+      />
+      <el-table-column
+        label="Prix / kilomètre"
+        fixed="right"
+        width="140px"
+        align="center"
+      >
+        <template slot-scope="scope">
+          {{ scope.row.prixCentimesKilometres }} cts
+        </template>
+      </el-table-column>
+      <el-table-column
+        label="Montant TTC"
+        prop="montantTTC"
+        fixed="right"
+        width="120px"
+        align="center"
+        class-name="nfBolded"
+        :formatter="euroFormatter"
+      />
+    </el-table>
   </BaseComponent>
 </template>
 
@@ -26,20 +204,31 @@ export default {
   mixins: [UtilsMixin],
   data () {
     return {
-      nf: {},
+      nf: {
+        demandeur: {
+          firstname: "",
+          lastname: "",
+          id: 0
+        },
+        details: []
+      },
       title: "NF <loading>",
       loading: true,
       breadcrumb: [
         {
           name: "Liste des NF normales",
-          link: "tresorerie/nfs/voir/normales"
+          link: "/tresorerie/nfs/voir/normales"
         },
         {
           name: "<loading>",
-          link: `tresorerie/nfs/${this.$route.params.id}/voir/`
+          link: `/tresorerie/nfs/${this.$route.params.id}/voir/`
         }
       ]
     }
+  },
+  computed: {
+    detailsN () { return this.nf.details.filter(d => ! d.isKilometrique) },
+    detailsK () { return this.nf.details.filter(d => d.isKilometrique) }
   },
   beforeCreate () {
     axios.get(
@@ -57,49 +246,48 @@ export default {
 </script>
 
 <style>
-  .styled-table {
+
+  .nfsdTableau {
     border-collapse: collapse;
-    margin: 25px 0;
+    margin: 35px auto 25px auto;
     font-size: 0.9em;
+    color: rgb(68, 62, 62);
     font-family: sans-serif;
-    min-width: 100%;
-    box-shadow: 10px 5px 20px rgba(0, 0, 0, 0.15);
-  }
-  .styled-table thead tr {
-    background-color: #009879;
-    color: #ffffff;
-    text-align: left;
-  }
-  .styled-table th,
-  .styled-table td {
-      padding: 12px 15px;
-  }
-  .styled-table tbody tr {
-    border-bottom: 1px solid #dddddd;
+    min-width: 500px;
+    width: 98%;
+    box-shadow: 5px 2px 10px rgba(0, 0, 60, 0.15);
   }
 
-  .styled-table tbody tr:nth-of-type(even) {
-      background-color: #f3f3f3;
+  .nfsdTableau .el-row {
+    border-bottom: solid rgba(145, 130, 130, 0.6) 1px;
   }
-  .styled-table tbody tr.active-row {
-      font-weight: bold;
-      color: #009879;
+
+  .nfsdTableau .el-col {
+    border-right: solid rgba(145, 130, 130, 0.6) 1px;
+    padding: 12px 10px;
   }
-  .styled-table tbody tr td.rowStyle {
-    border-right: solid 1px rgba(120, 120, 120, 0.8);
+
+  .empty {
+    background: rgba(146, 147, 179, 0.2);
+  }
+
+  .ctn {
     text-align: center;
+  }
+
+  .nfLabel {
     font-weight: bold;
-    width: 30%;
   }
-  .styled-table tbody tr td.noRight {
-    border-right: solid 0px;
+
+  .nfTabRow {
+    color: rgb(68, 62, 62);
   }
-  .fontStyled {
-    font: 1em "Lucida Console";
-    background-color: lightgray;
-    border-radius: .25em;
+
+  .nfTabHeader {
+    color: rgb(75, 75, 75)
   }
-  .percent {
-    width: 5%;
+
+  .nfBolded {
+    font-weight: bold;
   }
 </style>

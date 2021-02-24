@@ -103,7 +103,7 @@ export default {
       breadcrumb: [
         {
           name: "Liste des NF normales",
-          link: "tresorerie/nfs/voir/normales"
+          link: "/tresorerie/nfs/voir/normales"
         }
       ]
     }
