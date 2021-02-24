@@ -190,34 +190,13 @@ export default {
               ]
             }
           ]
-        },
-        {
-          icon: "el-icon-money",
-          title: "Trésorerie",
-          children: [
-            {
-              title: "Factures",
-              children: [
-                {name: "Gérer les factures",
-                  url: "/tresorerie/factures"},
-              ]
-            },
-            {
-              title: "Notes de Frais",
-              children: [
-                {name: "NF standardes",
-                  url: "/tresorerie/nfs/voir/"},
-                {name: "Ajouter une NF",
-                  url: "/tresorerie/nfs/ajouter"},
-              ]
-            }
-          ]
         }
       ],
       collapse: false
     }
   },
   created () {
+    this.addTresoStuff()
     this.addAdminStuff()
   },
   methods: {
@@ -252,7 +231,30 @@ export default {
           ]
         })
       }
-    }
+    },
+    addTresoStuff () {
+      if ( this.isTreso() ) {
+        this.menu.push({
+          icon: "el-icon-money",
+          title: "Trésorerie",
+          children: [
+            {
+              title: "Factures",
+              children: [
+                {name: "Gérer les factures", url: "/tresorerie/factures"},
+              ]
+            },
+            {
+              title: "Notes de Frais",
+              children: [
+                {name: "NF standardes", url: "/tresorerie/nfs/voir/"},
+                {name: "Ajouter une NF", url: "/tresorerie/nfs/ajouter"},
+              ]
+            }
+          ]
+        })
+      }
+    },
   }
 }
 </script>
