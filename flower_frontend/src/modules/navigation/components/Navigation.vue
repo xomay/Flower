@@ -206,9 +206,7 @@ export default {
               title: "Notes de Frais",
               children: [
                 {name: "NF standardes",
-                  url: "/tresorerie/nfs/voir/normales"},
-                {name: "NF kilométriques",
-                  url: "/tresorerie/nfs/voir/kilometriques"},
+                  url: "/tresorerie/nfs/voir/"},
                 {name: "Ajouter une NF",
                   url: "/tresorerie/nfs/ajouter"},
               ]

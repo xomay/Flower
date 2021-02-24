@@ -45,7 +45,7 @@
         <el-col
           v-show="nf.isKilometrique"
           :span="5"
-          style="background: rgba(112, 177, 157, 0.2);;"
+          style="background: rgba(112, 177, 157, 0.2);"
         >
           <b>Kilométrique</b>
         </el-col>

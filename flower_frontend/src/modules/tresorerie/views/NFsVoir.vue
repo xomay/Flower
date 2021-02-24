@@ -3,13 +3,39 @@
     title="Liste des NF"
     :breadcrumb="breadcrumb"
   >
+    <el-row>
+      <el-col
+        :span="4"
+        :offset="4"
+      >
+        <h1>
+          Trier les notes de frais :
+        </h1>
+      </el-col>
+      <el-col :span="16">
+        <el-radio-group
+          v-model="filtreChoice"
+          style="margin-bottom: 30px; margin-top: 5px;"
+        >
+          <el-radio :label="1">
+            Ne pas filtrer
+          </el-radio>
+          <el-radio :label="2">
+            Seulement les NF normales
+          </el-radio>
+          <el-radio :label="3">
+            Seulement les NF kilométriques
+          </el-radio>
+        </el-radio-group>
+      </el-col>
+    </el-row>
     <el-table
-      :data="nfs"
+      :data="displayedNFs"
       :loading="loading"
       class="grid"
-      :stripe="true"
       :border="true"
       :default-sort="{prop: 'reference', order: 'descending'}"
+      :cell-style="calculateStyle"
     >
       <el-table-column
         label="Date"
@@ -62,6 +88,21 @@
         prop="objet"
       />
       <el-table-column
+        label="Type"
+        fixed="right"
+        align="center"
+        width="120px"
+      >
+        <template slot-scope="scope">
+          <span v-if="scope.row.isKilometrique">
+            Kilométrique
+          </span>
+          <span v-else>
+            Normale
+          </span>
+        </template>
+      </el-table-column>
+      <el-table-column
         label="Montant HT"
         fixed="right"
         prop="montantHT"
@@ -100,12 +141,23 @@ export default {
     return {
       nfs: [],
       loading: true,
+      filtreChoice: 1,
       breadcrumb: [
         {
           name: "Liste des NF normales",
           link: "/tresorerie/nfs/voir/normales"
         }
       ]
+    }
+  },
+  computed: {
+    displayedNFs () {
+      switch(this.filtreChoice) {
+      case 1: return this.nfs
+      case 2: return this.nfs.filter(nf => ! nf.isKilometrique)
+      case 3: return this.nfs.filter(nf => nf.isKilometrique)
+      default: return []
+      }
     }
   },
   beforeCreate () {
@@ -119,6 +171,14 @@ export default {
     }).catch((err) => {
       this.$message({message: "Impossible de récupérer les NF : " + err, type: "error"})
     })
+  },
+  methods: {
+    calculateStyle ({row, columnIndex}) {
+      if(columnIndex !== 4)
+        return ""
+      else
+        return /*"font-weight: bold; "+*/(row.isKilometrique ? "background: rgba(112, 177, 157, 0.2);" : "background: rgba(177, 168, 168, 0.2);")
+    }
   }
 }
 </script>
