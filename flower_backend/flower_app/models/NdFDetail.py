@@ -30,12 +30,14 @@ class NdFDetail(models.Model):
 
     @property
     def montantTVA(self):
+        if(self.isKilometrique):
+            return 0 # Pour être sûr d'éviter des erreurs.
         return self.tva * self.prixHT
 
     @property
     def montantTTC(self):
         if(self.isKilometrique):
-            return self.nbKilometres * self.prixCentimesKilometres
+            return self.nbKilometres * self.prixCentimesKilometres / 100 # on divise par 100 car euros <- centimes
         return self.prixHT + self.montantTVA
 
     class Meta:

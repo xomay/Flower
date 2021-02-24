@@ -2,6 +2,7 @@ from django.db import models
 from rest_framework import serializers
 from flower_app.models.People.Membre import Membre, MembreSerializer
 from django.core.validators import MaxValueValidator, MinValueValidator
+from decimal import Decimal
 
 class NdF(models.Model):
     demandeur = models.ForeignKey(Membre, on_delete=models.RESTRICT)
@@ -12,19 +13,34 @@ class NdF(models.Model):
 
     @property
     def montantHT(self):
-        return 0
+        total = Decimal(0)
+        for detail in getattr(self, 'ndfdetail_set').all():
+            if(detail.isKilometrique):
+                total += Decimal(detail.montantTTC)
+            else:
+                total += Decimal(detail.prixHT)
+        return total
 
     @property
     def montantTVA(self):
-        return 0
+        total = Decimal(0)
+        for detail in getattr(self, 'ndfdetail_set').all():
+            total += Decimal(detail.montantTVA)
+        return total
 
     @property
     def montantTTC(self):
-        return self.montantHT + self.montantTVA
+        total = Decimal(0)
+        for detail in getattr(self, 'ndfdetail_set').all():
+            total += Decimal(detail.montantTTC)
+        return total
 
     @property
-    def nfType(self): # Il faut regarder tous les blocs de détail, si il y en a au moins un kilométrique HOP ça part en kilométrique.
-        return 'K' # ou 'N' pour normaux
+    def isKilometrique(self):
+        for detail in getattr(self, 'ndfdetail_set').all():
+            if(detail.isKilometrique):
+                return True
+        return False
 
     def niceMembre(self):
         return self.demandeur.firstname.capitalize()[0] + self.demandeur.lastname.capitalize()[0] # + le numéro
@@ -53,7 +69,7 @@ from flower_app.models.NdFDetail import NdFDetailSerializer
 class NdFSerializer(serializers.ModelSerializer):
     # Ajout des propeties
     reference = serializers.SerializerMethodField()
-    nfType = serializers.SerializerMethodField()
+    isKilometrique = serializers.SerializerMethodField()
     montantHT = serializers.SerializerMethodField()
     montantTVA = serializers.SerializerMethodField()
     montantTTC = serializers.SerializerMethodField()
@@ -65,8 +81,8 @@ class NdFSerializer(serializers.ModelSerializer):
         fields = '__all__'
     def get_reference(self, obj):
         return obj.reference
-    def get_nfType(self, obj):
-        return obj.nfType
+    def get_isKilometrique(self, obj):
+        return obj.isKilometrique
     def get_montantHT(self, obj):
         return obj.montantHT
     def get_montantTVA(self, obj):
