@@ -12,8 +12,8 @@ const routes = [
   },
   // NF :
   {
-    path: "tresorerie/nfs/voir/normales",
-    name: "nfs-voir-normales",
+    path: "tresorerie/nfs/voir/",
+    name: "nfs-voir",
     component: () => import("../views/NFsVoir")
   },
   {
