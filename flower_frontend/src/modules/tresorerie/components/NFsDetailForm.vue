@@ -27,6 +27,7 @@
             <el-button
               type="text"
               icon="el-icon-delete"
+              style="color: red;"
               @click="deleteBloc(detail.id, index)"
             />
           </el-col>
@@ -180,10 +181,7 @@ export default {
       this.value = this.value.sort((a, b) => a.index - b.index)
     },
     deleteBloc (blocId, blocIndex) {
-      this.$emit(
-        "delete-bloc",
-        {blocId, blocIndex}
-      )
+      this.$emit("delete-bloc", blocId, blocIndex)
     },
     // validators
     numberValidator (rule, value, callback) {

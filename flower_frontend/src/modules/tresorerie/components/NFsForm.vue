@@ -159,11 +159,8 @@ export default {
       }
       this.nf.details.push(newBloc)
     },
-    deleteBloc ({blocIndex}) {
-      this.nf.details.splice(
-        blocIndex,
-        1
-      )
+    deleteBloc (detailID, blocIndex) {
+      this.$emit("deleteBloc", detailID, blocIndex)
     },
   }
 }

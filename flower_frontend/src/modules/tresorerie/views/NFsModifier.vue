@@ -7,6 +7,7 @@
       :nf="nf"
       :membres="membres"
       @save="saveNF"
+      @deleteBloc="deleteNFDetail"
       @delete="deleteNF"
     />
   </BaseComponent>
@@ -87,6 +88,20 @@ export default {
         this.$router.push("/tresorerie/nfs/voir/")
       }).catch((err) => {
         this.$message({message: "Impossible de supprimer la NF : " + err, type: "error"})
+      })
+    },
+    deleteNFDetail (detailID, blocIndex) {
+      axios.delete(
+        `/api/ndfs/details/${detailID}/`,
+        {withCredentials: true}
+      ).then(() => {
+        this.nf.details.splice(
+          blocIndex,
+          1
+        )
+        this.$message({message: "La dépense a bien été supprimé", type: "success"})
+      }).catch((err) => {
+        this.$message({message: "Impossible de supprimer cette dépense pour le moment :"+err, type: "error"})
       })
     }
   }
