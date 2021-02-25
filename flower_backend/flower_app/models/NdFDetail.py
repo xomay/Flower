@@ -6,7 +6,7 @@ from flower_app.serializers import CustomListSerializer
 class NdFDetail(models.Model):
     ndf = models.ForeignKey(NdF, on_delete=models.RESTRICT)
     index = models.IntegerField()
-    description = models.TextField()
+    description = models.TextField(blank=True)
 
     TYPES_DETAILS = [
       ('N', 'Normale'),

@@ -1,5 +1,6 @@
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from http import HTTPStatus
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import generics
 from django.shortcuts import get_object_or_404
@@ -21,3 +22,15 @@ class GetParametersJE(generics.RetrieveUpdateAPIView):
         queryset = self.get_queryset()
         obj = get_object_or_404(queryset, pk=1)
         return obj
+
+class GetParameter(APIView):
+    def get(self, request, requ):
+        try:
+            params = ParamsJE.objects.get(pk=1)
+            try:
+                data_found = getattr(params, requ)
+                return Response({data_found}, status=HTTPStatus.ACCEPTED)
+            except:
+                return Response({"Donnée ("+requ+") indéfinie."}, status=HTTPStatus.SERVICE_UNAVAILABLE)
+        except:
+            return Response({"Il faut initialiser les paramètres de la JE !"}, status=HTTPStatus.NOT_FOUND)
