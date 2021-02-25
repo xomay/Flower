@@ -1,6 +1,7 @@
 from django.db import models
 from rest_framework import serializers
 from flower_app.models.NdF import NdF
+from flower_app.serializers import CustomListSerializer
 
 class NdFDetail(models.Model):
     ndf = models.ForeignKey(NdF, on_delete=models.RESTRICT)
@@ -45,12 +46,14 @@ class NdFDetail(models.Model):
        verbose_name_plural = 'Notes de Frais (détails)'
 
 class NdFDetailSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(required=False, write_only=False)
     isKilometrique = serializers.SerializerMethodField()
     montantTVA = serializers.SerializerMethodField()
     montantTTC = serializers.SerializerMethodField()
     class Meta:
         model = NdFDetail
         fields = '__all__'
+        list_serializer_class = CustomListSerializer
     def get_isKilometrique(self, obj):
         return obj.isKilometrique
     def get_montantTVA(self, obj):

@@ -3,6 +3,7 @@ from rest_framework import serializers
 from flower_app.models.People.Membre import Membre, MembreSerializer
 from django.core.validators import MaxValueValidator, MinValueValidator
 from decimal import Decimal
+from flower_app.serializers import CustomListSerializer
 
 class NdF(models.Model):
     demandeur = models.ForeignKey(Membre, on_delete=models.RESTRICT)
@@ -64,9 +65,10 @@ class NdF(models.Model):
        verbose_name = 'Note de Frais'
        verbose_name_plural = 'Notes de Frais'
 
-from flower_app.models.NdFDetail import NdFDetailSerializer
+from flower_app.models.NdFDetail import NdFDetail, NdFDetailSerializer
 
 class NdFSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(required=False, write_only=False)
     # Ajout des propeties
     reference = serializers.SerializerMethodField()
     isKilometrique = serializers.SerializerMethodField()
@@ -75,10 +77,11 @@ class NdFSerializer(serializers.ModelSerializer):
     montantTTC = serializers.SerializerMethodField()
     # Re-sérialisation
     demandeur = MembreSerializer(read_only=True)
-    details = NdFDetailSerializer(source='ndfdetail_set', many=True, read_only=True)
+    details = NdFDetailSerializer(source='ndfdetail_set', many=True)
     class Meta:
         model = NdF
         fields = '__all__'
+        list_serializer_class = CustomListSerializer
     def get_reference(self, obj):
         return obj.reference
     def get_isKilometrique(self, obj):
@@ -89,3 +92,36 @@ class NdFSerializer(serializers.ModelSerializer):
         return obj.montantTVA
     def get_montantTTC(self, obj):
         return obj.montantTTC
+    
+    def create(self, validated_data):
+        if 'ndfdetail_set' in validated_data:
+            del validated_data['ndfdetail_set']
+        return NdF.objects.create(**validated_data)
+
+    def update(self, instance, validated_data):
+        instance.demandeur = validated_data.get('demandeur', instance.demandeur)
+        instance.mandat = validated_data.get('mandat', instance.mandat)
+        instance.date = validated_data.get('date', instance.date)
+        instance.objet = validated_data.get('objet', instance.objet)
+        instance.numberThisYear = validated_data.get('numberThisYear', instance.numberThisYear)
+        instance.save()
+
+        details = validated_data.get('ndfdetail_set')
+        for detail in details:
+            detail_id = detail.get('id', None)
+            if detail_id:
+                detail_instance = NdFDetail.objects.get(id=detail_id, ndf=instance)
+                detail_instance.index = detail.get('index', detail_instance.index)
+                detail_instance.description = detail.get('description', detail_instance.description)
+                detail_instance.detailType = detail.get('detailType', detail_instance.detailType)
+
+                detail_instance.prixHT = detail.get('prixHT', detail_instance.prixHT)
+                detail_instance.tva = detail.get('tva', detail_instance.tva)
+
+                detail_instance.nbKilometres = detail.get('nbKilometres', detail_instance.nbKilometres)
+                detail_instance.prixCentimesKilometres = detail.get('prixCentimesKilometres', detail_instance.prixCentimesKilometres)
+
+                detail_instance.ndf = detail.get('ndf', detail_instance.ndf)
+                detail_instance.save()
+                
+        return instance

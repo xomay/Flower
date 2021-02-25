@@ -4,6 +4,6 @@ from . import views
 #Base url for here is '/ndfs/'
 
 urlpatterns = [
-    path('', views.NFListCreateView.as_view()),
+    path('', views.NFListView.as_view()),
     path('<int:pk>/', views.NFRetrieveUpdateDestroyView.as_view()),
 ]

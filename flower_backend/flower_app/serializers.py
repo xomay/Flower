@@ -1,11 +1,5 @@
 from rest_framework import serializers
 
-# from .models import Etude
-
-# class EtudeSerializer(serializers.HyperlinkedModelSerializer):
-#     class Meta:
-#         model = Etude
-#         fields = ('nomEtude',)
 class CustomListSerializer(serializers.ListSerializer):
     def update(self, instance, validated_data):
         # Maps for id->instance and id->data item.
