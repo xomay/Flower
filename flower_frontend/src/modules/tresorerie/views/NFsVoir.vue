@@ -144,8 +144,8 @@ export default {
       filtreChoice: 1,
       breadcrumb: [
         {
-          name: "Liste des NF normales",
-          link: "/tresorerie/nfs/voir/normales"
+          name: "Liste des NF",
+          link: "/tresorerie/nfs/voir/"
         }
       ]
     }

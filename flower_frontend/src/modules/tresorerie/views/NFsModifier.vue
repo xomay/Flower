@@ -5,6 +5,9 @@
   >
     <NFsForm
       :nf="nf"
+      :membres="membres"
+      @save="saveNF"
+      @delete="deleteNF"
     />
   </BaseComponent>
 </template>
@@ -27,8 +30,8 @@ export default {
       loading: true,
       breadcrumb: [
         {
-          name: "Liste des NF normales",
-          link: "/tresorerie/nfs/voir/normales"
+          name: "Liste des NF",
+          link: "/tresorerie/nfs/voir/"
         },
         {
           name: "<loading>",
@@ -61,6 +64,31 @@ export default {
     }).catch((err) => {
       this.$message({message: "Impossible de récupérer la NF : " + err, type: "error"})
     })
+  },
+  methods: {
+    saveNF () {
+      axios.put(
+        `api/ndfs/${this.$route.params.id}/`,
+        this.nf,
+        { withCredentials: true }
+      ).then(() => {
+        this.$message({message: "NF enregistrée avec succès.", type: "success"})
+        this.$router.push("/tresorerie/nfs/voir/")
+      }).catch((err) => {
+        this.$message({message: "Impossible de récupérer la NF : " + err, type: "error"})
+      })
+    },
+    deleteNF () {
+      axios.delete(
+        `api/ndfs/${this.$route.params.id}/`,
+        { withCredentials: true }
+      ).then(() => {
+        this.$message({message: "NF supprimée avec succès.", type: "success"})
+        this.$router.push("/tresorerie/nfs/voir/")
+      }).catch((err) => {
+        this.$message({message: "Impossible de supprimer la NF : " + err, type: "error"})
+      })
+    }
   }
 }
 </script>
