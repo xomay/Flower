@@ -12,6 +12,7 @@
         <el-row>
           <el-col :span="1">
             <el-button
+              :loading="loading"
               type="text"
               icon="el-icon-caret-top"
               :disabled="index === 0"
@@ -19,12 +20,14 @@
               @click="exchangeBlocs(index, index-1)"
             />
             <el-button
+              :loading="loading"
               type="text"
               icon="el-icon-caret-bottom"
               :disabled="index === (value.length - 1)"
               @click="exchangeBlocs(index, index+1)"
             />
             <el-button
+              :loading="loading"
               type="text"
               icon="el-icon-delete"
               style="color: red;"
@@ -42,6 +45,7 @@
             >
               <el-input
                 v-model="detail.description"
+                placeholder="Description de la dépense."
                 type="textarea"
                 :rows="5"
               />
@@ -150,7 +154,10 @@
       <hr class="spitHR">
     </div>
     <div class="flex justify-center">
-      <el-button @click="addBloc">
+      <el-button
+        :loading="loading"
+        @click="addBloc"
+      >
         Ajouter une dépense
       </el-button>
     </div>
@@ -161,7 +168,8 @@
 export default {
   name: "NFsDetailForm",
   props: {
-    value: { type: Array, required: true }
+    value: { type: Array, required: true },
+    loading: { type: Boolean, required: true }
   },
   methods: {
     addBloc () {

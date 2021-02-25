@@ -25,6 +25,11 @@ const routes = [
     path: "tresorerie/nfs/:id/modifier",
     name: "nfs-modifier",
     component: () => import("../views/NFsModifier")
+  },
+  {
+    path: "tresorerie/nfs/ajouter",
+    name: "nfs-ajouter",
+    component: () => import("../views/NFsCreer")
   }
 ]
 

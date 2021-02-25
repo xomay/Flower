@@ -63,6 +63,7 @@
     <NFsDetailForm
       ref="detailFormComponent"
       v-model="nf.details"
+      :loading="loading"
       @add-bloc="addBloc"
       @delete-bloc="deleteBloc"
     />
@@ -70,11 +71,13 @@
       <el-button
         type="success"
         style="margin-right: 80px; margin-left: 40px;"
+        :loading="loading"
         @click="validateForm"
       >
         Sauvegarder
       </el-button>
       <el-popconfirm
+        v-if="deletable"
         title="Supprimer définitivement cette NF ?"
         confirm-button-type="danger"
         confirm-button-text="Oui"
@@ -84,6 +87,7 @@
       >
         <el-button
           slot="reference"
+          :loading="loading"
           type="danger"
           icon="el-icon-cross"
         >
@@ -102,7 +106,10 @@ export default {
   components: { MemberPicker, NFsDetailForm },
   props: {
     nf: { type: Object, required: true },
-    membres: { type: Array, required: true }
+    membres: { type: Array, required: true },
+    loading: { type: Boolean, required: true },
+    deletable: { type: Boolean, default: false },
+    defaultTva: { type: Number, default () { return 0.2 } }
   },
   data () {
     return {
@@ -149,15 +156,16 @@ export default {
     // DETAILS
     addBloc () {
       const newBloc = {
-        objet: "",
+        description: "",
         detailType: "N",
         prixHT: 0,
-        tva: 0,
+        tva: this.defaultTva,
         nbKilometres: 0,
         prixCentimesKilometres: 0,
-        index: this.nf.details.length + 1
+        index: this.nf.details.length + 1,
+        ndf: this.$route.params.id
       }
-      this.nf.details.push(newBloc)
+      this.$emit("addBloc", newBloc)
     },
     deleteBloc (detailID, blocIndex) {
       this.$emit("deleteBloc", detailID, blocIndex)
