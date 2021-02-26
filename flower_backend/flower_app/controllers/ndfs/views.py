@@ -29,19 +29,17 @@ class NFListView(generics.ListCreateAPIView, generics.UpdateAPIView):
     # Durant le POST, on remplace les ID de contactway par leur valeur textuelle.
     def create(self, *args, **kwargs):
         data = args[0].data
-        print("Create instance")
         demandeur = Membre.objects.get(pk=data['demandeur'])
+        howManyThisYear = len(NdF.objects.filter(mandat=data['mandat'])) + 1
         instance = NdF(
             demandeur=demandeur,
             date=data['date'],
             objet=data['objet'],
             mandat=data['mandat'],
-            numberThisYear=data['numberThisYear']
+            numberThisYear=howManyThisYear
         )
         instance.save()
-        print("Created the instance. Id="+str(instance.id))
         for detail in data["details"]:
-            print("Create "+detail['description'])
             detail_instance = NdFDetail(
                 ndf=instance,
                 index=detail['index'],
@@ -53,7 +51,6 @@ class NFListView(generics.ListCreateAPIView, generics.UpdateAPIView):
                 prixCentimesKilometres=detail['prixCentimesKilometres']
             )
             detail_instance.save()
-            print("> Created " + str(detail_instance))
         return Response(instance.id, status=HTTPStatus.ACCEPTED)
 
 class NFRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
