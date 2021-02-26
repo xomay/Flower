@@ -94,6 +94,19 @@ class NdFSerializer(serializers.ModelSerializer):
         return obj.montantTTC
     
     def create(self, validated_data):
+        details = validated_data.get('ndfdetail_set')
+        for detail in details:
+            detail_instance = NdFDetail(
+                ndf=detail['ndf'],
+                index=detail['index'],
+                description=detail['description'],
+                detailType=detail['detailType'],
+                prixHT=detail['prixHT'],
+                tva=detail['tva'],
+                nbKilometres=detail['nbKilometres'],
+                prixCentimesKilometres=detail['prixCentimesKilometres']
+            )
+            detail_instance.save()
         if 'ndfdetail_set' in validated_data:
             del validated_data['ndfdetail_set']
         return NdF.objects.create(**validated_data)
@@ -107,6 +120,9 @@ class NdFSerializer(serializers.ModelSerializer):
         instance.save()
 
         details = validated_data.get('ndfdetail_set')
+        done = list()
+
+        
         for detail in details:
             detail_id = detail.get('id', None)
             if detail_id:
@@ -123,5 +139,23 @@ class NdFSerializer(serializers.ModelSerializer):
 
                 detail_instance.ndf = detail.get('ndf', detail_instance.ndf)
                 detail_instance.save()
-                
+                done.append(detail_id)
+            else:
+                detail_instance = NdFDetail(
+                    ndf=detail['ndf'],
+                    index=detail['index'],
+                    description=detail['description'],
+                    detailType=detail['detailType'],
+                    prixHT=detail['prixHT'],
+                    tva=detail['tva'],
+                    nbKilometres=detail['nbKilometres'],
+                    prixCentimesKilometres=detail['prixCentimesKilometres']
+                )
+                detail_instance.save()
+                done.append(detail_instance.id)
+        
+        for saved_detail in NdFDetail.objects.all().filter(ndf=instance):
+            if not saved_detail.id in done:
+                saved_detail.delete()
+
         return instance

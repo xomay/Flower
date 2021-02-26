@@ -104,7 +104,7 @@ export default {
       })
     },
     deleteNFDetail (detailID, blocIndex) {
-      this.loading = false
+      /*this.loading = false
       axios.delete(
         `/api/ndfs/details/${detailID}/`,
         {withCredentials: true}
@@ -118,10 +118,14 @@ export default {
         this.$message({message: "Impossible de supprimer cette dépense pour le moment :"+err, type: "error"})
       }).finally(() => {
         this.loading = false
-      })
+      })*/
+      this.nf.details.splice(
+        blocIndex,
+        1
+      )
     },
     addNFDetail (newDepense) {
-      this.loading = true
+      /*this.loading = true
       axios.post(
         "/api/ndfs/details/",
         newDepense,
@@ -133,6 +137,17 @@ export default {
         this.$message({message: "Impossible de créer une dépense pour le moment: " +err, type: "error"})
       }).finally(() => {
         this.loading = false
+      })*/
+      console.log("add " + newDepense)
+      this.nf.details.push({
+        ndf: this.nf.id,
+        index: this.nf.details.length + 1,
+        description: "",
+        detailType: "N",
+        prixHT: 0,
+        tva: 0.2,
+        nbKilometres: 0,
+        prixCentimesKilometres: 6
       })
     }
   }

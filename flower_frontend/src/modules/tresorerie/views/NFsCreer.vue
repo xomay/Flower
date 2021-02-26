@@ -65,47 +65,34 @@ export default {
   },
   methods: {
     submitNF () {
-      axios.put(
-        `api/ndfs/${this.$route.params.id}/`,
+      axios.post(
+        "api/ndfs/",
         this.nf,
         { withCredentials: true }
       ).then((res) => {
         this.$message({message: "NF ajoutée avec succès.", type: "success"})
-        this.$router.push(`/tresorerie/nfs/${res.data.id}/voir/`)
+        this.$router.push(`/tresorerie/nfs/${res.data}/voir/`)
       }).catch((err) => {
         this.$message({message: "Impossible d'ajouter la NF : " + err, type: "error"})
       })
     },
     deleteNFDetail (detailID, blocIndex) {
-      this.loading = false
-      axios.delete(
-        `/api/ndfs/details/${detailID}/`,
-        {withCredentials: true}
-      ).then(() => {
-        this.nf.details.splice(
-          blocIndex,
-          1
-        )
-        this.$message({message: "La dépense a bien été supprimé", type: "success"})
-      }).catch((err) => {
-        this.$message({message: "Impossible de supprimer cette dépense pour le moment :"+err, type: "error"})
-      }).finally(() => {
-        this.loading = false
-      })
+      this.nf.details.splice(
+        blocIndex,
+        1
+      )
     },
     addNFDetail (newDepense) {
-      this.loading = true
-      axios.post(
-        "/api/ndfs/details/",
-        newDepense,
-        {withCredentials: true}
-      ).then((res) => {
-        this.$message({message: "La dépense a bien été ajoutée.", type: "success"})
-        this.nf.details.push(res.data)
-      }).catch((err) => {
-        this.$message({message: "Impossible de créer une dépense pour le moment: " +err, type: "error"})
-      }).finally(() => {
-        this.loading = false
+      console.log("add " + newDepense)
+      this.nf.details.push({
+        ndf: this.nf.id,
+        index: this.nf.details.length + 1,
+        description: "",
+        detailType: "N",
+        prixHT: 0,
+        tva: 0.2,
+        nbKilometres: 0,
+        prixCentimesKilometres: 6
       })
     }
   }
