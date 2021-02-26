@@ -146,7 +146,6 @@ export default {
     },
     deleteNF () {
       this.$emit("delete")
-      this.$router.push("/tresorerie/nfs/voir")
     },
     applyDateToMandat () {
       if(this.nf.date != undefined && this.nf.date != "") {
@@ -165,10 +164,13 @@ export default {
         index: this.nf.details.length + 1,
         ndf: this.$route.params.id
       }
-      this.$emit("addBloc", newBloc)
+      this.nf.details.push(newBloc)
     },
-    deleteBloc (detailID, blocIndex) {
-      this.$emit("deleteBloc", detailID, blocIndex)
+    deleteBloc (blocIndex) {
+      this.nf.details.splice(
+        blocIndex,
+        1
+      )
     },
   }
 }

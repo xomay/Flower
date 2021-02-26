@@ -9,8 +9,6 @@
       :loading="loading"
       :default-tva="defaultTVA"
       @save="submitNF"
-      @deleteBloc="deleteNFDetail"
-      @addBloc="addNFDetail"
     />
   </BaseComponent>
 </template>
@@ -74,25 +72,6 @@ export default {
         this.$router.push(`/tresorerie/nfs/${res.data}/voir/`)
       }).catch((err) => {
         this.$message({message: "Impossible d'ajouter la NF : " + err, type: "error"})
-      })
-    },
-    deleteNFDetail (detailID, blocIndex) {
-      this.nf.details.splice(
-        blocIndex,
-        1
-      )
-    },
-    addNFDetail (newDepense) {
-      console.log("add " + newDepense)
-      this.nf.details.push({
-        ndf: this.nf.id,
-        index: this.nf.details.length + 1,
-        description: "",
-        detailType: "N",
-        prixHT: 0,
-        tva: 0.2,
-        nbKilometres: 0,
-        prixCentimesKilometres: 6
       })
     }
   }

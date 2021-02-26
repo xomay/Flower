@@ -10,8 +10,6 @@
       :deletable="true"
       :default-tva="defaultTVA"
       @save="saveNF"
-      @deleteBloc="deleteNFDetail"
-      @addBloc="addNFDetail"
       @delete="deleteNF"
     />
   </BaseComponent>
@@ -103,41 +101,7 @@ export default {
         this.$message({message: "Impossible de supprimer la NF : " + err, type: "error"})
       })
     },
-    deleteNFDetail (detailID, blocIndex) {
-      /*this.loading = false
-      axios.delete(
-        `/api/ndfs/details/${detailID}/`,
-        {withCredentials: true}
-      ).then(() => {
-        this.nf.details.splice(
-          blocIndex,
-          1
-        )
-        this.$message({message: "La dépense a bien été supprimé", type: "success"})
-      }).catch((err) => {
-        this.$message({message: "Impossible de supprimer cette dépense pour le moment :"+err, type: "error"})
-      }).finally(() => {
-        this.loading = false
-      })*/
-      this.nf.details.splice(
-        blocIndex,
-        1
-      )
-    },
     addNFDetail (newDepense) {
-      /*this.loading = true
-      axios.post(
-        "/api/ndfs/details/",
-        newDepense,
-        {withCredentials: true}
-      ).then((res) => {
-        this.$message({message: "La dépense a bien été ajoutée.", type: "success"})
-        this.nf.details.push(res.data)
-      }).catch((err) => {
-        this.$message({message: "Impossible de créer une dépense pour le moment: " +err, type: "error"})
-      }).finally(() => {
-        this.loading = false
-      })*/
       console.log("add " + newDepense)
       this.nf.details.push({
         ndf: this.nf.id,
