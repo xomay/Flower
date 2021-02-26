@@ -9,5 +9,6 @@ urlpatterns = [
     path('facture/<int:facture_id>/', views.FactureView.as_view()),
     path('pvr/<int:pvr_id>/', views.PVRView.as_view()),
     path('rdm/<int:rdm_id>/', views.RDMView.as_view()),
+    path('ndf/<int:ndf_id>/', views.NdFView.as_view()),
     path('devis/', views.CustomDevisView.as_view())
 ]

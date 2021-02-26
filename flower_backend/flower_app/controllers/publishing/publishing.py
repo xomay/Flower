@@ -16,8 +16,14 @@ def nbrToLetters(number):
 def shortDate(isodate):
     return date.fromisoformat(str(isodate)).strftime('%d/%m/%Y')
 
+def rd(number):
+    return str(round(number, 2))
+
 def addMonths(isodate, numberOfMonths):
     return (date.fromisoformat(str(isodate)) + timedelta(days=numberOfMonths * 30)).isoformat()
+
+def toPercent(number):
+    return str(number*100)
 
 def param(value):
     try:
@@ -42,6 +48,9 @@ def computeDocx(context, doctypeFilename, name='undef', images=dict()):
     jinja_env.filters['addMonths'] = addMonths
     
     jinja_env.globals['param'] = param
+    jinja_env.globals['shortDate'] = shortDate
+    jinja_env.globals['toPercent'] = toPercent
+    jinja_env.globals['rd'] = rd
 
     doc.render(context, jinja_env)
     doc.save(docBytes)

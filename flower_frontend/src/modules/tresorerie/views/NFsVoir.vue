@@ -127,6 +127,21 @@
         width="130px"
         sortable
       />
+      <el-table-column
+        label="Télécharger"
+        fixed="right"
+        align="center"
+        width="100px"
+      >
+        <template slot-scope="scope">
+          <el-button
+            type="text"
+            icon="el-icon-download"
+            :loading="loading"
+            @click="downloadNF(scope.row)"
+          />
+        </template>
+      </el-table-column>
     </el-table>
   </BaseComponent>
 </template>
@@ -170,7 +185,7 @@ export default {
         this.$message({message: "Aucune NF n'est enregistrée.", type: "warning"})
     }).catch((err) => {
       this.$message({message: "Impossible de récupérer les NF : " + err, type: "error"})
-    })
+    }).finally(() => this.loading = false)
   },
   methods: {
     calculateStyle ({row, columnIndex}) {
@@ -178,6 +193,24 @@ export default {
         return ""
       else
         return /*"font-weight: bold; "+*/(row.isKilometrique ? "background: rgba(112, 177, 157, 0.2);" : "background: rgba(177, 168, 168, 0.2);")
+    },
+    downloadNF (ndf) {
+      this.loading = true
+      axios.get(`/api/publish/ndf/${ndf.id}`, { withCredentials: true, responseType: "blob" }).then((response) => {
+        this.createDownloadElement(response.data, ndf.reference + ".docx")
+      }).catch(err => {
+        this.$message({ message: "Une erreur est survenue lors de la génération de la NF : " + err, type: "error" })
+      }).finally(() => {
+        this.loading = false
+      })
+    },
+    createDownloadElement (data, filename) {
+      let fileURL = window.URL.createObjectURL(new Blob([data]))
+      let fileLink = document.createElement("a")
+      fileLink.href = fileURL
+      fileLink.setAttribute("download", filename)
+      document.body.appendChild(fileLink)
+      fileLink.click()
     }
   }
 }

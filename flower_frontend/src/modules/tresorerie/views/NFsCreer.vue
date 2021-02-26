@@ -28,7 +28,6 @@ export default {
         objet: "",
         mandat: 2021,
         date: "",
-        numberThisYear: 1,
         details: []
       },
       membres: [],

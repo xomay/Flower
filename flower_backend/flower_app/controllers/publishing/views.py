@@ -8,6 +8,7 @@ from flower_app.models.Facture import Facture
 from flower_app.models.Mission import Mission
 from flower_app.models.People.Membre import Membre
 from flower_app.models.PVR import PVR
+from flower_app.models.NdF import NdF
 
 from flower_app.controllers.gantt.gantt import computeJPGGanttFromEtude
 
@@ -58,6 +59,16 @@ class RDMView(generics.RetrieveAPIView):
     def retrieve(request, self, rdm_id):
         mission = Mission.objects.get(pk=rdm_id)
         return computeDocx({'mission': mission}, 'RDM.docx','RDM-' + mission.project.name)
+
+class NdFView(generics.RetrieveAPIView):
+    permission_classes = [IsAuthenticated, HasGroupPermission]
+    required_groups = {
+        'GET': ['ROLE_CA', 'ROLE_TRESO']
+    }
+
+    def retrieve(request, self, ndf_id):
+        ndf = NdF.objects.get(pk=ndf_id)
+        return computeDocx({'ndf': ndf}, 'NF.docx', ndf.reference)
 
 class FactureView(generics.RetrieveAPIView):
     permission_classes = [IsAuthenticated, HasGroupPermission]
