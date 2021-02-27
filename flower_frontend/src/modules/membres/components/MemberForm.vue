@@ -12,7 +12,11 @@
           prop="firstname"
           label-width="26%"
         >
-          <el-input v-model="value.firstname" />
+          <el-input
+            v-model="value.firstname"
+            placeholder="Prénom du membre de la JE"
+            @input="autoFillEmails()"
+          />
         </el-form-item>
       </el-col>
       <el-col :span="12">
@@ -21,7 +25,11 @@
           prop="lastname"
           label-width="26%"
         >
-          <el-input v-model="value.lastname" />
+          <el-input
+            v-model="value.lastname"
+            placeholder="Nom du membre de la JE"
+            @input="autoFillEmails()"
+          />
         </el-form-item>
       </el-col>
       <el-col :span="12">
@@ -81,7 +89,10 @@
           prop="mobile"
           label-width="13%"
         >
-          <el-input v-model="value.mobile" />
+          <el-input
+            v-model="value.mobile"
+            placeholder="Numéro de téléphone personnel du membre"
+          />
         </el-form-item>
       </el-col>
       <el-col :span="24">
@@ -90,7 +101,10 @@
           prop="address"
           label-width="13%"
         >
-          <el-input v-model="value.address" />
+          <el-input
+            v-model="value.address"
+            placeholder="Addresse (numéro et rue)"
+          />
         </el-form-item>
       </el-col>
       <el-col :span="8">
@@ -99,7 +113,10 @@
           prop="postcode"
           label-width="39%"
         >
-          <el-input v-model="value.postcode" />
+          <el-input
+            v-model="value.postcode"
+            placeholder="Addresse (code postal)"
+          />
         </el-form-item>
       </el-col>
       <el-col :span="8">
@@ -108,7 +125,10 @@
           prop="town"
           label-width="39%"
         >
-          <el-input v-model="value.town" />
+          <el-input
+            v-model="value.town"
+            placeholder="Addresse (ville)"
+          />
         </el-form-item>
       </el-col>
       <el-col :span="8">
@@ -117,7 +137,10 @@
           prop="country"
           label-width="39%"
         >
-          <el-input v-model="value.country" />
+          <el-input
+            v-model="value.country"
+            placeholder="Addresse (pays)"
+          />
         </el-form-item>
       </el-col>
       <el-col :span="24">
@@ -126,7 +149,10 @@
           prop="nationality"
           label-width="13%"
         >
-          <el-input v-model="value.nationality" />
+          <el-input
+            v-model="value.nationality"
+            placeholder="Nationalité"
+          />
         </el-form-item>
       </el-col>
       <el-col :span="12">
@@ -151,7 +177,10 @@
           prop="birth_place"
           label-width="26%"
         >
-          <el-input v-model="value.birth_place" />
+          <el-input
+            v-model="value.birth_place"
+            placeholder="Ville de naissance"
+          />
         </el-form-item>
       </el-col>
       <el-col :span="24">
@@ -166,7 +195,7 @@
         </el-form-item>
       </el-col>
       <el-col
-        v-if="!value.user"
+        v-if="!value.user && canOpenAccount"
         :span="24"
       >
         <el-form-item>
@@ -190,6 +219,7 @@ export default {
     value: { type: Object, required: true },
     loading: { type: Boolean, required: true },
     loadingopenaccount: { type: Boolean, required: true },
+    canOpenAccount: { type: Boolean, default () { return false } }
   },
   data () {
     return {
@@ -314,11 +344,20 @@ export default {
           })
         }
       })
+    },
+    autoFillEmails () {
+      if(this.value.firstname != "" && this.value.lastname != "") {
+        const prefix = this.handleToEmail(this.value.firstname + "." + this.value.lastname)
+        this.value.email = prefix + "@insa-rennes.fr"
+        this.value.email_junior = prefix + "@ouest-insa.fr"
+      }
+    },
+    handleToEmail (text) {
+      return text.toLowerCase()
+        .replaceAll("é", "e").replaceAll("è", "e").replaceAll("ê", "e").replaceAll("ë", "e")
+        .replaceAll("à", "a").replaceAll("â", "a").replaceAll("ô", "o").replaceAll("ï", "i").replaceAll("î", "i")
+        .replaceAll(" ", "-")
     }
   }
 }
 </script>
-
-<style>
-
-</style>

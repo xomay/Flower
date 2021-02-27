@@ -35,7 +35,10 @@
       prop="name"
       label-width="140px"
     >
-      <el-input v-model="value.name" />
+      <el-input
+        v-model="value.name"
+        placeholder="Entrez le nom de la future étude"
+      />
     </el-form-item>
     <el-form-item
       label="Présentation de l'étude"

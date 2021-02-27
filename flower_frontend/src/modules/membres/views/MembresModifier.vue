@@ -7,6 +7,7 @@
       v-model="member"
       :loading="loading"
       :loadingopenaccount="loadingOpenAccount"
+      :can-open-account="true"
       @save="saveMember"
       @openaccount="openAccount"
     />

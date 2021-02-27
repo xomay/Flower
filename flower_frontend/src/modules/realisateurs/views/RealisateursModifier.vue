@@ -8,6 +8,7 @@
       :value="realisateur"
       :deletable="true"
       :loading="loading"
+      :ecole-suffix="mailSuffix"
       @deleted="deleted"
       @edited="edit"
     />
@@ -16,13 +17,16 @@
 
 <script>
 import RealisateurForm from "../components/RealisateurForm.vue"
+import GlobalData from "@/mixins/GlobalData"
 const axios = require("axios")
 
 export default {
   name: "RealisateurModifier",
   components: { RealisateurForm },
+  mixins: [GlobalData],
   data () {
     return {
+      mailSuffix: "",
       realisateur: {},
       loading: true,
       breadcrumb: [
@@ -56,6 +60,11 @@ export default {
     }).finally(() => {
       this.loading = false
     })
+  },
+  created () {
+    this.queryData(axios, "mail_suffix")
+      .then((res) => this.mailSuffix = "@" + res.data[0])
+      .catch((err) => this.$message({message: "Erreur: " + err, type: "error"}))
   },
   methods: {
     deleted () {

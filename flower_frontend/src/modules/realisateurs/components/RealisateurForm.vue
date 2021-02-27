@@ -13,7 +13,11 @@
           prop="firstname"
           label-width="26%"
         >
-          <el-input v-model="value.firstname" />
+          <el-input
+            v-model="value.firstname"
+            placeholder="Prénom du réalisateur"
+            @input="autoFillEmails"
+          />
         </el-form-item>
       </el-col>
       <el-col :span="12">
@@ -22,7 +26,11 @@
           prop="lastname"
           label-width="26%"
         >
-          <el-input v-model="value.lastname" />
+          <el-input
+            v-model="value.lastname"
+            placeholder="Nom du réalisateur"
+            @input="autoFillEmails"
+          />
         </el-form-item>
       </el-col>
       <el-col :span="12">
@@ -111,6 +119,7 @@
             :maxlength="15"
             :minlength="15"
             show-word-limit
+            placeholder="N° de sécurité sociale"
           />
         </el-form-item>
       </el-col>
@@ -120,7 +129,10 @@
           prop="email_insa"
           label-width="13%"
         >
-          <el-input v-model="value.email_insa" />
+          <el-input
+            v-model="value.email_insa"
+            placeholder="Cet email sera utilisé officiellement"
+          />
         </el-form-item>
       </el-col>
       <el-col :span="24">
@@ -129,7 +141,10 @@
           prop="email"
           label-width="13%"
         >
-          <el-input v-model="value.email" />
+          <el-input
+            v-model="value.email"
+            placeholder="E-mail officieux"
+          />
         </el-form-item>
       </el-col>
       <el-col :span="24">
@@ -138,7 +153,10 @@
           prop="mobile"
           label-width="13%"
         >
-          <el-input v-model="value.mobile" />
+          <el-input
+            v-model="value.mobile"
+            placeholder="N° de portable personnel"
+          />
         </el-form-item>
       </el-col>
       <el-col :span="24">
@@ -147,7 +165,10 @@
           prop="address"
           label-width="13%"
         >
-          <el-input v-model="value.address" />
+          <el-input
+            v-model="value.address"
+            placeholder="Numéro et nom de rue"
+          />
         </el-form-item>
       </el-col>
       <el-col :span="8">
@@ -156,7 +177,10 @@
           prop="postcode"
           label-width="39%"
         >
-          <el-input v-model="value.postcode" />
+          <el-input
+            v-model="value.postcode"
+            placeholder="Code postal"
+          />
         </el-form-item>
       </el-col>
       <el-col :span="8">
@@ -165,7 +189,10 @@
           prop="town"
           label-width="39%"
         >
-          <el-input v-model="value.town" />
+          <el-input
+            v-model="value.town"
+            placeholder="Ville de résidence"
+          />
         </el-form-item>
       </el-col>
       <el-col :span="8">
@@ -174,7 +201,10 @@
           prop="country"
           label-width="39%"
         >
-          <el-input v-model="value.country" />
+          <el-input
+            v-model="value.country"
+            placeholder="Pays de résidence"
+          />
         </el-form-item>
       </el-col>
       <el-col :span="24">
@@ -208,17 +238,24 @@
           prop="birth_place"
           label-width="26%"
         >
-          <el-input v-model="value.birth_place" />
+          <el-input
+            v-model="value.birth_place"
+            placeholder="Ville de naissance"
+          />
         </el-form-item>
       </el-col>
-      <el-col :span="24">
+      <el-col
+        :span="24"
+        style="display: inline-flex;"
+      >
         <el-transfer
           v-model="value.skills"
           :data="competences_objs"
           filterable
           :filter-method="filterSkill"
           filter-placeholder="Recherche"
-          :titles="['Liste', 'Compétences']"
+          :titles="['Choix', 'Compétences']"
+          style="margin: 10px auto 10px auto;"
         />
       </el-col>
       <el-col :span="24">
@@ -252,7 +289,8 @@ export default {
   props: {
     value: { type: Object, required: true },
     deletable: { type: Boolean, default: false },
-    loading: { type: Boolean, default: false }
+    loading: { type: Boolean, default: false },
+    ecoleSuffix: { type: String, default () { return "@" } }
   },
   data () {
     return {
@@ -378,6 +416,18 @@ export default {
     },
     filterSkill (query, item) {
       return item.label.toLowerCase().indexOf(query.toLowerCase()) > -1
+    },
+    autoFillEmails () {
+      if(this.value.firstname != "" && this.value.lastname != "") {
+        const prefix = this.handleToEmail(this.value.firstname + "." + this.value.lastname)
+        this.value.email_insa = prefix + this.ecoleSuffix
+      }
+    },
+    handleToEmail (text) {
+      return text.toLowerCase()
+        .replaceAll("é", "e").replaceAll("è", "e").replaceAll("ê", "e").replaceAll("ë", "e")
+        .replaceAll("à", "a").replaceAll("â", "a").replaceAll("ô", "o").replaceAll("ï", "i").replaceAll("î", "i")
+        .replaceAll(" ", "-")
     }
   }
 }

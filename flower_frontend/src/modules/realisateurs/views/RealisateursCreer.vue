@@ -7,6 +7,7 @@
     <RealisateurForm
       :value="realisateur"
       :loading="loading"
+      :ecole-suffix="mailSuffix"
       @edited="createRea"
     />
   </BaseComponent>
@@ -14,26 +15,29 @@
 
 <script>
 import RealisateurForm from "../components/RealisateurForm.vue"
+import GlobalData from "@/mixins/GlobalData"
 const axios = require("axios")
 
 export default {
   name: "RealisateurCreer",
   components: { RealisateurForm },
+  mixins: [GlobalData],
   data () {
     return {
+      mailSuffix: "",
       realisateur: {
         lastname: "",
         firstname: "",
-        gender: "",
+        gender: "M.",
         promotion: "2021",
         mobile: "",
         email: "",
         email_insa: "",
         address: "",
         postcode: "",
-        town: "",
+        town: "Rennes",
         country: "France",
-        nationality: "FR",
+        nationality: "Française",
         birth_date: "",
         birth_place: "",
         filiere: "INFO",
@@ -51,6 +55,11 @@ export default {
         }
       ]
     }
+  },
+  created () {
+    this.queryData(axios, "mail_suffix")
+      .then((res) => this.mailSuffix = "@" + res.data[0])
+      .catch((err) => this.$message({message: "Erreur: " + err, type: "error"}))
   },
   methods: {
     createRea () {

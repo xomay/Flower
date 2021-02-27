@@ -25,16 +25,16 @@ export default {
       form: {
         firstname: "",
         lastname: "",
-        gender: "",
+        gender: "M.",
         promotion: "2021",
-        email: "",
-        email_junior: "",
+        email: "@insa-rennes.fr",
+        email_junior: "@ouest-insa.fr",
         mobile: "",
         address: "",
         postcode: "",
-        town: "",
-        country: "",
-        nationality: "",
+        town: "Rennes",
+        country: "France",
+        nationality: "Française",
         birth_date: "",
         birth_place: ""
       },
@@ -59,17 +59,13 @@ export default {
         this.form,
         {withCredentials: true}
       ).then(() => {
-        this.$message({message: "Le membre a bien été ajouté",
-          type: "success"})
+        this.$message({message: "Le membre a bien été ajouté.", type: "success"})
         this.$router.push("/membres")
-      }).
-        catch((err) => {
-          this.$message({message: err,
-            type: "error"})
-        }).
-        finally(() => {
-          this.loading = false
-        })
+      }).catch((err) => {
+        this.$message({message: "Impossible de créer un membre : "+err, type: "error"})
+      }).finally(() => {
+        this.loading = false
+      })
     }
   }
 }
