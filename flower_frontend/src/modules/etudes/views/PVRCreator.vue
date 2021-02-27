@@ -48,11 +48,9 @@ export default {
           link: `/etudes/${this.etude.id}/pvr/ajouter`
         }
       ]
-    }).
-      catch(() => {
-        this.$message({message: "Impossible de récupérer l'études pour le moment",
-          type: "error"})
-      })
+    }).catch(() => {
+      this.$message({message: "Impossible de récupérer l'études pour le moment", type: "error"})
+    })
   },
   methods: {
     submitPVR () {
@@ -63,19 +61,13 @@ export default {
         this.pvr,
         {withCredentials: true}
       ).then(() => {
-        this.$router.push(`/etudes/${this.pvr.project}/voir`)
-        this.$message({message: "Le PVR a bien été ajouté.",
-          type: "success",
-          offset: 40})
-      }).
-        catch((err) => {
-          this.$message({message: err,
-            type: "error",
-            offset: 40})
-        }).
-        finally(() => {
-          this.loading = false
-        })
+        this.$router.push(`/etudes/${this.$route.params.id}/voir?active=Rédaction`)
+        this.$message({message: "Le PVR a bien été ajouté.", type: "success"})
+      }).catch((err) => {
+        this.$message({message: err, type: "error"})
+      }).finally(() => {
+        this.loading = false
+      })
     }
   }
 }

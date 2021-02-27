@@ -57,7 +57,7 @@ export default {
     ).then((res) => {
       this.pvr = res.data
     }).catch((err) => {
-      this.$message({message: err, type: "error", offset: 40})
+      this.$message({message: "Impossible de récupérer le PVR : "+ err, type: "error"})
     })
   },
   methods: {
@@ -68,10 +68,10 @@ export default {
         this.pvr,
         {withCredentials: true}
       ).then(() => {
-        this.$message({message: "Le PVR a bien été modifié.", type: "success", offset: 40})
+        this.$message({message: "Le PVR a bien été modifié.", type: "success"})
         this.$router.push(`/etudes/${this.$route.params.id}/voir?active=Rédaction`)
       }).catch((err) => {
-        this.$message({message: err, type: "error", offset: 40})
+        this.$message({message: err, type: "error"})
       }).finally(() => {
         this.loading = false
       })
@@ -79,7 +79,3 @@ export default {
   }
 }
 </script>
-
-<style>
-
-</style>

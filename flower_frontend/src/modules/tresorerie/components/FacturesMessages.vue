@@ -1,9 +1,7 @@
 <template>
   <div>
     <!-- (3) : FA -->
-    <el-row
-      v-show="etude.state == 3"
-    >
+    <el-row v-show="etude.state == 3">
       <span class="message-alert">Vous devez signer la FA !</span>
       <el-col v-show="fas.length == 0">
         Il n'existe aucune Facture d'Accompte.
@@ -27,9 +25,7 @@
       </el-col>
     </el-row>
     <!-- (5) : FA -->
-    <el-row
-      v-show="etude.state == 5"
-    >
+    <el-row v-show="etude.state == 5">
       <span class="message-alert">Vous devez signer la FI !</span>
       <el-col v-show="fis.length == 0">
         Il n'existe aucune Facture Intermédiaire.
@@ -89,7 +85,7 @@ export default {
   computed: {
     fas () { return this.etude.invoices.filter(i => i.invoiceType == "FVA") },
     fis () { return this.etude.invoices.filter(i => i.invoiceType == "FVI") },
-    fss () { return this.etude.invoices.filter(i => i.invoiceType == "FVS") },
+    fss () { return this.etude.invoices.filter(i => i.invoiceType == "FVS") }
   },
   methods: {
     levelupTo (new_state) {

@@ -50,3 +50,10 @@ export default {
   }
 }
 </script>
+
+<style>
+  .confiStyle {
+    color: rgb(165, 27, 27);
+    font-weight: bold;
+  }
+</style>

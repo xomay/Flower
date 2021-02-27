@@ -88,6 +88,10 @@
               label="Facture d'Acompte"
             />
             <el-option
+              value="FVI"
+              label="Facture Intermédiaire"
+            />
+            <el-option
               value="FVS"
               label="Facture de Solde"
             />

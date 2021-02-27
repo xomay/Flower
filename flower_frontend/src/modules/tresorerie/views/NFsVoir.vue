@@ -5,8 +5,22 @@
   >
     <el-row>
       <el-col
+        :span="2"
+        :offset="1"
+      >
+        <router-link :to="'/tresorerie/nfs/ajouter'">
+          <el-button
+            type="success"
+            icon="el-icon-plus"
+            plain
+          >
+            Ajouter une NF
+          </el-button>
+        </router-link>
+      </el-col>
+      <el-col
         :span="4"
-        :offset="4"
+        :offset="1"
       >
         <h1>
           Trier les notes de frais :

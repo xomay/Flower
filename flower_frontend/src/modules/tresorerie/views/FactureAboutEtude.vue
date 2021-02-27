@@ -11,14 +11,20 @@
     </el-col>
     <el-col :span="14">
       <el-row class="factRow">
-        Facture :
+        <h1 class="h1Styled">
+          Factures :
+        </h1>
         <el-table
           class="grid"
+          :border="true"
           :data="etude.invoices"
         >
           <el-table-column
             prop="invoiceNumber"
             label="Référence"
+            align="center"
+            fixed="left"
+            width="140px"
             sortable
           >
             <template slot-scope="scope">
@@ -28,22 +34,28 @@
           <el-table-column
             prop="description"
             label="Objet"
+            align="center"
           />
           <el-table-column
             prop="accountingPeriod"
             label="Exercice comptable"
-            sortable
+            fixed="right"
+            align="center"
+            width="160px"
           />
           <el-table-column
             label="Opérations"
+            fixed="right"
+            align="center"
+            width="180px"
           >
             <template slot-scope="scope">
-              <!--<el-button
+              <el-button
                 type="text"
                 icon="el-icon-download"
                 :loading="loading"
                 @click="downloadInvoice(scope.row.id)"
-              />-->
+              />
               <router-link :to="`/etudes/${$route.params.id}/factures/modifier/${scope.row.id}`">
                 <el-button
                   type="text"
@@ -72,14 +84,17 @@
         </el-table>
       </el-row>
       <el-row class="factRow">
-        <el-button
-          type="success"
-          class="factButton"
-          icon="el-icon-plus"
-        >
-          Ajouter une facture
-        </el-button>
+        <router-link :to="`/etudes/${$route.params.id}/factures/ajouter`">
+          <el-button
+            type="success"
+            class="factButton"
+            icon="el-icon-plus"
+          >
+            Ajouter une facture
+          </el-button>
+        </router-link>
       </el-row>
+      <!--
       <hr class="factBr">
       <el-row class="factRow">
         PVR :
@@ -109,12 +124,12 @@
             label="Opérations"
           >
             <template slot-scope="scope">
-              <!--<el-button
+              <el-button
                 type="text"
                 icon="el-icon-download"
                 :loading="loading"
                 @click="downloadInvoice(scope.row.id)"
-              />-->
+              />
               <router-link :to="`/etudes/${$route.params.id}/pvr/modifier/${scope.row.id}`">
                 <el-button
                   type="text"
@@ -151,6 +166,7 @@
           Ajouter un PVR
         </el-button>
       </el-row>
+      -->
       <hr class="factBr">
       <el-row class="factRow">
         <el-button
@@ -162,6 +178,7 @@
           Facture pro format
         </el-button>
       </el-row>
+      <!--
       <el-row class="factRow">
         <el-button
           type="warning"
@@ -170,7 +187,7 @@
         >
           Facture d'achat liée à une étude
         </el-button>
-      </el-row>
+      </el-row>-->
       <hr class="factBr">
       <FacturesMessages
         :etude="etude"
@@ -247,7 +264,35 @@ export default {
       }).finally(() => {
         this.loading = false
       })
-    }
+    },
+    downloadPVR (pvrId) {
+      this.loadingPVR = true
+      axios.get(`/api/publish/pvr/${pvrId}`, { withCredentials: true, responseType: "blob" }).then((response) => {
+        this.createDownloadElement(response.data, "PVR-" + this.etude.name + ".docx")
+      }).catch(err => {
+        this.$message({ message: "Une erreur est survenue lors de la génération du PVR : " + err, type: "error" })
+      }).finally(() => {
+        this.loadingPVR = false
+      })
+    },
+    downloadInvoice (invoiceId) {
+      this.loadingInvoice = true
+      axios.get(`/api/publish/facture/${invoiceId}`, { withCredentials: true, responseType: "blob" }).then((response) => {
+        this.createDownloadElement(response.data, "FA-" + this.etude.name + ".docx")
+      }).catch(err => {
+        this.$message({ message: "Une erreur est survenue lors de la génération de la facture : " + err, type: "error" })
+      }).finally(() => {
+        this.loadingInvoice = false
+      })
+    },
+    createDownloadElement (data, filename) {
+      let fileURL = window.URL.createObjectURL(new Blob([data]))
+      let fileLink = document.createElement("a")
+      fileLink.href = fileURL
+      fileLink.setAttribute("download", filename)
+      document.body.appendChild(fileLink)
+      fileLink.click()
+    },
   }
 }
 </script>
@@ -266,5 +311,11 @@ export default {
     border-color: rgb(33, 91, 179);
     margin: 0 auto 0 auto;
     margin-bottom: 20px;
+  }
+  .h1Styled {
+    font-size: 1.2em;
+    color: rgb(121, 121, 121);
+    font-weight: bold;
+    margin: 3px auto 16px 25px;
   }
 </style>
