@@ -4,7 +4,6 @@ from rest_framework import serializers
 from flower_app.models.Etude import Etude
 from flower_app.models.People.Prospect import Prospect
 
-
 # Create your models here.
 class Facture(models.Model):
     project = models.ForeignKey(Etude, on_delete=models.RESTRICT)
@@ -48,13 +47,24 @@ class Facture(models.Model):
     def totalToPay(self):
         return self.amountWithoutTaxes + self.amountTaxes
 
-
 from flower_app.models.FactureDetail import FactureDetailSerializer, FactureDetail
-
 
 class FactureSerializer(serializers.ModelSerializer):
     details = FactureDetailSerializer(source='facturedetail_set', many=True, read_only=True)
-
+    # Ajout des propreties
+    reference = serializers.SerializerMethodField()
+    amountTaxes = serializers.SerializerMethodField()
+    amountWithoutTaxes = serializers.SerializerMethodField()
+    totalToPay = serializers.SerializerMethodField()
+    def get_reference(self, obj):
+        return obj.reference
+    def get_amountTaxes(self, obj):
+        return obj.amountTaxes
+    def get_amountWithoutTaxes(self, obj):
+        return obj.amountWithoutTaxes
+    def get_totalToPay(self, obj):
+        return obj.totalToPay
+    
     def create(self, validated_data):
         instance = Facture.objects.create(**validated_data)
         details = self.initial_data.get('details')

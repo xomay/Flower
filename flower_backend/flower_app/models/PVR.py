@@ -31,6 +31,15 @@ class PVR(models.Model):
         return 'PV' + ('I' if self.documentType == 'I' else '' + '_') + str(self.project.number)
 
 class PVRSerializer(serializers.ModelSerializer):
+    documentName = serializers.SerializerMethodField()
+    reference = serializers.SerializerMethodField()
+    display = serializers.SerializerMethodField()
     class Meta:
         model = PVR
         fields = '__all__'
+    def get_documentName(self, obj):
+        return obj.documentName
+    def get_reference(self, obj):
+        return obj.reference
+    def get_display(self, obj):
+        return "PVR" + obj.documentType

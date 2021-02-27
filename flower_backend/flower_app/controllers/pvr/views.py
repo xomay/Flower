@@ -9,8 +9,8 @@ from flower_app.models.PVR import PVR, PVRSerializer
 class PVRListCreateView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated, HasGroupPermission]
     required_groups = {
-        'GET': ['ROLE_CA'],
-        'POST': ['ROLE_CA']                                     #from modules/etudes/views/PVRCreator.view
+        'GET': ['ROLE_CA', 'ROLE_TRESO'],
+        'POST': ['ROLE_CA', 'ROLE_TRESO']                                     #from modules/etudes/views/PVRCreator.view
     }
     serializer_class = PVRSerializer
     queryset = PVR.objects.all()
@@ -18,10 +18,10 @@ class PVRListCreateView(generics.ListCreateAPIView):
 class PVRRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated, HasGroupPermission]
     required_groups = {
-        'GET': ['ROLE_CA'],                                     #from modules/etudes/views/PVREditor.view
-        'PUT': ['ROLE_CA'],                                     #from modules/etudes/views/PVREditor.view
-        'PATCH': ['ROLE_CA'],
-        'DELETE': ['ROLE_CA']                                   #from modules/etudes/components/Generation.vue in modules/etudes/views/EtudeDetail.vue
+        'GET': ['ROLE_CA', 'ROLE_TRESO'],                                     #from modules/etudes/views/PVREditor.view
+        'PUT': ['ROLE_CA', 'ROLE_TRESO'],                                     #from modules/etudes/views/PVREditor.view
+        'PATCH': ['ROLE_CA', 'ROLE_TRESO'],
+        'DELETE': ['ROLE_CA', 'ROLE_TRESO']                                   #from modules/etudes/components/Generation.vue in modules/etudes/views/EtudeDetail.vue
     }
     serializer_class = PVRSerializer
     queryset = PVR.objects.all()
