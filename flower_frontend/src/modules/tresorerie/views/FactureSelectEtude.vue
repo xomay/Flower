@@ -25,7 +25,7 @@ export default {
       breadcrumb: [
         {
           name: "Factures",
-          link: "tresorerie/factures"
+          link: "/tresorerie/factures"
         }
       ]
     }
