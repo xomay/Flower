@@ -11,7 +11,10 @@
         prop="name"
         label-width="200px"
       >
-        <el-input v-model="value.name" />
+        <el-input
+          v-model="value.name"
+          placeholder="Nom de l'entreprise"
+        />
       </el-form-item>
     </el-col>
     <el-col :span="24">
@@ -33,7 +36,10 @@
         prop="address"
         label-width="200px"
       >
-        <el-input v-model="value.address" />
+        <el-input
+          v-model="value.address"
+          placeholder="Numéro et nom de rue"
+        />
       </el-form-item>
     </el-col>
     <el-col :span="10">
@@ -42,7 +48,10 @@
         prop="postcode"
         label-width="200px"
       >
-        <el-input v-model="value.postcode" />
+        <el-input
+          v-model="value.postcode"
+          placeholder="Code postal de l'entreprise"
+        />
       </el-form-item>
     </el-col>
     <el-col
@@ -54,10 +63,16 @@
         prop="town"
         label-width="200px"
       >
-        <el-input v-model="value.town" />
+        <el-input
+          v-model="value.town"
+          placeholder="Ville de l'entreprise"
+        />
       </el-form-item>
     </el-col>
     <el-col :span="24">
+      <span>
+        Moyens de contact :
+      </span>
       <ContactsGroup
         :value="value.contactWay"
         @add-field="contactsAddField"

@@ -69,6 +69,7 @@
           <el-input
             v-model="value.deliverable"
             type="textarea"
+            placeholder="Décrire les livrables."
           />
         </el-form-item>
       </el-col>
