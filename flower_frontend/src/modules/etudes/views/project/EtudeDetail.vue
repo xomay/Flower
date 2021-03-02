@@ -42,6 +42,7 @@
       v-show="currentTab === 'Phases'"
       :groupes="etude.groupes"
       :etude="etude"
+      :loading="loading"
     />
     <Generation
       v-show="currentTab === 'Rédaction'"
@@ -69,6 +70,7 @@ export default {
   data () {
     return {
       currentTab: this.$route.query.active || "Récapitulatif",
+      loading: false,
       etude: {
         name: "", // valeurs par défault afin d'éviter des warnings inutiles.
         groupes: []
@@ -109,7 +111,3 @@ export default {
   }
 }
 </script>
-
-<style>
-
-</style>

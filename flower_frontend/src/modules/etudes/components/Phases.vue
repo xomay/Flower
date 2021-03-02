@@ -4,6 +4,7 @@
       <el-button
         type="primary"
         icon="el-icon-edit"
+        :loading="loading"
       >
         Modifier les phases
       </el-button>
@@ -24,44 +25,30 @@
         :header-row-style="{color: 'black'}"
       >
         <el-table-column type="expand">
-          <template slot-scope="props">
-            <div
-              class="flex flew-row"
-              style="color: #606266;"
-            >
-              <div class="flex-grow">
-                <span>Description :</span><br>
-                <i>{{ props.row.description }}</i>
-              </div>
-              <div class="flex-grow">
-                <span>Objectifs :</span><br>
-                <i>{{ props.row.goals }}</i>
-              </div>
-            </div>
+          <template slot-scope="scope">
+            ouif {{ scope.row.id }}
           </template>
         </el-table-column>
         <el-table-column
           label="Titre"
           prop="title"
-        />
+        >
+          <template slot-scope="scope">
+            {{ scope.row.title }} : <i><font color="gray">{{ scope.row.description }}</font></i>
+          </template>
+        </el-table-column>
         <el-table-column
           width="120"
           label="Date de début"
           prop="beginDate"
-        >
-          <template slot-scope="scope">
-            {{ niceDate(scope.row.beginDate) }}
-          </template>
-        </el-table-column>
+          :formatter="niceDateFormatter"
+        />
         <el-table-column
           width="120"
           label="Date de fin"
           prop="finishDate"
-        >
-          <template slot-scope="scope">
-            {{ niceDate(scope.row.finishDate) }}
-          </template>
-        </el-table-column>
+          :formatter="niceDateFormatter"
+        />
         <el-table-column
           width="70"
           label="Nb JEH"
@@ -71,20 +58,14 @@
           width="100"
           label="Prix JEH"
           prop="priceJEH"
-        >
-          <template slot-scope="scope">
-            {{ scope.row.priceJEH }} €
-          </template>
-        </el-table-column>
+          :formatter="euroFormatter"
+        />
         <el-table-column
           width="100"
           label="Prix total"
           prop="totalPrice"
-        >
-          <template slot-scope="scope">
-            {{ scope.row.totalPrice }} €
-          </template>
-        </el-table-column>
+          :formatter="euroFormatter"
+        />
       </el-table>
     </div>
   </div>
@@ -97,7 +78,8 @@ export default {
   mixins: [UtilsMixin],
   props: {
     etude: { type: Object, required: true },
-    groupes: { type: Array, required: true }
+    groupes: { type: Array, required: true },
+    loading: { type: Boolean, required: true }
   }
 }
 </script>
