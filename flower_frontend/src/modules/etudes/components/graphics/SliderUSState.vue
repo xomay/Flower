@@ -2,7 +2,7 @@
   <el-slider
     v-model="value"
     :max="5"
-    :disabled="disabled"
+    :disabled="disabled || loading"
     :format-tooltip="formatTooltipSlider"
     :marks="tooltip ? marks : {}"
     show-stops
@@ -16,7 +16,8 @@ export default {
   props: {
     us: { type: Object, required: true },
     disabled : { type: Boolean, default () { return false } },
-    tooltip: { type: Boolean, required: true }
+    tooltip: { type: Boolean, required: true },
+    loading: { type: Boolean, required: true }
   },
   data () {
     return {
@@ -46,11 +47,21 @@ export default {
       }
       return -1
     },
+    valueToState (value) {
+      switch(value) {
+      case 0: return "DEFIN"
+      case 1: return "TODO"
+      case 2: return "DOING"
+      case 3: return "DONE"
+      case 4: return "REDO"
+      case 5: return "OVER"
+      }
+    },
     formatTooltipSlider (state) {
       return this.marks[state]
     },
     sliderChanged (newState) {
-      this.$emit("change", this.us.id, newState)
+      this.$emit("change", this.us, this.valueToState(newState))
     }
   }
 }

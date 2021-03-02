@@ -24,9 +24,10 @@ class USView(generics.ListCreateAPIView, generics.UpdateAPIView, generics.Destro
         serializer.save()
         return Response(serializer.data)
 
-class USDetailView(generics.DestroyAPIView):
+class USDetailView(generics.DestroyAPIView, generics.UpdateAPIView):
     permission_classes = [IsAuthenticated, HasGroupPermission]
     required_groups = {
+        'PUT': ['ROLE_CA'],
         'DELETE': ['ROLE_CA']
     }
     serializer_class = USSerializer

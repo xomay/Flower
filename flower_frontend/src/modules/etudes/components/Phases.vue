@@ -28,6 +28,8 @@
           <template slot-scope="scope">
             <USManager
               :uss="scope.row.uss"
+              :loading="loading"
+              @us-change="updateUS"
             />
           </template>
         </el-table-column>
@@ -84,6 +86,11 @@ export default {
     etude: { type: Object, required: true },
     groupes: { type: Array, required: true },
     loading: { type: Boolean, required: true }
+  },
+  methods: {
+    updateUS (us, newState) {
+      this.$emit("us-change", us, newState)
+    }
   }
 }
 </script>

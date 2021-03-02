@@ -15,7 +15,9 @@
           :us="us"
           :disabled="false"
           :tooltip="index === uss.length - 1"
+          :loading="loading"
           style="colored"
+          @change="usChanged"
         />
       </el-col>
     </el-row>
@@ -29,6 +31,12 @@ export default {
   components: { SliderUSState },
   props: {
     uss: { type: Array, required: true },
+    loading: { type: Boolean, required: true }
+  },
+  methods: {
+    usChanged (us, newState) {
+      this.$emit("us-change", us, newState)
+    }
   }
 }
 </script>
