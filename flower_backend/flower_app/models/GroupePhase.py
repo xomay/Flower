@@ -67,7 +67,7 @@ class US(models.Model):
     state = models.CharField(max_length=5, choices=US_STATES, default='DEFIN')
     phase = models.ForeignKey(Phase, on_delete=models.CASCADE)
     def __str__(self):
-        return "US(" + self.phase.groupe.etude.name + ">"+self.phase.groupe.title+")['"+self.name+"']"
+        return "US(" + self.phase.groupe.project.name + ">"+self.phase.groupe.title+")['"+self.name+"']"
     class Meta:
        verbose_name = 'US'
        verbose_name_plural = 'US'

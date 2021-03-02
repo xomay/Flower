@@ -26,7 +26,9 @@
       >
         <el-table-column type="expand">
           <template slot-scope="scope">
-            ouif {{ scope.row.id }}
+            <USManager
+              :uss="scope.row.uss"
+            />
           </template>
         </el-table-column>
         <el-table-column
@@ -73,8 +75,10 @@
 
 <script>
 import UtilsMixin from "@/mixins/Utils"
+import USManager from "./USManager"
 export default {
   name: "Phases",
+  components: { USManager },
   mixins: [UtilsMixin],
   props: {
     etude: { type: Object, required: true },
