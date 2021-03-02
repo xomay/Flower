@@ -56,6 +56,7 @@ class Phase(models.Model):
 
 class US(models.Model):
     name = models.CharField(max_length=200, null=False)
+    index = models.IntegerField()
     US_STATES = [
         ('DEFIN', 'En cours de définition'),
         ('TODO', 'À faire'),
@@ -93,6 +94,11 @@ class PhaseSerializer(serializers.ModelSerializer):
     def get_totalPrice(self, obj):
         return obj.totalPrice
 
+    def create(self, validated_data):
+        if 'us_set' in validated_data:
+            del validated_data['us_set']
+        return Phase.objects.create(**validated_data)
+
 class GroupeSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False, write_only=False)
     phases = PhaseSerializer(source='phase_set', many=True)
@@ -117,7 +123,6 @@ class GroupeSerializer(serializers.ModelSerializer):
                 phase_instance.title = phase.get('title', phase_instance.title)
                 phase_instance.index = phase.get('index', phase_instance.index)
                 phase_instance.description = phase.get('description', phase_instance.description)
-                phase_instance.goals = phase.get('goals', phase_instance.goals)
 
                 phase_instance.beginDate = phase.get('beginDate', phase_instance.beginDate)
                 phase_instance.period = phase.get('period', phase_instance.period)

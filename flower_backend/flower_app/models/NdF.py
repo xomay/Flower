@@ -122,7 +122,6 @@ class NdFSerializer(serializers.ModelSerializer):
         details = validated_data.get('ndfdetail_set')
         done = list()
 
-        
         for detail in details:
             detail_id = detail.get('id', None)
             if detail_id:

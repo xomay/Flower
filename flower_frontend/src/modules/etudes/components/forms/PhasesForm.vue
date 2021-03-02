@@ -38,18 +38,58 @@
           <template slot-scope="props">
             <div class="flex flew-row">
               <div class="flex-grow">
-                <span>Description :</span>
-                <el-input
-                  v-model="props.row.description"
-                  type="textarea"
-                />
-              </div>
-              <div class="flex-grow">
-                <span>Objectifs :</span>
-                <el-input
-                  v-model="props.row.goals"
-                  type="textarea"
-                />
+                <el-col :span="8">
+                  Description :
+                  <el-input
+                    v-model="props.row.description"
+                    type="textarea"
+                    :autosize="{ minRows: 3, maxRows: 4}"
+                    placeholder="Description de la phase"
+                  />
+                </el-col>
+                <el-col
+                  :span="15"
+                  :offset="1"
+                >
+                  <el-table
+                    :data="props.row.uss"
+                  >
+                    <el-table-column
+                      label="Liste des US"
+                      align="center"
+                    >
+                      <template slot-scope="usData">
+                        <el-input
+                          v-model="usData.row.name"
+                          type="text"
+                          placeholder="Nom de l'US"
+                        />
+                      </template>
+                    </el-table-column>
+                    <el-table-column
+                      label=""
+                      align="center"
+                      width="80px"
+                      fixed="right"
+                    >
+                      <template slot-scope="usData">
+                        <el-button
+                          icon="el-icon-minus"
+                          type="danger"
+                          plain
+                          @click="deleteUS(usData.row, props.row)"
+                        />
+                      </template>
+                    </el-table-column>
+                  </el-table>
+                  <el-button
+                    type="text"
+                    icon="el-icon-plus"
+                    @click="addUS(props.row)"
+                  >
+                    Ajouter une US
+                  </el-button>
+                </el-col>
               </div>
             </div>
           </template>
@@ -90,7 +130,6 @@
           label="Date de début"
         >
           <template slot-scope="props">
-            <!-- <el-input v-model="props.row.beginDate"/> -->
             <el-date-picker
               v-model="props.row.beginDate"
               type="date"
@@ -176,10 +215,10 @@ export default {
       this.$emit("add-groupe")
     },
     addPhase (groupe) {
-      this.$emit(
-        "add-phase",
-        groupe
-      )
+      this.$emit("add-phase", groupe)
+    },
+    addUS (phase) {
+      this.$emit("add-us", phase)
     },
     exchangeGroupes (index1, index2) {
       if (index1 < 0 || index1 >= this.value.length || index2 < 0 || index2 >= this.value.length) {
@@ -210,18 +249,13 @@ export default {
       //console.log(this.value[groupe_index].phases)
     },
     deleteGroupe (groupeId, groupeIndex) {
-      this.$emit(
-        "delete-groupe",
-        {groupeId,
-          groupeIndex}
-      )
+      this.$emit("delete-groupe", {groupeId, groupeIndex})
     },
     deletePhase (phase, groupe) {
-      this.$emit(
-        "delete-phase",
-        {phase,
-          groupe}
-      )
+      this.$emit("delete-phase", {phase, groupe})
+    },
+    deleteUS (us, phase) {
+      this.$emit("delete-us", {us, phase})
     }
   }
 }

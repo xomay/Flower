@@ -6,10 +6,12 @@
     <PhasesForm
       v-model="groupes"
       :small="false"
+      @add-us="addUS"
       @add-groupe="addGroupe"
       @add-phase="addPhase"
       @delete-groupe="deleteGroupe"
       @delete-phase="deletePhase"
+      @delete-us="deleteUS"
     />
     <el-button
       type="primary"
@@ -94,6 +96,7 @@ export default {
         ) | 0) + 1,
         newPhase = {
           index: newIndex,
+          uss: [],
           groupe: groupe.id
         }
       axios.post(
@@ -101,10 +104,34 @@ export default {
         newPhase,
         {withCredentials: true}
       ).then((res) => {
-        this.$message({message: "La phase a bien été créée", type: "success"})
+        this.$message({message: "La phase a bien été ajoutée.", type: "success"})
         groupe.phases.push(res.data)
       }).catch(() => {
         this.$message({message: "Impossible de créer une phase pour le moment", type: "error"})
+      }).finally(() => {
+        this.loading = false
+      })
+    },
+    addUS (phase) {
+      const newIndex = (Math.max.apply(
+          Math,
+          phase.uss.map((us) => us.index)
+        ) | 0) + 1,
+        newUS = {
+          index: newIndex,
+          uss: [],
+          name: "US",
+          phase: phase.id
+        }
+      axios.post(
+        "/api/etudes/uss/",
+        newUS,
+        {withCredentials: true}
+      ).then((res) => {
+        this.$message({message: "L'US a bien été ajouté.", type: "success"})
+        phase.uss.push(res.data)
+      }).catch(() => {
+        this.$message({message: "Impossible de créer une US pour le moment", type: "error"})
       }).finally(() => {
         this.loading = false
       })
@@ -136,10 +163,26 @@ export default {
             1
           )
         }
-        this.$message({message: "La phase a bien été supprimé",
-          type: "success"})
+        this.$message({message: "La phase a bien été supprimée.", type: "success"})
       }).catch(() => {
         this.$message({message: "Impossible de supprimer cette phase pour le moment", type: "error"})
+      })
+    },
+    deleteUS ({us, phase}) {
+      axios.delete(
+        `/api/etudes/uss/${us.id}/`,
+        {withCredentials: true}
+      ).then(() => {
+        const index = phase.uss.indexOf(us)
+        if (index > -1) {
+          phase.uss.splice(
+            index,
+            1
+          )
+        }
+        this.$message({message: "L'US a bien été supprimée.", type: "success"})
+      }).catch(() => {
+        this.$message({message: "Impossible de supprimer cette US pour le moment", type: "error"})
       })
     },
     submitGroupesAndPhases () {
