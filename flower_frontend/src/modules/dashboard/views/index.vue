@@ -1,9 +1,7 @@
 <template>
   <div>
     <el-divider />
-    <el-row
-      justify="center"
-    >
+    <el-row justify="center">
       <h1 style="margin: auto auto auto 35%;">
         Bienvenue
         <font color="blue">
@@ -65,7 +63,10 @@ export default {
     height: auto;
   }
   .versionText {
-    margin: 0 auto 0 90em;
+    display:block;
+    text-align: right;
+    margin:0 auto 0 auto 0;
+    right:-20em;
     font-size: 1em;
   }
 </style>
