@@ -2,9 +2,11 @@
   <div>
     <el-divider />
     <el-row justify="center">
-      <h1 style="margin: auto auto auto 35%;">
+      <h1 style="text-align: center;">
         Bienvenue
-        <font color="blue">
+        <font
+          color="blue"
+        >
           {{ getUsername() }}
         </font>
       </h1>
@@ -18,7 +20,7 @@
     <el-divider />
     <el-row>
       <i class="versionText">
-        Version actuelle : <u>alpha-32</u>
+        Version actuelle : <u>alphadev</u>
       </i>
     </el-row>
     <el-divider />
@@ -65,8 +67,7 @@ export default {
   .versionText {
     display:block;
     text-align: right;
-    margin:0 auto 0 auto 0;
-    right:-20em;
+    margin: 0 10px 0 auto;
     font-size: 1em;
   }
 </style>
