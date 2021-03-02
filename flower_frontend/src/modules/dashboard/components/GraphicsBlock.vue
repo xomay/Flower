@@ -1,8 +1,8 @@
 <template>
   <div>
     <el-col
-      v-for="item in data"
-      :key="item"
+      v-for="(item, index) in data"
+      :key="index"
       :style="getWidth()"
     >
       <DashGraphic
@@ -11,13 +11,6 @@
         :description="item.name"
       />
     </el-col>
-    <!--<el-col class="grParts">
-      <DashGraphic
-        aside-size="70%"
-        :fill-percentage="percentageQuali"
-        description="Participation aux questionnaires qualité"
-      />
-    </el-col>-->
   </div>
 </template>
 
