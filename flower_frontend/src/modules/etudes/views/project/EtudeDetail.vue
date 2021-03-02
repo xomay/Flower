@@ -42,6 +42,8 @@
       v-show="currentTab === 'Phases'"
       :groupes="etude.groupes"
       :etude="etude"
+      :loading="loading"
+      @us-change="usChanged"
     />
     <Generation
       v-show="currentTab === 'Rédaction'"
@@ -69,6 +71,7 @@ export default {
   data () {
     return {
       currentTab: this.$route.query.active || "Récapitulatif",
+      loading: false,
       etude: {
         name: "", // valeurs par défault afin d'éviter des warnings inutiles.
         groupes: []
@@ -105,11 +108,25 @@ export default {
     },
     deleteInvoice (invoiceId) {
       this.etude.invoices = this.etude.invoices.filter(i => i.id !== invoiceId)
+    },
+    usChanged (us, newState) {
+      this.loading = true
+      axios.put(
+        `/api/etudes/uss/${us.id}/`,
+        {
+          ...us,
+          state: newState
+        },
+        { withCredentials: true }
+      ).then(() => {
+        this.$message({message: "US mis à jour", type: "success"})
+        us.state = newState
+      }).catch((err) => {
+        this.$message({message: "Impossible de mettre à jour l'US : " + err, type: "error"})
+      }).finally(() => {
+        this.loading = false
+      })
     }
   }
 }
 </script>
-
-<style>
-
-</style>

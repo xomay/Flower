@@ -34,7 +34,6 @@ class Phase(models.Model):
     title = models.CharField(max_length=200, default='Titre')
     index = models.IntegerField()
     description = models.TextField(default='')
-    goals = models.TextField(default='')
 
     beginDate = models.DateField(default=date.today)
     period = models.IntegerField(default=14)
@@ -42,7 +41,7 @@ class Phase(models.Model):
     nbJEH = models.IntegerField(default=1)
     priceJEH = models.DecimalField(default=400, max_digits=10, decimal_places=2)
 
-    groupe = models.ForeignKey(Groupe, on_delete=models.RESTRICT)
+    groupe = models.ForeignKey(Groupe, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.title
@@ -55,8 +54,35 @@ class Phase(models.Model):
     def finishDate(self):
         return (self.beginDate + timedelta(days=self.period)).isoformat()
 
+class US(models.Model):
+    name = models.CharField(max_length=200, null=False)
+    index = models.IntegerField()
+    US_STATES = [
+        ('DEFIN', 'En cours de définition'),
+        ('TODO', 'À faire'),
+        ('DOING', 'En train d\'être fait'),
+        ('DONE', 'Fait'),
+        ('REDO', 'À modifier'),
+        ('OVER', 'Validé')
+    ]
+    state = models.CharField(max_length=5, choices=US_STATES, default='DEFIN')
+    phase = models.ForeignKey(Phase, on_delete=models.CASCADE)
+    def __str__(self):
+        return "US(" + self.phase.groupe.project.name + ">"+self.phase.groupe.title+")['"+self.name+"']"
+    class Meta:
+       verbose_name = 'US'
+       verbose_name_plural = 'US'
+
+class USSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(required=False, write_only=False)
+    class Meta:
+        model = US
+        fields = '__all__'
+        list_serializer_class = CustomListSerializer
+
 class PhaseSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False, write_only=False)
+    uss = USSerializer(source='us_set', many=True)
     finishDate = serializers.SerializerMethodField()
     totalPrice = serializers.SerializerMethodField()
     class Meta:
@@ -67,6 +93,11 @@ class PhaseSerializer(serializers.ModelSerializer):
         return obj.finishDate
     def get_totalPrice(self, obj):
         return obj.totalPrice
+
+    def create(self, validated_data):
+        if 'us_set' in validated_data:
+            del validated_data['us_set']
+        return Phase.objects.create(**validated_data)
 
 class GroupeSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False, write_only=False)
@@ -92,7 +123,6 @@ class GroupeSerializer(serializers.ModelSerializer):
                 phase_instance.title = phase.get('title', phase_instance.title)
                 phase_instance.index = phase.get('index', phase_instance.index)
                 phase_instance.description = phase.get('description', phase_instance.description)
-                phase_instance.goals = phase.get('goals', phase_instance.goals)
 
                 phase_instance.beginDate = phase.get('beginDate', phase_instance.beginDate)
                 phase_instance.period = phase.get('period', phase_instance.period)
@@ -102,6 +132,14 @@ class GroupeSerializer(serializers.ModelSerializer):
 
                 phase_instance.groupe = phase.get('groupe', phase_instance.groupe)
                 phase_instance.save()
+
+                uss = phase.get('us_set')
+                for us in uss:
+                    us_id = us.get('id', None)
+                    us_instance = US.objects.get(id=us_id, phase=phase_instance)
+                    us_instance.name = us.get('name', us_instance.name)
+                    us_instance.state = us.get('state', us_instance.name)
+                    us_instance.save()
 
         return instance
 

@@ -9,7 +9,7 @@ from .models.People.Membre import Membre
 from .models.People.Realisateur import Realisateur, RealisateurComment
 from .models.Mission import Mission
 from .models.PVR import PVR
-from .models.GroupePhase import Groupe, Phase
+from .models.GroupePhase import Groupe, Phase, US
 from .models.People.Prospect import Prospect
 from .models.Prospection import Action, TypeAction, ContactWay
 from .models.Competence import Competence
@@ -38,3 +38,4 @@ admin.site.register(Competence)
 admin.site.register(ParamsJE)
 admin.site.register(NdF)
 admin.site.register(NdFDetail)
+admin.site.register(US)
