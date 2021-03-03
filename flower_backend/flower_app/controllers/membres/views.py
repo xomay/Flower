@@ -36,9 +36,8 @@ class MembreDetailView(generics.RetrieveUpdateAPIView):
 
 class OpenAccountView(generics.UpdateAPIView):
     permission_classes = [IsAuthenticated, HasGroupPermission]
-    # lookup_field = 'id'
     required_groups = {
-        'POST': ['ROLE_ADMIN'],
+        'PUT': ['ROLE_ADMIN'],
     }
     serializer_class = MembreSerializer
     queryset = Membre.objects.all()

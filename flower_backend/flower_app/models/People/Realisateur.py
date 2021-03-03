@@ -1,6 +1,7 @@
 from django.db import models
 from datetime import date
 from rest_framework import serializers
+from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.core.exceptions import ValidationError
 
@@ -25,6 +26,7 @@ class RealisateurCommentSerializer(serializers.ModelSerializer):
 
 # Réalisateur
 class Realisateur(Personne):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
     promotion = models.IntegerField(default=2021)
     email_insa = models.EmailField(blank=True)
     address = models.CharField(max_length=200)
