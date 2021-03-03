@@ -14,6 +14,8 @@
         align="center"
         prop="firstname"
         label="Réalisateur"
+        width="170px"
+        fixed="left"
         sortable
       >
         <template slot-scope="scope">
@@ -31,12 +33,16 @@
         align="center"
         prop="promotion"
         label="Promotion"
+        width="120px"
+        fixed="left"
         sortable
       />
       <el-table-column
         align="center"
         prop="email_insa"
         label="Mail INSA"
+        width="250px"
+        fixed="left"
         sortable
       />
       <el-table-column
@@ -51,18 +57,18 @@
       </el-table-column>
       <el-table-column
         align="center"
-        prop="rating"
+        prop="etudesAmount"
         label="Nombre d'études"
+        width="165px"
+        fixed="right"
         sortable
-      >
-        <template slot-scope="scope">
-          {{ scope.row.etudesAmount }}
-        </template>
-      </el-table-column>
+      />
       <el-table-column
         align="center"
         prop="rating"
         label="Note moyenne"
+        width="150px"
+        fixed="right"
         sortable
       >
         <template slot-scope="scope">
@@ -109,18 +115,16 @@ export default {
     ).then((res) => {
       this.reas = res.data
     }).catch((err) => {
-      this.$message({message: "Impossible de récupérer les réalisateurs pour le moment : " +err,
-        type: "error",
-        offset: 40})
+      this.$message({message: "Impossible de récupérer les réalisateurs pour le moment : " +err, type: "error"})
     }).finally(() => {
       this.loading = false
     })
   },
   methods: {
     getRatingColor (rating) {
-      if(rating < 1) {
+      if(rating < 3.33) {
         return "red"
-      } else if(rating < 3) {
+      } else if(rating < 6.67) {
         return "orange"
       } else {
         return "green"

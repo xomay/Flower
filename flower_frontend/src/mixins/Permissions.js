@@ -11,6 +11,9 @@ export const Permissions = {
     },
     isSI () {
       return this.$store.currentUser.roles.includes("ROLE_SI")
+    },
+    isRea () {
+      return this.$store.currentUser.roles.includes("ROLE_REA")
     }
   }
 }
