@@ -1,0 +1,8 @@
+Bonjour {{ realisateur }},
+Vous avez terminé vos études avec notre JE {{ je_name }}. De ce fait, votre accès à notre plateforme Flower a été supprimé.
+
+Si cela n'était pas prévu, ou si vous pensez qu'une erreur est survenue, contactez-nous à l'addresse {{ contact }}
+
+Bonne journée.
+
+{{ je_name }}
