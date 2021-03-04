@@ -4,7 +4,6 @@
     :breadcrumb="breadcrumb"
   >
     <el-table
-      v-loading="loading"
       class="grid"
       :data="reas"
       :stripe="true"
@@ -14,6 +13,8 @@
         align="center"
         prop="firstname"
         label="Réalisateur"
+        width="170px"
+        fixed="left"
         sortable
       >
         <template slot-scope="scope">
@@ -31,12 +32,16 @@
         align="center"
         prop="promotion"
         label="Promotion"
+        width="120px"
+        fixed="left"
         sortable
       />
       <el-table-column
         align="center"
         prop="email_insa"
         label="Mail INSA"
+        width="250px"
+        fixed="left"
         sortable
       />
       <el-table-column
@@ -51,18 +56,18 @@
       </el-table-column>
       <el-table-column
         align="center"
-        prop="rating"
+        prop="etudesAmount"
         label="Nombre d'études"
+        width="165px"
+        fixed="right"
         sortable
-      >
-        <template slot-scope="scope">
-          {{ scope.row.etudesAmount }}
-        </template>
-      </el-table-column>
+      />
       <el-table-column
         align="center"
         prop="rating"
         label="Note moyenne"
+        width="150px"
+        fixed="right"
         sortable
       >
         <template slot-scope="scope">
@@ -80,15 +85,41 @@
           </font>
         </template>
       </el-table-column>
+      <el-table-column
+        v-show="isAdmin()"
+        label="Compte"
+        width="100px"
+        fixed="right"
+        align="center"
+      >
+        <template slot-scope="scope">
+          <el-button
+            v-show="scope.row.user == null"
+            type="warning"
+            icon="el-icon-plus"
+            :loading="loading"
+            @click="createReaAcccount(scope.row)"
+          />
+          <!-- Utilisation de v-show car ça peut changer (genre une fois qu'on a appuyé sur le bouton quoi) -->
+          <el-button
+            v-show="scope.row.user != null"
+            type="danger"
+            icon="el-icon-minus"
+            :loading="loading"
+            @click="deleteReaAcccount(scope.row)"
+          />
+        </template>
+      </el-table-column>
     </el-table>
   </BaseComponent>
 </template>
 
 <script>
 const axios = require("axios")
-
+import { Permissions } from "@/mixins/Permissions"
 export default {
   name: "RealisateursVoir",
+  mixins: [Permissions],
   data () {
     return {
       reas: [],
@@ -109,18 +140,16 @@ export default {
     ).then((res) => {
       this.reas = res.data
     }).catch((err) => {
-      this.$message({message: "Impossible de récupérer les réalisateurs pour le moment : " +err,
-        type: "error",
-        offset: 40})
+      this.$message({message: "Impossible de récupérer les réalisateurs pour le moment : " +err, type: "error"})
     }).finally(() => {
       this.loading = false
     })
   },
   methods: {
     getRatingColor (rating) {
-      if(rating < 1) {
+      if(rating < 3.33) {
         return "red"
-      } else if(rating < 3) {
+      } else if(rating < 6.67) {
         return "orange"
       } else {
         return "green"
@@ -142,6 +171,32 @@ export default {
         count ++
       }
       return str
+    },
+    createReaAcccount (rea) {
+      this.loading = true
+      axios.put(
+        `/api/realisateurs/openaccount/${rea.id}/`,
+        {},
+        { withCredentials: true }
+      ).then((res) => {
+        this.$message({ message: "Compte créé avec succès.", type: "success" })
+        rea.user = res.data
+      }).catch((err) => {
+        this.$message({ message: "Impossible de créer le compte : " + err, type: "error" })
+      }).finally(() => this.loading = false)
+    },
+    deleteReaAcccount (rea) {
+      this.loading = true
+      axios.put(
+        `/api/realisateurs/deleteaccount/${rea.id}/`,
+        {},
+        { withCredentials: true }
+      ).then(() => {
+        this.$message({ message: "Compte supprimé avec succès.", type: "success" })
+        rea.user = null
+      }).catch((err) => {
+        this.$message({ message: "Impossible de supprimer le compte : " + err, type: "error" })
+      }).finally(() => this.loading = false)
     }
   }
 }

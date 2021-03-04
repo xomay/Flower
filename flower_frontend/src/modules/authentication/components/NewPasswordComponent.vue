@@ -79,13 +79,11 @@ export default {
         {withCredentials: true}
       ).then(() => {
         this.successMessage = "Votre mot de passe a bien été modifié, vous pouvez à présent vous connecter."
-      }).
-        catch((err) => {
-          this.errorMessage = err
-        }).
-        finally(() => {
-          this.loading = false
-        })
+      }).catch((err) => {
+        this.errorMessage = err.message
+      }).finally(() => {
+        this.loading = false
+      })
     }
   }
 }

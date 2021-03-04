@@ -1,6 +1,7 @@
 from django.db import models
 from datetime import date
 from rest_framework import serializers
+from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.core.exceptions import ValidationError
 
@@ -25,6 +26,7 @@ class RealisateurCommentSerializer(serializers.ModelSerializer):
 
 # Réalisateur
 class Realisateur(Personne):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
     promotion = models.IntegerField(default=2021)
     email_insa = models.EmailField(blank=True)
     address = models.CharField(max_length=200)
@@ -88,11 +90,9 @@ class RealisateurSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         passed = list()
         for comment in validated_data['comments']:
-            print("TEST pour ("+str(comment.associatedEtude.id)+"-"+comment.associatedEtude.name+")")
             if(comment.associatedEtude.id in passed):
                 raise ValidationError("Cannot accept more than 1 comment for 1 Etude & 1 Realisateur.")
             passed.append(comment.associatedEtude.id)
-            print("ok pour ("+str(comment.associatedEtude.id)+")")
         return super().update(instance, validated_data)
 
     class Meta:

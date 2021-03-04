@@ -70,7 +70,7 @@ export default {
         this.$store.currentUser = res.data
         this.$router.push("/")
       }).catch((err) => {
-        this.errorMessage = err
+        this.errorMessage = err.message
       }).finally(() => {
         this.connectionLoading = false
       })

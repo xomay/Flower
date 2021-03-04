@@ -3,7 +3,7 @@ export const Permissions = {
     isAdmin () {
       return this.$store.currentUser.roles.includes("ROLE_ADMIN")
     },
-    isUser () {
+    isCA () {
       return this.$store.currentUser.roles.includes("ROLE_CA")
     },
     isTreso () {
@@ -11,6 +11,9 @@ export const Permissions = {
     },
     isSI () {
       return this.$store.currentUser.roles.includes("ROLE_SI")
+    },
+    isRea () {
+      return this.$store.currentUser.roles.includes("ROLE_REA")
     }
   }
 }

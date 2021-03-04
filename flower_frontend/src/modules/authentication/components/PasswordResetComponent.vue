@@ -64,13 +64,15 @@ export default {
         {withCredentials: true}
       ).then(() => {
         this.successMessage = "Un e-mail avec un lien de réinitialisation vous a été envoyé."
-      }).
-        catch((err) => {
-          this.errorMessage = err
-        }).
-        finally(() => {
-          this.loading = false
-        })
+      }).catch((err) => {
+        if(err.message == "Request failed with status code 400") {
+          this.errorMessage = "Cet email ne correspond à aucun enregistré."
+        } else {
+          this.errorMessage = err.message
+        }
+      }).finally(() => {
+        this.loading = false
+      })
     }
   }
 }

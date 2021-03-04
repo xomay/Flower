@@ -2,13 +2,19 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import generics
+from http import HTTPStatus
+from django.http import JsonResponse
 
-from flower_app.controllers.permissions import HasGroupPermission
+from flower_app.controllers.permissions import HasGroupPermission, HasReaPermissionToSeeEtude
 from flower_app.models.CE import CE, CESerializer, CEDetailSerializer
 from flower_app.models.Etude import Etude, EtudeSerializer, EtudeDetailSerializer
 # from flower_app.models.Groupe import Groupe, GroupeSerializer
 from flower_app.models.GroupePhase import Groupe, Phase, GroupeSerializer, PhaseSerializer
 from flower_app.models.Mission import Mission, MissionSerializer, MissionDetailSerializer
+from flower_app.models.People.Realisateur import Realisateur
+
+from flower_app.controllers.permissions import is_in_group
+from django.forms.models import model_to_dict
 
 class EtudeListCreateView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated, HasGroupPermission]
@@ -22,11 +28,8 @@ class EtudeListCreateView(generics.ListCreateAPIView):
 class EtudeRetrieveUpdateView(generics.RetrieveUpdateAPIView):
     permission_classes = [IsAuthenticated, HasGroupPermission]
     required_groups = {
-        'GET': ['ROLE_CA'],                                     #from modules/etudes/views/project/EtudeModifier.vue or modules/etudes/views/project/EtudeDetail.vue
-                                                                #   or modules/etudes/views/PhaseModifier.vue or modules/etudes/views/projectConvention/EtudeConvention.vue
-                                                                #   or modules/etudes/views/MissionCreer.vue beforeCreate or modules/etudes/views/PVRCreator.vue or
-                                                                #   modules/etudes/views/PVREditor.vue
-        'PUT': ['ROLE_CA'],                                     #from modules/etudes/views/project/EtudeModifier.vue to save
+        'GET': ['ROLE_CA'],
+        'PUT': ['ROLE_CA'],
         'PATCH': ['ROLE_CA']
     }
     queryset = Etude.objects.all()
@@ -35,6 +38,28 @@ class EtudeRetrieveUpdateView(generics.RetrieveUpdateAPIView):
         if self.request.method in ['PUT', 'PATCH']:
             return EtudeSerializer
         return EtudeDetailSerializer
+
+class ReaEtudesView(APIView):
+    def get(self, request):
+        if request.user.is_authenticated:
+            if is_in_group(request.user, 'ROLE_REA'):
+                array = []
+                realisateur = Realisateur.objects.get(user=request.user)
+                for mission in realisateur.mission_set.all():
+                    array.append(model_to_dict(mission.project))
+                return Response(array, status=HTTPStatus.ACCEPTED)
+            else:
+                return Response("Il faut être un réalisateur.", status=HTTPStatus.UNAUTHORIZED)
+        else:
+            return Response(None, status=HTTPStatus.UNAUTHORIZED)
+
+class ReaEtudesDetailView(generics.RetrieveAPIView):
+    permission_classes = [IsAuthenticated, HasGroupPermission, HasReaPermissionToSeeEtude]
+    required_groups = {
+        'GET': ['ROLE_REA']
+    }
+    queryset = Etude.objects.all()
+    serializer_class = EtudeDetailSerializer
 
 class CEView(generics.RetrieveUpdateAPIView):
     permission_classes = [IsAuthenticated, HasGroupPermission]

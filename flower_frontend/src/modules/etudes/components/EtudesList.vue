@@ -61,7 +61,8 @@ export default {
   name: "EtudesList",
   props: {
     etudes: {type : Array, required: true },
-    loading: {type : Boolean, required: true }
+    loading: {type : Boolean, required: true },
+    discret: {type : Boolean, default () { return false } }
   },
   methods: {
     clicked (id) {
@@ -73,7 +74,7 @@ export default {
       return "width: "+(state*10)+"%"
     },
     getState (state) {
-      if(state == undefined)
+      if(state == undefined || this.discret)
         return ""
       switch (state) {
       case 0: return "Les groupes sont à rédiger, le devis à envoyer."

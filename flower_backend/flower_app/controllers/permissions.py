@@ -27,3 +27,16 @@ class HasGroupPermission(permissions.BasePermission):
 
         # Return True if the user has all the required groups or is staff.
         return all([is_in_group(request.user, group_name) for group_name in required_groups])
+
+from flower_app.models.Etude import Etude
+from flower_app.models.People.Realisateur import Realisateur
+
+class HasReaPermissionToSeeEtude(permissions.BasePermission):
+    def has_permission(self, request, view):
+        pk_url = request.parser_context['kwargs']['pk']
+        etude_instance = Etude.objects.get(pk=pk_url)
+        try:
+            Realisateur.objects.get(user=request.user).mission_set.get(project=etude_instance)
+            return True
+        except:
+            return False

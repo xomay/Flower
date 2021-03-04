@@ -96,108 +96,16 @@ export default {
   mixins: [Permissions],
   data () {
     return {
-      menu: [
-        {
-          icon: "el-icon-user-solid",
-          title: "Gestion Associative",
-          children: [
-            {
-              title: "Membres",
-              children: [
-                {name: "Lister les membres",
-                  url: "/membres"},
-
-                /*
-                                 * { name: 'Lister les intervenants', url: '/intervenants' },
-                                 * { name: 'Lister les impayés', url: '/impayes' },
-                                 */
-                {name: "Ajouter un membre",
-                  url: "/membres/ajouter"}
-              ]
-            },
-            {
-              title: "Intervenants",
-              children: [
-                {name: "Lister les réalisateurs",
-                  url: "/realisateurs"},
-                {name: "Ajouter un réalisateur",
-                  url: "/realisateurs/ajouter"}
-              ]
-            }
-          ]
-        },
-        {
-          icon: "el-icon-s-management",
-          title: "Suivi d'Etude",
-          children: [
-            {name: "Voir les études",
-              url: "/etudes"},
-            {name: "Créer une étude",
-              url: "/etudes/ajouter"}
-
-            /*
-                         * {
-                         *   title: 'Qualité',
-                         *   children: [
-                         *     { name: 'Suivi des problèmes', url: '/qualite' }
-                         *   ]
-                         * },
-                         * {
-                         *   title: 'Administration',
-                         *   children: [
-                         *     { name: 'Contacts Client', url: '/clients' },
-                         *     { name: 'Vu CA', url: '/ca' }
-                         *   ]
-                         * }
-                         */
-          ]
-        },
-        {
-          icon: "el-icon-data-line",
-          title: "Performance",
-          children: [
-            {name: "Suivi Dev'co",
-              url: "/performance/devco"}
-          ]
-        },
-        {
-          icon: "el-icon-s-custom",
-          title: "Prospection",
-          children: [
-            {
-              title: "Prospects",
-              children: [
-                {name: "Voir les prospects",
-                  url: "/prospects"},
-                {name: "Ajouter un prospect",
-                  url: "/prospects/ajouter"}
-              ]
-            },
-            {
-              title: "Actions commerciales",
-              children: [
-                {name: "Voir les actions commerciales",
-                  url: "/prospects/actionCommerciale/"},
-                {name: "Créer une action commerciale",
-                  url: "/prospects/actionCommerciale/ajouter"}
-              ]
-            },
-            {
-              title: "Génération",
-              children: [
-                {name: "Devis",
-                  url: "/generation/devis"}
-              ]
-            }
-          ]
-        }
-      ],
+      menu: [],
       collapse: false
     }
   },
   created () {
+    this.addCAStuff()
     this.addTresoStuff()
     this.addAdminStuff()
+    // Accès réa :
+    this.addReaStuff()
   },
   methods: {
     handleCommand (command) {
@@ -255,6 +163,99 @@ export default {
         })
       }
     },
+    addCAStuff () {
+      if (this.isCA() ) {
+        this.menu.push({
+          icon: "el-icon-user-solid",
+          title: "Gestion Associative",
+          children: [
+            {
+              title: "Membres",
+              children: [
+                {name: "Lister les membres",
+                  url: "/membres"},
+                {name: "Ajouter un membre",
+                  url: "/membres/ajouter"}
+              ]
+            },
+            {
+              title: "Intervenants",
+              children: [
+                {name: "Lister les réalisateurs",
+                  url: "/realisateurs"},
+                {name: "Ajouter un réalisateur",
+                  url: "/realisateurs/ajouter"}
+              ]
+            }
+          ]
+        },
+        {
+          icon: "el-icon-s-management",
+          title: "Suivi d'Etude",
+          children: [
+            {name: "Voir les études",
+              url: "/etudes"},
+            {name: "Créer une étude",
+              url: "/etudes/ajouter"}
+          ]
+        },
+        {
+          icon: "el-icon-data-line",
+          title: "Performance",
+          children: [
+            {name: "Suivi Dev'co",
+              url: "/performance/devco"}
+          ]
+        },
+        {
+          icon: "el-icon-s-custom",
+          title: "Prospection",
+          children: [
+            {
+              title: "Prospects",
+              children: [
+                {name: "Voir les prospects",
+                  url: "/prospects"},
+                {name: "Ajouter un prospect",
+                  url: "/prospects/ajouter"}
+              ]
+            },
+            {
+              title: "Actions commerciales",
+              children: [
+                {name: "Voir les actions commerciales",
+                  url: "/prospects/actionCommerciale/"},
+                {name: "Créer une action commerciale",
+                  url: "/prospects/actionCommerciale/ajouter"}
+              ]
+            },
+            {
+              title: "Génération",
+              children: [
+                {name: "Devis",
+                  url: "/generation/devis"}
+              ]
+            }
+          ]
+        })
+      }
+    },
+    addReaStuff () {
+      if ( this.isRea() ) {
+        this.menu.push({
+          icon: "el-icon-folder-opened",
+          title: "Mes études",
+          children: [
+            {
+              title: "Accès réalisateur",
+              children: [
+                {name: "Liste de mes études", url: "/etudes/acces-rea"},
+              ]
+            }
+          ]
+        })
+      }
+    }
   }
 }
 </script>

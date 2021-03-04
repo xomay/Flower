@@ -7,6 +7,8 @@ urlpatterns = [
     # Réalisateurs
     path('', views.RealisateurListCreateView.as_view()),
     path('<int:id>/', views.RealisateurRetrieveUpdateDestroyView.as_view()),
+    path('openaccount/<int:pk>/', views.OpenAccountView.as_view()),
+    path('deleteaccount/<int:pk>/', views.DeleteAccountView.as_view()),
     # Commentaires
     path('cmts/', views.CommentsListCreateView.as_view()),
     path('cmts/<int:id>/', views.CommentsRetrieveUpdateDestroyView.as_view()),
