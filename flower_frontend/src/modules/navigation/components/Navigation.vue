@@ -1,7 +1,7 @@
 <template>
   <div class="flex min-h-screen">
     <el-menu
-      class="w-64 flex-shrink-0 min-h-screen"
+      class="menuNavBar flex-shrink-0 min-h-screen"
       background-color="#34495e"
       text-color="#fff"
       :unique-opened="true"
@@ -53,7 +53,7 @@
         <el-button
           type="default"
           class="dark"
-          @click="collapse = !collapse"
+          @click="collapse = ! collapse"
         >
           <i
             v-if="collapse"
@@ -97,7 +97,8 @@ export default {
   data () {
     return {
       menu: [],
-      collapse: false
+      collapse: false,
+      collapseClass: false
     }
   },
   created () {
@@ -261,6 +262,9 @@ export default {
 </script>
 
 <style scoped>
+.menuNavBar:not(.el-menu--collapse) {
+  width: 16rem;
+}
 div.topbar {
   background-color: #2c3e50;
 }
