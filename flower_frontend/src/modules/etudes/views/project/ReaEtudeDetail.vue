@@ -18,6 +18,7 @@
     </el-tabs>
     <Summary
       v-show="currentTab === 'Récapitulatif'"
+      :rea-vue="true"
       :etude="etude"
     />
     <Phases
@@ -26,6 +27,7 @@
       :etude="etude"
       :editable="false"
       :loading="loading"
+      :rea-vue="true"
       @us-change="usChanged"
     />
   </BaseComponent>
@@ -81,15 +83,12 @@ export default {
     usChanged (us, newState) {
       this.loading = true
       axios.put(
-        `/api/etudes/uss/${us.id}/`,
-        {
-          ...us,
-          state: newState
-        },
+        `/api/etudes/uss/rea/${us.id}/${newState}/`,
+        {},
         { withCredentials: true }
-      ).then(() => {
+      ).then((res) => {
         this.$message({message: "US mis à jour", type: "success"})
-        us.state = newState
+        us.state = res.data
       }).catch((err) => {
         this.$message({message: "Impossible de mettre à jour l'US : " + err, type: "error"})
       }).finally(() => {

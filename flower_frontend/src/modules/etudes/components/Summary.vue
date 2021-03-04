@@ -4,8 +4,10 @@
       :etude="etude"
       :descriptions="getgantt"
     />
-    <div class="flex-1">
-      <span v-if="etude.prospect">
+    <div
+      class="flex-1"
+    >
+      <span v-if="etude.prospect && !reaVue">
         <i class="el-icon-user-solid" /> <u>Prospect :</u>
         <el-link
           type="primary"
@@ -14,8 +16,9 @@
         >
           {{ etude.prospect.name }}
         </el-link>
-      </span><br>
-      <span v-if="etude.clientContact">
+        <br>
+      </span>
+      <span v-if="etude.clientContact && !reaVue">
         <i class="el-icon-user-solid" /> <u>Contact client :</u>
         <el-link
           type="primary"
@@ -24,7 +27,8 @@
         >
           {{ etude.clientContact.firstname + " " + etude.clientContact.lastname }}
         </el-link>
-      </span><br><br>
+        <br><br>
+      </span>
       <span>
         <i class="el-icon-date" /> <u>Mandat:</u> {{ etude.mandat }}
       </span><br>
@@ -38,14 +42,19 @@
       <span v-if="etude.projectManager">
         <i class="el-icon-user" /> Chargé d'étude :
         <el-link
+          v-if="!reaVue"
           type="primary"
           :style="'margin-left: 12px'"
           @click="$router.push('/membres/'+etude.projectManager.id+'/voir')"
         >
           {{ etude.projectManager.firstname }} {{ etude.projectManager.lastname }}
         </el-link>
-      </span><br>
-      <span v-if="etude.qualityManager">
+        <span v-else>
+          {{ etude.projectManager.firstname }} {{ etude.projectManager.lastname }}
+        </span>
+        <br>
+      </span>
+      <span v-if="etude.qualityManager && !reaVue">
         <i class="el-icon-user" /> Suiveur qualité :
         <el-link
           type="primary"
@@ -78,7 +87,8 @@ export default {
   components: { EtudeSteps },
   props: {
     etude: { type: Object, required: true },
-    getgantt: { type: Boolean, default: true }
+    getgantt: { type: Boolean, default: true },
+    reaVue: { type: Boolean, default: false }
   },
   data () {
     return {

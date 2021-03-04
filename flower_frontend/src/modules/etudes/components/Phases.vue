@@ -30,6 +30,7 @@
             <USManager
               :uss="scope.row.uss"
               :loading="loading"
+              :rea-vue="reaVue"
               @us-change="updateUS"
             />
           </template>
@@ -87,7 +88,8 @@ export default {
     etude: { type: Object, required: true },
     groupes: { type: Array, required: true },
     loading: { type: Boolean, required: true },
-    editable: { type: Boolean, required: true }
+    editable: { type: Boolean, required: true },
+    reaVue: { type: Boolean, default: false }
   },
   methods: {
     updateUS (us, newState) {
