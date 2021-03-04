@@ -42,6 +42,7 @@
       v-show="currentTab === 'Phases'"
       :groupes="etude.groupes"
       :etude="etude"
+      :editable="true"
       :loading="loading"
       @us-change="usChanged"
     />

@@ -104,6 +104,8 @@ export default {
     this.addCAStuff()
     this.addTresoStuff()
     this.addAdminStuff()
+    // Accès réa :
+    this.addReaStuff()
   },
   methods: {
     handleCommand (command) {
@@ -232,6 +234,22 @@ export default {
               children: [
                 {name: "Devis",
                   url: "/generation/devis"}
+              ]
+            }
+          ]
+        })
+      }
+    },
+    addReaStuff () {
+      if ( this.isRea() ) {
+        this.menu.push({
+          icon: "el-icon-folder-opened",
+          title: "Mes études",
+          children: [
+            {
+              title: "Accès réalisateur",
+              children: [
+                {name: "Liste de mes études", url: "/etudes/acces-rea"},
               ]
             }
           ]

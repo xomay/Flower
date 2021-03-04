@@ -2,6 +2,7 @@
   <div>
     <router-link :to="{ name: 'etudes-phases', params: { id: this.$route.params.id } }">
       <el-button
+        v-if="editable"
         type="primary"
         icon="el-icon-edit"
         :loading="loading"
@@ -85,7 +86,8 @@ export default {
   props: {
     etude: { type: Object, required: true },
     groupes: { type: Array, required: true },
-    loading: { type: Boolean, required: true }
+    loading: { type: Boolean, required: true },
+    editable: { type: Boolean, required: true }
   },
   methods: {
     updateUS (us, newState) {
