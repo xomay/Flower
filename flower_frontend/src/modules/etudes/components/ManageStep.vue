@@ -534,7 +534,7 @@
 
 <script>
 const axios = require("axios")
-import Publishing from "../mixins/Publishing"
+import Publishing from "@/mixins/Publishing"
 import PVRTable from "./graphics/PVRTable"
 export default {
   name: "ManageStep",

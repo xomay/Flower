@@ -14,7 +14,3 @@ export default {
   components: {NewPasswordComponent}
 }
 </script>
-
-<style>
-
-</style>
