@@ -14,7 +14,7 @@
       <el-col
         style="text-align: center; text-weight: bold;"
       >
-        Vous n'apparaissez dans aucune étude.
+        Vous n'apparaissez dans aucune étude.<br>Contactez votre chargé de projet.
       </el-col>
     </el-row>
   </BaseComponent>

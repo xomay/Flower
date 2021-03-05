@@ -9,6 +9,7 @@ export default {
       document.body.appendChild(fileLink)
       fileLink.click()
     },
+    // DOWNLOAD
     downloadDevis () {
       this.loading = true
       axios.get(`/api/publish/etude/${this.etude.id}/devis/`, { withCredentials: true, responseType: "blob" }).then((response) => {
@@ -49,6 +50,17 @@ export default {
         this.loading = false
       })
     },
+    downloadInvoice (invoiceId) {
+      this.loading = true
+      axios.get(`/api/publish/facture/${invoiceId}`, { withCredentials: true, responseType: "blob" }).then((response) => {
+        this.createDownloadElement(response.data, "FA-" + this.etude.name + ".docx")
+      }).catch(err => {
+        this.$message({ message: "Une erreur est survenue lors de la génération de la facture : " + err, type: "error" })
+      }).finally(() => {
+        this.loading = false
+      })
+    },
+    // DELETE
     deletePVR (pvrId, index) {
       this.loading = true
       axios.delete(`/api/pvr/${pvrId}`, { withCredentials: true }).then(() => {

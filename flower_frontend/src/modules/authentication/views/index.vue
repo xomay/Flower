@@ -14,7 +14,3 @@ export default {
   components: {LoginComponent}
 }
 </script>
-
-<style>
-
-</style>

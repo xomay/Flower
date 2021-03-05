@@ -14,7 +14,3 @@ export default {
   components: {PasswordResetComponent}
 }
 </script>
-
-<style>
-
-</style>
