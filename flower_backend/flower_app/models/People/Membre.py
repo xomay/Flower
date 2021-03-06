@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from rest_framework import serializers
 
 from flower_app.models.People.Personne import Personne
+from flower_app.models.Poste import Poste
 
 # Create your models here.
 class Membre(Personne):
@@ -17,6 +18,7 @@ class Membre(Personne):
     nationality = models.CharField(max_length=60)
     birth_date = models.DateField()
     birth_place = models.CharField(max_length=60)
+    poste = models.ForeignKey(Poste, on_delete=models.SET_NULL, blank=True, null=True)
 
     def __str__(self):
         return self.firstname + ' ' + self.lastname
