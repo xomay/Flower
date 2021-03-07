@@ -23,46 +23,76 @@
     <span><i class="el-icon-place" /> {{ member.country }}</span><br>
     <span><i class="el-icon-wallet" /> {{ member.nationality }}</span><br>
     <span><i class="el-icon-present" /> Né(e) le {{ member.birth_date }} à {{ member.birth_place }}</span><br>
+    <br>
+    <div v-if="subordinates.length > 0">
+      Liste des subordonnés :
+      <div
+        v-for="sub in subordinates"
+        :key="sub.id"
+      >
+        - <el-button
+          type="text"
+          size="small"
+          @click="pushToSubordinate(sub.id)"
+        >
+          {{ nicePeople(sub) }}
+        </el-button>
+        ( {{ sub.poste }} )
+      </div>
+    </div>
   </BaseComponent>
 </template>
 
 <script>
 const axios = require("axios")
-
+import Utils from "@/mixins/Utils"
 export default {
   name: "EtudeDetail",
+  mixins: [Utils],
   data () {
     return {
       member: {},
+      subordinates: [],
       breadcrumb: [
         {
           name: "Lister des membres",
           link: "/membres"
         },
         {
-          name: "",
-          link: "/membres/ajouter"
+          name: "<loading>",
+          link: `/membres/${this.$route.params.id}/voir`
         }
       ]
     }
   },
-  created () {
-    this.getMember()
+  beforeCreate () {
+    axios.get(
+      `/api/membres/${this.$route.params.id}`,
+      {withCredentials: true}
+    ).then((res) => {
+      this.member = res.data
+      this.breadcrumb[1].name = `${this.member.firstname} ${this.member.lastname}`
+      // Chargement des subordonnés :
+      if(this.member.poste != undefined) {
+        const subs = this.member.poste.subordinates
+        axios.get(
+          "/api/membres/",
+          {withCredentials: true}
+        ).then((res) => {
+          this.subordinates = res.data.filter((m) => m.poste != undefined && subs.indexOf(m.poste.id) >= 0)
+          this.subordinates.forEach(m => m.poste = (m.gender == "M." ? m.poste.name : m.poste.name_feminine))
+          console.log(this.subordinates)
+        }).catch((err) => {
+          this.$message({message: "Impossible de récupérer les autres membres : " + err, type: "error"})
+        })
+      }
+    }).catch((err) => {
+      this.$message({message: "Impossible de récupérer le membre : " + err, type: "error"})
+    })
   },
   methods: {
-    getMember () {
-      this.loading = true
-      axios.get(
-        `/api/membres/${this.$route.params.id}`,
-        {withCredentials: true}
-      ).then((res) => {
-        this.member = res.data
-        this.breadcrumb[1].name = `${this.member.firstname} ${this.member.lastname}`
-      }).
-        catch((err) => {
-          this.$message({message: err,
-            type: "error"})
-        })
+    pushToSubordinate (sub_id) {
+      this.$router.push(`/membres/${sub_id}/redirect`)
     }
   }
 }
