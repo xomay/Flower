@@ -133,7 +133,9 @@ export default {
               title: "Général",
               children: [
                 {name: "Paramètres de la JE",
-                  url: "/administration/params"}
+                  url: "/administration/params"},
+                {name: "Liste des postes",
+                  url: "/administration/postes"}
               ]
             }
           ]

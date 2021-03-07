@@ -67,6 +67,20 @@
       </el-col>
       <el-col :span="24">
         <el-form-item
+          label="Poste :"
+          prop="poste"
+          label-width="13%"
+        >
+          <MemberPicker
+            v-model="value.poste"
+            :item-list="postes"
+            placeholder="Poste"
+            :style="'width: 100%'"
+          />
+        </el-form-item>
+      </el-col>
+      <el-col :span="24">
+        <el-form-item
           label="Email INSA"
           prop="email"
           label-width="13%"
@@ -213,10 +227,13 @@
 </template>
 
 <script>
+import MemberPicker from "./MemberPicker"
 export default {
   name: "MemberForm",
+  components: { MemberPicker },
   props: {
     value: { type: Object, required: true },
+    postes: { type: Array, required: true },
     loading: { type: Boolean, required: true },
     loadingopenaccount: { type: Boolean, required: true },
     canOpenAccount: { type: Boolean, default () { return false } }
@@ -225,24 +242,16 @@ export default {
     return {
       formRules: {
         firstname: [
-          {required: true,
-            message: "Obligatoire",
-            trigger: "blur"}
+          {required: true, message: "Obligatoire", trigger: "blur"}
         ],
         lastname: [
-          {required: true,
-            message: "Obligatoire",
-            trigger: "blur"}
+          {required: true, message: "Obligatoire", trigger: "blur"}
         ],
         gender: [
-          {required: true,
-            message: "Obligatoire",
-            trigger: "blur"}
+          {required: true, message: "Obligatoire", trigger: "blur"}
         ],
         promotion: [
-          {required: true,
-            message: "Obligatoire",
-            trigger: "blur"}
+          {required: true, message: "Obligatoire", trigger: "blur"}
         ],
         email: [
           {
@@ -284,9 +293,7 @@ export default {
           }
         ],
         address: [
-          {required: true,
-            message: "Obligatoire",
-            trigger: "blur"}
+          {required: true, message: "Obligatoire", trigger: "blur"}
         ],
         postcode: [
           {
@@ -301,29 +308,19 @@ export default {
           }
         ],
         town: [
-          {required: true,
-            message: "Obligatoire",
-            trigger: "blur"}
+          {required: true, message: "Obligatoire", trigger: "blur"}
         ],
         country: [
-          {required: true,
-            message: "Obligatoire",
-            trigger: "blur"}
+          {required: true, message: "Obligatoire", trigger: "blur"}
         ],
         nationality: [
-          {required: true,
-            message: "Obligatoire",
-            trigger: "blur"}
+          {required: true, message: "Obligatoire", trigger: "blur"}
         ],
         birth_date: [
-          {required: true,
-            message: "Obligatoire",
-            trigger: "blur"}
+          {required: true, message: "Obligatoire", trigger: "blur"}
         ],
         birth_place: [
-          {required: true,
-            message: "Obligatoire",
-            trigger: "blur"}
+          {required: true, message: "Obligatoire", trigger: "blur"}
         ]
       }
     }

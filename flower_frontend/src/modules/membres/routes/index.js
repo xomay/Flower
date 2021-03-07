@@ -18,6 +18,12 @@ const routes = [
     path: "membres/:id/modifier",
     name: "membres-modifier",
     component: () => import("../views/MembresModifier")
+  },
+  // Spécial case
+  {
+    path: "membres/:id/redirect",
+    name: "membres-redirect",
+    component: () => import("../views/RedirectToAnother")
   }
 ]
 
