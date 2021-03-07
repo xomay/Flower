@@ -14,6 +14,7 @@
       </router-link>
     </template>
     <span><span v-if="member.gender !== ''">{{ member.gender }}</span>  {{ member.firstname }} {{ member.lastname }}</span><br>
+    <span v-if="member.poste !== null && member.poste != undefined"><i class="el-icon-monitor" /> Poste : {{ member.poste.name }}</span><br>
     <span><i class="el-icon-school" /> Promotion {{ member.promotion }}</span><br>
     <span><i class="el-icon-message" /> {{ member.email }}</span><br>
     <span><i class="el-icon-message" /> {{ member.email_junior }}</span><br>
@@ -66,7 +67,3 @@ export default {
   }
 }
 </script>
-
-<style>
-
-</style>

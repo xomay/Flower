@@ -97,6 +97,11 @@
         sortable
       />
       <el-table-column
+        prop="poste"
+        label="Poste"
+        sortable
+      />
+      <el-table-column
         prop="email"
         label="Email"
         sortable
@@ -104,11 +109,6 @@
       <el-table-column
         prop="email_junior"
         label="Email Junior"
-        sortable
-      />
-      <el-table-column
-        prop="mobile"
-        label="Téléphone"
         sortable
       />
       <el-table-column
@@ -172,12 +172,11 @@ export default {
       {withCredentials: true}
     ).then((res) => {
       res.data.forEach((elt) => elt.fullname = `${elt.firstname} ${elt.lastname}`)
+      res.data.forEach((elt) => elt.poste = (elt.poste == undefined ? undefined : (elt.gender == "M." ? elt.poste.name : elt.poste.name_feminine)))
       this.membres = res.data
       this.currentSelected = this.membres
-    }).catch(() => {
-      this.$message({message: "Impossible de récupérer les membres pour le moment",
-        type: "error",
-        offset: 40})
+    }).catch((err) => {
+      this.$message({message: "Impossible de récupérer les membres pour le moment : " + err, type: "error"})
     }).finally(() => {
       this.loading = false
     })
@@ -188,18 +187,10 @@ export default {
         if( ! this.membres[memberID].user ) {
           this.mixinRegisterMember(axios, this.membres[memberID])
         } else {
-          this.$message({
-            message: "Une erreur est survenue : le compte était déjà présent.",
-            type: "error",
-            offset: 40
-          })
+          this.$message({ message: "Une erreur est survenue : le compte était déjà présent.", type: "error" })
         }
       } else {
-        this.$message({
-          message: "Il faut être administrateur pour faire cette action !",
-          type: "error",
-          offset: 40
-        })
+        this.$message({ message: "Il faut être administrateur pour faire cette action !", type: "error" })
       }
     },
     isButtonOn (memberID) {

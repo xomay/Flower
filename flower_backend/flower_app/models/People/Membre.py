@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from rest_framework import serializers
 
 from flower_app.models.People.Personne import Personne
-from flower_app.models.Poste import Poste
+from flower_app.models.Poste import Poste, PosteSerializer
 
 # Create your models here.
 class Membre(Personne):
@@ -30,8 +30,8 @@ class UserSerializer(serializers.ModelSerializer):
 
 class MembreSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
-
+    poste = PosteSerializer(read_only=True)
     class Meta:
         model = Membre
-        fields = ('id', 'lastname', 'firstname', 'gender', 'promotion', 'email_junior', 'mobile', 'address', 'postcode', 'town', 'country', 'nationality', 'birth_date', 'birth_place', 'email', 'user')
+        fields = '__all__'
 
