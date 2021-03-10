@@ -8,7 +8,7 @@
       :postes="postes"
       :loading="loading"
       :loadingopenaccount="loadingOpenAccount"
-      :can-open-account="true"
+      :can-open-account="isAdmin()"
       @save="saveMember"
       @openaccount="openAccount"
     />
@@ -18,13 +18,14 @@
 <script>
 import MemberForm from "../components/MemberForm"
 import { registerMemberMixin } from "../mixins/RegisterMember.js"
+import { Permissions } from "@/mixins/Permissions"
 
 const axios = require("axios")
 
 export default {
   name: "EtudeCreer",
   components: {MemberForm},
-  mixins: [registerMemberMixin],
+  mixins: [registerMemberMixin, Permissions],
   data () {
     return {
       member: {

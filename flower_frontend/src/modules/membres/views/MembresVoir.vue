@@ -120,7 +120,7 @@
           slot-scope="scope"
         >
           <el-button
-            v-if="isButtonOn(scope.$index)"
+            v-show="isButtonOn(scope.$index)"
             ref="btn_{{scope.$index}}"
             size="medium"
             type="warning"
@@ -128,7 +128,7 @@
           >
             Ouvrir un compte utilisateur
           </el-button>
-          <el-col v-else>
+          <el-col v-show="!isButtonOn(scope.$index)">
             <div class="grid-content bg-purple-light" />
           </el-col>
         </template>
@@ -183,7 +183,7 @@ export default {
   },
   methods: {
     openAccount (memberID) {
-      if(this.$store.currentUser.isAdmin) {
+      if(this.isAdmin()) {
         if( ! this.membres[memberID].user ) {
           this.mixinRegisterMember(axios, this.membres[memberID])
         } else {
