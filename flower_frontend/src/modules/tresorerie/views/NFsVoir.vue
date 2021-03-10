@@ -191,7 +191,7 @@ export default {
   },
   beforeCreate () {
     axios.get(
-      "api/ndfs/",
+      "/api/ndfs/",
       { withCredentials: true }
     ).then((res) => {
       this.nfs = res.data

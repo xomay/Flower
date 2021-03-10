@@ -149,7 +149,7 @@ export default {
     saveComment () {
       this.loading = true
       axios.post(
-        "api/realisateurs/cmts/",
+        "/api/realisateurs/cmts/",
         this.comment,
         { withCredentials: true }
       ).then((res) => {
@@ -165,7 +165,7 @@ export default {
         }).catch(() => {
           this.$message({message: "Il y a déjà un commentaire pour ce réa et cette étude ! ", type: "error"})
           axios.delete(
-            `api/realisateurs/cmts/${newID}/`,
+            `/api/realisateurs/cmts/${newID}/`,
             { withCredentials: true }
           ).then(() => {
             this.$message({message: "Action annulée. ", type: "warning"})

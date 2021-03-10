@@ -312,7 +312,7 @@ export default {
     },
     updateParams () {
       axios.put(
-        "api/administration/params",
+        "/api/administration/params",
         this.paramsData,
         { withCredentials: true }
       ).then(() => {
