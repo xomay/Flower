@@ -242,7 +242,7 @@ export default {
   },
   beforeCreate () {
     axios.get(
-      `api/ndfs/${this.$route.params.id}/`,
+      `/api/ndfs/${this.$route.params.id}/`,
       { withCredentials: true }
     ).then((res) => {
       this.nf = res.data
