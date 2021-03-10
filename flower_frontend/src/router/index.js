@@ -42,7 +42,7 @@ const routes = [
   ],
 
   router = new VueRouter({
-    routes, mode: "history"
+    routes
   })
 //router.addRoutes(authenticationRoutes)
 
