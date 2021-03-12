@@ -110,7 +110,6 @@ export default {
       "/api/administration/postes/",
       { withCredentials: true }
     ).then((res) => {
-      res.data.forEach(elt => elt.name_feminine = (elt.name == elt.name_feminine ? "" : elt.name_feminine))
       res.data.forEach(elt => elt.isModified = false)
       this.postes = res.data
     }).catch((err) => {
@@ -144,7 +143,7 @@ export default {
         this.$message({message: "Poste supprimé avec succès.", type: "success"})
         this.postes.splice(index, 1)
       }).catch((err) => {
-        this.$message({message: "Impossible de récupérer les postes : " + err, type: "error"})
+        this.$message({message: "Impossible de supprimer le poste : " + err, type: "error"})
       }).finally(() => this.loading = false)
     },
     addPoste () {
@@ -161,7 +160,7 @@ export default {
         res.data.name_feminine = undefined
         this.postes.push(res.data)
       }).catch((err) => {
-        this.$message({message: "Impossible de récupérer les postes : " + err, type: "error"})
+        this.$message({message: "Impossible de créer un poste : " + err, type: "error"})
       }).finally(() => this.loading = false)
     }
   }

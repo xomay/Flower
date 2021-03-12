@@ -140,11 +140,12 @@
 <script>
 import { registerMemberMixin } from "../mixins/RegisterMember.js"
 import { Permissions } from "@/mixins/Permissions"
+import Utils from "@/mixins/Utils"
 const axios = require("axios")
 
 export default {
   name: "MembresVoir",
-  mixins: [registerMemberMixin, Permissions],
+  mixins: [registerMemberMixin, Permissions, Utils],
   data () {
     return {
       membres: [],
@@ -171,8 +172,8 @@ export default {
       "/api/membres/",
       {withCredentials: true}
     ).then((res) => {
-      res.data.forEach((elt) => elt.fullname = `${elt.firstname} ${elt.lastname}`)
-      res.data.forEach((elt) => elt.poste = (elt.poste == undefined ? undefined : (elt.gender == "M." ? elt.poste.name : elt.poste.name_feminine)))
+      res.data.forEach((elt) => elt.fullname = this.nicePeople(elt))
+      res.data.forEach((elt) => elt.poste = this.displayPoste(elt))
       this.membres = res.data
       this.currentSelected = this.membres
     }).catch((err) => {
