@@ -146,7 +146,13 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 FRONT_END = 'http://localhost:8080'
-EMAIL_PORT = 25
-EMAIL_HOST = 'maildev'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = '?????@gmail.com' # To change
+EMAIL_HOST_PASSWORD = '????????' # To change
+EMAIL_PORT = 25 # To change : see your nginx configuration
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
 
 DJANGO_REST_LOOKUP_FIELD = 'membre__email_junior'
+
