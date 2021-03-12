@@ -47,8 +47,9 @@ class OpenAccountView(generics.UpdateAPIView):
         realisateur = Realisateur.objects.get(id=pk)
         new_username = "{firstname}.{lastname}".format(firstname=realisateur.firstname, lastname=realisateur.lastname).replace(" ", "").lower()
         new_password = ''.join(random.choice(string.ascii_letters + string.digits) for i in range(16))
-        newAccount = User(
+        newAccount = User.objects.create_user(
             username=new_username,
+            email=realisateur.email_insa,
             password=new_password
         )
         newAccount.save()
