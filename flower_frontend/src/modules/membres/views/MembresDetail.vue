@@ -81,7 +81,6 @@ export default {
         ).then((res) => {
           this.subordinates = res.data.filter((m) => m.poste != undefined && subs.indexOf(m.poste.id) >= 0)
           this.subordinates.forEach(m => m.poste = (m.gender == "M." ? m.poste.name : m.poste.name_feminine))
-          console.log(this.subordinates)
         }).catch((err) => {
           this.$message({message: "Impossible de récupérer les autres membres : " + err, type: "error"})
         })

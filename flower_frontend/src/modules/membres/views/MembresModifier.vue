@@ -1,6 +1,6 @@
 <template>
   <BaseComponent
-    title="Modification d'un membre"
+    :title="title"
     :breadcrumb="breadcrumb"
   >
     <MemberForm
@@ -28,10 +28,12 @@ export default {
   mixins: [registerMemberMixin, Permissions],
   data () {
     return {
+      title: "Modifier : <loading>",
       member: {
         firstname: "",
         lastname: "",
         gender: "",
+        poste: 0,
         promotion: "2021",
         email: "",
         email_junior: "",
@@ -65,17 +67,6 @@ export default {
   },
   beforeCreate () {
     axios.get(
-      `/api/membres/${this.$route.params.id}`,
-      {withCredentials: true}
-    ).then((res) => {
-      this.member = res.data
-      if(this.member.poste != undefined)
-        this.member.poste = this.member.poste.id
-      this.breadcrumb[1].name = `${this.member.firstname} ${this.member.lastname}`
-    }).catch((err) => {
-      this.$message({message: "Impossible de récupérer le membre : "+ err, type: "error"})
-    })
-    axios.get(
       "/api/administration/postes/",
       {withCredentials: true}
     ).then((res) => {
@@ -83,6 +74,20 @@ export default {
       this.postes = res.data
     }).catch((err) => {
       this.$message({message: "Impossible de récupérer les postes : "+ err, type: "error"})
+    })
+  },
+  created () {
+    axios.get(
+      `/api/membres/${this.$route.params.id}`,
+      {withCredentials: true}
+    ).then((res) => {
+      this.member = res.data
+      if(this.member.poste != undefined)
+        this.member.poste = this.member.poste.id
+      this.title = `Modifier : ${this.member.firstname} ${this.member.lastname}`
+      this.breadcrumb[1].name = `${this.member.firstname} ${this.member.lastname}`
+    }).catch((err) => {
+      this.$message({message: "Impossible de récupérer le membre : "+ err, type: "error"})
     })
   },
   methods: {
