@@ -2,13 +2,31 @@
   <div>
     <!-- (3) : FA -->
     <el-row v-show="etude.state == 3">
-      <span class="message-alert">Vous devez signer la FA !</span>
+      <el-alert
+        title="Valider la FA"
+        type="warning"
+        description="Vous devez signer la FA !"
+        :closable="false"
+        center
+        effect="dark"
+        show-icon
+      />
       <el-col v-show="fas.length == 0">
-        Il n'existe aucune Facture d'Accompte.
+        <el-alert
+          title="Il n'existe aucune Facture d'Accompte."
+          type="error"
+          description=""
+          :closable="false"
+          center
+          effect="dark"
+          show-icon
+          style="margin-top: 10px;"
+        />
         <router-link :to="`/etudes/${$route.params.id}/factures/ajouter`">
           <el-button
             icon="el-icon-edit"
             type="primary"
+            style="margin: 10px 40%; width: 20%;"
           >
             Ajouter une facture
           </el-button>
@@ -18,21 +36,40 @@
         <el-button
           type="success"
           icon="el-icon-check"
+          style="margin: 10px 40%; width: 20%;"
           @click="levelupTo(4)"
         >
           La FA a été signée
         </el-button>
       </el-col>
     </el-row>
-    <!-- (5) : FA -->
+    <!-- (5) : FI -->
     <el-row v-show="etude.state == 5">
-      <span class="message-alert">Vous devez signer la FI !</span>
+      <el-alert
+        title="Valider la FI"
+        type="warning"
+        description="Vous devez signer la FI !"
+        :closable="false"
+        center
+        effect="dark"
+        show-icon
+      />
       <el-col v-show="fis.length == 0">
-        Il n'existe aucune Facture Intermédiaire.
+        <el-alert
+          title="Il n'existe aucune Facture Intermédiaire."
+          type="error"
+          description=""
+          :closable="false"
+          center
+          effect="dark"
+          show-icon
+          style="margin-top: 10px;"
+        />
         <router-link :to="`/etudes/${$route.params.id}/factures/ajouter`">
           <el-button
             icon="el-icon-edit"
             type="primary"
+            style="margin: 10px 40%; width: 20%;"
           >
             Ajouter une facture
           </el-button>
@@ -42,6 +79,7 @@
         <el-button
           type="success"
           icon="el-icon-check"
+          style="margin: 10px 40%; width: 20%;"
           @click="levelupTo(6)"
         >
           La FI a été signée
@@ -50,13 +88,31 @@
     </el-row>
     <!-- (7) : FS -->
     <el-row v-show="etude.state == 7">
-      <span class="message-alert">Vous devez signer la FS !</span>
+      <el-alert
+        title="Valider la FS"
+        type="warning"
+        description="Vous devez signer la FS !"
+        :closable="false"
+        center
+        effect="dark"
+        show-icon
+      />
       <el-col v-show="fss.length == 0">
-        Il n'existe aucune Facture de Solde.
+        <el-alert
+          title="Il n'existe aucune Facture de Solde."
+          type="error"
+          description=""
+          :closable="false"
+          center
+          effect="dark"
+          show-icon
+          style="margin-top: 10px;"
+        />
         <router-link :to="`/etudes/${$route.params.id}/factures/ajouter`">
           <el-button
             icon="el-icon-edit"
             type="primary"
+            style="margin: 10px 40%; width: 20%;"
           >
             Ajouter une facture
           </el-button>
@@ -66,11 +122,40 @@
         <el-button
           type="success"
           icon="el-icon-check"
+          style="margin: 10px 40%; width: 20%;"
           @click="levelupTo(8)"
         >
           La FS a été signée
         </el-button>
       </el-col>
+    </el-row>
+    <!-- (9) : BV -->
+    <el-row v-show="etude.state == 9">
+      <el-alert
+        title="Valider le BV"
+        type="warning"
+        description="Vous devez signer le BV !"
+        :closable="false"
+        center
+        effect="dark"
+        show-icon
+      />
+      <el-button
+        type="success"
+        icon="el-icon-check"
+        style="margin: 10px 40%; width: 20%;"
+        @click="levelupTo(10)"
+      >
+        La BV a été signée
+      </el-button>
+      <el-alert
+        title="Cher pôle tréso, il me manque des infos pour les BV :D"
+        type="info"
+        description="Merci de me contacter (timothe.rosaz) pour savoir ce qu'il faut y faire :)"
+        center
+        effect="dark"
+        show-icon
+      />
     </el-row>
   </div>
 </template>
