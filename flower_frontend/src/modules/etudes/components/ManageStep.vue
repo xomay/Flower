@@ -178,20 +178,16 @@
               </p>
             </el-row>
             <el-row class="stCardRw">
-              <el-button
+              <el-alert
                 v-show="btn_fa_alert"
-                type="success"
-                icon="el-icon-check"
-                disabled
-              >
-                La FA a été validée
-              </el-button>
-              <el-button
-                v-show="btn_fa_alert"
+                title="Valider la FA"
                 type="warning"
-              >
-                La trésorerie s'occupe de la facture.
-              </el-button>
+                description="La trésorerie s'occupe de la facture."
+                :closable="false"
+                center
+                effect="dark"
+                show-icon
+              />
             </el-row>
             <el-row class="stCardRw">
               <el-popconfirm
@@ -241,8 +237,9 @@
                 <el-button
                   v-show="btn_pvri_help"
                   type="warning"
+                  icon="el-icon-plus"
                 >
-                  Il faut au moins un PVRI pour continuer !
+                  Il faut un PVRI : en créer un.
                 </el-button>
               </router-link>
             </el-row>
@@ -256,7 +253,7 @@
                 @onConfirm="levelupTo(5)"
               >
                 <el-button
-                  v-show="btn_pvri_bypass"
+                  v-show="btn_pvri_bypass && !btn_pvri_levelup"
                   slot="reference"
                   type="danger"
                   icon="el-icon-s-check"
@@ -283,20 +280,16 @@
               </p>
             </el-row>
             <el-row class="stCardRw">
-              <el-button
+              <el-alert
                 v-show="btn_fi_alert"
-                type="success"
-                icon="el-icon-check"
-                disabled
-              >
-                La FI a été validée
-              </el-button>
-              <el-button
-                v-show="btn_fi_alert"
+                title="Valider la FI"
                 type="warning"
-              >
-                La trésorerie s'occupe de la facture.
-              </el-button>
+                description="La trésorerie s'occupe de la facture."
+                :closable="false"
+                center
+                effect="dark"
+                show-icon
+              />
             </el-row>
             <el-row class="stCardRw">
               <el-popconfirm
@@ -369,20 +362,16 @@
               </p>
             </el-row>
             <el-row class="stCardRw">
-              <el-button
+              <el-alert
                 v-show="btn_fs_alert"
-                type="success"
-                icon="el-icon-check"
-                disabled
-              >
-                La FS a été validée
-              </el-button>
-              <el-button
-                v-show="btn_fs_alert"
+                title="Valider la FS"
                 type="warning"
-              >
-                La trésorerie s'occupe de la facture.
-              </el-button>
+                description="La trésorerie s'occupe de la facture."
+                :closable="false"
+                center
+                effect="dark"
+                show-icon
+              />
             </el-row>
           </el-card>
         </template>
@@ -492,20 +481,16 @@
               </p>
             </el-row>
             <el-row class="stCardRw">
-              <el-button
+              <el-alert
                 v-show="btn_bv_alert"
-                type="success"
-                icon="el-icon-check"
-                disabled
-              >
-                Le BV a été validée
-              </el-button>
-              <el-button
-                v-show="btn_bv_alert"
+                title="Valider la FS"
                 type="warning"
-              >
-                La trésorerie s'occupe du BV.
-              </el-button>
+                description="La trésorerie s'occupe de la facture."
+                :closable="false"
+                center
+                effect="dark"
+                show-icon
+              />
             </el-row>
           </el-card>
         </template>

@@ -1,7 +1,11 @@
 Bonjour {{ realisateur }},
 Vous avez débuté une étude pour la JE {{ je_name }}. Afin de faciliter la gestion des études, nous vous avons créé un accès à notre plateforme Flower.
 
-Afin de finaliser votre compte, vous devrez vous connectez à l'addresse {{ connection_url }} et choisir un mot de passe.
+Afin de finaliser votre compte, vous devrez vous connecter à l'addresse {{ connection_url }}.
+Vos identifiants sont les suivants :
+
+    Identifiant : {{ username }}
+    Mot de passe : {{ password }}
 
 En cas de problème, contactez-nous à l'addresse {{ contact }}
 

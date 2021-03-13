@@ -8,7 +8,7 @@ from flower_app.models.Poste import Poste, PosteSerializer
 
 # Create your models here.
 class Membre(Personne):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
+    user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True)
     promotion = models.IntegerField()
     email_junior = models.EmailField(blank=True)
     address = models.CharField(max_length=200)

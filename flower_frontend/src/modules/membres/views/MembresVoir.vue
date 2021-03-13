@@ -120,7 +120,7 @@
           slot-scope="scope"
         >
           <el-button
-            v-if="isButtonOn(scope.$index)"
+            v-show="isButtonOn(scope.$index)"
             ref="btn_{{scope.$index}}"
             size="medium"
             type="warning"
@@ -128,7 +128,7 @@
           >
             Ouvrir un compte utilisateur
           </el-button>
-          <el-col v-else>
+          <el-col v-show="!isButtonOn(scope.$index)">
             <div class="grid-content bg-purple-light" />
           </el-col>
         </template>
@@ -140,11 +140,12 @@
 <script>
 import { registerMemberMixin } from "../mixins/RegisterMember.js"
 import { Permissions } from "@/mixins/Permissions"
+import Utils from "@/mixins/Utils"
 const axios = require("axios")
 
 export default {
   name: "MembresVoir",
-  mixins: [registerMemberMixin, Permissions],
+  mixins: [registerMemberMixin, Permissions, Utils],
   data () {
     return {
       membres: [],
@@ -171,8 +172,8 @@ export default {
       "/api/membres/",
       {withCredentials: true}
     ).then((res) => {
-      res.data.forEach((elt) => elt.fullname = `${elt.firstname} ${elt.lastname}`)
-      res.data.forEach((elt) => elt.poste = (elt.poste == undefined ? undefined : (elt.gender == "M." ? elt.poste.name : elt.poste.name_feminine)))
+      res.data.forEach((elt) => elt.fullname = this.nicePeople(elt))
+      res.data.forEach((elt) => elt.poste = this.displayPoste(elt))
       this.membres = res.data
       this.currentSelected = this.membres
     }).catch((err) => {
@@ -183,7 +184,7 @@ export default {
   },
   methods: {
     openAccount (memberID) {
-      if(this.$store.currentUser.isAdmin) {
+      if(this.isAdmin()) {
         if( ! this.membres[memberID].user ) {
           this.mixinRegisterMember(axios, this.membres[memberID])
         } else {

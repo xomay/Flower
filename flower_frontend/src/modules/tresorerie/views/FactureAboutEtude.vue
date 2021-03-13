@@ -94,79 +94,6 @@
           </el-button>
         </router-link>
       </el-row>
-      <!--
-      <hr class="factBr">
-      <el-row class="factRow">
-        PVR :
-        <el-table
-          class="grid"
-          :data="etude.pvr"
-        >
-          <el-table-column
-            prop="display"
-            label="Type"
-          />
-          <el-table-column
-            prop="reference"
-            label="Référence"
-            sortable
-          />
-          <el-table-column
-            prop="deliverable"
-            label="Description"
-          />
-          <el-table-column
-            prop="signingDate"
-            label="Date de signature"
-            sortable
-          />
-          <el-table-column
-            label="Opérations"
-          >
-            <template slot-scope="scope">
-              <el-button
-                type="text"
-                icon="el-icon-download"
-                :loading="loading"
-                @click="downloadInvoice(scope.row.id)"
-              />
-              <router-link :to="`/etudes/${$route.params.id}/pvr/modifier/${scope.row.id}`">
-                <el-button
-                  type="text"
-                  icon="el-icon-edit"
-                />
-              </router-link>
-              <el-popconfirm
-                confirm-button-text="Oui"
-                confirm-button-type="error"
-                cancel-button-text="Finalement non"
-                cancel-button-type="primary"
-                icon="el-icon-delete"
-                icon-color="red"
-                title="Voulez-vous vraiment supprimer ce PVR ?"
-                @onConfirm="deletePVR(scope.row.id)"
-              >
-                <el-button
-                  slot="reference"
-                  type="text"
-                  icon="el-icon-delete"
-                  :loading="loading"
-                />
-              </el-popconfirm>
-            </template>
-          </el-table-column>
-        </el-table>
-      </el-row>
-      <el-row class="factRow">
-        <el-button
-          type="success"
-          class="factButton"
-          icon="el-icon-plus"
-        >
-          Ajouter un PVR
-        </el-button>
-      </el-row>
-      -->
       <hr class="factBr">
       <el-row class="factRow">
         <el-button
@@ -210,7 +137,7 @@ export default {
         invoices: [],
         pvr: []
       },
-      title: "",
+      title: "<loading>",
       loading: true,
       breadcrumb: [
         {
@@ -232,7 +159,7 @@ export default {
     ).then((res) => {
       this.etude = res.data
       this.breadcrumb[1].name = res.data.name
-      this.title = res.data.name + " - Type de facture"
+      this.title = res.data.name + " - Vue trésorerie"
     }).catch((err) => {
       this.$message({message: "Impossible de récupérer l'étude pour le moment: "+err, type: "error"})
     }).finally(() => {

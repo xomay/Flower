@@ -14,7 +14,7 @@
       </router-link>
     </template>
     <span><span v-if="member.gender !== ''">{{ member.gender }}</span>  {{ member.firstname }} {{ member.lastname }}</span><br>
-    <span v-if="member.poste !== null && member.poste != undefined"><i class="el-icon-monitor" /> Poste : {{ member.poste.name }}</span><br>
+    <span v-if="member.poste != undefined"><i class="el-icon-monitor" /> Poste : {{ displayPoste(member) }}</span><br>
     <span><i class="el-icon-school" /> Promotion {{ member.promotion }}</span><br>
     <span><i class="el-icon-message" /> {{ member.email }}</span><br>
     <span><i class="el-icon-message" /> {{ member.email_junior }}</span><br>
@@ -71,7 +71,7 @@ export default {
       {withCredentials: true}
     ).then((res) => {
       this.member = res.data
-      this.breadcrumb[1].name = `${this.member.firstname} ${this.member.lastname}`
+      this.breadcrumb[1].name = this.nicePeople(this.member)
       // Chargement des subordonnés :
       if(this.member.poste != undefined) {
         const subs = this.member.poste.subordinates
@@ -80,8 +80,7 @@ export default {
           {withCredentials: true}
         ).then((res) => {
           this.subordinates = res.data.filter((m) => m.poste != undefined && subs.indexOf(m.poste.id) >= 0)
-          this.subordinates.forEach(m => m.poste = (m.gender == "M." ? m.poste.name : m.poste.name_feminine))
-          console.log(this.subordinates)
+          this.subordinates.forEach(m => m.poste = this.displayPoste(m))
         }).catch((err) => {
           this.$message({message: "Impossible de récupérer les autres membres : " + err, type: "error"})
         })

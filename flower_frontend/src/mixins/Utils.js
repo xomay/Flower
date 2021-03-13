@@ -13,6 +13,16 @@ export default {
         return "undefined"
       return entity.firstname + " " + entity.lastname
     },
+    displayPoste (membre) {
+      if(membre.poste == undefined)
+        return ""
+      if(membre.gender == "Mme.") {
+        if(membre.poste.name_feminine != "") {
+          return membre.poste.name_feminine
+        }
+      }
+      return membre.poste.name
+    },
     // À utiliser en 'formatter' dans les tableaux.
     // Renvoie la valeur normale suivie de ' €'.
     euroFormatter (row, column, cellValue) {

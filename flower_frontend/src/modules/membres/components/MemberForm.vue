@@ -71,7 +71,7 @@
           prop="poste"
           label-width="13%"
         >
-          <MemberPicker
+          <ItemPicker
             v-model="value.poste"
             :item-list="postes"
             placeholder="Poste"
@@ -227,15 +227,16 @@
 </template>
 
 <script>
-import MemberPicker from "./MemberPicker"
+import ItemPicker from "@/components/ItemPicker"
 export default {
   name: "MemberForm",
-  components: { MemberPicker },
+  components: { ItemPicker },
   props: {
     value: { type: Object, required: true },
     postes: { type: Array, required: true },
     loading: { type: Boolean, required: true },
     loadingopenaccount: { type: Boolean, required: true },
+    posteName: { type: String, default () { return "NULL" } },
     canOpenAccount: { type: Boolean, default () { return false } }
   },
   data () {
@@ -281,12 +282,7 @@ export default {
         ],
         mobile: [
           {
-            required: true,
-            message: "Obligatoire",
-            trigger: "blur"
-          },
-          {
-            required: true,
+            required: false,
             pattern: /^(?:(?:\+|00)33[\s.-]{0,3}(?:\(0\)[\s.-]{0,3})?|0)[1-9](?:(?:[\s.-]?\d{2}){4}|\d{2}(?:[\s.-]?\d{3}){2})$/,
             message: "Cette valeur doit être un numéro de téléphone valide.",
             trigger: "change"
@@ -308,6 +304,9 @@ export default {
           }
         ],
         town: [
+          {required: true, message: "Obligatoire", trigger: "blur"}
+        ],
+        poste: [
           {required: true, message: "Obligatoire", trigger: "blur"}
         ],
         country: [
@@ -334,11 +333,7 @@ export default {
           else if(mode == "openaccount")
             this.$emit("openaccount")
         } else {
-          this.$message({
-            message: "Certains champs ne sont pas valides !",
-            type:"error",
-            offset: 40
-          })
+          this.$message({ message: "Certains champs ne sont pas valides !",type:"error"})
         }
       })
     },

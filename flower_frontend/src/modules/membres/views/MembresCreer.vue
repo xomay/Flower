@@ -30,6 +30,7 @@ export default {
         promotion: "2021",
         email: "@insa-rennes.fr",
         email_junior: "@ouest-insa.fr",
+        poste: 0,
         mobile: "",
         address: "",
         postcode: "",
@@ -83,7 +84,3 @@ export default {
   }
 }
 </script>
-
-<style>
-
-</style>
