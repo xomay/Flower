@@ -144,6 +144,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+DOCTYPES_LOCATION = 'flower/flower_backend/doctypes/' # I changed it to 'doctypes/' in production
 
 FRONT_END = 'http://localhost:8080'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

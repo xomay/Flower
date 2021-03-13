@@ -1,4 +1,5 @@
 from django.http import HttpResponse
+from django.conf import settings
 
 from docxtpl import DocxTemplate, InlineImage
 from docx.shared import Mm
@@ -33,7 +34,7 @@ def param(value):
         return "(!! ERROR : bad field name: '"+value+"' !!)"
 
 def computeDocx(context, doctypeFilename, name='undef', images=dict()):
-    doc = DocxTemplate("flower/flower_backend/doctypes/" + doctypeFilename)
+    doc = DocxTemplate(settings.DOCTYPES_LOCATION + doctypeFilename)
     docBytes = io.BytesIO()
     for key, value in images.items():
         context[key] = InlineImage(doc, value, width=Mm(160))
