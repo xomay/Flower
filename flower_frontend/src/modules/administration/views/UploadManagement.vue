@@ -147,7 +147,7 @@ export default {
         { withCredentials: true }
       ).then(() => {
         this.$message({message: "Upload supprimé avec succès.", type: "success"})
-        this.uploads.slice(arrayID,1)
+        this.uploads.splice(arrayID, 1)
       }).catch((err) => {
         this.$message({message: "Impossible de supprimer l'upload "+id+" : " + err, type: "error"})
       }).finally(() => {
