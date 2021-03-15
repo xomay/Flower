@@ -132,12 +132,7 @@ export default {
         `/api/upload/${upl.id}/`,
         { withCredentials: true, responseType: "blob" }
       ).then((res) => {
-        let fileURL = window.URL.createObjectURL(new Blob([res.data]))
-        let fileLink = document.createElement("a")
-        fileLink.href = fileURL
-        fileLink.setAttribute("download", res.headers["content-disposition"].split("=")[1])
-        document.body.appendChild(fileLink)
-        fileLink.click()
+        this.createDownloadElement(res.data, res.headers["content-disposition"].split("=")[1])
         upl.got = true
       }).catch((err) => {
         this.$message({message: `Impossible de récupérer l'upload ${upl.id} : ${err}.`, type: "error"})
