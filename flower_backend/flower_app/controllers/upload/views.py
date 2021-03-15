@@ -70,9 +70,26 @@ class UploadFileView(APIView):
                 file = UploadedFile.objects.get(pk=id)
             except:
                 return Response("Fichier non trouvé.", status=HTTPStatus.NOT_FOUND)
+            for perm in u_file.permissions.all():
+                if not perm.user_set.filter(id=request.user.id).exists():
+                    return Response("Permission manquante : '%s'." % perm.name, status=HTTPStatus.UNAUTHORIZED)
             response = HttpResponse(file.data.storage.open(file.data.name, mode='rb'), content_type='application/force-download')
             response['Content-Disposition'] = 'attachment; filename=%s' % smart_str(file.data.name.split('/')[1])
             response['X-Sendfile'] = smart_str(file.data.path)
             return response
+        else:
+            return Response("Vous n'êtes pas authentifié.", status=HTTPStatus.UNAUTHORIZED)
+    
+    def delete(self, request, id):
+        if request.user.is_authenticated:
+            try:
+                file = UploadedFile.objects.get(pk=id)
+            except:
+                return Response("Fichier non trouvé.", status=HTTPStatus.NOT_FOUND)
+            for perm in file.permissions.all():
+                if not perm.user_set.filter(id=request.user.id).exists():
+                    return Response("Permission manquante : '%s'." % perm.name, status=HTTPStatus.UNAUTHORIZED)
+            file.delete()
+            return Response(None, status=HTTPStatus.OK)
         else:
             return Response("Vous n'êtes pas authentifié.", status=HTTPStatus.UNAUTHORIZED)
