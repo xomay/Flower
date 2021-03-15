@@ -4,7 +4,7 @@ from django.contrib.auth import authenticate, login, logout
 import json
 from datetime import datetime
 from http import HTTPStatus
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from flower_app.controllers.permissions import is_in_group, get_groups
@@ -16,7 +16,7 @@ class UploadsView(APIView):
     # GET : récupérer la liste des fichiers auxquels l'utilisateur à accès.
     def get(self, request):
         if request.user.is_authenticated:
-            corresponding = {}
+            corresponding = list()
             for u_file in UploadedFile.objects.all():
                 valid = True
                 for perm in u_file.permissions.all():
@@ -24,20 +24,20 @@ class UploadsView(APIView):
                         valid = False
                         break
                 if valid:
-                    corresponding[str(u_file.id)] = {
+                    corresponding.append({
                         'id': u_file.id,
                         'displayName': u_file.displayName,
                         'size': u_file.data.size,
-                        'uploadDate': u_file.uploadDate.date().strftime("%d/%m/%Y") + " " + u_file.uploadDate.time().strftime("%H/%M/%S"),
+                        'uploadDate': u_file.uploadDate.date().strftime("%d/%m/%Y") + " " + u_file.uploadDate.time().strftime("%H:%M:%S"),
                         'author': {
                             'id': u_file.author.id,
                             'firstname': u_file.author.firstname,
                             'lastname': u_file.author.lastname,
                         }
-                    }
-            return Response(
+                    })
+            return JsonResponse(
                 corresponding
-            , status=HTTPStatus.ACCEPTED)
+            , safe=False, status=HTTPStatus.ACCEPTED)
         else:
             return Response("Vous n'êtes pas authentifié.", status=HTTPStatus.UNAUTHORIZED)
 
