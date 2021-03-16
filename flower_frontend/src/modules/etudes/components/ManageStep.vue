@@ -32,12 +32,16 @@
               >
                 Le devis a été envoyé
               </el-button>
-              <el-button
+              <el-alert
                 v-show="btn_devis_help"
+                title="Groupes non rédigés"
                 type="warning"
-              >
-                Il faut avoir fait au moins un groupe pour continuer !
-              </el-button>
+                description="Appuyez sur Phases puis 'Modifier les phases' afin de créer les phases de cette étude."
+                :closable="false"
+                center
+                effect="dark"
+                show-icon
+              />
             </el-row>
           </el-card>
         </template>

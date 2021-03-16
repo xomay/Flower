@@ -6,4 +6,5 @@ from . import views
 urlpatterns = [
     path('', views.NFListView.as_view()),
     path('<int:pk>/', views.NFRetrieveUpdateDestroyView.as_view()),
+    path('<int:id>/files/', views.NFEditFiles.as_view()),
 ]

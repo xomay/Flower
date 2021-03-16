@@ -32,11 +32,7 @@ class Etude(models.Model):
     clientContact = models.ForeignKey(Employe, on_delete=models.RESTRICT, blank=True, null=True)
     
     ce = models.OneToOneField(CE, default=create_ce, on_delete=models.CASCADE)
-    # ce
-    # facture
-    # avenants
-    # phases
-    # RDM
+    # avenants ?
 
     deposit_percentage = models.DecimalField(default=30, max_digits=10, decimal_places=2)
     deposit_sum = models.DecimalField(default=0, max_digits=10, decimal_places=2)

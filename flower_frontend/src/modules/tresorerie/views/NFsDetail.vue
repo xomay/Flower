@@ -111,6 +111,36 @@
         </el-col>
       </el-row>
     </div>
+    <hr>
+    <el-row
+      style="margin: 20px 12px;"
+    >
+      <el-upload
+        class="upload-demo"
+        action="/api/upload/"
+        :http-request="requestPostFile"
+        :on-preview="handlePreview"
+        :on-remove="handleRemove"
+        :before-remove="beforeRemove"
+        multiple
+        drag
+        :limit="3"
+        :on-exceed="handleExceed"
+        :file-list="fileList"
+      >
+        <i class="el-icon-upload" />
+        <div class="el-upload__text">
+          Déposer les fichiers ici ou <em>cliquez pour envoyer</em>
+        </div>
+        <div
+          slot="tip"
+          class="el-upload__tip"
+        >
+          Fichiers avec une taille inférieure à 2.5 Mo.
+        </div>
+      </el-upload>
+    </el-row>
+    <hr>
     <!-- DÉTAILS TYPE (NORMAUX) -->
     <el-table
       v-show="detailsN.length > 0"
@@ -222,6 +252,7 @@ export default {
         },
         details: []
       },
+      fileList: [],
       title: "NF <loading>",
       loading: true,
       breadcrumb: [
@@ -248,9 +279,66 @@ export default {
       this.nf = res.data
       this.breadcrumb[1].name = this.nf.reference
       this.title = "NF " + this.nf.reference
+      this.nf.linkedFiles.forEach(lf => {
+        this.fileList.push({
+          ...lf,
+          name: lf.displayName
+        })
+      })
     }).catch((err) => {
       this.$message({message: "Impossible de récupérer la NF : " + err, type: "error"})
     })
+  },
+  methods: {
+    requestPostFile (request) {
+      console.log("Start request")
+      this.loading = true
+      let formData = new FormData()
+      formData.append("file", request.file)
+      axios.post(
+        "api/upload/",
+        formData,
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "multipart/form-data", // pour le navigateur
+            "enctype": "multipart/form-data" // pour Django
+          }
+        }
+      ).then((res) => {
+        this.$message({message: "Upload réussi.", type: "success"})
+        const new_file_id = res.data[0]
+        axios.put(
+          `/api/ndfs/${this.$route.params.id}/files/`,
+          {new_file : new_file_id},
+          {withCredentials: true}
+        ).then((end) => {
+          this.$message({message: "NF mise à jour avec succès.", type: "success"})
+          console.log(end)
+          this.nf.linkedFiles.push(new_file_id)
+        }).catch((err) => {
+          this.$message({message: "Échec de la mise à jour : " + err, type: "error"})
+          console.log("fail set")
+        }).finally(() => {
+          this.loading = false
+        })
+      }).catch((err) => {
+        this.$message({message: "Échec de l'upload : " + err, type: "error"})
+        this.loading = false
+      })
+    },
+    handleRemove (file, fileList) {
+      console.log(file, fileList)
+    },
+    handlePreview (file) {
+      console.log(file)
+    },
+    handleExceed (files, fileList) {
+      this.$message.warning(`La limite est 3, vous avez choisi ${files.length} fichiers, soit ${files.length + fileList.length} au total.`)
+    },
+    beforeRemove (file, fileList) {
+      return this.$confirm(`Supprimer le transfert de ${ file.name } [${fileList}] ?`)
+    }
   }
 }
 </script>

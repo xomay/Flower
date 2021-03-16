@@ -7,6 +7,7 @@ from rest_framework import generics
 from flower_app.controllers.permissions import HasGroupPermission
 from flower_app.models.NdF import NdF, NdFSerializer
 from flower_app.models.NdFDetail import NdFDetail
+from flower_app.models.UploadedFile import UploadedFile
 from flower_app.models.People.Membre import Membre
 
 class NFListView(generics.ListCreateAPIView, generics.UpdateAPIView):
@@ -26,7 +27,6 @@ class NFListView(generics.ListCreateAPIView, generics.UpdateAPIView):
         serializer.save()
         return Response(serializer.data)
     
-    # Durant le POST, on remplace les ID de contactway par leur valeur textuelle.
     def create(self, *args, **kwargs):
         data = args[0].data
         demandeur = Membre.objects.get(pk=data['demandeur'])
@@ -63,3 +63,13 @@ class NFRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     }
     serializer_class = NdFSerializer
     queryset = NdF.objects.all()
+
+class NFEditFiles(APIView):
+    def put(self, request, id):
+        if not request.user.is_authenticated:
+            return Response("You are not authenticated.", status=HTTPStatus.UNAUTHORIZED)
+        ndf = NdF.objects.get(pk=id)
+        file = UploadedFile.objects.get(pk=request.data['new_file'])
+        ndf.linkedFiles.add(file)
+        ndf.save()
+        return Response(None, status=HTTPStatus.OK)
