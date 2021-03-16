@@ -361,7 +361,6 @@ export default {
       this.nf = res.data
       this.breadcrumb[1].name = this.nf.reference
       this.title = "NF " + this.nf.reference
-      console.log(this.nf.linkedFiles)
     }).catch((err) => {
       this.$message({message: "Impossible de récupérer la NF : " + err, type: "error"})
     }).finally(() => this.loading = false)

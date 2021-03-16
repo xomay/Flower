@@ -1,6 +1,6 @@
 <template>
   <el-select
-    v-model="value"
+    v-model="originalValue"
     filterable
     clearable
     :placeholder="placeholder"
@@ -13,6 +13,10 @@
       :label="item.value"
       :value="item.id"
     />
+    <el-option
+      :value="0"
+      label="Non défini"
+    />
   </el-select>
 </template>
 
@@ -23,9 +27,12 @@ export default {
     value: { type: Number, required: true },
     itemList: { type: Array, required: true },
     placeholder: { type: String, required: true },
-    loading: { type: Boolean, default: false },
-    //remote: { type: Boolean, default: false },
-    //calculateRemote: { type: String, required: true },
+    loading: { type: Boolean, default: false }
+  },
+  data () {
+    return {
+      originalValue: this.value
+    }
   },
   methods: {
     updateChange (newValue) {

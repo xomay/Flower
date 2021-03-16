@@ -76,6 +76,7 @@
             :item-list="postes"
             placeholder="Poste"
             :style="'width: 100%'"
+            @input="editPoste"
           />
         </el-form-item>
       </el-col>
@@ -307,7 +308,8 @@ export default {
           {required: true, message: "Obligatoire", trigger: "blur"}
         ],
         poste: [
-          {required: true, message: "Obligatoire", trigger: "blur"}
+          {required: true, message: "Obligatoire", trigger: "blur"},
+          {required: true, validator: this.validatePoste, trigger: "blur"}
         ],
         country: [
           {required: true, message: "Obligatoire", trigger: "blur"}
@@ -337,6 +339,13 @@ export default {
         }
       })
     },
+    validatePoste (rule, value, callback) {
+      if (value < 1) {
+        callback(new Error("poste non défini !"))
+      } else {
+        callback()
+      }
+    },
     autoFillEmails () {
       if(this.value.firstname != "" && this.value.lastname != "") {
         const prefix = this.handleToEmail(this.value.firstname + "." + this.value.lastname)
@@ -349,6 +358,9 @@ export default {
         .replaceAll("é", "e").replaceAll("è", "e").replaceAll("ê", "e").replaceAll("ë", "e")
         .replaceAll("à", "a").replaceAll("â", "a").replaceAll("ô", "o").replaceAll("ï", "i").replaceAll("î", "i")
         .replaceAll(" ", "-")
+    },
+    editPoste (newPoste) {
+      this.value.poste = newPoste
     }
   }
 }
