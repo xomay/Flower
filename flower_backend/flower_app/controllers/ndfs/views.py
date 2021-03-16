@@ -1,13 +1,15 @@
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from http import HTTPStatus
+from django.http import JsonResponse
+import json
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import generics
 
 from flower_app.controllers.permissions import HasGroupPermission
 from flower_app.models.NdF import NdF, NdFSerializer
 from flower_app.models.NdFDetail import NdFDetail
-from flower_app.models.UploadedFile import UploadedFile
+from flower_app.models.UploadedFile import UploadedFile, UploadedFileSerializer
 from flower_app.models.People.Membre import Membre
 
 class NFListView(generics.ListCreateAPIView, generics.UpdateAPIView):
@@ -69,7 +71,18 @@ class NFEditFiles(APIView):
         if not request.user.is_authenticated:
             return Response("You are not authenticated.", status=HTTPStatus.UNAUTHORIZED)
         ndf = NdF.objects.get(pk=id)
-        file = UploadedFile.objects.get(pk=request.data['new_file'])
-        ndf.linkedFiles.add(file)
-        ndf.save()
-        return Response(None, status=HTTPStatus.OK)
+        mode = request.data['mode']
+        file = UploadedFile.objects.get(pk=request.data['file_id'])
+        if(mode == "add"):
+            ndf.linkedFiles.add(file)
+            ndf.save()
+            dtt = UploadedFileSerializer(file, read_only=True)
+            return JsonResponse(dtt.data, status=HTTPStatus.OK)
+        elif(mode == "remove"):
+            ndf.linkedFiles.remove(file)
+            ndf.save()
+            if(request.data['delete_file'] == True):
+                file.delete()
+            return Response(None, status=HTTPStatus.OK)
+        return Response("Il faut préciser le mode", status=HTTPStatus.NOT_ACCEPTABLE)
+

@@ -2,7 +2,7 @@ from django.db import models
 from rest_framework import serializers
 from datetime import datetime
 
-from flower_app.models.People.Membre import Membre
+from flower_app.models.People.Membre import Membre, MembreSerializer
 from django.contrib import admin
 from django.contrib.auth.models import Group
 
@@ -22,6 +22,14 @@ class UploadedFile(models.Model):
         return "["+self.uploadDate.date().strftime("%d/%m/%Y") + " " + self.uploadDate.time().strftime("%H:%M:%S")+"] " + self.displayName
 
 class UploadedFileSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(required=False, write_only=False)
+    author = MembreSerializer(read_only=True)
+    uploadDate = serializers.SerializerMethodField()
+    size = serializers.SerializerMethodField()
     class Meta:
         model = UploadedFile
-        fields = '__all__'
+        fields = ('id', 'author','displayName','uploadDate','permissions','size')
+    def get_uploadDate(self, obj):
+        return obj.uploadDate.date().strftime("%d/%m/%Y") + " " + obj.uploadDate.time().strftime("%H:%M:%S")
+    def get_size(self, obj):
+        return obj.data.size
