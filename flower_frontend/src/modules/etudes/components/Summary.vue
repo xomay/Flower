@@ -67,6 +67,7 @@
     </div>
     <div
       v-if="getgantt"
+      v-show="displaysGantt"
       v-loading="!ganttJPG"
       class="flex-1"
     >
@@ -93,6 +94,7 @@ export default {
   data () {
     return {
       ganttJPG: "",
+      displaysGantt: true
     }
   },
   created () {
@@ -109,7 +111,11 @@ export default {
           "binary"
         ).toString("base64")
       }).catch((err) => {
-        this.$message({message: "Impossible de récupérer le graphe : "+err, type: "error", offset: 40})
+        if(err.message == "Request failed with status code 404")
+          this.$message({message: "Il n'y a pas de groupes dans cette étude !", type: "error"})
+        else
+          this.$message({message: "Impossible de récupérer le graphe : "+err, type: "error"})
+        this.displaysGantt = false
       })
     }
   }

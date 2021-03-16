@@ -8,7 +8,7 @@ from django.http import JsonResponse
 from flower_app.controllers.permissions import HasGroupPermission, HasReaPermissionToSeeEtude
 from flower_app.models.CE import CE, CESerializer, CEDetailSerializer
 from flower_app.models.Etude import Etude, EtudeSerializer, EtudeDetailSerializer
-# from flower_app.models.Groupe import Groupe, GroupeSerializer
+from flower_app.models.UploadedFile import UploadedFile, UploadedFileSerializer
 from flower_app.models.GroupePhase import Groupe, Phase, GroupeSerializer, PhaseSerializer
 from flower_app.models.Mission import Mission, MissionSerializer, MissionDetailSerializer
 from flower_app.models.People.Realisateur import Realisateur
@@ -38,6 +38,26 @@ class EtudeRetrieveUpdateView(generics.RetrieveUpdateAPIView):
         if self.request.method in ['PUT', 'PATCH']:
             return EtudeSerializer
         return EtudeDetailSerializer
+
+class EtudeEditFiles(APIView):
+    def put(self, request, id):
+        if not request.user.is_authenticated:
+            return Response("You are not authenticated.", status=HTTPStatus.UNAUTHORIZED)
+        etude = Etude.objects.get(pk=id)
+        mode = request.data['mode']
+        file = UploadedFile.objects.get(pk=request.data['file_id'])
+        if(mode == "add"):
+            etude.linkedFiles.add(file)
+            etude.save()
+            dtt = UploadedFileSerializer(file, read_only=True)
+            return JsonResponse(dtt.data, status=HTTPStatus.OK)
+        elif(mode == "remove"):
+            etude.linkedFiles.remove(file)
+            etude.save()
+            if(request.data['delete_file'] == True):
+                file.delete()
+            return Response(None, status=HTTPStatus.OK)
+        return Response("Il faut préciser le mode", status=HTTPStatus.NOT_ACCEPTABLE)
 
 class ReaEtudesView(APIView):
     def get(self, request):

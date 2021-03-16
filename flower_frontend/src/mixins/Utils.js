@@ -23,6 +23,16 @@ export default {
       }
       return membre.poste.name
     },
+    niceFileSize (size) {
+      if(size < 1000)
+        return size + " o"
+      else if(size < 1000000)
+        return (size / 1000).toFixed(2) + " Ko"
+      else if(size < 1000000000)
+        return (size / 1000000).toFixed(2) + " Mo"
+      else
+        return (size / 1000000000).toFixed(2) + " Go"
+    },
     // À utiliser en 'formatter' dans les tableaux.
     // Renvoie la valeur normale suivie de ' €'.
     euroFormatter (row, column, cellValue) {

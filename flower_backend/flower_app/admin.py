@@ -17,6 +17,7 @@ from .models.ParamsJE import ParamsJE
 from .models.NdF import NdF
 from .models.NdFDetail import NdFDetail
 from .models.Poste import Poste
+from .models.UploadedFile import UploadedFile
 
 # Register your models here.
 admin.site.register(CE)
@@ -41,3 +42,4 @@ admin.site.register(NdF)
 admin.site.register(NdFDetail)
 admin.site.register(US)
 admin.site.register(Poste)
+admin.site.register(UploadedFile)

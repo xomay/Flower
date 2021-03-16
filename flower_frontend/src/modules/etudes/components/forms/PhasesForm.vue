@@ -234,7 +234,6 @@ export default {
       this.value = this.value.sort((a, b) => a.index - b.index)
     },
     exchangeItems (groupe_index, index1, index2) {
-      //console.log(`inverting ${index1} and ${index2} in array of length ${this.value[groupe_index].phases.length}`)
       if (index1 < 0 || index1 >= this.value[groupe_index].phases.length || index2 < 0 || index2 >= this.value[groupe_index].phases.length) {
         return
       }
@@ -246,7 +245,6 @@ export default {
         this.value[groupe_index].phases[index1].index
       ]
       this.value[groupe_index].phases = this.value[groupe_index].phases.sort((a, b) => a.index - b.index)
-      //console.log(this.value[groupe_index].phases)
     },
     deleteGroupe (groupeId, groupeIndex) {
       this.$emit("delete-groupe", {groupeId, groupeIndex})

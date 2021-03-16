@@ -3,139 +3,152 @@
     :title="title"
     :breadcrumb="breadcrumb"
   >
-    <el-col :span="10">
-      <Summary
-        :etude="etude"
-        :getgantt="false"
-      />
-    </el-col>
-    <el-col :span="14">
-      <el-row class="factRow">
-        <h1 class="h1Styled">
-          Factures :
-        </h1>
-        <el-table
-          class="grid"
-          :border="true"
-          :data="etude.invoices"
-        >
-          <el-table-column
-            prop="invoiceNumber"
-            label="Référence"
-            align="center"
-            fixed="left"
-            width="140px"
-            sortable
+    <el-row>
+      <el-col :span="10">
+        <Summary
+          :etude="etude"
+          :getgantt="false"
+        />
+      </el-col>
+      <el-col :span="14">
+        <el-row class="factRow">
+          <h1 class="h1Styled">
+            Factures :
+          </h1>
+          <el-table
+            class="grid"
+            :border="true"
+            :data="etude.invoices"
           >
-            <template slot-scope="scope">
-              {{ scope.row.invoiceType }}_{{ scope.row.invoiceNumber }}
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="description"
-            label="Objet"
-            align="center"
-          />
-          <el-table-column
-            prop="accountingPeriod"
-            label="Exercice comptable"
-            fixed="right"
-            align="center"
-            width="160px"
-          />
-          <el-table-column
-            label="Opérations"
-            fixed="right"
-            align="center"
-            width="180px"
-          >
-            <template slot-scope="scope">
-              <el-button
-                type="text"
-                icon="el-icon-download"
-                :loading="loading"
-                @click="downloadInvoice(scope.row.id)"
-              />
-              <router-link :to="`/etudes/${$route.params.id}/factures/modifier/${scope.row.id}`">
+            <el-table-column
+              prop="invoiceNumber"
+              label="Référence"
+              align="center"
+              fixed="left"
+              width="140px"
+              sortable
+            >
+              <template slot-scope="scope">
+                {{ scope.row.invoiceType }}_{{ scope.row.invoiceNumber }}
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="description"
+              label="Objet"
+              align="center"
+            />
+            <el-table-column
+              prop="accountingPeriod"
+              label="Exercice comptable"
+              fixed="right"
+              align="center"
+              width="160px"
+            />
+            <el-table-column
+              label="Opérations"
+              fixed="right"
+              align="center"
+              width="180px"
+            >
+              <template slot-scope="scope">
                 <el-button
                   type="text"
-                  icon="el-icon-edit"
-                />
-              </router-link>
-              <el-popconfirm
-                confirm-button-text="Oui"
-                confirm-button-type="error"
-                cancel-button-text="Finalement non"
-                cancel-button-type="primary"
-                icon="el-icon-delete"
-                icon-color="red"
-                title="Voulez-vous vraiment supprimer cette facture ?"
-                @onConfirm="deleteInvoice(scope.row.id)"
-              >
-                <el-button
-                  slot="reference"
-                  type="text"
-                  icon="el-icon-delete"
+                  icon="el-icon-download"
                   :loading="loading"
+                  @click="downloadInvoice(scope.row.id)"
                 />
-              </el-popconfirm>
-            </template>
-          </el-table-column>
-        </el-table>
-      </el-row>
-      <el-row class="factRow">
-        <router-link :to="`/etudes/${$route.params.id}/factures/ajouter`">
+                <router-link :to="`/etudes/${$route.params.id}/factures/modifier/${scope.row.id}`">
+                  <el-button
+                    type="text"
+                    icon="el-icon-edit"
+                  />
+                </router-link>
+                <el-popconfirm
+                  confirm-button-text="Oui"
+                  confirm-button-type="error"
+                  cancel-button-text="Finalement non"
+                  cancel-button-type="primary"
+                  icon="el-icon-delete"
+                  icon-color="red"
+                  title="Voulez-vous vraiment supprimer cette facture ?"
+                  @onConfirm="deleteInvoice(scope.row.id)"
+                >
+                  <el-button
+                    slot="reference"
+                    type="text"
+                    icon="el-icon-delete"
+                    :loading="loading"
+                  />
+                </el-popconfirm>
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-row>
+        <el-row class="factRow">
+          <router-link :to="`/etudes/${$route.params.id}/factures/ajouter`">
+            <el-button
+              type="success"
+              class="factButton"
+              icon="el-icon-plus"
+            >
+              Ajouter une facture
+            </el-button>
+          </router-link>
+        </el-row>
+        <hr class="factBr">
+        <el-row class="factRow">
           <el-button
-            type="success"
+            type="info"
             class="factButton"
-            icon="el-icon-plus"
+            plain
+            disabled
           >
-            Ajouter une facture
+            Facture pro format
           </el-button>
-        </router-link>
-      </el-row>
-      <hr class="factBr">
-      <el-row class="factRow">
-        <el-button
-          type="info"
-          class="factButton"
-          plain
-          disabled
-        >
-          Facture pro format
-        </el-button>
-      </el-row>
-      <!--
-      <el-row class="factRow">
-        <el-button
-          type="warning"
-          class="factButton"
-          plain
-        >
-          Facture d'achat liée à une étude
-        </el-button>
-      </el-row>-->
-      <hr class="factBr">
-      <FacturesMessages
-        :etude="etude"
+        </el-row>
+        <!--
+        <el-row class="factRow">
+          <el-button
+            type="warning"
+            class="factButton"
+            plain
+          >
+            Facture d'achat liée à une étude
+          </el-button>
+        </el-row>-->
+        <hr class="factBr">
+        <FacturesMessages
+          :etude="etude"
+        />
+      </el-col>
+    </el-row>
+    <hr style="margin-top: 20px;">
+    <el-row style="margin-top: 20px;">
+      <b>Fichiers associés :</b>
+      <UploaderLocal
+        :inital-list="etude.linkedFiles"
+        :loading="loading"
+        api-base-url="etudes"
       />
-    </el-col>
+    </el-row>
   </BaseComponent>
 </template>
 
 <script>
 import Summary from "@/modules/etudes/components/Summary"
 import FacturesMessages from "../components/FacturesMessages"
+import UploaderLocal from "@/components/UploaderLocal"
 const axios = require("axios")
 
 export default {
   name: "FactureAboutEtude",
-  components: { Summary, FacturesMessages },
+  components: { Summary, FacturesMessages, UploaderLocal },
   data () {
     return {
       etude: {
         invoices: [],
-        pvr: []
+        pvr: [],
+        linkedFiles: []
       },
       title: "<loading>",
       loading: true,

@@ -135,7 +135,9 @@ export default {
                 {name: "Paramètres de la JE",
                   url: "/administration/params"},
                 {name: "Liste des postes",
-                  url: "/administration/postes"}
+                  url: "/administration/postes"},
+                {name: "Gérer les uploads",
+                  url: "/administration/uploads"}
               ]
             }
           ]

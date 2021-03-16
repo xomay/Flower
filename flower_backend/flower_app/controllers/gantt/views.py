@@ -26,5 +26,5 @@ class GanttView(generics.RetrieveAPIView):
         if(is_in_group(request.user, "ROLE_CA")):
             return send_gantt(etude, self.request)
         # Des fois que ce soit un parfait inconnu, on refuse.
-        return Response(None, status=HTTPStatus.UNAUTHORIZED)
+        return Response("Accès non autorisé.", status=HTTPStatus.UNAUTHORIZED)
 

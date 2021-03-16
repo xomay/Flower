@@ -181,7 +181,7 @@ export default {
       `/api/etudes/${this.$route.params.id}/`,
       {withCredentials: true}
     ).then((res) => {
-      console.log(res.data)
+      this.etude = res.data
     }).catch((err) => {
       this.$message({message: "Impossible de récupérer la liste des prospects:" + err,
         type: "error",

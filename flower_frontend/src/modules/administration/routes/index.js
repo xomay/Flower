@@ -8,6 +8,11 @@ const routes = [
     path: "administration/postes",
     name: "postes-je",
     component: () => import("../views/PostesEdition")
+  },
+  {
+    path: "administration/uploads",
+    name: "uploads-je",
+    component: () => import("../views/UploadManagement")
   }
 ]
 

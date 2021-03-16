@@ -101,8 +101,7 @@ export default {
         this.$message({message: "Impossible de supprimer la NF : " + err, type: "error"})
       })
     },
-    addNFDetail (newDepense) {
-      console.log("add " + newDepense)
+    addNFDetail () {
       this.nf.details.push({
         ndf: this.nf.id,
         index: this.nf.details.length + 1,

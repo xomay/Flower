@@ -111,6 +111,7 @@
         </el-col>
       </el-row>
     </div>
+    <hr style="margin: 12px;">
     <!-- DÉTAILS TYPE (NORMAUX) -->
     <el-table
       v-show="detailsN.length > 0"
@@ -203,15 +204,25 @@
         :formatter="euroFormatter"
       />
     </el-table>
+    <hr style="margin: 12px; margin-bottom: 25px">
+    <b>Fichiers associés :</b>
+    <UploaderLocal
+      :inital-list="nf.linkedFiles"
+      :loading="loading"
+      api-base-url="ndfs"
+    />
   </BaseComponent>
 </template>
 
 <script>
 const axios = require("axios")
 import UtilsMixin from "@/mixins/Utils"
+import Publishing from "@/mixins/Publishing"
+import UploaderLocal from "@/components/UploaderLocal"
 export default {
   name: "NFsVoir",
-  mixins: [UtilsMixin],
+  components: {UploaderLocal},
+  mixins: [UtilsMixin, Publishing],
   data () {
     return {
       nf: {
@@ -220,6 +231,7 @@ export default {
           lastname: "",
           id: 0
         },
+        linkedFiles: [],
         details: []
       },
       title: "NF <loading>",
@@ -250,7 +262,7 @@ export default {
       this.title = "NF " + this.nf.reference
     }).catch((err) => {
       this.$message({message: "Impossible de récupérer la NF : " + err, type: "error"})
-    })
+    }).finally(() => this.loading = false)
   }
 }
 </script>

@@ -1,12 +1,15 @@
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from http import HTTPStatus
+from django.http import JsonResponse
+import json
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import generics
 
 from flower_app.controllers.permissions import HasGroupPermission
 from flower_app.models.NdF import NdF, NdFSerializer
 from flower_app.models.NdFDetail import NdFDetail
+from flower_app.models.UploadedFile import UploadedFile, UploadedFileSerializer
 from flower_app.models.People.Membre import Membre
 
 class NFListView(generics.ListCreateAPIView, generics.UpdateAPIView):
@@ -26,7 +29,6 @@ class NFListView(generics.ListCreateAPIView, generics.UpdateAPIView):
         serializer.save()
         return Response(serializer.data)
     
-    # Durant le POST, on remplace les ID de contactway par leur valeur textuelle.
     def create(self, *args, **kwargs):
         data = args[0].data
         demandeur = Membre.objects.get(pk=data['demandeur'])
@@ -63,3 +65,24 @@ class NFRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     }
     serializer_class = NdFSerializer
     queryset = NdF.objects.all()
+
+class NFEditFiles(APIView):
+    def put(self, request, id):
+        if not request.user.is_authenticated:
+            return Response("You are not authenticated.", status=HTTPStatus.UNAUTHORIZED)
+        ndf = NdF.objects.get(pk=id)
+        mode = request.data['mode']
+        file = UploadedFile.objects.get(pk=request.data['file_id'])
+        if(mode == "add"):
+            ndf.linkedFiles.add(file)
+            ndf.save()
+            dtt = UploadedFileSerializer(file, read_only=True)
+            return JsonResponse(dtt.data, status=HTTPStatus.OK)
+        elif(mode == "remove"):
+            ndf.linkedFiles.remove(file)
+            ndf.save()
+            if(request.data['delete_file'] == True):
+                file.delete()
+            return Response(None, status=HTTPStatus.OK)
+        return Response("Il faut préciser le mode", status=HTTPStatus.NOT_ACCEPTABLE)
+

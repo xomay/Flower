@@ -32,12 +32,16 @@
               >
                 Le devis a été envoyé
               </el-button>
-              <el-button
+              <el-alert
                 v-show="btn_devis_help"
+                title="Groupes non rédigés"
                 type="warning"
-              >
-                Il faut avoir fait au moins un groupe pour continuer !
-              </el-button>
+                description="Appuyez sur Phases puis 'Modifier les phases' afin de créer les phases de cette étude."
+                :closable="false"
+                center
+                effect="dark"
+                show-icon
+              />
             </el-row>
           </el-card>
         </template>
@@ -69,12 +73,16 @@
               >
                 La CE a été signé
               </el-button>
-              <el-button
+              <el-alert
                 v-show="btn_ce_help"
+                title="CE non rédigée !"
                 type="warning"
-              >
-                Il faut au moins rédiger la CE pour continuer !
-              </el-button>
+                description="Appuyez sur 'Rédaction' puis 'Convention Etude' afin de rédiger la CE pour cette étude."
+                :closable="false"
+                center
+                effect="dark"
+                show-icon
+              />
             </el-row>
           </el-card>
         </template>
@@ -619,7 +627,8 @@ export default {
           prospect: this.etude.prospect.id,
           qualityManager: this.etude.qualityManager.id,
           projectManager: this.etude.projectManager.id,
-          clientContact: this.etude.clientContact.id
+          clientContact: this.etude.clientContact.id,
+          linkedFiles: this.etude.linkedFiles.map(lf => lf.id)
         },
         { withCredentials: true }
       ).then(() => {

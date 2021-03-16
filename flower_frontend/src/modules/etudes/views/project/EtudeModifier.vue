@@ -48,7 +48,8 @@ export default {
         number: "",
         confidential: false,
         projectManager: 0,
-        qualityManager: 0
+        qualityManager: 0,
+        linkedFiles: []
       },
       membres: [],
       prospects: [],
@@ -79,6 +80,7 @@ export default {
       this.etude.projectManager = this.etude.projectManager.id
       this.etude.qualityManager = this.etude.qualityManager.id
       this.etude.clientContact = this.etude.clientContact.id
+      this.etude.linkedFiles = this.etude.linkedFiles.map(lf => lf.id)
       this.etude.prospect = this.etude.prospect.id
       this.breadcrumb[1].name = this.etude.name
       axios.get(
