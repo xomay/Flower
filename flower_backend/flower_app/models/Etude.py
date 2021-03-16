@@ -6,6 +6,7 @@ from flower_app.models.CE import CE
 from flower_app.models.People.Employe import Employe, EmployeSerializer
 from flower_app.models.People.Membre import Membre, MembreSerializer
 from flower_app.models.People.Prospect import Prospect, ProspectSerializer
+from flower_app.models.UploadedFile import UploadedFile, UploadedFileSerializer
 
 from decimal import Decimal
 
@@ -37,6 +38,8 @@ class Etude(models.Model):
     deposit_percentage = models.DecimalField(default=30, max_digits=10, decimal_places=2)
     deposit_sum = models.DecimalField(default=0, max_digits=10, decimal_places=2)
     application_fees = models.DecimalField(default=0, max_digits=10, decimal_places=2)
+    
+    linkedFiles = models.ManyToManyField(UploadedFile, blank=True)
 
     def __str__(self):
         return self.name
@@ -89,6 +92,7 @@ class EtudeDetailSerializer(serializers.ModelSerializer):
     groupes = GroupeDetailSerializer(source='groupe_set', many=True, read_only=True)
     invoices = FactureSerializer(source='facture_set', many=True, read_only=True)
     pvr = PVRSerializer(source='pvr_set', many=True, read_only=True)
+    linkedFiles = UploadedFileSerializer(many=True, read_only=True)
     class Meta:
         model = Etude
         fields = '__all__'
