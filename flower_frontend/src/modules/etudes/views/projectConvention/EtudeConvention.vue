@@ -48,14 +48,11 @@ export default {
           link: `/etudes/${this.etude.id}/convention-etude`
         }
       ]
-    }).
-      catch(() => {
-        this.$message({message: "Impossible de récupérer l'études pour le moment",
-          type: "error"})
-      }).
-      finally(() => {
-        this.loading = false
-      })
+    }).catch(() => {
+      this.$message({message: "Impossible de récupérer l'études pour le moment", type: "error"})
+    }).finally(() => {
+      this.loading = false
+    })
   }
 }
 </script>

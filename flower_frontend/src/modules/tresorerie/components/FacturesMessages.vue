@@ -183,7 +183,8 @@ export default {
           prospect: this.etude.prospect.id,
           qualityManager: this.etude.qualityManager.id,
           projectManager: this.etude.projectManager.id,
-          clientContact: this.etude.clientContact.id
+          clientContact: this.etude.clientContact.id,
+          linkedFiles: this.etude.linkedFiles.map(lf => lf.id)
         },
         { withCredentials: true }
       ).then(() => {

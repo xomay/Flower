@@ -67,6 +67,7 @@
     </div>
     <div
       v-if="getgantt"
+      v-show="displaysGantt"
       v-loading="!ganttJPG"
       class="flex-1"
     >
@@ -75,24 +76,16 @@
         width="55%"
       >
     </div>
-    <hr style="margin: 12px; margin-bottom: 25px">
-    <b>Fichiers associés :</b>
-    <UploaderLocal
-      :inital-list="etude.linkedFiles"
-      :loading="false"
-      api-base-url="ndfs"
-    />
   </div>
 </template>
 
 <script>
 import EtudeSteps from "./graphics/EtudeSteps"
-import UploaderLocal from "@/components/UploaderLocal"
 const axios = require("axios")
 
 export default {
   name: "Summary",
-  components: { EtudeSteps, UploaderLocal },
+  components: { EtudeSteps },
   props: {
     etude: { type: Object, required: true },
     getgantt: { type: Boolean, default: true },
@@ -101,6 +94,7 @@ export default {
   data () {
     return {
       ganttJPG: "",
+      displaysGantt: true
     }
   },
   created () {
@@ -117,7 +111,11 @@ export default {
           "binary"
         ).toString("base64")
       }).catch((err) => {
-        this.$message({message: "Impossible de récupérer le graphe : "+err, type: "error", offset: 40})
+        if(err.message == "Request failed with status code 404")
+          this.$message({message: "Il n'y a pas de groupes dans cette étude !", type: "error"})
+        else
+          this.$message({message: "Impossible de récupérer le graphe : "+err, type: "error"})
+        this.displaysGantt = false
       })
     }
   }

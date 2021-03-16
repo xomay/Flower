@@ -3,7 +3,7 @@
     style="margin: 20px 12px;"
   >
     <el-col
-      :span="8"
+      :span="fullScreen ? 8 : 24"
     >
       <el-upload
         class="upload-demo"
@@ -13,7 +13,7 @@
         drag
         :show-file-list="false"
       >
-        <i class="el-icon-upload" />
+        <i :class="loading || loadingLocal ? 'el-icon-loading' : 'el-icon-upload'" />
         <div class="el-upload__text">
           Déposer les fichiers ici ou <em>cliquez pour envoyer</em>
         </div>
@@ -25,8 +25,9 @@
         </div>
       </el-upload>
     </el-col>
+    <br v-if="!fullScreen">
     <el-col
-      :span="16"
+      :span="fullScreen ? 16 : 24"
     >
       <el-table
         class="grid"
@@ -121,7 +122,8 @@ export default {
   props: {
     apiBaseUrl: { type: String, required: true },
     loading: { type: Boolean, required: true },
-    initalList: { type: Array, required: true }
+    initalList: { type: Array, required: true },
+    fullScreen: { type: Boolean, default: true }
   },
   data () {
     return {
