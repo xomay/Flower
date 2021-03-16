@@ -118,7 +118,6 @@ export default {
       `/api/realisateurs/${this.$route.params.realisateur_id}/`,
       {withCredentials: true}
     ).then((res) => {
-      console.log(res.data)
       this.realisateur = res.data
     }).catch((err) => {
       this.$message({message: "Impossible de récupérer le réalisateur pour le moment: "+err, type: "error"})

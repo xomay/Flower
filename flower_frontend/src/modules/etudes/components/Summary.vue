@@ -75,16 +75,24 @@
         width="55%"
       >
     </div>
+    <hr style="margin: 12px; margin-bottom: 25px">
+    <b>Fichiers associés :</b>
+    <UploaderLocal
+      :inital-list="etude.linkedFiles"
+      :loading="false"
+      api-base-url="ndfs"
+    />
   </div>
 </template>
 
 <script>
 import EtudeSteps from "./graphics/EtudeSteps"
+import UploaderLocal from "@/components/UploaderLocal"
 const axios = require("axios")
 
 export default {
   name: "Summary",
-  components: { EtudeSteps },
+  components: { EtudeSteps, UploaderLocal },
   props: {
     etude: { type: Object, required: true },
     getgantt: { type: Boolean, default: true },

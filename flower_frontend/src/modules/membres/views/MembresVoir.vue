@@ -212,7 +212,6 @@ export default {
     updateFilters () {
       this.currentSelected = this.membres
       if(this.doesFilterName) {
-        console.log(this.nameFilterValue)
         this.filterWithName(this.nameFilterValue)
       }
       if(this.doesFilterPromo) {

@@ -75,7 +75,8 @@ export default {
       loading: false,
       etude: {
         name: "", // valeurs par défault afin d'éviter des warnings inutiles.
-        groupes: []
+        groupes: [],
+        linkedFiles: []
       },
       breadcrumb: [
         {
