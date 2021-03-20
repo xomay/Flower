@@ -13,6 +13,10 @@ class ParamsJE(models.Model):
     je_url = models.CharField(max_length=80)
     # email de contact
     je_contact = models.CharField(max_length=40)
+    # slogan de la JE
+    je_slogan = models.CharField(max_length=150, default='')
+    # téléphone de la JE
+    je_phone = models.CharField(max_length=30, default='')
     # suffixe des élèves de l'école (sans le '@')
     mail_suffix = models.CharField(max_length=40)
 

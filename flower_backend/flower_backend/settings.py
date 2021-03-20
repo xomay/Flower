@@ -145,6 +145,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 DOCTYPES_LOCATION = 'flower/flower_backend/doctypes/' # I changed it to 'doctypes/' in production
+SIGNATURE_LOCATION = 'flower/flower_backend/miscellaneous/'
 
 FRONT_END = 'http://localhost:8080'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
