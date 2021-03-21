@@ -4,6 +4,7 @@ from django.conf import settings
 from docxtpl import DocxTemplate, InlineImage
 from docx.shared import Mm
 
+import threading
 import locale, io, sys
 locale.setlocale(locale.LC_TIME, "fr_FR.utf8")
 from datetime import date, timedelta
@@ -25,6 +26,11 @@ def addMonths(isodate, numberOfMonths):
 
 def toPercent(number):
     return str(number*100)
+
+def generateGantt(etude):
+    
+    th = threading.Thread(target=deleteImage, args=('users.csv'))
+    return InlineImage(tpl,'test_files/python_logo.png',width=Mm(20))
 
 def param(value):
     try:
