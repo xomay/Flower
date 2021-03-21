@@ -4,13 +4,14 @@ import plotly.express as px
 from plotly.io import to_html, to_image
 import pandas as pd
 import io
+import os
 import base64
 from datetime import date, timedelta
 
 import locale
 locale.setlocale(locale.LC_TIME, "fr_FR.utf8")
 
-def _computeGanttFromEtude(etude):
+def computeGanttFromEtudeRaw(etude):
     data = []
     for groupe in etude.groupe_set.order_by('index').iterator():
         for phase in groupe.phase_set.order_by('index').iterator():
@@ -25,7 +26,7 @@ def _computeGanttFromEtude(etude):
     return False, None
 
 def computeGanttFromEtude(etude, image_format="jpg"):
-    success,fig = _computeGanttFromEtude(etude)
+    success,fig = computeGanttFromEtudeRaw(etude)
     if success :
         if image_format == "svg":
             fig_img = to_image(fig, format="svg")
@@ -39,8 +40,5 @@ def computeGanttFromEtude(etude, image_format="jpg"):
     else:
         return HttpResponse("Il n'y a pas de groupes dans cette étude !", status=HTTPStatus.NOT_FOUND)
 
-def computeJPGGanttFromEtude(etude):
-    return computeGanttFromEtude(etude)
-
-#def saveGanttToFile(etude, pathToImage):
-#
+def computeJPGGanttFromEtude(etude, image_format="jpg"):
+    return computeGanttFromEtude(etude, image_format)
