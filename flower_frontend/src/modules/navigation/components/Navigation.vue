@@ -74,7 +74,7 @@
             <i class="el-icon-s-tools" />
           </el-button>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item>
+            <el-dropdown-item command="profile">
               <i class="el-icon-user" />{{ this.$store.currentUser.username }}
             </el-dropdown-item>
             <el-dropdown-item command="logout">
@@ -101,6 +101,7 @@ export default {
     }
   },
   created () {
+    // Accès selon les droits
     this.addCAStuff()
     this.addTresoStuff()
     this.addAdminStuff()
@@ -108,11 +109,15 @@ export default {
     this.addReaStuff()
   },
   methods: {
+    // Correspond aux inputs du dropdown (l'écrou en haut à droite)
     handleCommand (command) {
       if (command === "logout") {
         this.logout()
+      } else if (command === "profile") {
+        this.$router.push("/profil")
       }
     },
+    // Méthode pour se déconnecter du site puis retourner à l'accueil
     logout () {
       axios.get(
         "/api/accounts/logout",
@@ -123,6 +128,7 @@ export default {
         this.$message({message: "Une erreur est survenue lors de la déconnexion", type: "error"})
       })
     },
+    // Si l'utilisateur a des droits d'admin, ajoute ses outils dans la navbar
     addAdminStuff () {
       if ( this.isAdmin() ) {
         this.menu.push({
@@ -144,6 +150,7 @@ export default {
         })
       }
     },
+    // Si l'utilisateur a des droits de trésorier, ajoute ses outils dans la navbar
     addTresoStuff () {
       if ( this.isTreso() ) {
         this.menu.push({
@@ -167,6 +174,7 @@ export default {
         })
       }
     },
+    // Si l'utilisateur a des droits de CA, ajoute ses outils dans la navbar
     addCAStuff () {
       if (this.isCA() ) {
         this.menu.push({
@@ -244,6 +252,7 @@ export default {
         })
       }
     },
+    // Si l'utilisateur a des droits de réalisateur, ajoute ses outils dans la navbar
     addReaStuff () {
       if ( this.isRea() ) {
         this.menu.push({
