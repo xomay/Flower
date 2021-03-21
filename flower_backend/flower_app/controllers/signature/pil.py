@@ -21,9 +21,9 @@ def createSignature(membre):
     image = Image.open(settings.OTHERS_LOCATION + 'signature_base.png')
     image_editable = ImageDraw.Draw(image)
 
-    text_font = ImageFont.truetype("arial.ttf", 22)
+    text_font = ImageFont.truetype(settings.OTHERS_LOCATION + 'arial.ttf', 22)
     text_emote = ImageFont.truetype(settings.OTHERS_LOCATION + 'OpenSansEmoji.ttf', 22)
-    text_font_bold = ImageFont.truetype("ariblk.ttf", 23)
+    text_font_bold = ImageFont.truetype(settings.OTHERS_LOCATION + 'ariblk.ttf', 23)
 
     hrz_offset = 350
     vrt_offset = 20
