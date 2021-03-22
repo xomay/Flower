@@ -18,7 +18,7 @@ class Etude(models.Model):
     mandat = models.IntegerField()
     number = models.IntegerField()
     name = models.CharField(max_length=60)
-    description = models.CharField(max_length=300)
+    description = models.TextField(blank=True,default='')
 
     creation_date = models.DateTimeField(auto_now_add=True)
     modification_date = models.DateTimeField(auto_now=True)
