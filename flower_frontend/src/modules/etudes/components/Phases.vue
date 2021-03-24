@@ -74,12 +74,14 @@
           prop="nbJEH"
         />
         <el-table-column
+          v-if="!reaVue"
           width="100"
           label="Prix JEH"
           prop="priceJEH"
           :formatter="euroFormatter"
         />
         <el-table-column
+          v-if="!reaVue"
           width="100"
           label="Prix total"
           prop="totalPrice"

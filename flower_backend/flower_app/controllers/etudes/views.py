@@ -118,6 +118,7 @@ class ReaEtudesDetailView(generics.RetrieveAPIView):
             for p_us in phase.us_set.all():
                 uss.append({
                     'id': p_us.id,
+                    'name': p_us.name,
                     'index': p_us.index,
                     'state': p_us.state,
                 })
@@ -127,7 +128,8 @@ class ReaEtudesDetailView(generics.RetrieveAPIView):
                 'index': phase.index,
                 'description': phase.description,
                 'beginDate': phase.beginDate,
-                'period': phase.period,
+                'nbJEH': phase.nbJEH,
+                'finishDate': phase.finishDate,
                 'groupe': phase.groupe.id,
                 'uss': uss
             })
