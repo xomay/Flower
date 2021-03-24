@@ -69,6 +69,7 @@ export default {
   },
   methods: {
     addGroupe () {
+      this.loading = true
       const newGroup = {
         title: "Titre",
         description: "Description",
@@ -90,6 +91,7 @@ export default {
       })
     },
     addPhase (groupe) {
+      this.loading = true
       const newIndex = (Math.max.apply(
           Math,
           groupe.phases.map((phase) => phase.index)
@@ -113,6 +115,7 @@ export default {
       })
     },
     addUS (phase) {
+      this.loading = true
       const newIndex = (Math.max.apply(
           Math,
           phase.uss.map((us) => us.index)
@@ -137,6 +140,7 @@ export default {
       })
     },
     deleteGroupe ({groupeId, groupeIndex}) {
+      this.loading = true
       axios.delete(
         `/api/etudes/groupes/${groupeId}/`,
         {withCredentials: true}
@@ -149,9 +153,12 @@ export default {
           type: "success"})
       }).catch((err) => {
         this.$message({message: "Impossible de supprimer ce groupe pour le moment :"+err, type: "error"})
+      }).finally(() => {
+        this.loading = false
       })
     },
     deletePhase ({phase, groupe}) {
+      this.loading = true
       axios.delete(
         `/api/etudes/phases/${phase.id}/`,
         {withCredentials: true}
@@ -166,9 +173,12 @@ export default {
         this.$message({message: "La phase a bien été supprimée.", type: "success"})
       }).catch(() => {
         this.$message({message: "Impossible de supprimer cette phase pour le moment", type: "error"})
+      }).finally(() => {
+        this.loading = false
       })
     },
     deleteUS ({us, phase}) {
+      this.loading = true
       axios.delete(
         `/api/etudes/uss/${us.id}/`,
         {withCredentials: true}
@@ -183,9 +193,12 @@ export default {
         this.$message({message: "L'US a bien été supprimée.", type: "success"})
       }).catch(() => {
         this.$message({message: "Impossible de supprimer cette US pour le moment", type: "error"})
+      }).finally(() => {
+        this.loading = false
       })
     },
     submitGroupesAndPhases () {
+      this.loading = true
       axios.put(
         "/api/etudes/groupes/",
         this.groupes,
@@ -204,7 +217,6 @@ export default {
             type: "error",
             offset: 40})
         }
-      }).finally(() => {
         this.loading = false
       })
     }

@@ -31,7 +31,7 @@
         <el-button
           v-if="displaysCE"
           type="success"
-          :loading="loadingCE"
+          :loading="loading"
           icon="el-icon-download"
           @click="downloadCE"
         >
@@ -117,7 +117,7 @@
               <el-button
                 type="text"
                 icon="el-icon-download"
-                :loading="loadingRDM"
+                :loading="loading"
                 @click="downloadRDM(scope.row.id)"
               >
                 RDM
@@ -172,7 +172,7 @@
               <el-button
                 type="text"
                 icon="el-icon-download"
-                :loading="loadingPVR"
+                :loading="loading"
                 @click="downloadPVR(scope.row.id)"
               />
               <router-link :to="`/etudes/${$route.params.id}/pvr/modifier/${scope.row.id}`">
@@ -184,7 +184,7 @@
               <el-button
                 type="text"
                 icon="el-icon-delete"
-                :loading="loadingPVR"
+                :loading="loading"
                 @click="deletePVR(scope.row.id, scope.$index)"
               />
             </template>
@@ -210,10 +210,6 @@ export default {
     return {
       displaysCE: null,
       loading: false,
-      loadingCE: false,
-      loadingRDM: false,
-      loadingInvoice: false,
-      loadingPVR: false,
       activeCollapses: []
     }
   },
@@ -229,7 +225,7 @@ export default {
   },
   methods: {
     deleteInvoice (invoiceId) {
-      this.loadingInvoice = true
+      this.loading = true
       axios.delete(
         `/api/tresorerie/factures/${invoiceId}/`,
         { withCredentials: true}
@@ -239,7 +235,7 @@ export default {
       }).catch((err) => {
         this.$message({message: "Impossible de supprimer la facture : " + err, type: "error"})
       }).finally(() => {
-        this.loadingInvoice = false
+        this.loading = false
       })
     },
     deletePVR (pvrId, index) {

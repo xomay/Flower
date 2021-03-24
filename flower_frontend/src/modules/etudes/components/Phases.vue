@@ -27,12 +27,24 @@
       >
         <el-table-column type="expand">
           <template slot-scope="scope">
-            <USManager
-              :uss="scope.row.uss"
-              :loading="loading"
-              :rea-vue="reaVue"
-              @us-change="updateUS"
-            />
+            <el-row
+              v-show="scope.row.methodologie != ''"
+              style="margin-bottom: 20px;"
+            >
+              <b>Méthodologie :</b><br>
+              <p>{{ scope.row.methodologie }}</p>
+              <hr
+                style="border-width: 1px; border-color: #bfbfd7; width: 30%; margin: auto auto;"
+              >
+            </el-row>
+            <el-row>
+              <USManager
+                :uss="scope.row.uss"
+                :loading="loading"
+                :rea-vue="reaVue"
+                @us-change="updateUS"
+              />
+            </el-row>
           </template>
         </el-table-column>
         <el-table-column
