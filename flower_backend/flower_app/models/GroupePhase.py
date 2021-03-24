@@ -34,6 +34,7 @@ class Phase(models.Model):
     title = models.CharField(max_length=200, default='Titre')
     index = models.IntegerField()
     description = models.TextField(default='')
+    methodologie = models.TextField(blank=True, default='')
 
     beginDate = models.DateField(default=date.today)
     period = models.IntegerField(default=14)
@@ -123,6 +124,7 @@ class GroupeSerializer(serializers.ModelSerializer):
                 phase_instance.title = phase.get('title', phase_instance.title)
                 phase_instance.index = phase.get('index', phase_instance.index)
                 phase_instance.description = phase.get('description', phase_instance.description)
+                phase_instance.methodologie = phase.get('methodologie', phase_instance.methodologie)
 
                 phase_instance.beginDate = phase.get('beginDate', phase_instance.beginDate)
                 phase_instance.period = phase.get('period', phase_instance.period)

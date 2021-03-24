@@ -26,6 +26,9 @@ def addMonths(isodate, numberOfMonths):
 def toPercent(number):
     return str(number*100)
 
+def isNotEmpty(string):
+    return len(string.replace(' ', '')) > 0
+
 def param(value):
     try:
         return getattr(ParamsJE.objects.get(pk=1), value)
@@ -52,6 +55,7 @@ def computeDocx(context, doctypeFilename, name='undef', images=dict()):
     jinja_env.globals['shortDate'] = shortDate
     jinja_env.globals['toPercent'] = toPercent
     jinja_env.globals['rd'] = rd
+    jinja_env.globals['isNotEmpty'] = isNotEmpty
 
     doc.render(context, jinja_env)
     doc.save(docBytes)
