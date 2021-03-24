@@ -39,13 +39,24 @@
             <div class="flex flew-row">
               <div class="flex-grow">
                 <el-col :span="8">
-                  Description :
-                  <el-input
-                    v-model="props.row.description"
-                    type="textarea"
-                    :autosize="{ minRows: 3, maxRows: 4}"
-                    placeholder="Description de la phase"
-                  />
+                  <el-row>
+                    Description :
+                    <el-input
+                      v-model="props.row.description"
+                      type="textarea"
+                      :autosize="{ minRows: 3, maxRows: 4}"
+                      placeholder="Description de la phase"
+                    />
+                  </el-row>
+                  <el-row>
+                    Méthodologie :
+                    <el-input
+                      v-model="props.row.methodologie"
+                      type="textarea"
+                      :autosize="{ minRows: 3, maxRows: 4}"
+                      placeholder="Méthodologie de la phase"
+                    />
+                  </el-row>
                 </el-col>
                 <el-col
                   :span="15"
