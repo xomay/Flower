@@ -28,6 +28,7 @@
         <el-table-column type="expand">
           <template slot-scope="scope">
             <el-row
+              v-if="!reaVue"
               v-show="scope.row.methodologie != ''"
               style="margin-bottom: 20px;"
             >
@@ -73,12 +74,14 @@
           prop="nbJEH"
         />
         <el-table-column
+          v-if="!reaVue"
           width="100"
           label="Prix JEH"
           prop="priceJEH"
           :formatter="euroFormatter"
         />
         <el-table-column
+          v-if="!reaVue"
           width="100"
           label="Prix total"
           prop="totalPrice"

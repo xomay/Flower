@@ -70,8 +70,9 @@ export default {
     ).then((res) => {
       this.etude = res.data
       this.breadcrumb[1].name = this.etude.name
+      console.log(this.etude)
     }).catch(() => {
-      this.$message({ message: "Impossible de récupérer l'études pour le moment", type: "error" })
+      this.$message({ message: "Impossible de récupérer l'étude pour le moment", type: "error" })
     }).finally(() => {
       this.loading = false
     })
