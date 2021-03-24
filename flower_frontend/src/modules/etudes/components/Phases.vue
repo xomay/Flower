@@ -28,6 +28,7 @@
         <el-table-column type="expand">
           <template slot-scope="scope">
             <el-row
+              v-if="!reaVue"
               v-show="scope.row.methodologie != ''"
               style="margin-bottom: 20px;"
             >
