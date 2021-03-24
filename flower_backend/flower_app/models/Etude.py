@@ -96,4 +96,3 @@ class EtudeDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Etude
         fields = '__all__'
-

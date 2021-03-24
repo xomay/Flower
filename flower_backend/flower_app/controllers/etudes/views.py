@@ -4,6 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import generics
 from http import HTTPStatus
 from django.http import JsonResponse
+from datetime import datetime
 
 from flower_app.controllers.permissions import HasGroupPermission, HasReaPermissionToSeeEtude
 from flower_app.models.CE import CE, CESerializer, CEDetailSerializer
@@ -66,7 +67,13 @@ class ReaEtudesView(APIView):
                 array = []
                 realisateur = Realisateur.objects.get(user=request.user)
                 for mission in realisateur.mission_set.all():
-                    array.append(model_to_dict(mission.project))
+                    array.append({
+                        'id': mission.project.id,
+                        'name': mission.project.name,
+                        'state': mission.project.state,
+                        'mandat': mission.project.mandat,
+                        'number': mission.project.number
+                    })
                 return Response(array, status=HTTPStatus.ACCEPTED)
             else:
                 return Response("Il faut être un réalisateur.", status=HTTPStatus.UNAUTHORIZED)
@@ -74,12 +81,81 @@ class ReaEtudesView(APIView):
             return Response(None, status=HTTPStatus.UNAUTHORIZED)
 
 class ReaEtudesDetailView(generics.RetrieveAPIView):
-    permission_classes = [IsAuthenticated, HasGroupPermission, HasReaPermissionToSeeEtude]
-    required_groups = {
-        'GET': ['ROLE_REA']
-    }
-    queryset = Etude.objects.all()
-    serializer_class = EtudeDetailSerializer
+    #   Grosse méthode je sais x)
+    #   Le but, c'est de : 1) vérifier que le réa à le droit d'être là (et que c'est bien un réa xd)
+    #   Deux, et c'est ce qui rend la chose complexe, on veut absolument qu'il ait plus d'informations que nécessaire.
+    # Pour ça, on récupère toutes les phases concernées par sa mission, PUIS on récupère les groupes en fonction des phases concernées,
+    # et on réassemble le tout pour lui renvoyer.
+    def get(self, request, etude_id):
+        # On vérifie que la personne connectée ait le droit d'être ici.
+        etude_instance = Etude.objects.get(pk=etude_id)
+        try:
+            realisateur = Realisateur.objects.get(user=request.user) # récupérer le réa associé à la requete
+            rdm = realisateur.mission_set.get(project=etude_instance) # vérifier qu'il existe au moins une mission qui lie ce réa à cette étude
+        except:
+            return Response(None, status=HTTPStatus.UNAUTHORIZED)
+        if( not is_in_group(request.user, 'ROLE_REA')):
+            return Response("Il faut la permission de réalisateur.", status=HTTPStatus.UNAUTHORIZED)
+        # On prépare les données générales de l'étude, avec le strict nécessaire.
+        data = {
+            'id': etude_instance.id,
+            'name': etude_instance.name,
+            'state': etude_instance.state,
+            'mandat': etude_instance.mandat,
+            'number': etude_instance.number,
+            'description': etude_instance.description,
+            'projectManager': {
+                'firstname': etude_instance.projectManager.firstname,
+                'lastname': etude_instance.projectManager.lastname,
+            },
+            'groupes': []
+        }
+        groupes = []
+        phases = list()
+        # On récupère et serialize toutes les phases auxquelles le réa à accès, et pas plus.
+        for phase in rdm.phases.all():
+            uss = []
+            for p_us in phase.us_set.all():
+                uss.append({
+                    'id': p_us.id,
+                    'index': p_us.index,
+                    'state': p_us.state,
+                })
+            phases.append({
+                'id': phase.id,
+                'title': phase.title,
+                'index': phase.index,
+                'description': phase.description,
+                'beginDate': phase.beginDate,
+                'period': phase.period,
+                'groupe': phase.groupe.id,
+                'uss': uss
+            })
+
+        # Enfin on prend tous les groupes de l'étude, et si des phases plus haut a été sérialisée, on
+        # le sérialize lui aussi avant de rajouter la ou les étapes qui le concernent.
+        groupes_ids = list() #  ceux déjà faits
+        for groupe in etude_instance.groupe_set.all():
+            for phase in phases:
+                if(phase['groupe'] == groupe.id):
+                    # Groupe pas encore rencontré, on le sérialize
+                    if not groupe.id in groupes_ids:
+                        groupes_ids.append(groupe.id)
+                        groupes.append({
+                            'id': groupe.id,
+                            'title': groupe.title,
+                            'index': groupe.index,
+                            'description': groupe.description,
+                            'phases': []
+                        })
+                    # Récupérer le groupe pour y rajouter cette phase
+                    for g_dict in groupes:
+                        if g_dict['id'] == groupe.id:
+                            g_dict['phases'].append(phase)
+                            break
+        # Rajouter les groupes sérialisés aux données à envoyer, puis renvoyer tout ça.
+        data['groupes'] = groupes
+        return Response(data, status=HTTPStatus.OK)
 
 class CEView(generics.RetrieveUpdateAPIView):
     permission_classes = [IsAuthenticated, HasGroupPermission]
