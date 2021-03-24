@@ -83,9 +83,6 @@ class RealisateurSerializer(serializers.ModelSerializer):
     etudesAmount = serializers.ReadOnlyField()
     skillsArray = serializers.ReadOnlyField()
 
-    def create(self, validated_data):
-        return Realisateur(**validated_data)
-
     # On ne veut pas plusieurs comments pour même réa et même étude.
     def update(self, instance, validated_data):
         passed = list()
