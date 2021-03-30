@@ -8,6 +8,7 @@ from django.shortcuts import get_object_or_404
 from flower_app.controllers.permissions import HasGroupPermission
 from flower_app.models.ParamsJE import ParamsJE, ParamsJESerializer
 from flower_app.models.Poste import Poste, PosteSerializer
+from flower_app.models.BaseUrsaff import BaseUrsaff, BaseUrsaffSerializer
 
 # Paramètres généraux
 
@@ -59,3 +60,25 @@ class PostesUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     }
     serializer_class = PosteSerializer
     queryset = Poste.objects.all()
+
+# Base Ursaff
+
+class BaseUrsaffView(generics.ListCreateAPIView):
+    permission_classes = [IsAuthenticated, HasGroupPermission]
+    required_groups = {
+        'GET': ['ROLE_CA'],
+        'POST': ['ROLE_TRESO']
+    }
+    serializer_class = BaseUrsaffSerializer
+    queryset = BaseUrsaff.objects.all()
+
+class BaseUrsaffDetailView(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAuthenticated, HasGroupPermission]
+    required_groups = {
+        'GET': ['ROLE_CA'],
+        'PUT': ['ROLE_TRESO'],
+        'PATCH': ['ROLE_TRESO'],
+        'DELETE': ['ROLE_TRESO']
+    }
+    serializer_class = BaseUrsaffSerializer
+    queryset = BaseUrsaff.objects.all()
