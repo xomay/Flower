@@ -169,6 +169,12 @@ export default {
                 {name: "Lister les NFs", url: "/tresorerie/nfs/voir/"},
                 {name: "Ajouter une NF", url: "/tresorerie/nfs/ajouter"},
               ]
+            },
+            {
+              title: "Autres",
+              children: [
+                {name: "Base Ursaff", url: "/tresorerie/base-ursaff"},
+              ]
             }
           ]
         })

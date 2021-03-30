@@ -30,6 +30,11 @@ const routes = [
     path: "tresorerie/nfs/ajouter",
     name: "nfs-ajouter",
     component: () => import("../views/NFsCreer")
+  },
+  {
+    path: "tresorerie/base-ursaff",
+    name: "ursaff-je",
+    component: () => import("../views/BaseUrsaffEdition")
   }
 ]
 

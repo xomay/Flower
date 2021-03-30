@@ -131,7 +131,7 @@ export default {
         this.$message({message: "Poste mis à jour avec succès.", type: "success"})
         poste.isModified = false
       }).catch((err) => {
-        this.$message({message: "Impossible de récupérer les postes : " + err, type: "error"})
+        this.$message({message: "Impossible de sauvegarder le poste : " + err, type: "error"})
       }).finally(() => this.loading = false)
     },
     removePoste (poste, index) {
