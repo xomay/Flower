@@ -9,7 +9,6 @@ from flower_app.serializers import CustomListSerializer
 def emptyList():
     return []
 
-# Create your models here.
 class Mission(models.Model):
     project = models.ForeignKey(Etude, on_delete=models.RESTRICT)
     consultant = models.ForeignKey(Realisateur, on_delete=models.RESTRICT, blank=True, null=True)
@@ -24,7 +23,7 @@ class Mission(models.Model):
         return 'Mission - Etude = ' + str(self.project) + ' - Consultant = ' + str(self.consultant) + ' (' + str(self.JEHNumber) + ' * ' + str(self.JEHPrice) + '€)'
     
     @property
-    def grossRemuneration(self):
+    def remunerationRaw(self):
         return self.JEHNumber * self.JEHPrice
 
 class MissionSerializer(serializers.ModelSerializer):
