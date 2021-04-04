@@ -1,6 +1,7 @@
 <template>
   <el-autocomplete
     v-model="autocompleteValue"
+    :disabled="disabled"
     class="inline-input"
     :fetch-suggestions="queryValue"
     :placeholder="placeholder"
@@ -17,6 +18,7 @@ export default {
     value: { type: undefined, required: true },
     itemList: { type: Array, required: true },
     placeholder: { type: String, required: true },
+    disabled: { type: Boolean, default: false },
     forceValue: { type: String, default () { return null } }
   },
   data () {

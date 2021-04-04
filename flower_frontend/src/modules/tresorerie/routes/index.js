@@ -35,6 +35,12 @@ const routes = [
     path: "tresorerie/base-ursaff",
     name: "ursaff-je",
     component: () => import("../views/BaseUrsaffEdition")
+  },
+  // BV :
+  {
+    path: "tresorerie/bv/creer",
+    name: "bv-creer",
+    component: () => import("../views/BVsCreer")
   }
 ]
 
