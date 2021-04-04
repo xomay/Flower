@@ -19,7 +19,7 @@ from .models.NdFDetail import NdFDetail
 from .models.Poste import Poste
 from .models.UploadedFile import UploadedFile
 from .models.BaseUrsaff import BaseUrsaff
-from .models.BV import BV
+from .models.BV import BV, Cotisation
 
 # Register your models here.
 admin.site.register(CE)
@@ -47,3 +47,4 @@ admin.site.register(Poste)
 admin.site.register(UploadedFile)
 admin.site.register(BaseUrsaff)
 admin.site.register(BV)
+admin.site.register(Cotisation)

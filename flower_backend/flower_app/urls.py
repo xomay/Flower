@@ -25,5 +25,6 @@ urlpatterns = [
     path('ndfs/details/', include('flower_app.controllers.ndfsdetails.urls')),
     path('upload/', include('flower_app.controllers.upload.urls')),
     path('signature/', include('flower_app.controllers.signature.urls')),
+    path('bv/', include('flower_app.controllers.bv.urls')),
     # path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 ]

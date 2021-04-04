@@ -2,7 +2,6 @@ from django.db import models
 from rest_framework import serializers
 
 from flower_app.models.Mission import Mission, MissionSerializer
-from flower_app.models.Etude import Etude, EtudeSerializer
 from flower_app.models.BaseUrsaff import getLastBase
 
 # Classe spécialisée, juste pour stocker les valeurs des cotisations xd
@@ -27,11 +26,16 @@ class Cotisation(models.Model):
             'montant_realisateur' : self.montant_realisateur
         }
 
+class CotisationSerializer(serializers.ModelSerializer):
+    montant_junior = serializers.ReadOnlyField()
+    montant_realisateur = serializers.ReadOnlyField()
+    class Meta:
+        model = Cotisation
+        fields = '__all__'
 
 # BV en tant que tel. Comme le python c'est de la daube on est obligé de mettre la dépendance au dessus.
 class BV(models.Model):
     # Informations globales
-    etude = models.ForeignKey(Etude, on_delete=models.RESTRICT)
     rdm = models.ForeignKey(Mission, on_delete=models.RESTRICT)
     reference = models.CharField(max_length=40) # Référence dans la JE (genre BV_XXX)
     reference_nationale = models.CharField(max_length=40) # Référence pour l'état (suite de caractètes sans queue ni tête)
@@ -128,3 +132,19 @@ class BV(models.Model):
     @property
     def montant_net_imposable(self):
         return self.montant_net + self.coti_csgcrds.montant_realisateur
+
+class BVSerializer(serializers.ModelSerializer):
+    rdm = MissionSerializer(read_only=True)
+    coti_sante = CotisationSerializer(read_only=False)
+    coti_accidents = CotisationSerializer(read_only=False)
+    coti_retraite_1 = CotisationSerializer(read_only=False)
+    coti_retraite_2 = CotisationSerializer(read_only=False)
+    coti_famille = CotisationSerializer(read_only=False)
+    coti_chomage = CotisationSerializer(read_only=False)
+    coti_autres = CotisationSerializer(read_only=False)
+    coti_csg = CotisationSerializer(read_only=False)
+    coti_csgcrds = CotisationSerializer(read_only=False)
+    coti_exonerations = CotisationSerializer(read_only=False)
+    class Meta:
+        model = BV
+        fields = '__all__'
