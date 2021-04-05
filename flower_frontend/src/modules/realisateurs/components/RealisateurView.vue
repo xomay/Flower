@@ -7,6 +7,7 @@
           <td class="rowStyle noRight">
             {{ realisateur.gender }}. {{ realisateur.firstname }} {{ realisateur.lastname }}
             <StarRate
+              :v-show="realisateur.rating != -1"
               :value="realisateur.rating"
             />
           </td>

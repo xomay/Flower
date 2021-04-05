@@ -18,7 +18,7 @@
               :loading="loading"
               placeholder="Étude"
               @input="updatedEtude()"
-              @clear="bv.rdm = {}; etude_id = 0"
+              @clear="bv.rdm = -1; etude_id = 0"
             />
           </el-form-item>
         </el-col>
@@ -34,12 +34,246 @@
               :disabled="etude_id == 0"
               placeholder="Mission"
               @input="updatedRDM()"
+              @clear="bv.rdm = -1"
             />
           </el-form-item>
         </el-col>
       </el-row>
-      <el-row>
-        Réalisateur : {{ bv.rea }}
+      <el-row v-show="bv.rdm != -1">
+        <table class="tg">
+          <tr class="tg-0lax">
+            <td class="tg-y6fn">
+              Réalisateur
+            </td>
+            <td style="width:200px">
+              {{ bv.rea }}
+            </td>
+          </tr>
+          <tr class="tg-0lax">
+            <td class="tg-y6fn">
+              Référence interne
+            </td>
+            <td>
+              {{ bv.reference }}
+            </td>
+          </tr>
+          <tr class="tg-0lax">
+            <td class="tg-y6fn">
+              Rémunération brute
+            </td>
+            <td>
+              {{ Number(rdm.remunerationRaw).toFixed(2) }} €
+            </td>
+          </tr>
+          <tr class="tg-0lax">
+            <td class="tg-y6fn">
+              Nombre de JEH
+            </td>
+            <td>
+              {{ rdm.JEHNumber }}
+            </td>
+          </tr>
+          <tr class="tg-0lax">
+            <td class="tg-y6fn">
+              Base URSAFF
+            </td>
+            <td>
+              {{ Number(ursaff.baseValue).toFixed(2) }} €
+            </td>
+          </tr>
+          <tr class="tg-0lax">
+            <td class="tg-y6fn">
+              Assiette des cotisations
+            </td>
+            <td>
+              {{ Number(rdm.assietteCotisation).toFixed(2) }} €
+            </td>
+          </tr>
+        </table>
+      </el-row>
+      <el-row v-show="bv.rdm != -1">
+        <el-col :span="12">
+          <el-form-item
+            label="Mode de versement :"
+            prop="versement_mode"
+          >
+            <el-select v-model="bv.versement_mode">
+              <el-option value="Versement">
+                Versement
+              </el-option>
+              <el-option value="Chèque">
+                Chèque
+              </el-option>
+              <el-option value="Espèces">
+                Espèces
+              </el-option>
+              <el-option value="Autre">
+                Autre
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item
+            label="Référence de versement :"
+            prop="reference_nationale"
+          >
+            <el-input
+              v-model="bv.reference_nationale"
+              placeholder="Référence de versement"
+              style="width: 60%"
+            />
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row v-show="bv.rdm != -1">
+        <table class="tg">
+          <thead>
+            <tr>
+              <th class="tg-e5lu">
+                COTISATIONS ET CONTRIBUTIONS SOCIALES
+              </th>
+              <th
+                class="tg-e5lu"
+                style="width: 150px"
+              >
+                BASE
+              </th>
+              <th class="tg-e5lu">
+                TAUX - Junior
+              </th>
+              <th class="tg-e5lu">
+                MONTANT - Junior
+              </th>
+              <th class="tg-e5lu">
+                TAUX - étudiant
+              </th>
+              <th class="tg-e5lu">
+                MONTANT - étudiant
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <BVCotisationLine
+              title="SANTE - Sécurité sociale - Maladie Maternité Invalidité Décès"
+              :cotisation="bv.coti_sante"
+            />
+            <BVCotisationLine
+              title="ACCIDENTS DU TRAVAIL-MALADIES PROFESSIONNELLES"
+              :cotisation="bv.coti_accidents"
+            />
+            <BVCotisationLine
+              title="RETRAITE - Sécurité sociale plafonnée TA"
+              :cotisation="bv.coti_retraite_1"
+            />
+            <BVCotisationLine
+              title="RETRAITE - Sécurité sociale déplafonnée"
+              :cotisation="bv.coti_retraite_2"
+            />
+            <BVCotisationLine
+              title="FAMILLE"
+              :cotisation="bv.coti_famille"
+            />
+            <BVCotisationLine
+              title="ASSURANCE CHÔMAGE"
+              :cotisation="bv.coti_chomage"
+            />
+            <BVCotisationLine
+              title="AUTRES CONTRIBUTIONS DUES PAR LA JUNIOR"
+              :cotisation="bv.coti_autres"
+            />
+            <BVCotisationLine
+              title="CSG déductible de l'impôt sur le revenu"
+              :cotisation="bv.coti_csg"
+            />
+            <BVCotisationLine
+              title="CSG/CRDS non déductibles de l'impôt sur le revenu"
+              :cotisation="bv.coti_csgcrds"
+            />
+            <BVCotisationLine
+              title="EXONERATIONS DE COTISATION JUNIOR"
+              :cotisation="bv.coti_exonerations"
+            />
+          </tbody>
+        </table>
+      </el-row>
+      <el-row v-show="bv.rdm != -1">
+        <table class="tg">
+          <tr class="tg-0lax">
+            <td class="tg-y6fn">
+              TOTAL DES COTISATIONS DUES (indexées sur l'assiette de cotisation)
+            </td>
+            <td style="width: 90px">
+              {{ sum_taux_junior_assiette.toFixed(2) }} %
+            </td>
+            <td style="width: 90px">
+              {{ sum_montants_junior_assiette }} €
+            </td>
+            <td style="width: 90px">
+              {{ sum_taux_realisateur_assiette.toFixed(2) }} %
+            </td>
+            <td style="width: 90px">
+              {{ sum_montants_realisateur_assiette }} €
+            </td>
+          </tr>
+          <tr class="tg-0lax">
+            <td class="tg-y6fn">
+              TOTAL DES COTISATIONS DUES (indexées sur la rémunération brute)
+            </td>
+            <td>
+              {{ Number(sum_taux_junior_brut).toFixed(2) }} %
+            </td>
+            <td>
+              {{ Number(sum_montants_junior_brut).toFixed(2) }} €
+            </td>
+            <td>
+              {{ sum_taux_realisateur_brut > 0 ? Number(sum_taux_realisateur_brut).toFixed(2) + "%" : "-" }}
+            </td>
+            <td>
+              {{ sum_montants_realisateur_brut > 0 ? Number(sum_montants_realisateur_brut).toFixed(2) + "€" : "-" }}
+            </td>
+          </tr>
+        </table>
+      </el-row>
+      <el-row v-show="bv.rdm != -1">
+        <table class="tg">
+          <tr class="tg-0lax">
+            <td class="tg-y6fn">
+              Total des cotisations JUNIOR
+            </td>
+            <td style="width:120px">
+              {{ Number(sum_montants_junior).toFixed(2) }} €
+            </td>
+          </tr>
+          <tr class="tg-0lax">
+            <td class="tg-y6fn">
+              Total des cotisations RÉALISATEUR
+            </td>
+            <td style="width:120px">
+              {{ Number(sum_montants_realisateur).toFixed(2) }} €
+            </td>
+          </tr>
+          <tr class="tg-0lax">
+            <td class="tg-y6fn">
+              Total des cotisations TOTALES
+            </td>
+            <td style="width:120px">
+              {{ (Number(sum_montants_realisateur)+Number(sum_montants_junior)).toFixed(2) }} €
+            </td>
+          </tr>
+        </table>
+      </el-row>
+      <el-row v-show="bv.rdm != -1">
+        <table class="tg">
+          <tr class="tg-0lax">
+            <td class="tg-y6fn">
+              Montant NET payé à l'étudiant
+            </td>
+            <td style="width:120px">
+              {{ (Number(rdm.remunerationRaw) - Number(sum_montants_junior)).toFixed(2) }} €
+            </td>
+          </tr>
+        </table>
       </el-row>
     </el-form>
   </BaseComponent>
@@ -48,33 +282,35 @@
 <script>
 const axios = require("axios")
 import MemberPicker from "@/modules/membres/components/MemberPicker"
-
+import BVCotisationLine from "../components/BVCotisationLine"
 export default {
   name: "BVsCreeer",
-  components: {MemberPicker},
+  components: {MemberPicker, BVCotisationLine},
   data () {
     return {
       loading: true,
       etude_id: 0,
       etudes: [],
       rdms: [],
+      rdm: {},
+      ursaff: {},
       bv: {
         rea: "",
         rdm: -1,
         reference: "",
         reference_nationale: "",
         date: "",
-        versement_mode: "",
-        coti_sante: {},
-        coti_accidents: {},
-        coti_retraite_1: {},
-        coti_retraite_2: {},
-        coti_famille: {},
-        coti_chomage: {},
-        coti_autres: {},
-        coti_csg: {},
-        coti_csgcrds: {},
-        coti_exonerations: {}
+        versement_mode: "Versement",
+        coti_sante: {montant_base: 0, taux_junior: 0, taux_realisateur: 0},
+        coti_accidents: {montant_base: 0, taux_junior: 0, taux_realisateur: 0},
+        coti_retraite_1: {montant_base: 0, taux_junior: 0, taux_realisateur: 0},
+        coti_retraite_2: {montant_base: 0, taux_junior: 0, taux_realisateur: 0},
+        coti_famille: {montant_base: 0, taux_junior: 0, taux_realisateur: 0},
+        coti_chomage: {montant_base: 0, taux_junior: 0, taux_realisateur: 0},
+        coti_autres: {montant_base: 0, taux_junior: 0, taux_realisateur: 0},
+        coti_csg:{montant_base: 0, taux_junior: 0, taux_realisateur: 0},
+        coti_csgcrds: {montant_base: 0, taux_junior: 0, taux_realisateur: 0},
+        coti_exonerations: {montant_base: 0, taux_junior: 0, taux_realisateur: 0}
       },
       breadcrumb: [
         {
@@ -88,6 +324,45 @@ export default {
       ]
     }
   },
+  computed: {
+    // Sommes des taux
+    sum_taux_junior_assiette () {
+      return ((Number(this.bv.coti_sante.taux_junior) + Number(this.bv.coti_accidents.taux_junior) + Number(this.bv.coti_retraite_1.taux_junior)
+        + Number(this.bv.coti_retraite_2.taux_junior) + Number(this.bv.coti_famille.taux_junior) + Number(this.bv.coti_autres.taux_junior)
+        + Number(this.bv.coti_csg.taux_junior) + Number(this.bv.coti_csgcrds.taux_junior) + Number(this.bv.coti_exonerations.taux_junior)) * 100)
+    },
+    sum_taux_realisateur_assiette () {
+      return ((Number(this.bv.coti_sante.taux_realisateur) + Number(this.bv.coti_accidents.taux_realisateur) + Number(this.bv.coti_retraite_1.taux_realisateur)
+        + Number(this.bv.coti_retraite_2.taux_realisateur) + Number(this.bv.coti_famille.taux_realisateur) + Number(this.bv.coti_autres.taux_realisateur)
+        + Number(this.bv.coti_csg.taux_realisateur) + Number(this.bv.coti_csgcrds.taux_realisateur) + Number(this.bv.coti_exonerations.taux_realisateur)) * 100)
+    },
+    sum_taux_junior_brut () {
+      return ((Number(this.bv.coti_chomage.taux_junior)) * 100).toFixed(2)
+    },
+    sum_taux_realisateur_brut () {
+      return ((Number(this.bv.coti_chomage.taux_realisateur)) * 100).toFixed(2)
+    },
+    // Somme des montants
+    sum_montants_junior_assiette () {
+      return (this.sum_taux_junior_assiette / 100 * Number(this.bv.coti_sante.montant_base))
+    },
+    sum_montants_realisateur_assiette () {
+      return (this.sum_taux_realisateur_assiette / 100 * Number(this.bv.coti_sante.montant_base))
+    },
+    sum_montants_junior_brut () {
+      return (this.sum_taux_junior_brut / 100 * Number(this.bv.coti_chomage.montant_base))
+    },
+    sum_montants_realisateur_brut () {
+      return (this.sum_taux_realisateur_brut / 100 * Number(this.bv.coti_chomage.montant_base))
+    },
+    // Sommes des montants totaux
+    sum_montants_junior () {
+      return Number(this.sum_montants_junior_assiette) + Number(this.sum_montants_junior_brut)
+    },
+    sum_montants_realisateur () {
+      return Number(this.sum_montants_realisateur_assiette) + Number(this.sum_montants_realisateur_brut)
+    },
+  },
   beforeCreate () {
     this.loading = true
     axios.get(
@@ -98,10 +373,32 @@ export default {
       this.etudes = res.data
     }).catch((err) => {
       this.$message({message: "Impossible de récupérer les études : " + err, type: "error"})
+    })
+    axios.get(
+      "/api/administration/base-ursaff/last/",
+      { widthCredentials: true }
+    ).then((res) => {
+      this.ursaff = res.data
+    }).catch((err) => {
+      this.$message({message: "Impossible de récupérer la dernière base Ursaff : " + err, type: "error"})
+    }).finally(() => this.loading = false)
+    axios.get(
+      "/api/bv/",
+      { widthCredentials: true }
+    ).then((res) => {
+      const future = res.data.length + 1
+      if(future < 10)
+        this.bv.reference = "BV_00"+future
+      else if(future < 100)
+        this.bv.reference = "BV_0"+future
+      else
+        this.bv.reference = "BV_"+future
+    }).catch((err) => {
+      this.$message({message: "Impossible de récupérer les anciens BV : " + err, type: "error"})
     }).finally(() => this.loading = false)
   },
   methods: {
-    updatedEtude () {
+    updatedEtude () { // On a cliqué sur une nouvelle étude
       this.loading = true
       axios.get(
         `/api/etudes/${this.etude_id}/missions/`,
@@ -110,16 +407,152 @@ export default {
         res.data.forEach((elt) => elt.rea = `${elt.consultant.firstname} ${elt.consultant.lastname}`)
         res.data.forEach((elt) => elt.value = `RDM pour ${elt.rea}`)
         this.rdms = res.data
-        console.log(this.rdms)
       }).catch((err) => {
         this.$message({message: "Impossible de récupérer les études : " + err, type: "error"})
       }).finally(() => this.loading = false)
     },
-    updatedRDM () {
+    updatedRDM () { // On a cliqué sur un nouveau RDM dans l'étude.
       const rdm = this.rdms.find(rdm => rdm.id === this.bv.rdm)
-      console.log("new rdm : " + rdm.value)
+      this.rdm = rdm
+      // On affiche le nom du réalisateur.
       this.bv.rea = rdm.rea
+      // On calcule toutes les cotisations. C'est pas très fun mais je sais pas trop comment faire autrement quoi
+      this.bv.coti_sante = {
+        montant_base: rdm.assietteCotisation,
+        taux_junior: this.ursaff.taux_junior_sante,
+        taux_realisateur: this.ursaff.taux_realisateur_sante
+      }
+      this.bv.coti_accidents = {
+        montant_base: rdm.assietteCotisation,
+        taux_junior: this.ursaff.taux_junior_accidents,
+        taux_realisateur: this.ursaff.taux_realisateur_accidents
+      }
+      this.bv.coti_retraite_1 = {
+        montant_base: rdm.assietteCotisation,
+        taux_junior: this.ursaff.taux_junior_retraite_1,
+        taux_realisateur: this.ursaff.taux_realisateur_retraite_1
+      }
+      this.bv.coti_retraite_2 = {
+        montant_base: rdm.assietteCotisation,
+        taux_junior: this.ursaff.taux_junior_retraite_2,
+        taux_realisateur: this.ursaff.taux_realisateur_retraite_2
+      }
+      this.bv.coti_famille = {
+        montant_base: rdm.assietteCotisation,
+        taux_junior: this.ursaff.taux_junior_famille,
+        taux_realisateur: this.ursaff.taux_realisateur_famille
+      }
+      this.bv.coti_chomage = {
+        montant_base: rdm.remunerationRaw,
+        taux_junior: this.ursaff.taux_junior_chomage,
+        taux_realisateur: this.ursaff.taux_realisateur_chomage
+      }
+      this.bv.coti_autres = {
+        montant_base: rdm.assietteCotisation,
+        taux_junior: this.ursaff.taux_junior_autres,
+        taux_realisateur: this.ursaff.taux_realisateur_autres
+      }
+      this.bv.coti_csg = {
+        montant_base: rdm.assietteCotisation,
+        taux_junior: this.ursaff.taux_junior_csg,
+        taux_realisateur: this.ursaff.taux_realisateur_csg
+      }
+      this.bv.coti_csgcrds = {
+        montant_base: rdm.assietteCotisation,
+        taux_junior: this.ursaff.taux_junior_csgcrds,
+        taux_realisateur: this.ursaff.taux_realisateur_csgcrds
+      }
+      this.bv.coti_exonerations = {
+        montant_base: rdm.assietteCotisation,
+        taux_junior: this.ursaff.taux_junior_exonerations,
+        taux_realisateur: this.ursaff.taux_realisateur_exonerations
+      }
     }
   }
 }
 </script>
+
+<style> /* Pas scoped, afin que ça prenne effet dans les BVCotisationLine */
+  .tg {
+    border-collapse: collapse;
+    border-spacing: 0;
+    margin: 12px auto;
+  }
+  .tg td {
+    border-color:black;
+    border-style: solid;
+    border-width: 1px;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    overflow: hidden;
+    padding: 10px 5px;
+    word-break: normal;
+  }
+  .tg th {
+    border-color: black;
+    border-style: solid;
+    border-width: 1px;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    font-weight: normal;
+    overflow: hidden;
+    padding: 10px 5px;
+    word-break: normal;
+  }
+  .tg .tg-baqh {
+    text-align: center;
+    vertical-align: top;
+    text-align: center;
+  }
+  .tg .tg-e5lu {
+    background-color: #000000;
+    color: #ffffff;
+    text-align: center;
+    text-align: center;
+    vertical-align: top
+  }
+  .tg .tg-c3ow {
+    border-color: inherit;
+    text-align: center;
+    vertical-align: top;
+    border-color: black;
+    border-style: solid;
+  }
+  .tg .tg-4f0n {
+    background-color: #000000;
+    border-color: inherit;
+    color: #ffffff;
+    text-align: center;
+    vertical-align: top
+  }
+  .tg .tg-llyw{
+    background-color: #c0c0c0;
+    border-color: inherit;
+    text-align: left;
+    vertical-align: top;
+    text-align: center;
+  }
+  .tg .tg-lqy6 {
+    text-align: right;
+    vertical-align: top;
+    text-align: center;
+  }
+  .tg .tg-0pky {
+    border-color: inherit;
+    text-align: left;
+    vertical-align: top;
+    text-align: center;
+  }
+  .tg .tg-0lax {
+    text-align: left;
+    vertical-align: top;
+    text-align: center;
+  }
+  .tg .tg-y6fn {
+    background-color: #c0c0c0;
+    font-weight: bold;
+    text-align: left;
+    vertical-align: top;
+    text-align: center;
+  }
+</style>
