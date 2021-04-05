@@ -87,7 +87,7 @@ class BV(models.Model):
     # Assiette des cotisations = Base URSAFF * nombre de JEH
     @property
     def assietteCotisations(self):
-        return getLastBase() * self.rdm.JEHNumber
+        return getLastBase().baseValue * self.rdm.JEHNumber
 
     @property
     def cotisations_assiette(self):

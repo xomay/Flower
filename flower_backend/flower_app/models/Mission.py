@@ -5,6 +5,7 @@ from flower_app.models.People.Realisateur import Realisateur, RealisateurSeriali
 from flower_app.models.Etude import Etude
 from flower_app.models.GroupePhase import Phase
 from flower_app.serializers import CustomListSerializer
+from flower_app.models.BaseUrsaff import getLastBase
 
 def emptyList():
     return []
@@ -34,9 +35,13 @@ class MissionSerializer(serializers.ModelSerializer):
         list_serializer_class = CustomListSerializer
 
 class MissionDetailSerializer(serializers.ModelSerializer):
-    # project = EtudeSerializer(read_only=True)
     consultant = RealisateurSerializer(read_only=True)
-    # phase_ids = serializers.PrimaryKeyRelatedField(many=True, read_only=False, queryset=Phase.objects.all(), source='phases')
+    remunerationRaw = serializers.SerializerMethodField()
+    assietteCotisation = serializers.SerializerMethodField()
     class Meta:
         model = Mission
         fields = '__all__'
+    def get_remunerationRaw(self, obj):
+        return obj.remunerationRaw
+    def get_assietteCotisation(self, obj):
+        return getLastBase().baseValue * obj.JEHNumber

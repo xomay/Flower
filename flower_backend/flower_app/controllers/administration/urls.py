@@ -14,5 +14,6 @@ urlpatterns = [
 
     # Bases Ursaff
     path('base-ursaff/', views.BaseUrsaffView.as_view()),
+    path('base-ursaff/last/', views.BaseUrsaffLastView.as_view()),
     path('base-ursaff/<int:pk>/', views.BaseUrsaffDetailView.as_view()),
 ]

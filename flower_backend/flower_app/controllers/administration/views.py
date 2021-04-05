@@ -1,14 +1,15 @@
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from django.http import JsonResponse
 from http import HTTPStatus
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import generics
 from django.shortcuts import get_object_or_404
-
+from flower_app.controllers.permissions import is_in_group
 from flower_app.controllers.permissions import HasGroupPermission
 from flower_app.models.ParamsJE import ParamsJE, ParamsJESerializer
 from flower_app.models.Poste import Poste, PosteSerializer
-from flower_app.models.BaseUrsaff import BaseUrsaff, BaseUrsaffSerializer
+from flower_app.models.BaseUrsaff import BaseUrsaff, BaseUrsaffSerializer, getLastBase
 
 # Paramètres généraux
 
@@ -67,7 +68,7 @@ class BaseUrsaffView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated, HasGroupPermission]
     required_groups = {
         'GET': ['ROLE_CA'],
-        'POST': ['ROLE_TRESO']
+        'POST': ['ROLE_CA', 'ROLE_TRESO']
     }
     serializer_class = BaseUrsaffSerializer
     queryset = BaseUrsaff.objects.all()
@@ -76,9 +77,17 @@ class BaseUrsaffDetailView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated, HasGroupPermission]
     required_groups = {
         'GET': ['ROLE_CA'],
-        'PUT': ['ROLE_TRESO'],
-        'PATCH': ['ROLE_TRESO'],
-        'DELETE': ['ROLE_TRESO']
+        'PUT': ['ROLE_CA', 'ROLE_TRESO'],
+        'PATCH': ['ROLE_CA', 'ROLE_TRESO'],
+        'DELETE': ['ROLE_CA', 'ROLE_TRESO']
     }
     serializer_class = BaseUrsaffSerializer
     queryset = BaseUrsaff.objects.all()
+
+class BaseUrsaffLastView(APIView):
+    def get(self, request):
+        if request.user.is_authenticated:
+            if is_in_group(request.user, 'ROLE_TRESO'):
+                serializer = BaseUrsaffSerializer(getLastBase(), read_only=True)
+                return JsonResponse(serializer.data, status=HTTPStatus.OK)
+        return Response(None, status=HTTPStatus.FORBIDDEN)
