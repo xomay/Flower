@@ -6,9 +6,9 @@ from flower_app.models.BaseUrsaff import getLastBase
 
 # Classe spécialisée, juste pour stocker les valeurs des cotisations xd
 class Cotisation(models.Model):
-    montant_base = models.DecimalField(decimal_places=6, max_digits=8)
-    taux_junior = models.DecimalField(decimal_places=6, max_digits=8)
-    taux_realisateur = models.DecimalField(decimal_places=6, max_digits=8)
+    montant_base = models.DecimalField(decimal_places=6, max_digits=12)
+    taux_junior = models.DecimalField(decimal_places=6, max_digits=12)
+    taux_realisateur = models.DecimalField(decimal_places=6, max_digits=12)
 
     @property
     def montant_junior(self):
@@ -40,11 +40,11 @@ class BV(models.Model):
     reference = models.CharField(max_length=40) # Référence dans la JE (genre BV_XXX)
     reference_nationale = models.CharField(max_length=40) # Référence pour l'état (suite de caractètes sans queue ni tête)
     date = models.DateField()
-    versement_mode = models.CharField(max_length=10, choices=[
-      ('Virement', 'Virement'),
-      ('Chèque', 'Chèque'),
-      ('Espèces', 'Espèces'), # Le mode 'espèce' est là pour faire joli :D
-      ('Autre', 'Autre')
+    versement_mode = models.CharField(max_length=1, choices=[
+      ('V', 'Virement'),
+      ('C', 'Chèque'),
+      ('E', 'Espèces'), # Le mode 'espèce' est là pour faire joli :D
+      ('A', 'Autre')
     ])
     # Cotisations. bon ba c'est pas marrant du tout, mais c'est parti quand même xD
     coti_sante = models.ForeignKey(Cotisation, on_delete=models.RESTRICT, related_name="coti_sante")
@@ -69,8 +69,12 @@ class BV(models.Model):
     allegement_de_cotisations_junior = models.DecimalField(decimal_places=5, max_digits=10, default=0)
 
     def __str__(self):
-        return 'BV '+self.reference+' - Etude = ' + str(self.etude) + ' - Consultant = ' + str(self.rdm.consultant)
+        return 'BV '+self.reference+' - Etude = ' + str(self.rdm.project.name) + ' - Consultant = ' + str(self.rdm.consultant)
     
+    class Meta:
+       verbose_name = 'BV'
+       verbose_name_plural = 'BVs'
+
     @property
     def realisateur(self):
         return self.rdm.consultant
@@ -133,7 +137,18 @@ class BV(models.Model):
     def montant_net_imposable(self):
         return self.montant_net + self.coti_csgcrds.montant_realisateur
 
+def create_cotisation_from_dict(dict_raw):
+    new_coti = Cotisation.objects.create(
+        montant_base=dict_raw['montant_base'],
+        taux_junior=dict_raw['taux_junior'],
+        taux_realisateur=dict_raw['taux_realisateur']
+    )
+    new_coti.save()
+    return new_coti
+
 class BVSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(required=False, write_only=False)
+    rdm_id = serializers.IntegerField(required=False, read_only=False)
     rdm = MissionSerializer(read_only=True)
     coti_sante = CotisationSerializer(read_only=False)
     coti_accidents = CotisationSerializer(read_only=False)
@@ -148,3 +163,21 @@ class BVSerializer(serializers.ModelSerializer):
     class Meta:
         model = BV
         fields = '__all__'
+    
+    def create(self, validated_data):
+        print("OUI")
+        print("data BEFORE : " + str(validated_data))
+        print("rdm_id = " + str(validated_data['rdm_id']))
+        validated_data['rdm'] = Mission.objects.get(id=validated_data['rdm_id'])
+        validated_data['coti_sante'] = create_cotisation_from_dict(validated_data['coti_sante'])
+        validated_data['coti_accidents'] = create_cotisation_from_dict(validated_data['coti_accidents'])
+        validated_data['coti_retraite_1'] = create_cotisation_from_dict(validated_data['coti_retraite_1'])
+        validated_data['coti_retraite_2'] = create_cotisation_from_dict(validated_data['coti_retraite_2'])
+        validated_data['coti_famille'] = create_cotisation_from_dict(validated_data['coti_famille'])
+        validated_data['coti_chomage'] = create_cotisation_from_dict(validated_data['coti_chomage'])
+        validated_data['coti_autres'] = create_cotisation_from_dict(validated_data['coti_autres'])
+        validated_data['coti_csg'] = create_cotisation_from_dict(validated_data['coti_csg'])
+        validated_data['coti_csgcrds'] = create_cotisation_from_dict(validated_data['coti_csgcrds'])
+        validated_data['coti_exonerations'] = create_cotisation_from_dict(validated_data['coti_exonerations'])
+        print("data after : " + str(validated_data))
+        return BV.objects.create(**validated_data)
