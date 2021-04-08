@@ -93,6 +93,18 @@ class EtudeDetailSerializer(serializers.ModelSerializer):
     invoices = FactureSerializer(source='facture_set', many=True, read_only=True)
     pvr = PVRSerializer(source='pvr_set', many=True, read_only=True)
     linkedFiles = UploadedFileSerializer(many=True, read_only=True)
+    bvData = serializers.SerializerMethodField()
+    def get_bvData(self, instance):
+        data = {}
+        full = True
+        for rdm in instance.mission_set.all():
+            if len(rdm.bv_set.all()) > 0:
+                data[str(rdm.id)] = rdm.bv_set.first().id # il n'y a que un BV par RdM
+            else:
+                data[str(rmd.id)] = -1
+                full = False
+        data['full'] = full
+        return data
     class Meta:
         model = Etude
         fields = '__all__'
