@@ -23,6 +23,11 @@ export default {
       }
       return membre.poste.name
     },
+    // @returns date formatted as yyyy-mm-dd
+    generateDateToday () {
+      const date_now = new Date()
+      return date_now.getFullYear() +"-"+ (date_now.getMonth() < 9 ? "0" : "")+ (date_now.getMonth()+1) +"-"+(date_now.getDate() < 10 ? "0" : "")+ (date_now.getDate())
+    },
     niceFileSize (size) {
       if(size < 1000)
         return size + " o"

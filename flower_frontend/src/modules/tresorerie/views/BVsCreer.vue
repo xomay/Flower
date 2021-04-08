@@ -4,8 +4,10 @@
     :breadcrumb="breadcrumb"
   >
     <el-form
-      :v-model="bv"
+      ref="formBV"
+      :model="bv"
       label-position="left"
+      :rules="rules"
     >
       <el-row>
         <el-col :span="12">
@@ -18,7 +20,7 @@
               :loading="loading"
               placeholder="Étude"
               @input="updatedEtude()"
-              @clear="bv.rdm = -1; etude_id = 0"
+              @clear="bv.rdm_id = -1; etude_id = 0"
             />
           </el-form-item>
         </el-col>
@@ -28,7 +30,7 @@
             label="Mission :"
           >
             <MemberPicker
-              v-model="bv.rdm"
+              v-model="bv.rdm_id"
               :item-list="rdms"
               :loading="loading"
               :disabled="etude_id == 0"
@@ -39,7 +41,7 @@
           </el-form-item>
         </el-col>
       </el-row>
-      <el-row v-show="bv.rdm != -1">
+      <el-row v-show="bv.rdm_id != -1">
         <table class="tg">
           <tr class="tg-0lax">
             <td class="tg-y6fn">
@@ -91,15 +93,15 @@
           </tr>
         </table>
       </el-row>
-      <el-row v-show="bv.rdm != -1">
-        <el-col :span="12">
+      <el-row v-show="bv.rdm_id != -1">
+        <el-col :span="7">
           <el-form-item
-            label="Mode de versement :"
+            label="Mode de paiement :"
             prop="versement_mode"
           >
             <el-select v-model="bv.versement_mode">
-              <el-option value="Versement">
-                Versement
+              <el-option value="Virement">
+                Virement
               </el-option>
               <el-option value="Chèque">
                 Chèque
@@ -113,9 +115,22 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="12">
+        <el-col :span="7">
           <el-form-item
-            label="Référence de versement :"
+            label="Date du paiement :"
+            prop="date"
+          >
+            <el-date-picker
+              v-model="bv.date"
+              format="dd/MM/yyyy"
+              value-format="yyyy-MM-dd"
+              type="date"
+            />
+          </el-form-item>
+        </el-col>
+        <el-col :span="10">
+          <el-form-item
+            label="Référence de paiement :"
             prop="reference_nationale"
           >
             <el-input
@@ -126,7 +141,7 @@
           </el-form-item>
         </el-col>
       </el-row>
-      <el-row v-show="bv.rdm != -1">
+      <el-row v-show="bv.rdm_id != -1">
         <table class="tg">
           <thead>
             <tr>
@@ -197,7 +212,7 @@
           </tbody>
         </table>
       </el-row>
-      <el-row v-show="bv.rdm != -1">
+      <el-row v-show="bv.rdm_id != -1">
         <table class="tg">
           <tr class="tg-0lax">
             <td class="tg-y6fn">
@@ -207,13 +222,13 @@
               {{ sum_taux_junior_assiette.toFixed(2) }} %
             </td>
             <td style="width: 90px">
-              {{ sum_montants_junior_assiette }} €
+              {{ sum_montants_junior_assiette.toFixed(2) }} €
             </td>
             <td style="width: 90px">
               {{ sum_taux_realisateur_assiette.toFixed(2) }} %
             </td>
             <td style="width: 90px">
-              {{ sum_montants_realisateur_assiette }} €
+              {{ sum_montants_realisateur_assiette.toFixed(2) }} €
             </td>
           </tr>
           <tr class="tg-0lax">
@@ -235,7 +250,7 @@
           </tr>
         </table>
       </el-row>
-      <el-row v-show="bv.rdm != -1">
+      <el-row v-show="bv.rdm_id != -1">
         <table class="tg">
           <tr class="tg-0lax">
             <td class="tg-y6fn">
@@ -263,7 +278,7 @@
           </tr>
         </table>
       </el-row>
-      <el-row v-show="bv.rdm != -1">
+      <el-row v-show="bv.rdm_id != -1">
         <table class="tg">
           <tr class="tg-0lax">
             <td class="tg-y6fn">
@@ -275,6 +290,16 @@
           </tr>
         </table>
       </el-row>
+      <el-row v-show="bv.rdm_id != -1">
+        <el-button
+          type="success"
+          :loading="loading"
+          style="margin: 12px auto;"
+          @click="validateForm()"
+        >
+          Enregistrer
+        </el-button>
+      </el-row>
     </el-form>
   </BaseComponent>
 </template>
@@ -283,9 +308,11 @@
 const axios = require("axios")
 import MemberPicker from "@/modules/membres/components/MemberPicker"
 import BVCotisationLine from "../components/BVCotisationLine"
+import Utils from "@/mixins/Utils"
 export default {
   name: "BVsCreeer",
   components: {MemberPicker, BVCotisationLine},
+  mixins: [Utils],
   data () {
     return {
       loading: true,
@@ -296,11 +323,11 @@ export default {
       ursaff: {},
       bv: {
         rea: "",
-        rdm: -1,
+        rdm_id: -1,
         reference: "",
         reference_nationale: "",
         date: "",
-        versement_mode: "Versement",
+        versement_mode: "Virement",
         coti_sante: {montant_base: 0, taux_junior: 0, taux_realisateur: 0},
         coti_accidents: {montant_base: 0, taux_junior: 0, taux_realisateur: 0},
         coti_retraite_1: {montant_base: 0, taux_junior: 0, taux_realisateur: 0},
@@ -321,7 +348,15 @@ export default {
           name: "Créer une NF",
           link: "/tresorerie/bv/creer/"
         }
-      ]
+      ],
+      rules: {
+        reference_nationale: [
+          { required: true, message: "Obligatoire", trigger: "change" }
+        ],
+        date: [
+          { required: true, message: "Obligatoire", trigger: "change" }
+        ]
+      }
     }
   },
   computed: {
@@ -397,7 +432,20 @@ export default {
       this.$message({message: "Impossible de récupérer les anciens BV : " + err, type: "error"})
     }).finally(() => this.loading = false)
   },
+  created () {
+    this.bv.date = this.generateDateToday() // c.f. Utils
+  },
   methods: {
+    validateForm () {
+      this.$refs.formBV.validate((result) => {
+        if(result) {
+          console.log(this.bv)
+          this.saveBV()
+        } else {
+          this.$message({message: "Le formulaire n'est pas complet. Avez-vous pensé à la référence nationale ?", type:"error"})
+        }
+      })
+    },
     updatedEtude () { // On a cliqué sur une nouvelle étude
       this.loading = true
       axios.get(
@@ -412,7 +460,7 @@ export default {
       }).finally(() => this.loading = false)
     },
     updatedRDM () { // On a cliqué sur un nouveau RDM dans l'étude.
-      const rdm = this.rdms.find(rdm => rdm.id === this.bv.rdm)
+      const rdm = this.rdms.find(rdm => rdm.id === this.bv.rdm_id)
       this.rdm = rdm
       // On affiche le nom du réalisateur.
       this.bv.rea = rdm.rea
@@ -467,6 +515,20 @@ export default {
         taux_junior: this.ursaff.taux_junior_exonerations,
         taux_realisateur: this.ursaff.taux_realisateur_exonerations
       }
+    },
+    saveBV () {
+      this.loading = true
+      axios.post(
+        "/api/bv/",
+        { ...this.bv, versement_mode: this.bv.versement_mode.charAt(0) },
+        {widthCredentials: true}
+      ).then(() => {
+        this.$message({message: "BV enregistré avec succès !", type:"success"})
+        this.$router.push("/tresorerie/factures")
+      }).catch((err) => {
+        this.$message({message: "Erreur lors de l'enregistrement du BV : " + err, type:"error"})
+        this.loading = false
+      })
     }
   }
 }
