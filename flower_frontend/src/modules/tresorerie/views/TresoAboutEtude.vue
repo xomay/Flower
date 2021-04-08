@@ -97,6 +97,53 @@
         </el-row>
         <hr class="factBr">
         <el-row class="factRow">
+          <h1 class="h1Styled">
+            Bulletins de Versement :
+          </h1>
+          <el-table
+            class="grid"
+            :border="true"
+            :data="bvs"
+          >
+            <el-table-column
+              prop="reference"
+              label="Référence"
+              align="center"
+              fixed="left"
+              width="140px"
+              sortable
+            />
+            <el-table-column
+              prop="date"
+              label="Date de paiement"
+              align="center"
+              fixed="left"
+              width="170px"
+              sortable
+            />
+            <el-table-column
+              prop="reference_nationale"
+              label="Référence de paiement"
+              align="center"
+              fixed="left"
+              width="220px"
+              sortable
+            />
+          </el-table>
+        </el-row>
+        <el-row class="factRow">
+          <router-link :to="`/tresorerie/etudes/ajouter`">
+            <el-button
+              type="success"
+              class="factButton"
+              icon="el-icon-plus"
+            >
+              Ajouter un BV
+            </el-button>
+          </router-link>
+        </el-row>
+        <hr class="factBr">
+        <el-row class="factRow">
           <el-button
             type="info"
             class="factButton"
@@ -150,16 +197,17 @@ export default {
         pvr: [],
         linkedFiles: []
       },
+      bvs: [],
       title: "<loading>",
       loading: true,
       breadcrumb: [
         {
-          name: "Factures",
-          link: "/tresorerie/factures"
+          name: "Études (trésorerie)",
+          link: "/tresorerie/etudes/"
         },
         {
           name: "<loading>",
-          link: `/tresorerie/factures/${this.$route.params.id}/`
+          link: `/tresorerie/etudes/${this.$route.params.id}/`
         }
       ]
     }
@@ -177,6 +225,14 @@ export default {
       this.$message({message: "Impossible de récupérer l'étude pour le moment: "+err, type: "error"})
     }).finally(() => {
       this.loading = false
+    })
+    axios.get(
+      `/api/etudes/${this.$route.params.id}/bvs/`,
+      {withCredentials: true}
+    ).then((res) => {
+      this.bvs = res.data
+    }).catch((err) => {
+      this.$message({message: "Impossible de récupérer les BV pour le moment: "+err, type: "error"})
     })
   },
   methods: {

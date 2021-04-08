@@ -158,9 +158,9 @@ export default {
           title: "Trésorerie",
           children: [
             {
-              title: "Factures",
+              title: "Études (trésorerie)",
               children: [
-                {name: "Gérer les factures", url: "/tresorerie/factures"},
+                {name: "Gérer les études", url: "/tresorerie/etudes/"},
               ]
             },
             {

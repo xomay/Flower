@@ -24,8 +24,8 @@ export default {
       loading: true,
       breadcrumb: [
         {
-          name: "Factures",
-          link: "/tresorerie/factures"
+          name: "Études (trésorerie)",
+          link: "/tresorerie/etudes/"
         }
       ]
     }
@@ -45,7 +45,7 @@ export default {
   },
   methods: {
     goToEtude (id) {
-      this.$router.push(`/tresorerie/factures/${id}/`)
+      this.$router.push(`/tresorerie/etudes/${id}/`)
     }
   }
 }

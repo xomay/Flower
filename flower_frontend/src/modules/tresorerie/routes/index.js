@@ -1,13 +1,13 @@
 const routes = [
-  // Factures :
+  // Vues de trésorerie :
   {
-    path: "tresorerie/factures",
-    name: "factures-choice-etudes",
+    path: "tresorerie/etudes/",
+    name: "treso-choice-etudes",
     component: () => import("../views/TresoSelectEtude")
   },
   {
-    path: "tresorerie/factures/:id/",
-    name: "factures-choice-type",
+    path: "tresorerie/etudes/:id/",
+    name: "treso-choice-type",
     component: () => import("../views/TresoAboutEtude")
   },
   // NF :

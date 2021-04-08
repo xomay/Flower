@@ -524,7 +524,7 @@ export default {
         {widthCredentials: true}
       ).then(() => {
         this.$message({message: "BV enregistré avec succès !", type:"success"})
-        this.$router.push("/tresorerie/factures")
+        this.$router.push("/tresorerie/etudes/")
       }).catch((err) => {
         this.$message({message: "Erreur lors de l'enregistrement du BV : " + err, type:"error"})
         this.loading = false
