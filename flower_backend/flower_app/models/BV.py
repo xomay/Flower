@@ -148,7 +148,7 @@ def create_cotisation_from_dict(dict_raw):
 
 class BVSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False, write_only=False)
-    rdm_id = serializers.IntegerField(required=False, read_only=False)
+    rdm_id = serializers.IntegerField(required=False, read_only=False, write_only=True)
     rdm = MissionSerializer(read_only=True)
     coti_sante = CotisationSerializer(read_only=False)
     coti_accidents = CotisationSerializer(read_only=False)
@@ -165,9 +165,6 @@ class BVSerializer(serializers.ModelSerializer):
         fields = '__all__'
     
     def create(self, validated_data):
-        print("OUI")
-        print("data BEFORE : " + str(validated_data))
-        print("rdm_id = " + str(validated_data['rdm_id']))
         validated_data['rdm'] = Mission.objects.get(id=validated_data['rdm_id'])
         validated_data['coti_sante'] = create_cotisation_from_dict(validated_data['coti_sante'])
         validated_data['coti_accidents'] = create_cotisation_from_dict(validated_data['coti_accidents'])
@@ -179,5 +176,4 @@ class BVSerializer(serializers.ModelSerializer):
         validated_data['coti_csg'] = create_cotisation_from_dict(validated_data['coti_csg'])
         validated_data['coti_csgcrds'] = create_cotisation_from_dict(validated_data['coti_csgcrds'])
         validated_data['coti_exonerations'] = create_cotisation_from_dict(validated_data['coti_exonerations'])
-        print("data after : " + str(validated_data))
         return BV.objects.create(**validated_data)

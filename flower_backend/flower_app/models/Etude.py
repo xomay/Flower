@@ -101,7 +101,7 @@ class EtudeDetailSerializer(serializers.ModelSerializer):
             if len(rdm.bv_set.all()) > 0:
                 data[str(rdm.id)] = rdm.bv_set.first().id # il n'y a que un BV par RdM
             else:
-                data[str(rmd.id)] = -1
+                data[str(rdm.id)] = -1
                 full = False
         data['full'] = full
         return data
