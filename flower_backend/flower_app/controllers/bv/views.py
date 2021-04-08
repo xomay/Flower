@@ -15,7 +15,7 @@ class BVView(generics.ListCreateAPIView):
     serializer_class = BVSerializer
     queryset = BV.objects.all()
 
-class BVDetailView(generics.DestroyAPIView):
+class BVDetailView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated, HasGroupPermission]
     required_groups = {
         'GET': ['ROLE_CA', 'ROLE_TRESO'],
