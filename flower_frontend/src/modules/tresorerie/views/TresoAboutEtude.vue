@@ -228,7 +228,8 @@ export default {
       etude: {
         invoices: [],
         pvr: [],
-        linkedFiles: []
+        linkedFiles: [],
+        bvData: {full:true}
       },
       bvs: [],
       can_add_bv: false,
@@ -255,7 +256,7 @@ export default {
       this.etude = res.data
       this.breadcrumb[1].name = res.data.name
       this.title = res.data.name + " - Vue trésorerie"
-      this.can_add_bv = ! res.data.bvData
+      this.can_add_bv = ! res.data.bvData.full
     }).catch((err) => {
       this.$message({message: "Impossible de récupérer l'étude pour le moment: "+err, type: "error"})
     }).finally(() => {

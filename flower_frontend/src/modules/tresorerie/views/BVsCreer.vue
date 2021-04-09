@@ -9,7 +9,7 @@
       label-position="left"
       :rules="rules"
     >
-      <el-row>
+      <el-row v-show="rdms.length > 0">
         <el-form-item
           prop="rdm"
           label="Mission :"
@@ -23,6 +23,17 @@
             @clear="bv.rdm = -1"
           />
         </el-form-item>
+      </el-row>
+      <el-row v-show="rdms.length == 0">
+        <el-alert
+          type="error"
+          title="Erreur : vous n'êtes pas censé être ici"
+          :closable="false"
+          center
+          show-icon
+        >
+          En effet, tous les RDM de cette étude ont un BV.
+        </el-alert>
       </el-row>
       <el-row v-show="bv.rdm_id != -1">
         <table class="tg">
@@ -390,7 +401,7 @@ export default {
       `/api/etudes/${this.$route.params.id}/`,
       { widthCredentials: true }
     ).then((res) => {
-      this.rdms = res.data.missions
+      this.rdms = res.data.missions.filter(m => res.data.bvData[m.id] === -1)
       this.rdms.forEach((elt) => elt.rea = `${elt.consultant.firstname} ${elt.consultant.lastname}`)
       this.rdms.forEach((elt) => elt.value = `RDM pour ${elt.rea}`)
       this.title = "Créer un BV : " + res.data.name
@@ -500,7 +511,7 @@ export default {
         {widthCredentials: true}
       ).then(() => {
         this.$message({message: "BV enregistré avec succès !", type:"success"})
-        this.$router.push("/tresorerie/etudes/")
+        this.$router.push(`/tresorerie/etudes/${this.$route.params.id}/`)
       }).catch((err) => {
         this.$message({message: "Erreur lors de l'enregistrement du BV : " + err, type:"error"})
         this.loading = false
