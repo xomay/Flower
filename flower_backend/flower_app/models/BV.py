@@ -179,7 +179,15 @@ class BVSerializer(serializers.ModelSerializer):
         fields = '__all__'
     
     def create(self, validated_data):
-        validated_data['rdm'] = Mission.objects.get(id=validated_data['rdm_id'])
+        # Vérifications
+        try:
+            mission_instance = Mission.objects.get(id=validated_data['rdm_id'])
+        except:
+            raise serializers.ValidationError({'message': "L'id de rdm ne correspond à aucun existant."})
+        if len(mission_instance.bv_set.all()) > 0:
+            raise serializers.ValidationError({'message': "Un BV existe déjà pour ce rdm."})
+        # Transformation des données
+        validated_data['rdm'] = mission_instance
         validated_data['coti_sante'] = create_cotisation_from_dict(validated_data['coti_sante'])
         validated_data['coti_accidents'] = create_cotisation_from_dict(validated_data['coti_accidents'])
         validated_data['coti_retraite_1'] = create_cotisation_from_dict(validated_data['coti_retraite_1'])
@@ -190,4 +198,5 @@ class BVSerializer(serializers.ModelSerializer):
         validated_data['coti_csg'] = create_cotisation_from_dict(validated_data['coti_csg'])
         validated_data['coti_csgcrds'] = create_cotisation_from_dict(validated_data['coti_csgcrds'])
         validated_data['coti_exonerations'] = create_cotisation_from_dict(validated_data['coti_exonerations'])
+        # Création et renvoie de l'instance
         return BV.objects.create(**validated_data)
