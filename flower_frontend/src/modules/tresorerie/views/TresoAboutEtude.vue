@@ -122,25 +122,56 @@
               sortable
             />
             <el-table-column
-              prop="reference_nationale"
-              label="Référence de paiement"
+              label="Étudiant"
               align="center"
               fixed="left"
-              width="220px"
+            >
+              <template slot-scope="scope">
+                <el-button
+                  type="text"
+                  size="small"
+                  @click="pushToRealisateur(scope.row.realisateur.id)"
+                >
+                  {{ nicePeople(scope.row.realisateur) }}
+                </el-button>
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="montant_brut"
+              label="Montant brut"
+              align="center"
+              fixed="right"
+              sortable
+              :formatter="euroFormatter"
+            />
+            <el-table-column
+              prop="montant_net"
+              label="Montant net étudiant"
+              align="center"
+              fixed="right"
+              :formatter="euroFormatter"
               sortable
             />
           </el-table>
         </el-row>
         <el-row class="factRow">
-          <router-link :to="`/tresorerie/etudes/ajouter`">
-            <el-button
-              type="success"
-              class="factButton"
-              icon="el-icon-plus"
-            >
-              Ajouter un BV
-            </el-button>
-          </router-link>
+          <el-button
+            v-show="can_add_bv"
+            type="success"
+            class="factButton"
+            icon="el-icon-plus"
+            @click="pushToAddBV()"
+          >
+            Ajouter un BV
+          </el-button>
+          <el-alert
+            v-show="!can_add_bv"
+            type="info"
+            title="Impossible de rajouter plus de BV"
+            :closable="false"
+            center
+            show-icon
+          />
         </el-row>
         <hr class="factBr">
         <el-row class="factRow">
@@ -185,11 +216,13 @@
 import Summary from "@/modules/etudes/components/Summary"
 import FacturesMessages from "../components/FacturesMessages"
 import UploaderLocal from "@/components/UploaderLocal"
+import Utils from "@/mixins/Utils"
 const axios = require("axios")
 
 export default {
   name: "FactureAboutEtude",
   components: { Summary, FacturesMessages, UploaderLocal },
+  mixins: [Utils],
   data () {
     return {
       etude: {
@@ -198,6 +231,7 @@ export default {
         linkedFiles: []
       },
       bvs: [],
+      can_add_bv: false,
       title: "<loading>",
       loading: true,
       breadcrumb: [
@@ -221,6 +255,7 @@ export default {
       this.etude = res.data
       this.breadcrumb[1].name = res.data.name
       this.title = res.data.name + " - Vue trésorerie"
+      this.can_add_bv = ! res.data.bvData
     }).catch((err) => {
       this.$message({message: "Impossible de récupérer l'étude pour le moment: "+err, type: "error"})
     }).finally(() => {
@@ -236,6 +271,9 @@ export default {
     })
   },
   methods: {
+    pushToAddBV () {
+      this.$router.push(`/tresorerie/etudes/${this.$route.params.id}/bvs/ajouter`)
+    },
     deletePVR (pvrId) {
       this.loading = true
       axios.delete(`/api/pvr/${pvrId}`, { withCredentials: true }).then(() => {
@@ -289,6 +327,9 @@ export default {
       document.body.appendChild(fileLink)
       fileLink.click()
     },
+    pushToRealisateur (rea_id) {
+      this.$router.push(`/realisateurs/${rea_id}/voir`)
+    }
   }
 }
 </script>

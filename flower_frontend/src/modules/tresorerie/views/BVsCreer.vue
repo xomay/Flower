@@ -1,6 +1,6 @@
 <template>
   <BaseComponent
-    title="Créer un BV"
+    :title="title"
     :breadcrumb="breadcrumb"
   >
     <el-form
@@ -10,36 +10,19 @@
       :rules="rules"
     >
       <el-row>
-        <el-col :span="12">
-          <el-form-item
-            label="Étude :"
-          >
-            <MemberPicker
-              v-model="etude_id"
-              :item-list="etudes"
-              :loading="loading"
-              placeholder="Étude"
-              @input="updatedEtude()"
-              @clear="bv.rdm_id = -1; etude_id = 0"
-            />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item
-            prop="rdm"
-            label="Mission :"
-          >
-            <MemberPicker
-              v-model="bv.rdm_id"
-              :item-list="rdms"
-              :loading="loading"
-              :disabled="etude_id == 0"
-              placeholder="Mission"
-              @input="updatedRDM()"
-              @clear="bv.rdm = -1"
-            />
-          </el-form-item>
-        </el-col>
+        <el-form-item
+          prop="rdm"
+          label="Mission :"
+        >
+          <MemberPicker
+            v-model="bv.rdm_id"
+            :item-list="rdms"
+            :loading="loading"
+            placeholder="Mission"
+            @input="updatedRDM()"
+            @clear="bv.rdm = -1"
+          />
+        </el-form-item>
       </el-row>
       <el-row v-show="bv.rdm_id != -1">
         <table class="tg">
@@ -316,8 +299,7 @@ export default {
   data () {
     return {
       loading: true,
-      etude_id: 0,
-      etudes: [],
+      title: "Créer un BV : <loading>",
       rdms: [],
       rdm: {},
       ursaff: {},
@@ -341,12 +323,16 @@ export default {
       },
       breadcrumb: [
         {
-          name: "Liste des BV",
-          link: "TODO"
+          name: "Études (trésorerie)",
+          link: "/tresorerie/etudes/"
         },
         {
-          name: "Créer une NF",
-          link: "/tresorerie/bv/creer/"
+          name: "<loading>",
+          link: `/tresorerie/etudes/${this.$route.params.id}/`
+        },
+        {
+          name: "Créer un BV",
+          link: `/tresorerie/etudes/${this.$route.params.id}/bvs/ajouter`
         }
       ],
       rules: {
@@ -401,14 +387,17 @@ export default {
   beforeCreate () {
     this.loading = true
     axios.get(
-      "/api/etudes/",
+      `/api/etudes/${this.$route.params.id}/`,
       { widthCredentials: true }
     ).then((res) => {
-      res.data.forEach((elt) => elt.value = elt.name)
-      this.etudes = res.data
+      this.rdms = res.data.missions
+      this.rdms.forEach((elt) => elt.rea = `${elt.consultant.firstname} ${elt.consultant.lastname}`)
+      this.rdms.forEach((elt) => elt.value = `RDM pour ${elt.rea}`)
+      this.title = "Créer un BV : " + res.data.name
+      this.breadcrumb[1].name = res.data.name
     }).catch((err) => {
       this.$message({message: "Impossible de récupérer les études : " + err, type: "error"})
-    })
+    }).finally(() => this.loading = false)
     axios.get(
       "/api/administration/base-ursaff/last/",
       { widthCredentials: true }
@@ -445,19 +434,6 @@ export default {
           this.$message({message: "Le formulaire n'est pas complet. Avez-vous pensé à la référence nationale ?", type:"error"})
         }
       })
-    },
-    updatedEtude () { // On a cliqué sur une nouvelle étude
-      this.loading = true
-      axios.get(
-        `/api/etudes/${this.etude_id}/missions/`,
-        { widthCredentials: true }
-      ).then((res) => {
-        res.data.forEach((elt) => elt.rea = `${elt.consultant.firstname} ${elt.consultant.lastname}`)
-        res.data.forEach((elt) => elt.value = `RDM pour ${elt.rea}`)
-        this.rdms = res.data
-      }).catch((err) => {
-        this.$message({message: "Impossible de récupérer les études : " + err, type: "error"})
-      }).finally(() => this.loading = false)
     },
     updatedRDM () { // On a cliqué sur un nouveau RDM dans l'étude.
       const rdm = this.rdms.find(rdm => rdm.id === this.bv.rdm_id)
