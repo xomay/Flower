@@ -41,7 +41,7 @@ export default {
     // À utiliser en 'formatter' dans les tableaux.
     // Renvoie la valeur normale suivie de ' €'.
     euroFormatter (row, column, cellValue) {
-      return cellValue + " €"
+      return Number(cellValue).toFixed(2) + " €"
     },
     niceDateFormatter (row, column, cellValue) {
       return this.niceDate(cellValue)

@@ -38,7 +38,7 @@ const routes = [
   },
   // BV :
   {
-    path: "tresorerie/bv/creer",
+    path: "tresorerie/etudes/:id/bvs/ajouter",
     name: "bv-creer",
     component: () => import("../views/BVsCreer")
   }
