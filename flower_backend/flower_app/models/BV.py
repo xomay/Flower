@@ -1,6 +1,6 @@
 from django.db import models
 from rest_framework import serializers
-
+from decimal import Decimal
 from flower_app.models.Mission import Mission, MissionSerializer
 from flower_app.models.BaseUrsaff import getLastBase
 
@@ -82,16 +82,16 @@ class BV(models.Model):
     # Rémunérations brutes : on prend le nombre de JEH et on multiplie par la part étudiante (1-part junior)
     @property
     def remunerationBrute(self):
-        return self.rdm.remunerationRaw * (1.0 - self.rdm.percentageJunior)
+        return Decimal(self.rdm.remunerationRaw) * (Decimal(1) - Decimal(self.rdm.percentageJunior))
 
     @property
     def remunerationBruteParJEH(self):
-        return self.rdm.JEHPrice * (1.0 - self.rdm.percentageJunior)
+        return Decimal(self.rdm.JEHPrice) * (Decimal(1) - Decimal(self.rdm.percentageJunior))
 
     # Assiette des cotisations = Base URSAFF * nombre de JEH
     @property
     def assietteCotisations(self):
-        return getLastBase().baseValue * self.rdm.JEHNumber
+        return Decimal(getLastBase().baseValue) * Decimal(self.rdm.JEHNumber)
 
     @property
     def cotisations_assiette(self):
@@ -104,38 +104,38 @@ class BV(models.Model):
     def sumColumns(self, attribute, index="all"):
         if not index in self._VALID_INDEXES:
             raise Exception("Valeur de 'index' non valide pour la fonction 'sumColumns'. Indexs valides : " + str(self._VALID_INDEXES))
-        sumValues = 0.0
+        sumValues = Decimal(0)
         if(index == "all" or index == "assiette"):
             for coti in self.cotisations_assiette:
                 value = getattr(coti, attribute)
-                sumValues += value
+                sumValues += Decimal(value)
         if(index == "all" or index == "brutes"):
             for coti in self.cotisations_brutes:
                 value = getattr(coti, attribute)
-                sumValues += value
+                sumValues += Decimal(value)
         return sumValues
 
     @property
     def totalCotisations(self):
-        sumValues = 0.0
+        sumValues = Decimal(0)
         for coti in self.cotisations_assiette:
-            sumValues += (coti.montant_junior + coti.montant_realisateur)
+            sumValues += Decimal((coti.montant_junior + coti.montant_realisateur))
         for coti in self.cotisations_brutes:
-            sumValues += (coti.montant_junior + coti.montant_realisateur)
+            sumValues += Decimal((coti.montant_junior + coti.montant_realisateur))
         return sumValues
 
     @property
     def montant_net(self):
-        return self.remunerationBrute - self.sumColumns("montant_realisateur", "all")
+        return Decimal(self.remunerationBrute) - self.sumColumns("montant_realisateur", "all")
 
     # La fameuse ligne mystère expliquée plus haut xd
     @property
     def evolution_remuneration_supcm(self):
-        return (self.taux_sccm_1 - self.taux_sccm_2) * self.assietteCotisations + (self.taux_sccm_3 + self.taux_sccm_4) * self.remunerationBrute
+        return Decimal((self.taux_sccm_1 - self.taux_sccm_2)) * Decimal(self.assietteCotisations) + Decimal((self.taux_sccm_3 + self.taux_sccm_4)) * Decimal(self.remunerationBrute)
 
     @property
     def montant_net_imposable(self):
-        return self.montant_net + self.coti_csgcrds.montant_realisateur
+        return Decimal(self.montant_net) + Decimal(self.coti_csgcrds.montant_realisateur)
 
 def create_cotisation_from_dict(dict_raw):
     new_coti = Cotisation.objects.create(
@@ -148,7 +148,7 @@ def create_cotisation_from_dict(dict_raw):
 
 class BVSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False, write_only=False)
-    rdm_id = serializers.IntegerField(required=False, read_only=False, write_only=True)
+    rdm_id = serializers.IntegerField(required=False, read_only=False, write_only=True) # field où on écrit l'id de la rdm lors du POST. si on fait ça ça, ça déconne :/
     rdm = MissionSerializer(read_only=True)
     coti_sante = CotisationSerializer(read_only=False)
     coti_accidents = CotisationSerializer(read_only=False)
@@ -160,6 +160,20 @@ class BVSerializer(serializers.ModelSerializer):
     coti_csg = CotisationSerializer(read_only=False)
     coti_csgcrds = CotisationSerializer(read_only=False)
     coti_exonerations = CotisationSerializer(read_only=False)
+    # Données supplémentaires
+    montant_brut = serializers.SerializerMethodField(read_only=True)
+    montant_net = serializers.SerializerMethodField(read_only=True)
+    realisateur = serializers.SerializerMethodField(read_only=True)
+    def get_montant_brut(self, obj):
+        return obj.remunerationBrute
+    def get_montant_net(self, obj):
+        return obj.montant_net
+    def get_realisateur(self, obj):
+        return {
+            'id': obj.rdm.consultant.id,
+            'firstname': obj.rdm.consultant.firstname,
+            'lastname': obj.rdm.consultant.lastname
+        }
     class Meta:
         model = BV
         fields = '__all__'
