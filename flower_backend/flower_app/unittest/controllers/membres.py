@@ -1,0 +1,96 @@
+from django.test import TestCase
+from django.contrib.auth.models import User, Group
+from rest_framework.test import APIClient
+from rest_framework.authtoken.models import Token
+from flower_app.models.People.Membre import Membre
+
+class ControllersMembresTest(TestCase):
+
+    def setUp(self):
+        self.client = APIClient()
+        user = User.objects.create_user(username='test_username', password='test_password')
+        role_ca_group = Group.objects.create(name='ROLE_CA')
+        role_admin_group = Group.objects.create(name='ROLE_ADMIN')
+        role_ca_group.user_set.add(user)
+        role_admin_group.user_set.add(user)
+        self.client.login(username='test_username', password='test_password')
+
+        Membre.objects.create(id=1, promotion="2021", birth_date="1998-01-01")
+        Membre.objects.create(id=2, promotion="2020", birth_date="1997-01-01")
+
+    def test_getMembres(self):
+        request = self.client.get(
+            '/api/membres/'
+        )
+        self.assertEqual(request.status_code, 200)
+        self.assertEqual(len(request.data), 2)
+
+    def test_addMembres(self):
+        newUser = {
+                'lastname': 'lastname',
+                'firstname': 'firstname',
+                'gender': 'M',
+                'email_junior': 'firstname.lastname@test.com',
+                'mobile': '',
+                'address': 'Test',
+                'postcode': '0',
+                'town': 'TEST',
+                'country': 'France',
+                'nationality': 'français',
+                'birth_place': 'France',
+                'email': 'firstname.lastname@test.com',
+                'promotion': 2021,
+                'birth_date': '1998-01-01'
+            }
+        request = self.client.post(
+            '/api/membres/',
+            newUser
+        )
+        newUser['id'] = request.data['id']
+        self.assertEqual(request.status_code, 201)
+        self.assertDictEqual(request.data, newUser)
+        self.assertEqual(Membre.objects.count(), 3)
+
+    def test_getMembreById(self):
+        request = self.client.get(
+            '/api/membres/2/'
+        )
+        self.assertEqual(request.status_code, 200)
+        self.assertEqual(request.data['promotion'], 2020)
+        self.assertEqual(request.data['birth_date'], "1997-01-01")
+
+    def test_patchMembreById(self):
+        request = self.client.patch(
+            '/api/membres/2/',
+            {
+                'promotion': 1990
+            }
+        )
+        self.assertEqual(request.status_code, 200)
+        self.assertEqual(request.data['promotion'], 1990)
+        self.assertEqual(request.data['birth_date'], "1997-01-01")
+
+    def test_updateMembreById(self):
+        updatedUser = {
+            'id': 2,
+            'lastname': 'lastname',
+            'firstname': 'firstname',
+            'gender': 'M',
+            'email_junior': 'firstname.lastname@test.com',
+            'mobile': '',
+            'address': 'Test',
+            'postcode': '0',
+            'town': 'TEST',
+            'country': 'France',
+            'nationality': 'français',
+            'birth_place': 'France',
+            'email': 'firstname.lastname@test.com',
+            'promotion': 2003,
+            'birth_date': '1980-01-01'
+        }
+        request = self.client.put(
+            '/api/membres/2/',
+            updatedUser
+        )
+        self.assertEqual(request.status_code, 200)
+        self.assertDictEqual(request.data, updatedUser)
