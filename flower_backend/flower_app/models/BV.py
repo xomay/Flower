@@ -2,7 +2,7 @@ from django.db import models
 from rest_framework import serializers
 from decimal import Decimal
 from flower_app.models.Mission import Mission, MissionSerializer
-from flower_app.models.BaseUrsaff import getLastBase
+from flower_app.models.BaseUrsaff import BaseUrsaff
 
 # Classe spécialisée, juste pour stocker les valeurs des cotisations xd
 class Cotisation(models.Model):
@@ -40,12 +40,12 @@ class BV(models.Model):
     reference = models.CharField(max_length=40) # Référence dans la JE (genre BV_XXX)
     reference_nationale = models.CharField(max_length=40) # Référence pour l'état (suite de caractètes sans queue ni tête)
     date = models.DateField()
-    versement_mode = models.CharField(max_length=1, choices=[
-      ('V', 'Virement'),
-      ('C', 'Chèque'),
-      ('E', 'Espèces'), # Le mode 'espèce' est là pour faire joli :D
-      ('A', 'Autre')
-    ])
+    versement_mode = models.CharField(max_length=8, choices=[
+      ('Virement', 'Virement'),
+      ('Chèque', 'Chèque'),
+      ('Espèces', 'Espèces'), # Le mode 'espèce' est là pour faire joli :D
+      ('Autre', 'Autre')
+    ], default="Virement")
     # Cotisations. bon ba c'est pas marrant du tout, mais c'est parti quand même xD
     coti_sante = models.ForeignKey(Cotisation, on_delete=models.RESTRICT, related_name="coti_sante")
     coti_accidents = models.ForeignKey(Cotisation, on_delete=models.RESTRICT, related_name="coti_accidents")
@@ -79,6 +79,10 @@ class BV(models.Model):
     def realisateur(self):
         return self.rdm.consultant
     
+    @property
+    def baseUrsaff(self):
+        return BaseUrsaff.objects.get(mandat=self.date.year)
+
     # Rémunérations brutes : on prend le nombre de JEH et on multiplie par la part étudiante (1-part junior)
     @property
     def remunerationBrute(self):
@@ -91,7 +95,7 @@ class BV(models.Model):
     # Assiette des cotisations = Base URSAFF * nombre de JEH
     @property
     def assietteCotisations(self):
-        return Decimal(getLastBase().baseValue) * Decimal(self.rdm.JEHNumber)
+        return Decimal(self.baseUrsaff.baseValue) * Decimal(self.rdm.JEHNumber)
 
     @property
     def cotisations_assiette(self):
