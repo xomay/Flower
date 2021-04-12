@@ -13,6 +13,7 @@ from flower_app.models.UploadedFile import UploadedFile, UploadedFileSerializer
 from flower_app.models.GroupePhase import Groupe, Phase, GroupeSerializer, PhaseSerializer
 from flower_app.models.Mission import Mission, MissionSerializer, MissionDetailSerializer
 from flower_app.models.People.Realisateur import Realisateur
+from flower_app.models.BV import BV, BVSerializer
 
 from flower_app.controllers.permissions import is_in_group
 from django.forms.models import model_to_dict
@@ -201,6 +202,22 @@ class MissionsView(generics.ListCreateAPIView, generics.UpdateAPIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
+
+class BVsView(APIView):
+    def get(self, request, project_id):
+        if request.user.is_authenticated:
+            if is_in_group(request.user, 'ROLE_TRESO'):
+                try:
+                    etude_instance = Etude.objects.get(pk=project_id)
+                except:
+                    return Response("This etude doesn't exist.", status=HTTPStatus.BAD_REQUEST)
+                data = []
+                for rdm in etude_instance.mission_set.all():
+                    for bv in rdm.bv_set.all():
+                        serializer = BVSerializer(bv, read_only=True)
+                        data.append(serializer.data)
+                return JsonResponse(data, safe=False, status=HTTPStatus.OK)
+        return Response(None, status=HTTPStatus.FORBIDDEN)
     
 class MissionsDetailView(generics.DestroyAPIView):
     permission_classes = [IsAuthenticated, HasGroupPermission]

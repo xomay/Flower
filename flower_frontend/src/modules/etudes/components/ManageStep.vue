@@ -224,7 +224,7 @@
         <template slot="description">
           <el-card>
             <el-row>
-              Le <b>P</b>rocès <b>V</b>erbal de <b>R</b>ecette <b>I</b>nitial doit être édité puis signé par le client.
+              Le <b>P</b>rocès <b>V</b>erbal de <b>R</b>ecette <b>I</b>ntermédiaire doit être édité puis signé par le client.
             </el-row>
             <PVRTable
               v-model="pvris"

@@ -11,4 +11,9 @@ urlpatterns = [
     # Postes
     path('postes/', views.PostesCreateView.as_view()),
     path('postes/<int:pk>/', views.PostesUpdateDestroyView.as_view()),
+
+    # Bases Ursaff
+    path('base-ursaff/', views.BaseUrsaffView.as_view()),
+    path('base-ursaff/last/', views.BaseUrsaffLastView.as_view()),
+    path('base-ursaff/<int:pk>/', views.BaseUrsaffDetailView.as_view()),
 ]

@@ -158,9 +158,9 @@ export default {
           title: "Trésorerie",
           children: [
             {
-              title: "Factures",
+              title: "Études (trésorerie)",
               children: [
-                {name: "Gérer les factures", url: "/tresorerie/factures"},
+                {name: "Gérer les études", url: "/tresorerie/etudes/"},
               ]
             },
             {
@@ -168,6 +168,12 @@ export default {
               children: [
                 {name: "Lister les NFs", url: "/tresorerie/nfs/voir/"},
                 {name: "Ajouter une NF", url: "/tresorerie/nfs/ajouter"},
+              ]
+            },
+            {
+              title: "Autres",
+              children: [
+                {name: "Base Ursaff", url: "/tresorerie/base-ursaff"},
               ]
             }
           ]

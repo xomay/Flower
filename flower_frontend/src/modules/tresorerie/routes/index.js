@@ -1,14 +1,14 @@
 const routes = [
-  // Factures :
+  // Vues de trésorerie :
   {
-    path: "tresorerie/factures",
-    name: "factures-choice-etudes",
-    component: () => import("../views/FactureSelectEtude")
+    path: "tresorerie/etudes/",
+    name: "treso-choice-etudes",
+    component: () => import("../views/TresoSelectEtude")
   },
   {
-    path: "tresorerie/factures/:id/",
-    name: "factures-choice-type",
-    component: () => import("../views/FactureAboutEtude")
+    path: "tresorerie/etudes/:id/",
+    name: "treso-choice-type",
+    component: () => import("../views/TresoAboutEtude")
   },
   // NF :
   {
@@ -30,6 +30,22 @@ const routes = [
     path: "tresorerie/nfs/ajouter",
     name: "nfs-ajouter",
     component: () => import("../views/NFsCreer")
+  },
+  {
+    path: "tresorerie/base-ursaff",
+    name: "ursaff-je",
+    component: () => import("../views/BaseUrsaffEdition")
+  },
+  // BV :
+  {
+    path: "tresorerie/etudes/:id/bvs/ajouter",
+    name: "bv-creer",
+    component: () => import("../views/BVsCreer")
+  },
+  {
+    path: "tresorerie/etudes/:id/bvs/modifier/:bv_id/",
+    name: "bv-modifier",
+    component: () => import("../views/BVsModifier")
   }
 ]
 

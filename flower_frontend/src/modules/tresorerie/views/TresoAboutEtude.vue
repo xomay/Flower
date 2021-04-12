@@ -97,6 +97,97 @@
         </el-row>
         <hr class="factBr">
         <el-row class="factRow">
+          <h1 class="h1Styled">
+            Bulletins de Versement :
+          </h1>
+          <el-table
+            class="grid"
+            :border="true"
+            :data="bvs"
+          >
+            <el-table-column
+              prop="reference"
+              label="Référence"
+              align="center"
+              fixed="left"
+              width="140px"
+              sortable
+            />
+            <el-table-column
+              prop="date"
+              label="Date de paiement"
+              align="center"
+              fixed="left"
+              width="170px"
+              sortable
+            />
+            <el-table-column
+              label="Étudiant"
+              align="center"
+              fixed="left"
+            >
+              <template slot-scope="scope">
+                <el-button
+                  type="text"
+                  size="small"
+                  @click="pushToRealisateur(scope.row.realisateur.id)"
+                >
+                  {{ nicePeople(scope.row.realisateur) }}
+                </el-button>
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="montant_net"
+              label="Montant net étudiant"
+              align="center"
+              fixed="right"
+              :formatter="euroFormatter"
+              sortable
+            />
+            <el-table-column
+              label="Opérations"
+              fixed="right"
+              align="center"
+              width="118px"
+            >
+              <template slot-scope="scope">
+                <el-button
+                  type="text"
+                  icon="el-icon-download"
+                  :loading="loading"
+                  @click="downloadBV(scope.row)"
+                />
+                <router-link :to="`/tresorerie/etudes/${$route.params.id}/bvs/modifier/${scope.row.id}/`">
+                  <el-button
+                    type="text"
+                    icon="el-icon-edit"
+                  />
+                </router-link>
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-row>
+        <el-row class="factRow">
+          <el-button
+            v-show="can_add_bv"
+            type="success"
+            class="factButton"
+            icon="el-icon-plus"
+            @click="pushToAddBV()"
+          >
+            Ajouter un BV
+          </el-button>
+          <el-alert
+            v-show="!can_add_bv"
+            type="info"
+            title="Impossible de rajouter plus de BV"
+            :closable="false"
+            center
+            show-icon
+          />
+        </el-row>
+        <hr class="factBr">
+        <el-row class="factRow">
           <el-button
             type="info"
             class="factButton"
@@ -138,28 +229,33 @@
 import Summary from "@/modules/etudes/components/Summary"
 import FacturesMessages from "../components/FacturesMessages"
 import UploaderLocal from "@/components/UploaderLocal"
+import Utils from "@/mixins/Utils"
 const axios = require("axios")
 
 export default {
   name: "FactureAboutEtude",
   components: { Summary, FacturesMessages, UploaderLocal },
+  mixins: [Utils],
   data () {
     return {
       etude: {
         invoices: [],
         pvr: [],
-        linkedFiles: []
+        linkedFiles: [],
+        bvData: {full:true}
       },
+      bvs: [],
+      can_add_bv: false,
       title: "<loading>",
       loading: true,
       breadcrumb: [
         {
-          name: "Factures",
-          link: "/tresorerie/factures"
+          name: "Études (trésorerie)",
+          link: "/tresorerie/etudes/"
         },
         {
           name: "<loading>",
-          link: `/tresorerie/factures/${this.$route.params.id}/`
+          link: `/tresorerie/etudes/${this.$route.params.id}/`
         }
       ]
     }
@@ -173,13 +269,25 @@ export default {
       this.etude = res.data
       this.breadcrumb[1].name = res.data.name
       this.title = res.data.name + " - Vue trésorerie"
+      this.can_add_bv = ! res.data.bvData.full
     }).catch((err) => {
       this.$message({message: "Impossible de récupérer l'étude pour le moment: "+err, type: "error"})
     }).finally(() => {
       this.loading = false
     })
+    axios.get(
+      `/api/etudes/${this.$route.params.id}/bvs/`,
+      {withCredentials: true}
+    ).then((res) => {
+      this.bvs = res.data
+    }).catch((err) => {
+      this.$message({message: "Impossible de récupérer les BV pour le moment: "+err, type: "error"})
+    })
   },
   methods: {
+    pushToAddBV () {
+      this.$router.push(`/tresorerie/etudes/${this.$route.params.id}/bvs/ajouter`)
+    },
     deletePVR (pvrId) {
       this.loading = true
       axios.delete(`/api/pvr/${pvrId}`, { withCredentials: true }).then(() => {
@@ -225,6 +333,16 @@ export default {
         this.loadingInvoice = false
       })
     },
+    downloadBV (bv) {
+      this.loading = true
+      axios.get(`/api/publish/bv/${bv.id}/`, { withCredentials: true, responseType: "blob" }).then((response) => {
+        this.createDownloadElement(response.data, bv.reference + ".docx")
+      }).catch(err => {
+        this.$message({ message: "Une erreur est survenue lors de la génération du BV : " + err, type: "error" })
+      }).finally(() => {
+        this.loading = false
+      })
+    },
     createDownloadElement (data, filename) {
       let fileURL = window.URL.createObjectURL(new Blob([data]))
       let fileLink = document.createElement("a")
@@ -233,6 +351,9 @@ export default {
       document.body.appendChild(fileLink)
       fileLink.click()
     },
+    pushToRealisateur (rea_id) {
+      this.$router.push(`/realisateurs/${rea_id}/voir`)
+    }
   }
 }
 </script>

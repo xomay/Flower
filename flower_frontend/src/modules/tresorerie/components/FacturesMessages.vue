@@ -132,27 +132,30 @@
     <!-- (9) : BV -->
     <el-row v-show="etude.state == 9">
       <el-alert
-        title="Valider le BV"
+        title="Valider les BV"
         type="warning"
-        description="Vous devez signer le BV !"
+        description="Vous devez valider les BV !"
         :closable="false"
         center
         effect="dark"
         show-icon
       />
       <el-button
+        v-show="etude.bvData.full"
         type="success"
         icon="el-icon-check"
         style="margin: 10px 40%; width: 20%;"
         @click="levelupTo(10)"
       >
-        La BV a été signée
+        Les BV ont été signés
       </el-button>
       <el-alert
-        title="Cher pôle tréso, il me manque des infos pour les BV :D"
-        type="info"
-        description="Merci de me contacter (timothe.rosaz) pour savoir ce qu'il faut y faire :)"
+        v-show=" ! etude.bvData.full"
+        title="Tous les BV n'existent pas encore."
+        type="error"
+        description="Ajouter les BV pour les phases manquantes dans le tableau juste au dessus !"
         center
+        :closable="false"
         effect="dark"
         show-icon
       />
