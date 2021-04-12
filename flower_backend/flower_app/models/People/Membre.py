@@ -21,6 +21,20 @@ class Membre(Personne):
     def __str__(self):
         return self.firstname + ' ' + self.lastname
 
+    def anonymiser(self):
+        super.anonymiser(self):
+        self.user = 'xxxxx'
+        self.promotion = 'xxxxx'
+        self.email_junior = 'xxxxx'
+        self.address = 'xxxxx'
+        self.postcode = 'xxxxx'
+        self.town = 'xxxxx'
+        self.country = 'xxxxx'
+        self.nationality = 'xxxxx'
+        self.birth_place = 'xxxxx'
+        self.birth_date = 'xxxxx'
+        self.save()
+
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User

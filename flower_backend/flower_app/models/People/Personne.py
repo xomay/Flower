@@ -10,5 +10,13 @@ class Personne(models.Model):
     mobile = models.CharField(max_length=60, blank=True, default='')
     email = models.EmailField()
 
+    def anonymiser(self):
+        self.lastname = 'xxxxx'
+        self.firstname = 'xxxxx'
+        self.gender = 'xxxxx'
+        self.mobile = 'xxxxx'
+        self.email = 'xxxxx'
+        self.save()
+
     class Meta:
         abstract = True

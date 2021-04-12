@@ -23,6 +23,16 @@ class Prospect(models.Model):
     def __str__(self):
         return self.name
 
+    def anonymiser(self):
+        self.address = 'xxxxx'
+        self.town = 'xxxxx'
+        self.contactWay = 'xxxxx'
+        self.name = 'xxxxx'
+        self.postcode = 'xxxxx'
+        for elt in self.employe_set.all():
+            elt.anonymiser()
+        self.save()
+
 class ProspectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Prospect

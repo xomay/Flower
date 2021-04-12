@@ -18,6 +18,11 @@ class RealisateurComment(models.Model):
     def __str__(self):
         return self.associatedEtude.name + "_"+ str(self.rating)
 
+    def anonymiser(self):
+        self.content = 'xxxxx'
+        self.save()
+    
+
 class RealisateurCommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = RealisateurComment
@@ -53,6 +58,24 @@ class Realisateur(Personne):
 
     def __str__(self):
         return self.firstname + ' ' + self.lastname
+
+    def anonymiser(self):
+        super.anonymiser()
+        self.postcode = 'xxxxx'
+        self.promotion = 'xxxxx'
+        self.address = 'xxxxx'
+        self.email_insa = 'xxxxx'
+        self.birth_date = 'xxxxx'
+        self.birth_place = 'xxxxx'
+        self.security_social_number = 'xxxxx'
+        self.filiere = 'xxxxx'
+        self.town = 'xxxxx'
+        self.country = 'xxxxx'
+        self.nationality = 'xxxxx'
+        for elt in self.comments.all() #pas la bonne syntaxe, à revoir
+            elt.anonymiser()
+        self.save()
+
 
     @property
     def rating(self):
