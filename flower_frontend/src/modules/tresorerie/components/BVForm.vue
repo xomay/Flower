@@ -272,11 +272,105 @@
         </tr>
       </table>
     </el-row>
+    <el-collapse
+      v-model="activeCollapses"
+      class="mt-2"
+    >
+      <el-collapse-item name="0">
+        <template slot="title">
+          <span class="mr-2 text-lg">Données additionelles</span>
+        </template>
+        <el-alert
+          v-if="!editMode"
+          type="warning"
+          :closable="false"
+          show-icon
+          title="Pour laisser par défault, laisser vide."
+        />
+        <p>Sur le BV, il y a une ligne nommée "dont évolution de la rémunération liée à la suppression des cotisations chômage et maladie".</p>
+        <p>Le calcul est le suivant : <i>(A% - B%)*assiette_de_cotisation + (C% + D%)*rémunération_brute</i>.</p>
+        <el-col :span="12">
+          <el-form-item
+            label="Taux SCCM 1 (A%)"
+            prop="taux_sccm_1"
+          >
+            <el-input-number
+              v-model="bv.taux_sccm_1"
+              :precision="4"
+              :step="0.0001"
+              :min="0"
+              :max="1"
+              controls-position="left"
+            />
+          </el-form-item>
+          <el-form-item
+            label="Taux SCCM 2 (B%)"
+            prop="taux_sccm_2"
+          >
+            <el-input-number
+              v-model="bv.taux_sccm_2"
+              :precision="4"
+              :step="0.0001"
+              :min="0"
+              :max="1"
+              controls-position="left"
+            />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item
+            label="Taux SCCM 3 (C%)"
+            prop="taux_sccm_3"
+          >
+            <el-input-number
+              v-model="bv.taux_sccm_3"
+              :precision="4"
+              :step="0.0001"
+              :min="0"
+              :max="1"
+              controls-position="left"
+            />
+          </el-form-item>
+          <el-form-item
+            label="Taux SCCM 4 (D%)"
+            prop="taux_sccm_4"
+          >
+            <el-input-number
+              v-model="bv.taux_sccm_4"
+              :precision="4"
+              :step="0.0001"
+              :min="0"
+              :max="1"
+              controls-position="left"
+            />
+          </el-form-item>
+        </el-col>
+        <p>
+          ({{ (Number(bv.taux_sccm_1) * 100).toFixed(2) }}% - {{ (Number(bv.taux_sccm_2) * 100).toFixed(2) }}%) *
+          {{ assiette_cotisation.toFixed(2) }}€
+          + ({{ (Number(bv.taux_sccm_3) * 100).toFixed(2) }}% + {{ (Number(bv.taux_sccm_4) * 100).toFixed(2) }}%) *
+          {{ montant_brut.toFixed(2) }}€ =
+          <b>{{ (((Number(bv.taux_sccm_1) - Number(bv.taux_sccm_2))*assiette_cotisation) + ((Number(bv.taux_sccm_3) - Number(bv.taux_sccm_4))*montant_brut)).toFixed(2) }} €</b>
+        </p>
+        <p>Note : information non utilisée dans <u>aucun</u> calcul, car je ne sais pas à quel niveau cela intervient.</p>
+        <el-form-item
+          label="Allègement de cotisation Junior (€) :"
+        >
+          <el-input-number
+            v-model="bv.allegement_de_cotisations_junior"
+            :precision="2"
+            :step="1"
+            :min="0"
+            controls-position="left"
+          />
+        </el-form-item>
+      </el-collapse-item>
+    </el-collapse>
     <el-row v-show="bv.rdm_id != -1">
       <el-button
         type="success"
         :loading="loading"
-        style="margin: 12px auto;"
+        style="margin: 40px 44%; width: 220px;"
         @click="validateForm()"
       >
         Enregistrer
@@ -303,6 +397,7 @@ export default {
   data () {
     return {
       rdm: {},
+      activeCollapses: [],
       rules: {
         reference_nationale: [
           { required: true, message: "Obligatoire", trigger: "change" }
@@ -314,6 +409,13 @@ export default {
     }
   },
   computed: {
+    // Montants divers
+    montant_brut () {
+      return (this.rdm.JEHNumber * this.rdm.JEHPrice) * (1 - this.rdm.percentageJunior)
+    },
+    assiette_cotisation () {
+      return 4 * this.rdm.JEHNumber * Number(this.ursaff.smic_horaire)
+    },
     // Sommes des taux
     sum_taux_junior_assiette () {
       return ((Number(this.bv.coti_sante.taux_junior) + Number(this.bv.coti_accidents.taux_junior) + Number(this.bv.coti_retraite_1.taux_junior)

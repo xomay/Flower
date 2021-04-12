@@ -53,7 +53,7 @@ class BV(models.Model):
     # Ces quatre taux là servent à effectuer un calcul sur l' "évolution de la rémunération liée à la suppression des cotisations chômage et maladie" du montant net.
     # Bref du coup c'est un peu mystérieux, et je laisse modifiable un peu par principe xd
     taux_sccm_1 = models.DecimalField(decimal_places=5, max_digits=10, default=0.0075)
-    taux_sccm_2 = models.DecimalField(decimal_places=5, max_digits=10, default=-0.017)
+    taux_sccm_2 = models.DecimalField(decimal_places=5, max_digits=10, default=0.017)
     taux_sccm_3 = models.DecimalField(decimal_places=5, max_digits=10, default=0.0095)
     taux_sccm_4 = models.DecimalField(decimal_places=5, max_digits=10, default=0.0145)
     # Champ toujours nul à Ouest INSA. On sait pas si c'est le cas ailleurs, donc go le laisser en truc modifiable
