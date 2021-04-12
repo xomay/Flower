@@ -17,16 +17,8 @@ class Cotisation(models.Model):
     def montant_realisateur(self):
         return self.montant_base * self.taux_realisateur
 
-    def to_json(self):
-        return {
-            'montant_base' : self.montant_base,
-            'taux_junior' : self.taux_junior,
-            'montant_junior' : self.montant_junior,
-            'taux_realisateur' : self.taux_realisateur,
-            'montant_realisateur' : self.montant_realisateur
-        }
-
 class CotisationSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(required=False, write_only=False)
     montant_junior = serializers.ReadOnlyField()
     montant_realisateur = serializers.ReadOnlyField()
     class Meta:
@@ -150,9 +142,17 @@ def create_cotisation_from_dict(dict_raw):
     new_coti.save()
     return new_coti
 
+def handle_coti_change(dict_coti):
+    coti_instance = Cotisation.objects.get(pk=dict_coti['id'])
+    coti_instance.montant_base = dict_coti['montant_base']
+    coti_instance.taux_junior = dict_coti['taux_junior']
+    coti_instance.taux_realisateur = dict_coti['taux_realisateur']
+    coti_instance.save()
+    return coti_instance
+
 class BVSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False, write_only=False)
-    rdm_id = serializers.IntegerField(required=False, read_only=False, write_only=True) # field où on écrit l'id de la rdm lors du POST. si on fait ça ça, ça déconne :/
+    rdm_id = serializers.IntegerField(required=False, read_only=False, write_only=True) # field où on écrit l'id de la rdm lors du POST. si on fait pas ça, ça déconne :/
     rdm = MissionSerializer(read_only=True)
     coti_sante = CotisationSerializer(read_only=False)
     coti_accidents = CotisationSerializer(read_only=False)
@@ -204,3 +204,33 @@ class BVSerializer(serializers.ModelSerializer):
         validated_data['coti_exonerations'] = create_cotisation_from_dict(validated_data['coti_exonerations'])
         # Création et renvoie de l'instance
         return BV.objects.create(**validated_data)
+    
+    def update(self, instance, validated_data):
+        # Vérifications
+        mission_instance_id = instance.rdm.id
+        if(mission_instance_id != validated_data['rdm_id']):
+            raise serializers.ValidationError({'message': "Impossible de changer de RDM après la création d'un BV."})
+        # Sauvegarde des données (cotisation)
+        instance.coti_sante = handle_coti_change(validated_data['coti_sante'])
+        instance.coti_accidents = handle_coti_change(validated_data['coti_accidents'])
+        instance.coti_retraite_1 = handle_coti_change(validated_data['coti_retraite_1'])
+        instance.coti_retraite_2 = handle_coti_change(validated_data['coti_retraite_2'])
+        instance.coti_famille = handle_coti_change(validated_data['coti_famille'])
+        instance.coti_chomage = handle_coti_change(validated_data['coti_chomage'])
+        instance.coti_autres = handle_coti_change(validated_data['coti_autres'])
+        instance.coti_csg = handle_coti_change(validated_data['coti_csg'])
+        instance.coti_csgcrds = handle_coti_change(validated_data['coti_csgcrds'])
+        instance.coti_exonerations = handle_coti_change(validated_data['coti_exonerations'])
+        # Sauvegarde du reste des données
+        instance.taux_sccm_1 = validated_data['taux_sccm_1']
+        instance.taux_sccm_2 = validated_data['taux_sccm_2']
+        instance.taux_sccm_3 = validated_data['taux_sccm_3']
+        instance.taux_sccm_4 = validated_data['taux_sccm_4']
+        instance.allegement_de_cotisations_junior = validated_data['allegement_de_cotisations_junior']
+        instance.reference = validated_data['reference']
+        instance.reference_nationale = validated_data['reference_nationale']
+        instance.date = validated_data['date']
+        instance.versement_mode = validated_data['versement_mode']
+        # Sauvegarde et renvoie de l'instance
+        instance.save()
+        return instance

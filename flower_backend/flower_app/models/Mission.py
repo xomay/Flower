@@ -59,6 +59,7 @@ class MissionDetailSerializer(serializers.ModelSerializer):
     consultant = RealisateurSerializer(read_only=True)
     remunerationRaw = serializers.SerializerMethodField()
     assietteCotisation = serializers.SerializerMethodField()
+    bv_id = serializers.SerializerMethodField()
     class Meta:
         model = Mission
         fields = '__all__'
@@ -66,3 +67,7 @@ class MissionDetailSerializer(serializers.ModelSerializer):
         return obj.remunerationRaw
     def get_assietteCotisation(self, obj):
         return getLastBase().baseValue * obj.JEHNumber
+    def get_bv_id(self, obj):
+        if(obj.bv_set.count() == 0):
+            return -1
+        return obj.bv_set.first().id
