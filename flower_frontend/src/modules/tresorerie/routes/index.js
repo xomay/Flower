@@ -41,6 +41,11 @@ const routes = [
     path: "tresorerie/etudes/:id/bvs/ajouter",
     name: "bv-creer",
     component: () => import("../views/BVsCreer")
+  },
+  {
+    path: "tresorerie/etudes/:id/bvs/modifier/:bv_id/",
+    name: "bv-modifier",
+    component: () => import("../views/BVsModifier")
   }
 ]
 

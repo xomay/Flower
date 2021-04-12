@@ -137,14 +137,6 @@
               </template>
             </el-table-column>
             <el-table-column
-              prop="montant_brut"
-              label="Montant brut"
-              align="center"
-              fixed="right"
-              sortable
-              :formatter="euroFormatter"
-            />
-            <el-table-column
               prop="montant_net"
               label="Montant net étudiant"
               align="center"
@@ -152,6 +144,27 @@
               :formatter="euroFormatter"
               sortable
             />
+            <el-table-column
+              label="Opérations"
+              fixed="right"
+              align="center"
+              width="118px"
+            >
+              <template slot-scope="scope">
+                <el-button
+                  type="text"
+                  icon="el-icon-download"
+                  :loading="loading"
+                  @click="downloadBV(scope.row)"
+                />
+                <router-link :to="`/tresorerie/etudes/${$route.params.id}/bvs/modifier/${scope.row.id}/`">
+                  <el-button
+                    type="text"
+                    icon="el-icon-edit"
+                  />
+                </router-link>
+              </template>
+            </el-table-column>
           </el-table>
         </el-row>
         <el-row class="factRow">
@@ -318,6 +331,16 @@ export default {
         this.$message({ message: "Une erreur est survenue lors de la génération de la facture : " + err, type: "error" })
       }).finally(() => {
         this.loadingInvoice = false
+      })
+    },
+    downloadBV (bv) {
+      this.loading = true
+      axios.get(`/api/publish/bv/${bv.id}/`, { withCredentials: true, responseType: "blob" }).then((response) => {
+        this.createDownloadElement(response.data, bv.reference + ".docx")
+      }).catch(err => {
+        this.$message({ message: "Une erreur est survenue lors de la génération du BV : " + err, type: "error" })
+      }).finally(() => {
+        this.loading = false
       })
     },
     createDownloadElement (data, filename) {

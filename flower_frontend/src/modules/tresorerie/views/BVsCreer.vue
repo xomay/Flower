@@ -507,7 +507,7 @@ export default {
       this.loading = true
       axios.post(
         "/api/bv/",
-        { ...this.bv, versement_mode: this.bv.versement_mode.charAt(0) },
+        this.bv,
         {widthCredentials: true}
       ).then(() => {
         this.$message({message: "BV enregistré avec succès !", type:"success"})
