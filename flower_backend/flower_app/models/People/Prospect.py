@@ -26,9 +26,10 @@ class Prospect(models.Model):
     def anonymiser(self):
         self.address = 'xxxxx'
         self.town = 'xxxxx'
-        self.contactWay = 'xxxxx'
         self.name = 'xxxxx'
         self.postcode = 'xxxxx'
+        for elt in self.contactWay.all():
+            elt.anonymiser()
         for elt in self.employe_set.all():
             elt.anonymiser()
         self.save()

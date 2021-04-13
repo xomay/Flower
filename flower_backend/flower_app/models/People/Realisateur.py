@@ -62,19 +62,19 @@ class Realisateur(Personne):
         return self.firstname + ' ' + self.lastname
 
     def anonymiser(self):
-        super.anonymiser()
+        super().anonymiser()
         self.postcode = 'xxxxx'
-        self.promotion = 'xxxxx'
+        self.promotion = -1
         self.address = 'xxxxx'
         self.email_insa = 'xxxxx'
-        self.birth_date = 'xxxxx'
+        self.birth_date = '1970-01-01'
         self.birth_place = 'xxxxx'
         self.security_social_number = 'xxxxx'
         self.filiere = 'xxxxx'
         self.town = 'xxxxx'
         self.country = 'xxxxx'
         self.nationality = 'xxxxx'
-        for elt in self.comments.all() #pas la bonne syntaxe, à revoir
+        for elt in self.comments.all():
             elt.anonymiser()
         self.save()
 

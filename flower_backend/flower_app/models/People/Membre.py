@@ -24,9 +24,9 @@ class Membre(Personne):
         return self.firstname + ' ' + self.lastname
 
     def anonymiser(self):
-        super.anonymiser(self):
-        self.user = 'xxxxx'
-        self.promotion = 'xxxxx'
+        super().anonymiser()
+        self.user = None
+        self.promotion = -1
         self.email_junior = 'xxxxx'
         self.address = 'xxxxx'
         self.postcode = 'xxxxx'
@@ -34,7 +34,7 @@ class Membre(Personne):
         self.country = 'xxxxx'
         self.nationality = 'xxxxx'
         self.birth_place = 'xxxxx'
-        self.birth_date = 'xxxxx'
+        self.birth_date = '1970-01-01'
         self.save()
 
 class UserSerializer(serializers.ModelSerializer):

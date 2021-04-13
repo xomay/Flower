@@ -11,6 +11,10 @@ class ContactWay(models.Model):
     def __str__(self):
         return self.contactWay
 
+    def anonymiser(self):
+        self.contactWay = 'xxxxx'
+        self.save()
+
 class ContactWaySerializer(serializers.ModelSerializer):
     class Meta:
         model = ContactWay
