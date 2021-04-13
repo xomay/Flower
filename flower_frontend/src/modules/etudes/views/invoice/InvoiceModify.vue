@@ -57,7 +57,7 @@ export default {
         {withCredentials: true}
       ).then(() => {
         this.$message({message: "Facture enregistrée", type: "success", offset: 40})
-        this.$router.push(`/tresorerie/factures/${this.$route.params.id}`)
+        this.$router.push(`/tresorerie/etudes/${this.$route.params.id}`)
       }).catch((err) => {
         this.$message({message: "Impossible d'enregister la facture : "+err, type: "error", offset: 40})
       }).finally(() => {

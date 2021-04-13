@@ -9,8 +9,9 @@ from flower_app.models.Mission import Mission
 from flower_app.models.People.Membre import Membre
 from flower_app.models.PVR import PVR
 from flower_app.models.NdF import NdF
+from flower_app.models.BV import BV
 
-from flower_app.controllers.gantt.gantt import computeJPGGanttFromEtude
+from flower_app.controllers.gantt.gantt import computeGanttFromEtudeRaw
 
 import tempfile
 
@@ -43,10 +44,9 @@ class CEView(generics.RetrieveAPIView):
 
     def retrieve(request, self, etude_id):
         etude = Etude.objects.get(pk=etude_id)
-        svgData = computeJPGGanttFromEtude(etude)
+        svgData = computeGanttFromEtudeRaw(etude)[1]
         tmp_img_file = tempfile.NamedTemporaryFile(delete=None, suffix='.jpg')
-        tmp_img_file.write(svgData)
-        # tmp_img_file.close()
+        svgData.write_image(tmp_img_file)
         images = {'gantt': tmp_img_file.name}
         return computeDocx({'etude': etude}, 'CETUDE.docx','CE-' + etude.name, images=images)
         
@@ -69,6 +69,19 @@ class NdFView(generics.RetrieveAPIView):
     def retrieve(request, self, ndf_id):
         ndf = NdF.objects.get(pk=ndf_id)
         return computeDocx({'ndf': ndf}, 'NF.docx', ndf.reference)
+
+class BVView(generics.RetrieveAPIView):
+    permission_classes = [IsAuthenticated, HasGroupPermission]
+    required_groups = {
+        'GET': ['ROLE_CA', 'ROLE_TRESO']
+    }
+
+    def retrieve(request, self, bv_id):
+        bv = BV.objects.get(pk=bv_id)
+        return computeDocx({
+            'bv': bv,
+            'rea': bv.rdm.consultant
+        }, 'BV.docx', bv.reference)
 
 class FactureView(generics.RetrieveAPIView):
     permission_classes = [IsAuthenticated, HasGroupPermission]

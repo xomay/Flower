@@ -4,6 +4,7 @@ from flower_app.models.People.Membre import Membre, MembreSerializer
 from django.core.validators import MaxValueValidator, MinValueValidator
 from decimal import Decimal
 from flower_app.serializers import CustomListSerializer
+from flower_app.models.UploadedFile import UploadedFile, UploadedFileSerializer
 
 class NdF(models.Model):
     demandeur = models.ForeignKey(Membre, on_delete=models.RESTRICT)
@@ -11,6 +12,8 @@ class NdF(models.Model):
     date = models.DateField()
     objet = models.TextField()
     numberThisYear = models.IntegerField(default=1, validators=[MinValueValidator(0), MaxValueValidator(999)])
+
+    linkedFiles = models.ManyToManyField(UploadedFile, blank=True)
 
     @property
     def montantHT(self):
@@ -78,6 +81,7 @@ class NdFSerializer(serializers.ModelSerializer):
     # Re-sérialisation
     demandeur = MembreSerializer(read_only=True)
     details = NdFDetailSerializer(source='ndfdetail_set', many=True)
+    linkedFiles = UploadedFileSerializer(many=True, read_only=True)
     class Meta:
         model = NdF
         fields = '__all__'
@@ -104,7 +108,8 @@ class NdFSerializer(serializers.ModelSerializer):
                 prixHT=detail['prixHT'],
                 tva=detail['tva'],
                 nbKilometres=detail['nbKilometres'],
-                prixCentimesKilometres=detail['prixCentimesKilometres']
+                prixCentimesKilometres=detail['prixCentimesKilometres'],
+                linkedFiles=detail['linkedFiles']
             )
             detail_instance.save()
         if 'ndfdetail_set' in validated_data:
@@ -117,6 +122,7 @@ class NdFSerializer(serializers.ModelSerializer):
         instance.date = validated_data.get('date', instance.date)
         instance.objet = validated_data.get('objet', instance.objet)
         instance.numberThisYear = validated_data.get('numberThisYear', instance.numberThisYear)
+        #instance.linkedFiles.set(validated_data.get('linkedFiles', instance.linkedFiles.all()))
         instance.save()
 
         details = validated_data.get('ndfdetail_set')
@@ -148,7 +154,8 @@ class NdFSerializer(serializers.ModelSerializer):
                     prixHT=detail['prixHT'],
                     tva=detail['tva'],
                     nbKilometres=detail['nbKilometres'],
-                    prixCentimesKilometres=detail['prixCentimesKilometres']
+                    prixCentimesKilometres=detail['prixCentimesKilometres'],
+                    linkedFiles=detail['linkedFiles']
                 )
                 detail_instance.save()
                 done.append(detail_instance.id)

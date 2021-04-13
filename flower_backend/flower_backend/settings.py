@@ -57,6 +57,8 @@ MIDDLEWARE = [
 
 # CORS_ORIGIN_ALLOW_ALL = True
 
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
 CORS_ORIGIN_WHITELIST = ['http://localhost:8080']
 CORS_ALLOW_CREDENTIALS = True
 # SESSION_COOKIE_SAMESITE = False
@@ -142,9 +144,17 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+DOCTYPES_LOCATION = 'flower/flower_backend/doctypes/' # I changed it to 'doctypes/' in production
+OTHERS_LOCATION = 'flower/flower_backend/miscellaneous/'
 
 FRONT_END = 'http://localhost:8080'
-EMAIL_PORT = 25
-EMAIL_HOST = 'maildev'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = '?????@gmail.com' # To change
+EMAIL_HOST_PASSWORD = '????????' # To change
+EMAIL_PORT = 25 # To change : see your nginx configuration
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
 
 DJANGO_REST_LOOKUP_FIELD = 'membre__email_junior'
+

@@ -34,14 +34,25 @@
         name="Avancement"
       />
     </el-tabs>
-    <Summary
-      v-show="currentTab === 'Récapitulatif'"
-      :etude="etude"
-    />
+    <div v-show="currentTab === 'Récapitulatif'">
+      <Summary
+        :etude="etude"
+      />
+      <hr style="margin: 12px; margin-bottom: 25px">
+      <div>
+        <b>Fichiers associés :</b>
+        <UploaderLocal
+          :inital-list="etude.linkedFiles"
+          :loading="loading"
+          api-base-url="etudes"
+        />
+      </div>
+    </div>
     <Phases
       v-show="currentTab === 'Phases'"
       :groupes="etude.groupes"
       :etude="etude"
+      :editable="true"
       :loading="loading"
       @us-change="usChanged"
     />
@@ -62,19 +73,21 @@ import Summary from "../../components/Summary"
 import Phases from "../../components/Phases"
 import Generation from "../../components/Generation"
 import ManageStep from "../../components/ManageStep"
+import UploaderLocal from "@/components/UploaderLocal"
 
 const axios = require("axios")
 
 export default {
   name: "EtudeDetail",
-  components: {Summary, Phases, Generation, ManageStep},
+  components: {Summary, Phases, Generation, ManageStep, UploaderLocal},
   data () {
     return {
       currentTab: this.$route.query.active || "Récapitulatif",
       loading: false,
       etude: {
         name: "", // valeurs par défault afin d'éviter des warnings inutiles.
-        groupes: []
+        groupes: [],
+        linkedFiles: []
       },
       breadcrumb: [
         {

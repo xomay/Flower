@@ -118,7 +118,6 @@ export default {
       `/api/realisateurs/${this.$route.params.realisateur_id}/`,
       {withCredentials: true}
     ).then((res) => {
-      console.log(res.data)
       this.realisateur = res.data
     }).catch((err) => {
       this.$message({message: "Impossible de récupérer le réalisateur pour le moment: "+err, type: "error"})
@@ -149,7 +148,7 @@ export default {
     saveComment () {
       this.loading = true
       axios.post(
-        "api/realisateurs/cmts/",
+        "/api/realisateurs/cmts/",
         this.comment,
         { withCredentials: true }
       ).then((res) => {
@@ -165,7 +164,7 @@ export default {
         }).catch(() => {
           this.$message({message: "Il y a déjà un commentaire pour ce réa et cette étude ! ", type: "error"})
           axios.delete(
-            `api/realisateurs/cmts/${newID}/`,
+            `/api/realisateurs/cmts/${newID}/`,
             { withCredentials: true }
           ).then(() => {
             this.$message({message: "Action annulée. ", type: "warning"})

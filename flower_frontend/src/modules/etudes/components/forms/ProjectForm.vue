@@ -203,7 +203,7 @@ export default {
       }
       if(this.value.prospect != undefined && this.value.prospect > 0) {
         axios.get(
-          `api/prospects/${this.value.prospect}/employes/`,
+          `/api/prospects/${this.value.prospect}/employes/`,
           { withCredentials: true }
         ).then((res) => {
           res.data.forEach((elt) => elt.value = `${elt.firstname} ${elt.lastname}`)

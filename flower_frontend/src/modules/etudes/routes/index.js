@@ -58,6 +58,17 @@ const routes = [
     path: "etudes/:id/commentaires/:realisateur_id/ajouter",
     name: "etudes-commentaire-ajouter",
     component: () => import("../views/comments/NewComment")
+  },
+  // Accès réalisateur
+  {
+    path: "etudes/acces-rea",
+    name: "etudes-acces-rea",
+    component: () => import("../views/ReaEtudesVoir")
+  },
+  {
+    path: "etudes/acces-rea/:id/voir",
+    name: "etudes-acces-rea-detail",
+    component: () => import("../views/project/ReaEtudeDetail")
   }
 ]
 

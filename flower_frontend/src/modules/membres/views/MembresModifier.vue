@@ -1,13 +1,14 @@
 <template>
   <BaseComponent
-    title="Modification d'un membre"
+    :title="title"
     :breadcrumb="breadcrumb"
   >
     <MemberForm
       v-model="member"
+      :postes="postes"
       :loading="loading"
       :loadingopenaccount="loadingOpenAccount"
-      :can-open-account="true"
+      :can-open-account="isAdmin()"
       @save="saveMember"
       @openaccount="openAccount"
     />
@@ -17,19 +18,22 @@
 <script>
 import MemberForm from "../components/MemberForm"
 import { registerMemberMixin } from "../mixins/RegisterMember.js"
+import { Permissions } from "@/mixins/Permissions"
 
 const axios = require("axios")
 
 export default {
   name: "EtudeCreer",
   components: {MemberForm},
-  mixins: [registerMemberMixin],
+  mixins: [registerMemberMixin, Permissions],
   data () {
     return {
+      title: "Modifier : <loading>",
       member: {
         firstname: "",
         lastname: "",
         gender: "",
+        poste: 0,
         promotion: "2021",
         email: "",
         email_junior: "",
@@ -42,6 +46,7 @@ export default {
         birth_date: "",
         birth_place: ""
       },
+      postes: [],
       loading: false,
       loadingOpenAccount: false,
       breadcrumb: [
@@ -62,10 +67,24 @@ export default {
   },
   beforeCreate () {
     axios.get(
+      "/api/administration/postes/",
+      {withCredentials: true}
+    ).then((res) => {
+      res.data.forEach((elt) => elt.value = elt.name)
+      this.postes = res.data
+    }).catch((err) => {
+      this.$message({message: "Impossible de récupérer les postes : "+ err, type: "error"})
+    })
+  },
+  created () {
+    axios.get(
       `/api/membres/${this.$route.params.id}`,
       {withCredentials: true}
     ).then((res) => {
       this.member = res.data
+      if(this.member.poste != undefined)
+        this.member.poste = this.member.poste.id
+      this.title = `Modifier : ${this.member.firstname} ${this.member.lastname}`
       this.breadcrumb[1].name = `${this.member.firstname} ${this.member.lastname}`
     }).catch((err) => {
       this.$message({message: "Impossible de récupérer le membre : "+ err, type: "error"})

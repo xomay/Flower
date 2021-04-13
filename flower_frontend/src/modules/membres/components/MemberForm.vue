@@ -67,6 +67,21 @@
       </el-col>
       <el-col :span="24">
         <el-form-item
+          label="Poste :"
+          prop="poste"
+          label-width="13%"
+        >
+          <ItemPicker
+            v-model="value.poste"
+            :item-list="postes"
+            placeholder="Poste"
+            :style="'width: 100%'"
+            @input="editPoste"
+          />
+        </el-form-item>
+      </el-col>
+      <el-col :span="24">
+        <el-form-item
           label="Email INSA"
           prop="email"
           label-width="13%"
@@ -213,36 +228,32 @@
 </template>
 
 <script>
+import ItemPicker from "@/components/ItemPicker"
 export default {
   name: "MemberForm",
+  components: { ItemPicker },
   props: {
     value: { type: Object, required: true },
+    postes: { type: Array, required: true },
     loading: { type: Boolean, required: true },
     loadingopenaccount: { type: Boolean, required: true },
+    posteName: { type: String, default () { return "NULL" } },
     canOpenAccount: { type: Boolean, default () { return false } }
   },
   data () {
     return {
       formRules: {
         firstname: [
-          {required: true,
-            message: "Obligatoire",
-            trigger: "blur"}
+          {required: true, message: "Obligatoire", trigger: "blur"}
         ],
         lastname: [
-          {required: true,
-            message: "Obligatoire",
-            trigger: "blur"}
+          {required: true, message: "Obligatoire", trigger: "blur"}
         ],
         gender: [
-          {required: true,
-            message: "Obligatoire",
-            trigger: "blur"}
+          {required: true, message: "Obligatoire", trigger: "blur"}
         ],
         promotion: [
-          {required: true,
-            message: "Obligatoire",
-            trigger: "blur"}
+          {required: true, message: "Obligatoire", trigger: "blur"}
         ],
         email: [
           {
@@ -272,21 +283,14 @@ export default {
         ],
         mobile: [
           {
-            required: true,
-            message: "Obligatoire",
-            trigger: "blur"
-          },
-          {
-            required: true,
+            required: false,
             pattern: /^(?:(?:\+|00)33[\s.-]{0,3}(?:\(0\)[\s.-]{0,3})?|0)[1-9](?:(?:[\s.-]?\d{2}){4}|\d{2}(?:[\s.-]?\d{3}){2})$/,
             message: "Cette valeur doit être un numéro de téléphone valide.",
             trigger: "change"
           }
         ],
         address: [
-          {required: true,
-            message: "Obligatoire",
-            trigger: "blur"}
+          {required: true, message: "Obligatoire", trigger: "blur"}
         ],
         postcode: [
           {
@@ -301,29 +305,23 @@ export default {
           }
         ],
         town: [
-          {required: true,
-            message: "Obligatoire",
-            trigger: "blur"}
+          {required: true, message: "Obligatoire", trigger: "blur"}
+        ],
+        poste: [
+          {required: true, message: "Obligatoire", trigger: "blur"},
+          {required: true, validator: this.validatePoste, trigger: "blur"}
         ],
         country: [
-          {required: true,
-            message: "Obligatoire",
-            trigger: "blur"}
+          {required: true, message: "Obligatoire", trigger: "blur"}
         ],
         nationality: [
-          {required: true,
-            message: "Obligatoire",
-            trigger: "blur"}
+          {required: true, message: "Obligatoire", trigger: "blur"}
         ],
         birth_date: [
-          {required: true,
-            message: "Obligatoire",
-            trigger: "blur"}
+          {required: true, message: "Obligatoire", trigger: "blur"}
         ],
         birth_place: [
-          {required: true,
-            message: "Obligatoire",
-            trigger: "blur"}
+          {required: true, message: "Obligatoire", trigger: "blur"}
         ]
       }
     }
@@ -337,13 +335,16 @@ export default {
           else if(mode == "openaccount")
             this.$emit("openaccount")
         } else {
-          this.$message({
-            message: "Certains champs ne sont pas valides !",
-            type:"error",
-            offset: 40
-          })
+          this.$message({ message: "Certains champs ne sont pas valides !",type:"error"})
         }
       })
+    },
+    validatePoste (rule, value, callback) {
+      if (value < 1) {
+        callback(new Error("poste non défini !"))
+      } else {
+        callback()
+      }
     },
     autoFillEmails () {
       if(this.value.firstname != "" && this.value.lastname != "") {
@@ -357,6 +358,9 @@ export default {
         .replaceAll("é", "e").replaceAll("è", "e").replaceAll("ê", "e").replaceAll("ë", "e")
         .replaceAll("à", "a").replaceAll("â", "a").replaceAll("ô", "o").replaceAll("ï", "i").replaceAll("î", "i")
         .replaceAll(" ", "-")
+    },
+    editPoste (newPoste) {
+      this.value.poste = newPoste
     }
   }
 }

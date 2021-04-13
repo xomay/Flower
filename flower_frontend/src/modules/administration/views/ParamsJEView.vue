@@ -289,7 +289,7 @@ export default {
   beforeCreate () {
     this.loading = true
     axios.get(
-      "api/administration/params",
+      "/api/administration/params",
       { withCredentials: true }
     ).then((res) => {
       this.paramsData = res.data
@@ -312,7 +312,7 @@ export default {
     },
     updateParams () {
       axios.put(
-        "api/administration/params",
+        "/api/administration/params",
         this.paramsData,
         { withCredentials: true }
       ).then(() => {

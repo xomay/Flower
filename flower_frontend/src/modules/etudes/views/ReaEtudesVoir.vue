@@ -1,22 +1,31 @@
 <template>
   <BaseComponent
-    title="Facture - Choix de l'étude"
+    title="Suivi de vos études"
     :breadcrumb="breadcrumb"
   >
     <EtudesList
+      v-show="etudes.length > 0"
       :etudes="etudes"
+      :discret="true"
       :loading="loading"
       @select="goToEtude"
     />
+    <el-row v-show="etudes.length == 0">
+      <el-col
+        style="text-align: center; text-weight: bold;"
+      >
+        Vous n'apparaissez dans aucune étude.<br>Contactez votre chargé de projet.
+      </el-col>
+    </el-row>
   </BaseComponent>
 </template>
 
 <script>
-import EtudesList from "@/modules/etudes/components/EtudesList.vue"
+import EtudesList from "../components/EtudesList.vue"
 const axios = require("axios")
 
 export default {
-  name: "FactureSelectEtude",
+  name: "ReaEtudeVoir",
   components: { EtudesList },
   data () {
     return {
@@ -24,8 +33,8 @@ export default {
       loading: true,
       breadcrumb: [
         {
-          name: "Factures",
-          link: "/tresorerie/factures"
+          name: "Mes études",
+          link: "/etudes/acces-rea"
         }
       ]
     }
@@ -33,19 +42,19 @@ export default {
   beforeCreate () {
     this.loading = true
     axios.get(
-      "/api/etudes/",
+      "/api/etudes/getReaEtudes/",
       {withCredentials: true}
     ).then((res) => {
       this.etudes = res.data
     }).catch((err) => {
-      this.$message({message: "Impossible de récupérer les études pour le moment: "+err, type: "error"})
+      this.$message({message: "Impossible de récupérer vos études pour le moment: "+err, type: "error"})
     }).finally(() => {
       this.loading = false
     })
   },
   methods: {
     goToEtude (id) {
-      this.$router.push(`/tresorerie/factures/${id}/`)
+      this.$router.push(`/etudes/acces-rea/${id}/voir`)
     }
   }
 }

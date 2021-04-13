@@ -39,13 +39,24 @@
             <div class="flex flew-row">
               <div class="flex-grow">
                 <el-col :span="8">
-                  Description :
-                  <el-input
-                    v-model="props.row.description"
-                    type="textarea"
-                    :autosize="{ minRows: 3, maxRows: 4}"
-                    placeholder="Description de la phase"
-                  />
+                  <el-row>
+                    Description :
+                    <el-input
+                      v-model="props.row.description"
+                      type="textarea"
+                      :autosize="{ minRows: 3, maxRows: 4}"
+                      placeholder="Description de la phase"
+                    />
+                  </el-row>
+                  <el-row>
+                    Méthodologie :
+                    <el-input
+                      v-model="props.row.methodologie"
+                      type="textarea"
+                      :autosize="{ minRows: 3, maxRows: 4}"
+                      placeholder="Méthodologie de la phase"
+                    />
+                  </el-row>
                 </el-col>
                 <el-col
                   :span="15"
@@ -234,7 +245,6 @@ export default {
       this.value = this.value.sort((a, b) => a.index - b.index)
     },
     exchangeItems (groupe_index, index1, index2) {
-      //console.log(`inverting ${index1} and ${index2} in array of length ${this.value[groupe_index].phases.length}`)
       if (index1 < 0 || index1 >= this.value[groupe_index].phases.length || index2 < 0 || index2 >= this.value[groupe_index].phases.length) {
         return
       }
@@ -246,7 +256,6 @@ export default {
         this.value[groupe_index].phases[index1].index
       ]
       this.value[groupe_index].phases = this.value[groupe_index].phases.sort((a, b) => a.index - b.index)
-      //console.log(this.value[groupe_index].phases)
     },
     deleteGroupe (groupeId, groupeIndex) {
       this.$emit("delete-groupe", {groupeId, groupeIndex})

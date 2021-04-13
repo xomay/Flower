@@ -6,6 +6,7 @@ from flower_app.models.CE import CE
 from flower_app.models.People.Employe import Employe, EmployeSerializer
 from flower_app.models.People.Membre import Membre, MembreSerializer
 from flower_app.models.People.Prospect import Prospect, ProspectSerializer
+from flower_app.models.UploadedFile import UploadedFile, UploadedFileSerializer
 
 from decimal import Decimal
 
@@ -17,7 +18,7 @@ class Etude(models.Model):
     mandat = models.IntegerField()
     number = models.IntegerField()
     name = models.CharField(max_length=60)
-    description = models.CharField(max_length=300)
+    description = models.TextField(blank=True,default='')
 
     creation_date = models.DateTimeField(auto_now_add=True)
     modification_date = models.DateTimeField(auto_now=True)
@@ -32,15 +33,13 @@ class Etude(models.Model):
     clientContact = models.ForeignKey(Employe, on_delete=models.RESTRICT, blank=True, null=True)
     
     ce = models.OneToOneField(CE, default=create_ce, on_delete=models.CASCADE)
-    # ce
-    # facture
-    # avenants
-    # phases
-    # RDM
+    # avenants ?
 
     deposit_percentage = models.DecimalField(default=30, max_digits=10, decimal_places=2)
     deposit_sum = models.DecimalField(default=0, max_digits=10, decimal_places=2)
     application_fees = models.DecimalField(default=0, max_digits=10, decimal_places=2)
+    
+    linkedFiles = models.ManyToManyField(UploadedFile, blank=True)
 
     def __str__(self):
         return self.name
@@ -93,7 +92,19 @@ class EtudeDetailSerializer(serializers.ModelSerializer):
     groupes = GroupeDetailSerializer(source='groupe_set', many=True, read_only=True)
     invoices = FactureSerializer(source='facture_set', many=True, read_only=True)
     pvr = PVRSerializer(source='pvr_set', many=True, read_only=True)
+    linkedFiles = UploadedFileSerializer(many=True, read_only=True)
+    bvData = serializers.SerializerMethodField()
+    def get_bvData(self, instance):
+        data = {}
+        full = True
+        for rdm in instance.mission_set.all():
+            if len(rdm.bv_set.all()) > 0:
+                data[str(rdm.id)] = rdm.bv_set.first().id # il n'y a que un BV par RdM
+            else:
+                data[str(rdm.id)] = -1
+                full = False
+        data['full'] = full
+        return data
     class Meta:
         model = Etude
         fields = '__all__'
-

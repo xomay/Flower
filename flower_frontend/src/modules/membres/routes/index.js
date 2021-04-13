@@ -18,6 +18,18 @@ const routes = [
     path: "membres/:id/modifier",
     name: "membres-modifier",
     component: () => import("../views/MembresModifier")
+  },
+  // Redirection entre les membres
+  {
+    path: "membres/:id/redirect",
+    name: "membres-redirect",
+    component: () => import("../views/RedirectToAnother")
+  },
+  // Profil
+  {
+    path: "profil",
+    name: "profil",
+    component: () => import("../views/ProfileView")
   }
 ]
 

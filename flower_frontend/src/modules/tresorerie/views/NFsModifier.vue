@@ -52,7 +52,7 @@ export default {
   },
   beforeCreate () {
     axios.get(
-      `api/ndfs/${this.$route.params.id}/`,
+      `/api/ndfs/${this.$route.params.id}/`,
       { withCredentials: true }
     ).then((res) => {
       this.nf = res.data
@@ -80,7 +80,7 @@ export default {
   methods: {
     saveNF () {
       axios.put(
-        `api/ndfs/${this.$route.params.id}/`,
+        `/api/ndfs/${this.$route.params.id}/`,
         this.nf,
         { withCredentials: true }
       ).then(() => {
@@ -92,7 +92,7 @@ export default {
     },
     deleteNF () {
       axios.delete(
-        `api/ndfs/${this.$route.params.id}/`,
+        `/api/ndfs/${this.$route.params.id}/`,
         { withCredentials: true }
       ).then(() => {
         this.$message({message: "NF supprimée avec succès.", type: "success"})
@@ -101,8 +101,7 @@ export default {
         this.$message({message: "Impossible de supprimer la NF : " + err, type: "error"})
       })
     },
-    addNFDetail (newDepense) {
-      console.log("add " + newDepense)
+    addNFDetail () {
       this.nf.details.push({
         ndf: this.nf.id,
         index: this.nf.details.length + 1,

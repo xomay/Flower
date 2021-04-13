@@ -63,7 +63,7 @@ export default {
   methods: {
     submitNF () {
       axios.post(
-        "api/ndfs/",
+        "/api/ndfs/",
         this.nf,
         { withCredentials: true }
       ).then((res) => {

@@ -135,17 +135,15 @@ export default {
     },
     saveCE () {
       axios.put(
-        `/api/etudes/${this.etude.id}/ce/`,
+        `/api/etudes/${this.$route.params.id}/ce/`,
         this.ce,
         {withCredentials: true}
       ).then(() => {
-        this.$message({message: "La CE a bien été mis à jour",
-          type: "success"})
-      }).
-        catch((err) => {
-          this.$message({message: err,
-            type: "error"})
-        })
+        this.$message({message: "La CE a bien été mis à jour", type: "success"})
+        this.$router.push(`/etudes/${this.$route.params.id}/voir`)
+      }).catch((err) => {
+        this.$message({message: "Impossinle de sauvegarder la CE : "+err, type: "error"})
+      })
     },
     getMembers () {
       axios.get(
@@ -183,17 +181,10 @@ export default {
           signer2: this.personFullname(this.ce.signer2)}
         this.ce.signer1 = this.ce.signer1 ? this.ce.signer1.id : null
         this.ce.signer2 = this.ce.signer2 ? this.ce.signer2.id : null
-      }).
-        catch((err) => {
-          this.$message({message: err,
-            type: "error",
-            offset: 40})
-        })
+      }).catch((err) => {
+        this.$message({message: err, type: "error"})
+      })
     }
   }
 }
 </script>
-
-<style>
-
-</style>

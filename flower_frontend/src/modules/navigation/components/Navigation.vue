@@ -1,7 +1,7 @@
 <template>
   <div class="flex min-h-screen">
     <el-menu
-      class="w-64 flex-shrink-0 min-h-screen"
+      class="menuNavBar flex-shrink-0 min-h-screen"
       background-color="#34495e"
       text-color="#fff"
       :unique-opened="true"
@@ -53,7 +53,7 @@
         <el-button
           type="default"
           class="dark"
-          @click="collapse = !collapse"
+          @click="collapse = ! collapse"
         >
           <i
             v-if="collapse"
@@ -74,7 +74,7 @@
             <i class="el-icon-s-tools" />
           </el-button>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item>
+            <el-dropdown-item command="profile">
               <i class="el-icon-user" />{{ this.$store.currentUser.username }}
             </el-dropdown-item>
             <el-dropdown-item command="logout">
@@ -96,8 +96,94 @@ export default {
   mixins: [Permissions],
   data () {
     return {
-      menu: [
-        {
+      menu: [],
+      collapse: false
+    }
+  },
+  created () {
+    // Accès selon les droits
+    this.addCAStuff()
+    this.addTresoStuff()
+    this.addAdminStuff()
+    // Accès réa :
+    this.addReaStuff()
+  },
+  methods: {
+    // Correspond aux inputs du dropdown (l'écrou en haut à droite)
+    handleCommand (command) {
+      if (command === "logout") {
+        this.logout()
+      } else if (command === "profile") {
+        this.$router.push("/profil")
+      }
+    },
+    // Méthode pour se déconnecter du site puis retourner à l'accueil
+    logout () {
+      axios.get(
+        "/api/accounts/logout",
+        {withCredentials: true}
+      ).then(() => {
+        this.$router.push("/login")
+      }).catch(() => {
+        this.$message({message: "Une erreur est survenue lors de la déconnexion", type: "error"})
+      })
+    },
+    // Si l'utilisateur a des droits d'admin, ajoute ses outils dans la navbar
+    addAdminStuff () {
+      if ( this.isAdmin() ) {
+        this.menu.push({
+          icon: "el-icon-setting",
+          title: "Administration",
+          children: [
+            {
+              title: "Général",
+              children: [
+                {name: "Paramètres de la JE",
+                  url: "/administration/params"},
+                {name: "Liste des postes",
+                  url: "/administration/postes"},
+                {name: "Gérer les uploads",
+                  url: "/administration/uploads"}
+              ]
+            }
+          ]
+        })
+      }
+    },
+    // Si l'utilisateur a des droits de trésorier, ajoute ses outils dans la navbar
+    addTresoStuff () {
+      if ( this.isTreso() ) {
+        this.menu.push({
+          icon: "el-icon-money",
+          title: "Trésorerie",
+          children: [
+            {
+              title: "Études (trésorerie)",
+              children: [
+                {name: "Gérer les études", url: "/tresorerie/etudes/"},
+              ]
+            },
+            {
+              title: "Notes de Frais",
+              children: [
+                {name: "Lister les NFs", url: "/tresorerie/nfs/voir/"},
+                {name: "Ajouter une NF", url: "/tresorerie/nfs/ajouter"},
+              ]
+            },
+            {
+              title: "Autres",
+              children: [
+                {name: "Base Ursaff", url: "/tresorerie/base-ursaff"},
+              ]
+            }
+          ]
+        })
+      }
+    },
+    // Si l'utilisateur a des droits de CA, ajoute ses outils dans la navbar
+    addCAStuff () {
+      if (this.isCA() ) {
+        this.menu.push({
           icon: "el-icon-user-solid",
           title: "Gestion Associative",
           children: [
@@ -106,11 +192,6 @@ export default {
               children: [
                 {name: "Lister les membres",
                   url: "/membres"},
-
-                /*
-                                 * { name: 'Lister les intervenants', url: '/intervenants' },
-                                 * { name: 'Lister les impayés', url: '/impayes' },
-                                 */
                 {name: "Ajouter un membre",
                   url: "/membres/ajouter"}
               ]
@@ -134,22 +215,6 @@ export default {
               url: "/etudes"},
             {name: "Créer une étude",
               url: "/etudes/ajouter"}
-
-            /*
-                         * {
-                         *   title: 'Qualité',
-                         *   children: [
-                         *     { name: 'Suivi des problèmes', url: '/qualite' }
-                         *   ]
-                         * },
-                         * {
-                         *   title: 'Administration',
-                         *   children: [
-                         *     { name: 'Contacts Client', url: '/clients' },
-                         *     { name: 'Vu CA', url: '/ca' }
-                         *   ]
-                         * }
-                         */
           ]
         },
         {
@@ -190,76 +255,34 @@ export default {
               ]
             }
           ]
-        }
-      ],
-      collapse: false
+        })
+      }
+    },
+    // Si l'utilisateur a des droits de réalisateur, ajoute ses outils dans la navbar
+    addReaStuff () {
+      if ( this.isRea() ) {
+        this.menu.push({
+          icon: "el-icon-folder-opened",
+          title: "Mes études",
+          children: [
+            {
+              title: "Accès réalisateur",
+              children: [
+                {name: "Liste de mes études", url: "/etudes/acces-rea"},
+              ]
+            }
+          ]
+        })
+      }
     }
-  },
-  created () {
-    this.addTresoStuff()
-    this.addAdminStuff()
-  },
-  methods: {
-    handleCommand (command) {
-      if (command === "logout") {
-        this.logout()
-      }
-    },
-    logout () {
-      axios.get(
-        "/api/accounts/logout",
-        {withCredentials: true}
-      ).then(() => {
-        this.$router.push("/login")
-      }).catch(() => {
-        this.$message({message: "Une erreur est survenue lors de la déconnexion", type: "error"})
-      })
-    },
-    addAdminStuff () {
-      if ( this.isAdmin() ) {
-        this.menu.push({
-          icon: "el-icon-setting",
-          title: "Administration",
-          children: [
-            {
-              title: "Général",
-              children: [
-                {name: "Paramètres de la JE",
-                  url: "/administration/params"}
-              ]
-            }
-          ]
-        })
-      }
-    },
-    addTresoStuff () {
-      if ( this.isTreso() ) {
-        this.menu.push({
-          icon: "el-icon-money",
-          title: "Trésorerie",
-          children: [
-            {
-              title: "Factures",
-              children: [
-                {name: "Gérer les factures", url: "/tresorerie/factures"},
-              ]
-            },
-            {
-              title: "Notes de Frais",
-              children: [
-                {name: "Lister les NFs", url: "/tresorerie/nfs/voir/"},
-                {name: "Ajouter une NF", url: "/tresorerie/nfs/ajouter"},
-              ]
-            }
-          ]
-        })
-      }
-    },
   }
 }
 </script>
 
 <style scoped>
+.menuNavBar:not(.el-menu--collapse) {
+  width: 16rem;
+}
 div.topbar {
   background-color: #2c3e50;
 }

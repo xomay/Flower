@@ -5,6 +5,7 @@
   >
     <MemberForm
       v-model="form"
+      :postes="postes"
       :loadingopenaccount="loading"
       :loading="loading"
       @save="registerMember"
@@ -29,6 +30,7 @@ export default {
         promotion: "2021",
         email: "@insa-rennes.fr",
         email_junior: "@ouest-insa.fr",
+        poste: 0,
         mobile: "",
         address: "",
         postcode: "",
@@ -38,6 +40,7 @@ export default {
         birth_date: "",
         birth_place: ""
       },
+      postes: [],
       loading: false,
       breadcrumb: [
         {
@@ -50,6 +53,17 @@ export default {
         }
       ]
     }
+  },
+  beforeCreate () {
+    axios.get(
+      "/api/administration/postes/",
+      {withCredentials: true}
+    ).then((res) => {
+      res.data.forEach((elt) => elt.value = elt.name)
+      this.postes = res.data
+    }).catch((err) => {
+      this.$message({message: "Impossible de récupérer le membre : "+ err, type: "error"})
+    })
   },
   methods: {
     registerMember () {
@@ -70,7 +84,3 @@ export default {
   }
 }
 </script>
-
-<style>
-
-</style>

@@ -4,10 +4,12 @@
     class="grid"
     :data="etudes"
     :stripe="true"
+    :border="true"
   >
     <el-table-column
       prop="name"
       label="Nom de l'étude"
+      fixed="left"
       sortable
     >
       <template slot-scope="scope">
@@ -28,11 +30,16 @@
     <el-table-column
       prop="number"
       label="Numéro de l'étude"
+      align="center"
+      fixed="left"
+      width="180px"
       sortable
     />
     <el-table-column
       label="Avancement"
       class="back"
+      fixed="right"
+      align="center"
     >
       <template slot-scope="scope">
         <el-col>
@@ -43,7 +50,9 @@
             />
           </div>
         </el-col>
-        <el-col>
+        <el-col
+          style="text-align: left !important;"
+        >
           {{ getState(scope.row.state) }}
         </el-col>
       </template>
@@ -51,6 +60,9 @@
     <el-table-column
       prop="mandat"
       label="Mandat"
+      align="center"
+      fixed="right"
+      width="120px"
       sortable
     />
   </el-table>
@@ -61,7 +73,8 @@ export default {
   name: "EtudesList",
   props: {
     etudes: {type : Array, required: true },
-    loading: {type : Boolean, required: true }
+    loading: {type : Boolean, required: true },
+    discret: {type : Boolean, default () { return false } }
   },
   methods: {
     clicked (id) {
@@ -73,7 +86,7 @@ export default {
       return "width: "+(state*10)+"%"
     },
     getState (state) {
-      if(state == undefined)
+      if(state == undefined || this.discret)
         return ""
       switch (state) {
       case 0: return "Les groupes sont à rédiger, le devis à envoyer."
@@ -113,7 +126,7 @@ export default {
     padding: 1px 1px;
     display: flex;
     height: 20px;
-    width: 80%;
+    width: 100%;
   }
 
   .progress-value {

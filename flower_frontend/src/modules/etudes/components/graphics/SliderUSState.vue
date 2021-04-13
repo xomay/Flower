@@ -2,7 +2,7 @@
   <el-slider
     v-model="value"
     :max="5"
-    :disabled="disabled || loading"
+    :disabled="loading"
     :format-tooltip="formatTooltipSlider"
     :marks="tooltip ? marks : {}"
     show-stops
@@ -15,13 +15,14 @@ export default {
   name: "SliderUSState",
   props: {
     us: { type: Object, required: true },
-    disabled : { type: Boolean, default () { return false } },
     tooltip: { type: Boolean, required: true },
-    loading: { type: Boolean, required: true }
+    loading: { type: Boolean, required: true },
+    reaVue: { type: Boolean, default: false }
   },
   data () {
     return {
       value: 0,
+      oldValue: 0,
       marks: {
         0: "En cours de définition",
         1: "À faire",
@@ -34,6 +35,7 @@ export default {
   },
   created () {
     this.value = this.getSliderValue(this.us.state)
+    this.oldValue = this.value
   },
   methods: {
     getSliderValue (state) {
@@ -61,7 +63,25 @@ export default {
       return this.marks[state]
     },
     sliderChanged (newState) {
-      this.$emit("change", this.us, this.valueToState(newState))
+      var allowed = true
+      if(this.reaVue) {
+        // Cas où c'est un réa qui bouge le slider. Il n'a pas le droit de faire certaines actions.
+        if(this.oldValue == 0 || this.oldValue == 5) {
+          // Pas le droit de changé si 'OVER' ou 'DEFIN'
+          this.$message({ message: "En tant que réalisateur, vous n'avez pas le droit de modifier cet US si il est à cette étape", type: "error"})
+          allowed = false
+        } else if(newState == 0 || newState > 4) {
+          // Pas le droit de METTRE en "DEFIN" ou en "OVER".
+          this.$message({ message: "Seul un chargé de projet peut mettre un US à un état 'Terminé' ou 'à définir", type: "error"})
+          allowed = false
+        }
+      }
+      if(allowed) {
+        this.$emit("change", this.us, this.valueToState(newState))
+        this.oldValue = newState
+      } else {
+        this.value = this.oldValue
+      }
     }
   }
 }

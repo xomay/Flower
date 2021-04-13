@@ -25,6 +25,7 @@
     </el-row>
     <el-divider />
     <GraphicsBlock
+      v-if="isCA()"
       :data="getData()"
     />
   </div>
@@ -32,10 +33,12 @@
 
 <script>
 import GraphicsBlock from "../components/GraphicsBlock"
+import { Permissions } from "@/mixins/Permissions"
 
 export default {
   name: "Authentication",
   components: {GraphicsBlock},
+  mixins: [Permissions],
   methods: {
     getUsername () {
       return this.$store.currentUser.username

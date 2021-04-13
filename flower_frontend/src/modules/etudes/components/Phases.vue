@@ -2,6 +2,7 @@
   <div>
     <router-link :to="{ name: 'etudes-phases', params: { id: this.$route.params.id } }">
       <el-button
+        v-if="editable"
         type="primary"
         icon="el-icon-edit"
         :loading="loading"
@@ -26,11 +27,25 @@
       >
         <el-table-column type="expand">
           <template slot-scope="scope">
-            <USManager
-              :uss="scope.row.uss"
-              :loading="loading"
-              @us-change="updateUS"
-            />
+            <el-row
+              v-if="!reaVue"
+              v-show="scope.row.methodologie != ''"
+              style="margin-bottom: 20px;"
+            >
+              <b>Méthodologie :</b><br>
+              <p>{{ scope.row.methodologie }}</p>
+              <hr
+                style="border-width: 1px; border-color: #bfbfd7; width: 30%; margin: auto auto;"
+              >
+            </el-row>
+            <el-row>
+              <USManager
+                :uss="scope.row.uss"
+                :loading="loading"
+                :rea-vue="reaVue"
+                @us-change="updateUS"
+              />
+            </el-row>
           </template>
         </el-table-column>
         <el-table-column
@@ -59,12 +74,14 @@
           prop="nbJEH"
         />
         <el-table-column
+          v-if="!reaVue"
           width="100"
           label="Prix JEH"
           prop="priceJEH"
           :formatter="euroFormatter"
         />
         <el-table-column
+          v-if="!reaVue"
           width="100"
           label="Prix total"
           prop="totalPrice"
@@ -85,7 +102,9 @@ export default {
   props: {
     etude: { type: Object, required: true },
     groupes: { type: Array, required: true },
-    loading: { type: Boolean, required: true }
+    loading: { type: Boolean, required: true },
+    editable: { type: Boolean, required: true },
+    reaVue: { type: Boolean, default: false }
   },
   methods: {
     updateUS (us, newState) {

@@ -97,6 +97,11 @@
         sortable
       />
       <el-table-column
+        prop="poste"
+        label="Poste"
+        sortable
+      />
+      <el-table-column
         prop="email"
         label="Email"
         sortable
@@ -104,11 +109,6 @@
       <el-table-column
         prop="email_junior"
         label="Email Junior"
-        sortable
-      />
-      <el-table-column
-        prop="mobile"
-        label="Téléphone"
         sortable
       />
       <el-table-column
@@ -120,7 +120,7 @@
           slot-scope="scope"
         >
           <el-button
-            v-if="isButtonOn(scope.$index)"
+            v-show="isButtonOn(scope.$index)"
             ref="btn_{{scope.$index}}"
             size="medium"
             type="warning"
@@ -128,7 +128,7 @@
           >
             Ouvrir un compte utilisateur
           </el-button>
-          <el-col v-else>
+          <el-col v-show="!isButtonOn(scope.$index)">
             <div class="grid-content bg-purple-light" />
           </el-col>
         </template>
@@ -140,11 +140,12 @@
 <script>
 import { registerMemberMixin } from "../mixins/RegisterMember.js"
 import { Permissions } from "@/mixins/Permissions"
+import Utils from "@/mixins/Utils"
 const axios = require("axios")
 
 export default {
   name: "MembresVoir",
-  mixins: [registerMemberMixin, Permissions],
+  mixins: [registerMemberMixin, Permissions, Utils],
   data () {
     return {
       membres: [],
@@ -171,35 +172,26 @@ export default {
       "/api/membres/",
       {withCredentials: true}
     ).then((res) => {
-      res.data.forEach((elt) => elt.fullname = `${elt.firstname} ${elt.lastname}`)
+      res.data.forEach((elt) => elt.fullname = this.nicePeople(elt))
+      res.data.forEach((elt) => elt.poste = this.displayPoste(elt))
       this.membres = res.data
       this.currentSelected = this.membres
-    }).catch(() => {
-      this.$message({message: "Impossible de récupérer les membres pour le moment",
-        type: "error",
-        offset: 40})
+    }).catch((err) => {
+      this.$message({message: "Impossible de récupérer les membres pour le moment : " + err, type: "error"})
     }).finally(() => {
       this.loading = false
     })
   },
   methods: {
     openAccount (memberID) {
-      if(this.$store.currentUser.isAdmin) {
+      if(this.isAdmin()) {
         if( ! this.membres[memberID].user ) {
           this.mixinRegisterMember(axios, this.membres[memberID])
         } else {
-          this.$message({
-            message: "Une erreur est survenue : le compte était déjà présent.",
-            type: "error",
-            offset: 40
-          })
+          this.$message({ message: "Une erreur est survenue : le compte était déjà présent.", type: "error" })
         }
       } else {
-        this.$message({
-          message: "Il faut être administrateur pour faire cette action !",
-          type: "error",
-          offset: 40
-        })
+        this.$message({ message: "Il faut être administrateur pour faire cette action !", type: "error" })
       }
     },
     isButtonOn (memberID) {
@@ -220,7 +212,6 @@ export default {
     updateFilters () {
       this.currentSelected = this.membres
       if(this.doesFilterName) {
-        console.log(this.nameFilterValue)
         this.filterWithName(this.nameFilterValue)
       }
       if(this.doesFilterPromo) {

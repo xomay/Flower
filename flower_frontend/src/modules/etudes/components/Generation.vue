@@ -31,7 +31,7 @@
         <el-button
           v-if="displaysCE"
           type="success"
-          :loading="loadingCE"
+          :loading="loading"
           icon="el-icon-download"
           @click="downloadCE"
         >
@@ -63,6 +63,7 @@
         >
           <el-table-column
             label="Consultant"
+            align="center"
           >
             <template slot-scope="scope">
               <el-link
@@ -70,20 +71,25 @@
                 :style="'margin-left: 6px'"
                 @click="pushToConsultant(scope.row)"
               >
-                {{ getConsultantName(scope.row) }}
+                {{ nicePeople(scope.row.consultant) }}
               </el-link>
             </template>
           </el-table-column>
           <el-table-column
             prop="missionBegin"
             label="Date de début"
+            align="center"
+            :formatter="niceDateFormatter"
           />
           <el-table-column
             prop="missionEnd"
             label="Date de fin"
+            align="center"
+            :formatter="niceDateFormatter"
           />
           <el-table-column
             label="Nombre de phases"
+            align="center"
           >
             <template slot-scope="scope">
               <span>{{ scope.row.phases.length }}</span>
@@ -92,9 +98,11 @@
           <el-table-column
             prop="JEHNumber"
             label="Nombre de JEH"
+            align="center"
           />
           <el-table-column
             label="Montant brut"
+            align="center"
           >
             <template slot-scope="scope">
               <span>{{ scope.row.JEHNumber * scope.row.JEHPrice }}€</span>
@@ -102,12 +110,14 @@
           </el-table-column>
           <el-table-column
             label="Opérations"
+            align="center"
+            fixed="right"
           >
             <template slot-scope="scope">
               <el-button
                 type="text"
                 icon="el-icon-download"
-                :loading="loadingRDM"
+                :loading="loading"
                 @click="downloadRDM(scope.row.id)"
               >
                 RDM
@@ -134,6 +144,8 @@
           <el-table-column
             prop="documentType"
             label="Type de PVR"
+            align="center"
+            fixed="left"
           >
             <template slot-scope="scope">
               <span v-if="scope.row.documentType === 'I'">PVRI</span>
@@ -143,19 +155,24 @@
           <el-table-column
             prop="deliverable"
             label="Description"
+            align="center"
           />
           <el-table-column
             prop="signingDate"
             label="Date de signature"
+            align="center"
+            :formatter="niceDateFormatter"
           />
           <el-table-column
             label="Opérations"
+            align="center"
+            fixed="right"
           >
             <template slot-scope="scope">
               <el-button
                 type="text"
                 icon="el-icon-download"
-                :loading="loadingPVR"
+                :loading="loading"
                 @click="downloadPVR(scope.row.id)"
               />
               <router-link :to="`/etudes/${$route.params.id}/pvr/modifier/${scope.row.id}`">
@@ -167,7 +184,7 @@
               <el-button
                 type="text"
                 icon="el-icon-delete"
-                :loading="loadingPVR"
+                :loading="loading"
                 @click="deletePVR(scope.row.id, scope.$index)"
               />
             </template>
@@ -180,9 +197,12 @@
 
 <script>
 const axios = require("axios")
+import Publishing from "@/mixins/Publishing"
+import Utils from "@/mixins/Utils"
 
 export default {
   name: "Generation",
+  mixins: [Publishing, Utils],
   props: {
     etude: { type: Object, required: true }
   },
@@ -190,10 +210,6 @@ export default {
     return {
       displaysCE: null,
       loading: false,
-      loadingCE: false,
-      loadingRDM: false,
-      loadingInvoice: false,
-      loadingPVR: false,
       activeCollapses: []
     }
   },
@@ -208,48 +224,8 @@ export default {
     })
   },
   methods: {
-    downloadDevis () {
-      this.loading = true
-      axios.get(`/api/publish/etude/${this.etude.id}/devis/`, { withCredentials: true, responseType: "blob" }).then((response) => {
-        this.createDownloadElement(response.data, "DEVIS-" + this.etude.name + ".docx")
-      }).catch(err => {
-        this.$message({ message: "Une erreur est survenue lors de la génération du devis : " + err, type: "error" })
-      }).finally(() => {
-        this.loading = false
-      })
-    },
-    downloadCE () {
-      this.loadingCE = true
-      axios.get(`/api/publish/etude/${this.etude.id}/ce/`, { withCredentials: true, responseType: "blob" }).then((response) => {
-        this.createDownloadElement(response.data, "CE-" + this.etude.name + ".docx")
-      }).catch(err => {
-        this.$message({ message: "Une erreur est survenue lors de la génération du devis : " + err, type: "error" })
-      }).finally(() => {
-        this.loadingCE = false
-      })
-    },
-    downloadRDM (rdmId) {
-      this.loadingRDM = true
-      axios.get(`/api/publish/rdm/${rdmId}`, { withCredentials: true, responseType: "blob" }).then((response) => {
-        this.createDownloadElement(response.data, "RDM-" + this.etude.name + ".docx")
-      }).catch(err => {
-        this.$message({ message: "Une erreur est survenue lors de la génération du RDM : " + err, type: "error" })
-      }).finally(() => {
-        this.loadingRDM = false
-      })
-    },
-    downloadInvoice (invoiceId) {
-      this.loadingInvoice = true
-      axios.get(`/api/publish/facture/${invoiceId}`, { withCredentials: true, responseType: "blob" }).then((response) => {
-        this.createDownloadElement(response.data, "FA-" + this.etude.name + ".docx")
-      }).catch(err => {
-        this.$message({ message: "Une erreur est survenue lors de la génération de la facture : " + err, type: "error" })
-      }).finally(() => {
-        this.loadingInvoice = false
-      })
-    },
     deleteInvoice (invoiceId) {
-      this.loadingInvoice = true
+      this.loading = true
       axios.delete(
         `/api/tresorerie/factures/${invoiceId}/`,
         { withCredentials: true}
@@ -259,17 +235,7 @@ export default {
       }).catch((err) => {
         this.$message({message: "Impossible de supprimer la facture : " + err, type: "error"})
       }).finally(() => {
-        this.loadingInvoice = false
-      })
-    },
-    downloadPVR (pvrId) {
-      this.loadingPVR = true
-      axios.get(`/api/publish/pvr/${pvrId}`, { withCredentials: true, responseType: "blob" }).then((response) => {
-        this.createDownloadElement(response.data, "PVR-" + this.etude.name + ".docx")
-      }).catch(err => {
-        this.$message({ message: "Une erreur est survenue lors de la génération du PVR : " + err, type: "error" })
-      }).finally(() => {
-        this.loadingPVR = false
+        this.loading = false
       })
     },
     deletePVR (pvrId, index) {
@@ -278,23 +244,6 @@ export default {
       }).catch(err => {
         this.$message({ message: err, type: "error", offset: 40 })
       })
-    },
-    createDownloadElement (data, filename) {
-      let fileURL = window.URL.createObjectURL(new Blob([data]))
-      let fileLink = document.createElement("a")
-
-      fileLink.href = fileURL
-      fileLink.setAttribute("download", filename)
-      document.body.appendChild(fileLink)
-
-      fileLink.click()
-    },
-    getConsultantName (mission) {
-      if(mission.consultant == undefined) {
-        return "(vide)"
-      } else {
-        return mission.consultant.firstname + " " + mission.consultant.lastname
-      }
     },
     pushToConsultant (mission) {
       if(mission.consultant != undefined) {
