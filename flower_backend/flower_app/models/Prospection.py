@@ -1,9 +1,11 @@
+from django.conf import settings
 from django.db import models
-from datetime import date
+
 from rest_framework import serializers
 
 from flower_app.models.People.Membre import Membre
 
+from datetime import date
 
 class ContactWay(models.Model):
     contactWay = models.CharField(max_length=100)
@@ -12,7 +14,7 @@ class ContactWay(models.Model):
         return self.contactWay
 
     def anonymiser(self):
-        self.contactWay = 'xxxxx'
+        self.contactWay = settings.ANONYMISATION_STRING
         self.save()
 
 class ContactWaySerializer(serializers.ModelSerializer):

@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -26,15 +27,15 @@ class Membre(Personne):
     def anonymiser(self):
         super().anonymiser()
         self.user = None
-        self.promotion = -1
-        self.email_junior = 'xxxxx'
-        self.address = 'xxxxx'
-        self.postcode = 'xxxxx'
-        self.town = 'xxxxx'
-        self.country = 'xxxxx'
-        self.nationality = 'xxxxx'
-        self.birth_place = 'xxxxx'
-        self.birth_date = '1970-01-01'
+        self.promotion = settings.ANONYMISATION_INTEGER
+        self.email_junior = settings.ANONYMISATION_STRING
+        self.address = settings.ANONYMISATION_STRING
+        self.postcode = settings.ANONYMISATION_STRING
+        self.town = settings.ANONYMISATION_STRING
+        self.country = settings.ANONYMISATION_STRING
+        self.nationality = settings.ANONYMISATION_STRING
+        self.birth_place = settings.ANONYMISATION_STRING
+        self.birth_date = settings.ANONYMISATION_DATE
         self.save()
 
 class UserSerializer(serializers.ModelSerializer):

@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 
 from rest_framework import serializers
@@ -11,11 +12,11 @@ class Personne(models.Model):
     email = models.EmailField()
 
     def anonymiser(self):
-        self.lastname = 'xxxxx'
-        self.firstname = 'xxxxx'
-        self.gender = 'xxxxx'
-        self.mobile = 'xxxxx'
-        self.email = 'xxxxx'
+        self.lastname = settings.ANONYMISATION_STRING
+        self.firstname = settings.ANONYMISATION_STRING
+        self.gender = settings.ANONYMISATION_STRING
+        self.mobile = settings.ANONYMISATION_STRING
+        self.email = settings.ANONYMISATION_STRING
         self.save()
 
     class Meta:

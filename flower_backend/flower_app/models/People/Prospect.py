@@ -1,5 +1,8 @@
+from django.conf import settings
 from django.db import models
+
 from rest_framework import serializers
+
 from flower_app.models.People.Membre import Membre
 from flower_app.models.Prospection import Action, ContactWay
 
@@ -24,10 +27,10 @@ class Prospect(models.Model):
         return self.name
 
     def anonymiser(self):
-        self.address = 'xxxxx'
-        self.town = 'xxxxx'
-        self.name = 'xxxxx'
-        self.postcode = 'xxxxx'
+        self.address = settings.ANONYMISATION_STRING
+        self.town = settings.ANONYMISATION_STRING
+        self.name = settings.ANONYMISATION_STRING
+        self.postcode = settings.ANONYMISATION_STRING
         for elt in self.contactWay.all():
             elt.anonymiser()
         for elt in self.employe_set.all():
