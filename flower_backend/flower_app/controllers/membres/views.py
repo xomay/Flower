@@ -25,7 +25,8 @@ class MembreView(generics.ListCreateAPIView):
         new_membre = Membre.objects.get(pk=rep.data['id'])
         new_membre.poste = Poste.objects.get(pk=request.data['poste'])
         new_membre.save()
-        return rep
+        serializer = MembreSerializer(new_membre)
+        return Response(serializer.data, status=HTTPStatus.CREATED)
 
 class MembreDetailView(generics.RetrieveUpdateAPIView):
     permission_classes = [IsAuthenticated, HasGroupPermission]
@@ -44,7 +45,8 @@ class MembreDetailView(generics.RetrieveUpdateAPIView):
         membre = Membre.objects.get(pk=kwargs['pk'])
         membre.poste = Poste.objects.get(pk=data['poste'])
         membre.save()
-        return response
+        serializer = MembreSerializer(membre)
+        return Response(serializer.data, status=HTTPStatus.OK)
 
 class OpenAccountView(generics.UpdateAPIView):
     permission_classes = [IsAuthenticated, HasGroupPermission]

@@ -30,11 +30,17 @@ class ControllersProspectsTest(TestCase):
             'name': 'Prospect 3',
             'address': 'Adresse prospect 3',
             'postcode': '35170',
-            'town': 'Chaton'
+            'town': 'Chaton',
+            'charge': None,
+            'contactWay': [],
+            'prospectAction': [],
+            'nextDate': None,
+            'advancement': 'NC'
         }
         request = self.client.post(
             '/api/prospects/',
-            newProspect
+            newProspect,
+            format='json'
         )
         newProspect['id'] = request.data['id']
         self.assertEqual(request.status_code, 201)
@@ -45,7 +51,18 @@ class ControllersProspectsTest(TestCase):
         request = self.client.get(
             '/api/prospects/2/'
         )
-        expectedValues = { 'id': 2, 'name':"Prospect 2", 'address':"Adresse prospect 2", 'postcode':"44000", 'town':"Nantes"}
+        expectedValues = { 
+            'id': 2,
+            'name':"Prospect 2",
+            'address':"Adresse prospect 2",
+            'postcode':"44000",
+            'town':"Nantes",
+            'charge': None,
+            'contactWay': [],
+            'prospectAction': [],
+            'nextDate': None,
+            'advancement': 'NC'
+        }
         self.assertEqual(request.status_code, 200)
         self.assertDictEqual(request.data, expectedValues)
 
@@ -56,7 +73,18 @@ class ControllersProspectsTest(TestCase):
                 'name': 'New prospect name'
             }
         )
-        expectedValues = { 'id': 2, 'name': 'New prospect name', 'address': "Adresse prospect 2", 'postcode': "44000", 'town': "Nantes"}
+        expectedValues = { 
+            'id': 2,
+            'name': 'New prospect name',
+            'address': "Adresse prospect 2",
+            'postcode': "44000",
+            'town': "Nantes",
+            'charge': None,
+            'contactWay': [],
+            'prospectAction': [],
+            'nextDate': None,
+            'advancement': 'NC'
+        }
         self.assertEqual(request.status_code, 200)
         self.assertDictEqual(request.data, expectedValues)
 
@@ -66,12 +94,18 @@ class ControllersProspectsTest(TestCase):
             'name': 'New prospect name',
             'address': 'New adresse prospect 2',
             'postcode': '44000',
-            'town': 'Nantes'
+            'town': 'Nantes',
+            'charge': None,
+            'contactWay': [],
+            'prospectAction': [],
+            'nextDate': None,
+            'advancement': 'NC'
         }
 
         request = self.client.put(
             '/api/prospects/2/',
-            updatedUser
+            updatedUser,
+            format='json'
         )
         self.assertEqual(request.status_code, 200)
         self.assertDictEqual(request.data, updatedUser)
