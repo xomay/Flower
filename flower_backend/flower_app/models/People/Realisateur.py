@@ -1,13 +1,16 @@
+from django.conf import settings
 from django.db import models
-from datetime import date
-from rest_framework import serializers
 from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.core.exceptions import ValidationError
 
+from rest_framework import serializers
+
 from flower_app.models.People.Personne import Personne
 from flower_app.models.Competence import Competence
 from flower_app.models.Etude import Etude
+
+from datetime import date
 
 # Commentaire
 
@@ -18,6 +21,11 @@ class RealisateurComment(models.Model):
     rating = models.PositiveSmallIntegerField(default=1, validators=[MinValueValidator(0), MaxValueValidator(10)])
     def __str__(self):
         return self.associatedEtude.name + "_"+ str(self.rating)
+
+    def anonymiser(self):
+        self.content = settings.ANONYMISATION_STRING
+        self.save()
+    
 
 class RealisateurCommentSerializer(serializers.ModelSerializer):
     class Meta:
@@ -55,6 +63,24 @@ class Realisateur(Personne):
 
     def __str__(self):
         return self.firstname + ' ' + self.lastname
+
+    def anonymiser(self):
+        super().anonymiser()
+        self.postcode = settings.ANONYMISATION_STRING
+        self.promotion = settings.ANONYMISATION_INTEGER
+        self.address = settings.ANONYMISATION_STRING
+        self.email_insa = settings.ANONYMISATION_STRING
+        self.birth_date = settings.ANONYMISATION_DATE
+        self.birth_place = settings.ANONYMISATION_STRING
+        self.security_social_number = settings.ANONYMISATION_STRING
+        self.filiere = settings.ANONYMISATION_STRING
+        self.town = settings.ANONYMISATION_STRING
+        self.country = settings.ANONYMISATION_STRING
+        self.nationality = settings.ANONYMISATION_STRING
+        for elt in self.comments.all():
+            elt.anonymiser()
+        self.save()
+
 
     @property
     def rating(self):
