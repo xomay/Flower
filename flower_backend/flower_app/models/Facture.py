@@ -91,7 +91,7 @@ class FactureSerializer(serializers.ModelSerializer):
         details = self.initial_data.get('details')
         for detail in details:
             detail_id = detail.get('id', None)
-            if detail_id:
+            if detail_id: # Si le détail existe déjà
                 detail_instance = FactureDetail.objects.get(id=detail_id, invoice=instance)
                 detail_instance.description = detail.get('description', detail_instance.description)
                 detail_instance.taxFreeAmount = detail.get('taxFreeAmount', detail_instance.taxFreeAmount)
@@ -99,12 +99,12 @@ class FactureSerializer(serializers.ModelSerializer):
                 detail_instance.invoice = instance
 
                 detail_instance.save()
-            else:
-                description = detail.get('description', detail_instance.description)
-                taxFreeAmount = detail.get('taxFreeAmount', detail_instance.taxFreeAmount)
-                taxes = detail.get('taxes', detail_instance.taxes)
-                FactureDetail.objects.create(invoice=instance, description=description, taxFreeAmount=taxFreeAmount,
-                                             taxes=taxes)
+            else: # si on l'a encore jamais créé
+                print(detail)
+                description = detail['description']
+                taxFreeAmount = detail['taxFreeAmount']
+                taxes = detail['taxes']
+                FactureDetail.objects.create(invoice=instance, description=description, taxFreeAmount=taxFreeAmount, taxes=taxes)
 
         return instance
 
