@@ -36,12 +36,12 @@ export default {
       prospects: [],
       breadcrumb: [
         {
-          name: "Suivi d'étude",
+          name: "Étude (trésorerie)",
           link: "/etudes"
         },
         {
           name: "<loading>",
-          link: `/etudes/${this.$route.params.id}/voir?active=Rédaction`
+          link: `/tresorerie/etudes/${this.$route.params.id}/`
         },
         {
           name: "Ajouter une facture",

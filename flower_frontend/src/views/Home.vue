@@ -10,7 +10,3 @@ export default {
   components: {Navigation}
 }
 </script>
-
-<style>
-
-</style>

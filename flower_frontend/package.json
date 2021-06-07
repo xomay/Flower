@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@vue/eslint-config-standard": "^5.1.2",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "babel-plugin-component": "^1.1.1",
     "core-js": "^3.6.5",
     "element-ui": "^2.13.2",
@@ -24,7 +24,7 @@
     "@vue/cli-plugin-eslint": "^4.5.7",
     "@vue/cli-plugin-router": "~4.4.0",
     "@vue/cli-plugin-vuex": "~4.4.0",
-    "@vue/cli-service": "~4.4.0",
+    "@vue/cli-service": "^4.5.13",
     "babel-eslint": "^10.1.0",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.2.2",

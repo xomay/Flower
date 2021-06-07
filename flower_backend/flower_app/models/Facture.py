@@ -27,7 +27,7 @@ class Facture(models.Model):
 
     @property
     def reference(self):
-        return self.invoiceType + '_' + str(self.invoiceNumber)
+        return str(self.invoiceNumber)
 
     @property
     def amountTaxes(self):
@@ -100,7 +100,6 @@ class FactureSerializer(serializers.ModelSerializer):
 
                 detail_instance.save()
             else: # si on l'a encore jamais créé
-                print(detail)
                 description = detail['description']
                 taxFreeAmount = detail['taxFreeAmount']
                 taxes = detail['taxes']

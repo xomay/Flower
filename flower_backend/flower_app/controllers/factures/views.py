@@ -18,6 +18,16 @@ class FactureView(generics.ListCreateAPIView):
     serializer_class = FactureSerializer
     queryset = Facture.objects.all()
 
+def getFacturesAmountInMonth(year, month):
+    # On met au format "FA" + <yyMM>
+    real = "FA" + year + month
+    print("COUNT : req=<"+real+">")
+    compteur = 0
+    for facture in Facture.objects.all():
+        if(facture.invoiceNumber[:6] == real):
+            compteur = compteur + 1
+    return compteur
+
 # Renvoie, le nombre de facture ayant été produites ce mois-ci.
 class GetMonthAmount(APIView):
     def get(self, request):
@@ -25,12 +35,17 @@ class GetMonthAmount(APIView):
             return HttpResponse(None, status=HTTPStatus.FORBIDDEN)
         year = str(datetime.now().year)[-2:]
         month = str(datetime.now().month)[-2:]
-        real = "FA" + ("0" + year, year)[int(year) > 10] + ("0" + month, month)[int(month) > 10]
-        compteur = 0
-        for facture in Facture.objects.all():
-            if(facture.invoiceNumber[:6] == real):
-                compteur = compteur + 1
-        return HttpResponse(compteur, status=HTTPStatus.OK)
+        year = ("0" + year, year)[int(year) > 9]
+        month = ("0" + month, month)[int(month) > 9]
+        return HttpResponse(getFacturesAmountInMonth(year, month), status=HTTPStatus.OK)
+
+class GetMonthAmountSel(APIView):
+    def get(self, request, dateSelector):
+        if(not request.user.is_authenticated):
+            return HttpResponse(None, status=HTTPStatus.FORBIDDEN)
+        year = dateSelector[2:4]
+        month = dateSelector[-2:]
+        return HttpResponse(getFacturesAmountInMonth(year, month), status=HTTPStatus.OK)
 
 class FactureLineView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated, HasGroupPermission]
