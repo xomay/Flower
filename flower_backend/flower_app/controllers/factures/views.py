@@ -2,11 +2,12 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import generics
-
-from flower_app.controllers.permissions import HasGroupPermission, is_in_group
+from django.http import HttpResponse
+from datetime import datetime
+from http import HTTPStatus
+from flower_app.controllers.permissions import HasGroupPermission
 from flower_app.models.Facture import Facture, FactureSerializer
 from flower_app.models.FactureDetail import FactureDetail, FactureDetailSerializer
-from flower_app.models.Etude import Etude
 
 class FactureView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated, HasGroupPermission]
@@ -16,6 +17,35 @@ class FactureView(generics.ListCreateAPIView):
     }
     serializer_class = FactureSerializer
     queryset = Facture.objects.all()
+
+def getFacturesAmountInMonth(year, month):
+    # On met au format "FA" + <yyMM>
+    real = "FA" + year + month
+    print("COUNT : req=<"+real+">")
+    compteur = 0
+    for facture in Facture.objects.all():
+        if(facture.invoiceNumber[:6] == real):
+            compteur = compteur + 1
+    return compteur
+
+# Renvoie, le nombre de facture ayant été produites ce mois-ci.
+class GetMonthAmount(APIView):
+    def get(self, request):
+        if(not request.user.is_authenticated):
+            return HttpResponse(None, status=HTTPStatus.FORBIDDEN)
+        year = str(datetime.now().year)[-2:]
+        month = str(datetime.now().month)[-2:]
+        year = ("0" + year, year)[int(year) > 9]
+        month = ("0" + month, month)[int(month) > 9]
+        return HttpResponse(getFacturesAmountInMonth(year, month), status=HTTPStatus.OK)
+
+class GetMonthAmountSel(APIView):
+    def get(self, request, dateSelector):
+        if(not request.user.is_authenticated):
+            return HttpResponse(None, status=HTTPStatus.FORBIDDEN)
+        year = dateSelector[2:4]
+        month = dateSelector[-2:]
+        return HttpResponse(getFacturesAmountInMonth(year, month), status=HTTPStatus.OK)
 
 class FactureLineView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated, HasGroupPermission]
@@ -37,8 +67,7 @@ class FactureLineView(generics.RetrieveUpdateDestroyAPIView):
 class RemoveFactureLineView(generics.DestroyAPIView):
     permission_classes = [IsAuthenticated, HasGroupPermission]
     required_groups = {
-        'DELETE': ['ROLE_CA', 'ROLE_TRESO']                                   #from modules/etudes/components/invoice/InvoiceForm.vue in modules/etudes/views/invoice/InvoiceCreate.vue
-                                                                #   or in modules/etudes/views/invoice/InvoiceModify.vue
+        'DELETE': ['ROLE_CA', 'ROLE_TRESO']
     }
     serializer_class = FactureDetailSerializer
     queryset = FactureDetail.objects.all()

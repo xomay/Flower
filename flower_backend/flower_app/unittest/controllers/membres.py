@@ -3,6 +3,7 @@ from django.contrib.auth.models import User, Group
 from rest_framework.test import APIClient
 from rest_framework.authtoken.models import Token
 from flower_app.models.People.Membre import Membre
+from flower_app.models.Poste import Poste
 
 class ControllersMembresTest(TestCase):
 
@@ -17,6 +18,8 @@ class ControllersMembresTest(TestCase):
 
         Membre.objects.create(id=1, promotion="2021", birth_date="1998-01-01")
         Membre.objects.create(id=2, promotion="2020", birth_date="1997-01-01")
+
+        Poste.objects.create(id=1, name='name', name_feminine='name_feminine')
 
     def test_getMembres(self):
         request = self.client.get(
@@ -40,13 +43,23 @@ class ControllersMembresTest(TestCase):
                 'birth_place': 'France',
                 'email': 'firstname.lastname@test.com',
                 'promotion': 2021,
-                'birth_date': '1998-01-01'
+                'birth_date': '1998-01-01',
+                'poste': 1,
+                'user': None
             }
         request = self.client.post(
             '/api/membres/',
-            newUser
+            newUser,
+            format='json'
         )
         newUser['id'] = request.data['id']
+        newUser['poste'] = { 
+            'id': 1,
+            'name': 'name',
+            'name_feminine': 'name_feminine',
+            'subordinates': []
+        }
+        
         self.assertEqual(request.status_code, 201)
         self.assertDictEqual(request.data, newUser)
         self.assertEqual(Membre.objects.count(), 3)
@@ -63,8 +76,10 @@ class ControllersMembresTest(TestCase):
         request = self.client.patch(
             '/api/membres/2/',
             {
-                'promotion': 1990
-            }
+                'promotion': 1990,
+                'poste': 1
+            },
+            format='json'
         )
         self.assertEqual(request.status_code, 200)
         self.assertEqual(request.data['promotion'], 1990)
@@ -86,11 +101,20 @@ class ControllersMembresTest(TestCase):
             'birth_place': 'France',
             'email': 'firstname.lastname@test.com',
             'promotion': 2003,
-            'birth_date': '1980-01-01'
+            'birth_date': '1980-01-01',
+            'poste': 1,
+            'user': None
         }
         request = self.client.put(
             '/api/membres/2/',
-            updatedUser
+            updatedUser,
+            format='json'
         )
+        updatedUser['poste'] = { 
+            'id': 1,
+            'name': 'name',
+            'name_feminine': 'name_feminine',
+            'subordinates': []
+        }
         self.assertEqual(request.status_code, 200)
         self.assertDictEqual(request.data, updatedUser)

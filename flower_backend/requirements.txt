@@ -10,3 +10,4 @@ num2words
 plotly
 pandas
 mysqlclient
+Django

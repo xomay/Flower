@@ -28,6 +28,15 @@ export default {
       const date_now = new Date()
       return date_now.getFullYear() +"-"+ (date_now.getMonth() < 9 ? "0" : "")+ (date_now.getMonth()+1) +"-"+(date_now.getDate() < 10 ? "0" : "")+ (date_now.getDate())
     },
+    // @returns today's last two digits of the year. ("21" if the year is 2021)
+    generateYearDigits () {
+      const date_now = new Date()
+      return String(date_now.getFullYear()).slice(-2)
+    },// @returns today's last two digits of the month. ("05" if the year is may)
+    generateMonthDigits () {
+      const date_now = new Date()
+      return String((date_now.getMonth() < 9 ? "0" : "")+ (date_now.getMonth()+1)).slice(-2)
+    },
     niceFileSize (size) {
       if(size < 1000)
         return size + " o"

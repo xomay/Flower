@@ -20,15 +20,51 @@
       </el-col>
       <el-col :span="12">
         <el-form-item
-          label="Numéro de la facture"
+          label="Numéro de facture du mois"
           prop="invoiceNumber"
         >
-          <el-input v-model="value.invoiceNumber">
-            <template slot="prepend">
-              {{ value.invoiceType }}_
-            </template>
-          </el-input>
+          <el-input-number
+            v-model="value.invoiceNumber"
+            controls-position="right"
+            style="width:200px;"
+            :min="1"
+            :max="99"
+            @change="updateFANumber()"
+          />
         </el-form-item>
+      </el-col>
+      <el-col :span="12">
+        <!-- Affichage du futur numéro de facture -->
+        <div class="el-form-item el-form-item--medium">
+          <label
+            class="el-form-item__label"
+            style="width: 30%;"
+          >
+            Numéro de facture :
+          </label>
+          <div
+            class="el-form-item__content"
+            style="margin-left: 30%;"
+          >
+            <el-input
+              v-model="invoiceNumberDisplay"
+              :disabled="true"
+              style="width: 70%;"
+            />
+          </div>
+        </div>
+      </el-col>
+      <el-col :span="12">
+        <!--  Alerte si le numéro du mois entré localement diffère de la version du serveur. On laisse exprès la possibilité de prendre une décision manuelle. -->
+        <el-alert
+          v-if="originalMonthNum != value.invoiceNumber"
+          title="Attention"
+          :description="alertDescription"
+          type="warning"
+          show-icon
+          :closable="false"
+          style="width: 80%;"
+        />
       </el-col>
       <el-col :span="24">
         <el-form-item
@@ -56,6 +92,7 @@
             value-format="yyyy-MM-dd"
             placeholder="Date d'émission"
             type="date"
+            @change="dateEmissionChanged"
           />
         </el-form-item>
       </el-col>
@@ -182,6 +219,15 @@
         <el-divider />
       </el-col>
     </el-row>
+    <el-alert
+      v-if="value.details.length == 0"
+      title="Attention"
+      description="Aucun détail n'a été ajouté à la facture"
+      type="warning"
+      show-icon
+      center
+      :closable="false"
+    />
     <el-button
       type="success"
       :loading="loading"
@@ -194,9 +240,11 @@
 
 <script>
 const axios = require("axios")
+import Utils from "@/mixins/Utils"
 
 export default {
   name: "InvoiceForm",
+  mixins: [Utils],
   props: {
     value: { type: Object, required: true },
     loading: { type: Boolean, required: true },
@@ -204,6 +252,11 @@ export default {
   },
   data () {
     return {
+      loading_local: false,
+      invoiceNumberDisplay: "",
+      alertDescription: "",
+      originalMonthNum: 0,
+      originalInvoiceBase: "FA",
       formRules: {
         invoiceNumber: [
           {required: true, message: "Obligatoire", trigger: "blur"}
@@ -235,6 +288,9 @@ export default {
       }
     }
   },
+  created () {
+    this.dateEmissionChanged(null)
+  },
   methods: {
     validateForm () {
       var result = true
@@ -250,11 +306,33 @@ export default {
         this.$message({message: "Le formulaire contient des erreurs.", type:"error", offset:40})
       }
     },
+    dateEmissionChanged (nv) {
+      axios.get(
+        "/api/tresorerie/factures/count/" + (nv == null ? "" : nv.substring(0,7) + "/"),
+        { withCredentials: true }
+      ).then((res) => {
+        this.originalMonthNum = res.data + 1
+        this.value.invoiceNumber = this.originalMonthNum
+        this.originalInvoiceBase = "FA" + this.generateYearDigits() + this.generateMonthDigits()
+        this.updateFANumber()
+      }).catch((err) => {
+        this.$message({message: "Impossible de récupérer les autres factures : " + err, type: "error"})
+      })
+    },
     addDetail () {
       this.value.details.push({
         invoice: this.value.id,
         taxes: 0.2
       })
+    },
+    updateFANumber () {
+      this.value.invoiceNumber = (this.value.invoiceNumber > 9 ? "" : "0") + String(this.value.invoiceNumber)
+      this.invoiceNumberDisplay = this.originalInvoiceBase + this.value.invoiceNumber
+      this.updateAlert()
+    },
+    updateAlert () {
+      this.alertDescription =
+      `Le numéro de facture de ce mois (${this.value.invoiceNumber}) ne correspond pas avec la valeur du serveur (${(this.originalMonthNum < 9 ? "0":"")+this.originalMonthNum}).`
     },
     removeDetail (index, detailId) {
       if (!detailId) {
