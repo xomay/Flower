@@ -306,7 +306,7 @@ export default {
         { withCredentials: true}
       ).then(() => {
         this.$message({message: "Facture supprimée avec succès.", type: "success"})
-        this.etude.invoices = this.invoi.invoices.filter(emlt => emlt.id !== invoiceId)
+        this.etude.invoices = this.invoices.filter(emlt => emlt.id !== invoiceId)
       }).catch((err) => {
         this.$message({message: "Impossible de supprimer la facture : " + err, type: "error"})
       }).finally(() => {
