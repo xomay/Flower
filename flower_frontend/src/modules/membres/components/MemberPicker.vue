@@ -5,7 +5,7 @@
     class="inline-input"
     :fetch-suggestions="queryValue"
     :placeholder="placeholder"
-    clearable
+    :clearable="cleareable"
     @select="handleSelectvalue"
     @clear="$emit('clear')"
   />
@@ -18,6 +18,7 @@ export default {
     value: { type: undefined, required: true },
     itemList: { type: Array, required: true },
     placeholder: { type: String, required: true },
+    cleareable: { type: Boolean, default: true },
     disabled: { type: Boolean, default: false },
     forceValue: { type: String, default () { return null } }
   },

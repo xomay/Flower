@@ -9,7 +9,7 @@ from .models.People.Membre import Membre
 from .models.People.Realisateur import Realisateur, RealisateurComment
 from .models.Mission import Mission
 from .models.PVR import PVR
-from .models.GroupePhase import Groupe, Phase, US
+from .models.GroupePhase import GroupesSet, Groupe, Phase, US
 from .models.People.Prospect import Prospect
 from .models.Prospection import Action, TypeAction, ContactWay
 from .models.Competence import Competence
@@ -20,6 +20,7 @@ from .models.Poste import Poste
 from .models.UploadedFile import UploadedFile
 from .models.BaseUrsaff import BaseUrsaff
 from .models.BV import BV, Cotisation
+from .models.Avenant import Avenant
 
 # Register your models here.
 admin.site.register(CE)
@@ -48,3 +49,5 @@ admin.site.register(UploadedFile)
 admin.site.register(BaseUrsaff)
 admin.site.register(BV)
 admin.site.register(Cotisation)
+admin.site.register(GroupesSet)
+admin.site.register(Avenant)

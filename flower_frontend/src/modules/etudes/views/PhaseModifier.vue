@@ -3,6 +3,17 @@
     title="Modifier les Phases"
     :breadcrumb="breadcrumb"
   >
+    <el-alert
+      v-if="!isOriginalGroupes"
+      type="info"
+      show-icon
+      :closable="false"
+      style="margin: 10px;"
+    >
+      <template slot="title">
+        <b><u>Note :</u> Il ne s'agit pas des phases originales de l'étude, mais celles d'un avenant.</b>
+      </template>
+    </el-alert>
     <PhasesForm
       v-model="groupes"
       :small="false"
@@ -33,6 +44,8 @@ export default {
     return {
       loading: true,
       groupes: [],
+      isOriginalGroupes: true,
+      originalGroupOwner: -1,
       breadcrumb: [
         {
           name: "Suivi d'Etude",
@@ -55,7 +68,9 @@ export default {
       `/api/etudes/${this.$route.params.id}/`,
       {withCredentials: true}
     ).then((res) => {
-      res.data.groupes = res.data.groupes.sort((a, b) => a.index - b.index)
+      this.isOriginalGroupes = res.data.isOriginalGroupes
+      this.originalGroupOwner = res.data.currentGroupes.id
+      res.data.groupes = res.data.currentGroupes.groupes.sort((a, b) => a.index - b.index)
       res.data.groupes.forEach((groupe) => {
         groupe.phases = groupe.phases.sort((a, b) => a.index - b.index)
       })
@@ -75,6 +90,7 @@ export default {
         description: "Description",
         project: this.$route.params.id,
         index: this.groupes.length + 1,
+        owner: this.originalGroupOwner,
         phases: []
       }
       axios.post(

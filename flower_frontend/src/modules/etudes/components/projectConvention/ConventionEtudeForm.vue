@@ -34,7 +34,7 @@
       <el-date-picker
         v-model="ce.signDate"
         type="date"
-        placeholder="Choississez un jour"
+        placeholder="Choisissez un jour"
       />
     </el-form-item>
     <el-form-item

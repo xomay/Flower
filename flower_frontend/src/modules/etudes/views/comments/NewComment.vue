@@ -50,7 +50,7 @@
         >
           <el-date-picker
             v-model="comment.date"
-            placeholder="Choississez un jour"
+            placeholder="Choisissez un jour"
             format="dd-MM-yyyy"
             value-format="yyyy-MM-dd"
             type="date"

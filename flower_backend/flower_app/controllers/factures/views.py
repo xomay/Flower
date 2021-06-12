@@ -21,7 +21,6 @@ class FactureView(generics.ListCreateAPIView):
 def getFacturesAmountInMonth(year, month):
     # On met au format "FA" + <yyMM>
     real = "FA" + year + month
-    print("COUNT : req=<"+real+">")
     compteur = 0
     for facture in Facture.objects.all():
         if(facture.invoiceNumber[:6] == real):

@@ -1,13 +1,11 @@
 from django.db import models
 from rest_framework import serializers
-import datetime
-from django.apps import apps
 
-from flower_app.models.People.Realisateur import Realisateur, RealisateurSerializer
-from flower_app.models.Etude import Etude
-from flower_app.models.GroupePhase import Phase
-from flower_app.serializers import CustomListSerializer
-from flower_app.models.BaseUrsaff import getLastBase
+from .People.Realisateur import Realisateur, RealisateurSerializer
+from .Etude import Etude
+from .GroupePhase import Phase
+from ..serializers import CustomListSerializer
+from .BaseUrsaff import getLastBase
 
 def emptyList():
     return []

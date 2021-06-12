@@ -144,7 +144,7 @@
             <el-date-picker
               v-model="props.row.beginDate"
               type="date"
-              placeholder="Choississez un jour"
+              placeholder="Choisissez un jour"
               width="200"
               size="mini"
               format="dd-MM-yyyy"
