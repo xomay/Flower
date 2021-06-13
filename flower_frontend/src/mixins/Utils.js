@@ -36,6 +36,12 @@ export default {
     generateMonthDigits () {
       const date_now = new Date()
       return String((date_now.getMonth() < 9 ? "0" : "")+ (date_now.getMonth()+1)).slice(-2)
+    },// Get date in format yyy-mm-dd and @returns dd/mm/yyyy
+    sqlToDisplayDate (date) {
+      if(date == null)
+        return "[ERREUR: date non défine.]"
+      const tokens = date.split("-")
+      return tokens[2] + "/" + tokens[1] + "/" + tokens[0]
     },
     niceFileSize (size) {
       if(size < 1000)

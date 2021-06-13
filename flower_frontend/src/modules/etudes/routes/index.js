@@ -59,6 +59,11 @@ const routes = [
     name: "etudes-commentaire-ajouter",
     component: () => import("../views/comments/NewComment")
   },
+  {
+    path: "etudes/:id/avenants/ajouter",
+    name: "etudes-avenants-ajouter",
+    component: () => import("../views/avenants/AvenantCreer")
+  },
   // Accès réalisateur
   {
     path: "etudes/acces-rea",

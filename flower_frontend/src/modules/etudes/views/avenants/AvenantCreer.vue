@@ -151,6 +151,14 @@
       @delete-phase="deletePhase"
       @delete-us="deleteUS"
     />
+    <el-button
+      v-show="!before_phases"
+      type="success"
+      style="margin-top: 20px;"
+      @click="validatePhases()"
+    >
+      Valider les phases
+    </el-button>
   </BaseComponent>
 </template>
 
@@ -172,7 +180,6 @@ export default {
       amountOfAvenants: 0,
       etude_num: "",
       sourceGroupes: [],
-      targetGroupesSetId: -1,
       avenant: {
         displayRef: "AVx",
         project: this.$route.params.id,
@@ -218,7 +225,6 @@ export default {
       this.avenant.number = res.data.avenants.length + 1
       this.sourceGroupes = res.data.currentGroupes.groupes
       this.breadcrumb[1].name = res.data.name
-      console.log(this.sourceGroupes)
       this.updateReference()
       // get employés :
       axios.get(
@@ -247,6 +253,29 @@ export default {
     })
   },
   methods: {
+    validatePhases () {
+      this.loading = true
+      axios.put(
+        "/api/etudes/groupes/",
+        this.avenant.groupes.groupes,
+        {withCredentials: true}
+      ).then(() => {
+        this.$message({message: "Les Groupes et Phases ont bien été enregistrés", type: "success"})
+        this.$router.push(`/etudes/${this.$route.params.id}/voir?active=Avenants`)
+      }).catch((err) => {
+        this.$message({message: "Erreur lors de l'enregistrement : " + err, type: "error"})
+        if (err.response && err.response.status === 400) {
+          this.$message({message: "Le formulaire comporte des erreurs. Vérifiez les descriptions et les objectifs des phases (menu déroulant)",
+            type: "error",
+            offset: 40})
+        } else {
+          this.$message({message: "Impossible d'enregistrer les Groupes et Phases pour le moment",
+            type: "error",
+            offset: 40})
+        }
+        this.loading = false
+      })
+    },
     startModifPhases () {
       this.$refs.formAvenant.validate((valid) => {
         if(valid) {
@@ -258,10 +287,7 @@ export default {
           ).then(res => {
             // L'intéret de la manipulation est de créer l'avenant, et puis d'ensuite seulement ajouter les US et faire les manip dasn le GroupesSet
             this.before_phases = false // on passe en mode 'modif de phase'
-            console.log(res.data)
             this.avenant.groupes = res.data
-            console.log(this.avenant)
-            console.log(this.avenant.groupes.groupes)
             this.$message({ message: "L'avenant a été créé. Merci de paramétrer les nouvelles phases." , type: "success" })
             this.updateReference()
           }).catch(err => {
@@ -288,7 +314,7 @@ export default {
         description: "Description",
         project: this.$route.params.id,
         index: this.avenant.groupes.groupes.length + 1,
-        owner: this.originalGroupOwner,
+        owner: this.avenant.groupes.id,
         phases: []
       }
       axios.post(
