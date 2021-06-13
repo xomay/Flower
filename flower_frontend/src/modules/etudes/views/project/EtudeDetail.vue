@@ -30,7 +30,7 @@
         name="Récapitulatif"
       />
       <el-tab-pane
-        label="Phases"
+        :label="no_phases ? 'Créer les phases' : 'Phases'"
         name="Phases"
       />
       <el-tab-pane

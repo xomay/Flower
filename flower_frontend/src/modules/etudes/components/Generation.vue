@@ -214,7 +214,7 @@ export default {
     }
   },
   computed: {
-    allowDevisGenerate () { return this.etude.groupes != undefined && this.etude.groupes.length > 0 }
+    allowDevisGenerate () { return this.etude.currentGroupes.groupes.length > 0 }
   },
   created () {
     axios.get(`/api/etudes/${this.$route.params.id}/ce/`, { withCredentials: true }).then((response) => {

@@ -18,7 +18,7 @@
         icon="el-icon-edit"
         :loading="loading"
       >
-        Modifier les phases
+        {{ etude.currentGroupes.groupes.length > 0 ? "Modifier les phases" : "Créer les phases" }}
       </el-button>
     </router-link>
     <div

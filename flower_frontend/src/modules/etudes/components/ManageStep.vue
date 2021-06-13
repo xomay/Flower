@@ -560,7 +560,7 @@ export default {
     },
     // == Documents ==
     // Devis
-    btn_devis_generate () { return this.etude.groupes != undefined && this.etude.groupes.length > 0 },
+    btn_devis_generate () { return this.etude.currentGroupes.groupes.length > 0 },
     btn_devis_levelup () { return this.etude.state == 0 && this.btn_devis_generate },
     btn_devis_help () { return this.etude.state == 0 && ! this.btn_devis_levelup },
     // CE
