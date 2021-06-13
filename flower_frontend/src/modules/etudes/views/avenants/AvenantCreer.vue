@@ -98,6 +98,24 @@
           Avenant délai
         </el-checkbox>
       </el-row>
+      <el-row v-show="avenant.is_delais">
+        <el-form-item
+          label="Nouvelle date :"
+          prop="new_dates"
+          style="margin-top: 10px; margin-bottom: -15px;"
+          :rules="avenant.is_delais ? [{required: true, message: 'Obligatoire', trigger: 'change'}] : []"
+        >
+          <el-date-picker
+            v-model="avenant.new_dates"
+            type="date"
+            placeholder="Fin de l'étude"
+            width="200"
+            size="small"
+            format="dd/MM/yyyy"
+            value-format="yyyy-MM-dd"
+          />
+        </el-form-item>
+      </el-row>
       <el-row>
         <el-checkbox
           v-model="avenant.is_methodo"

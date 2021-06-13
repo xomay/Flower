@@ -34,10 +34,12 @@
         name="Phases"
       />
       <el-tab-pane
+        v-if="!no_phases"
         label="Rédaction"
         name="Rédaction"
       />
       <el-tab-pane
+        v-if="!no_phases"
         label="Avenants"
         name="Avenants"
       />
