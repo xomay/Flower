@@ -7,6 +7,7 @@
       type="info"
       show-icon
       :closable="false"
+      style="margin-bottom: 20px;"
     />
     <el-timeline>
       <el-timeline-item

@@ -5,11 +5,17 @@
       <tbody>
         <tr>
           <td class="rowStyle noRight">
-            {{ realisateur.gender }}. {{ realisateur.firstname }} {{ realisateur.lastname }}
+            {{ realisateur.gender }} {{ realisateur.firstname }} {{ realisateur.lastname }}
             <StarRate
-              :v-show="realisateur.rating >= 0"
+              v-show="realisateur.rating >= 0"
               :value="realisateur.rating"
             />
+            <p
+              v-show="realisateur.rating < 0"
+              style="color: gray; font-weight: 300; font-size: 80%; margin-top: 10px;"
+            >
+              <i>Pas encore de notation</i>
+            </p>
           </td>
         </tr>
       </tbody>

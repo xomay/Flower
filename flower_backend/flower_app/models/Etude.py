@@ -87,6 +87,9 @@ class Etude(models.Model):
         return self.originalGroupes
 
 class EtudeSerializer(serializers.ModelSerializer):
+    avenantsAmount = serializers.SerializerMethodField()
+    def get_avenantsAmount(self, instance):
+        return instance.avenant_set.count()
     class Meta:
         model = Etude
         fields = '__all__'
