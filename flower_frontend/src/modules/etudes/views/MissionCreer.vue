@@ -61,7 +61,7 @@ export default {
       `/api/etudes/${this.$route.params.id}/`,
       {withCredentials: true}
     ).then((res) => {
-      this.phases = res.data.groupes.map((groupe) => groupe.phases).flat()
+      this.phases = res.data.currentGroupes .groupes.map((groupe) => groupe.phases).flat()
       res.data.missions.forEach((mission) => {
         mission.consultant = mission.consultant.id
       })
@@ -130,9 +130,7 @@ export default {
             offset: 40})
           this.$router.push(`/etudes/${this.$route.params.id}/voir?active=Rédaction`)
         }).catch((err) => {
-          this.$message({message: "Impossible de mettre à jour les missions : "+err,
-            type: "error",
-            offset: 40})
+          this.$message({message: "Impossible de mettre à jour les missions : "+err, type: "error", offset: 40})
         }).finally(() => {
           this.loading = false
         })

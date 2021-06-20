@@ -41,6 +41,7 @@
               v-model="avenant.signataire_junior"
               :item-list="membres"
               placeholder="Signataire JE"
+              :disabled="!before_phases"
             />
           </el-form-item>
         </el-col>
@@ -57,6 +58,7 @@
               size="medium"
               format="dd/MM/yyyy"
               value-format="yyyy-MM-dd"
+              :disabled="!before_phases"
             />
           </el-form-item>
         </el-col>
@@ -72,6 +74,7 @@
               v-model="avenant.signataire_prospect"
               :item-list="employes"
               placeholder="Signataire Prospect"
+              :disabled="!before_phases"
             />
           </el-form-item>
         </el-col>
@@ -87,12 +90,14 @@
             type="textarea"
             :rows="2"
             placeholder="Expliquez les raisons de cet avenant."
+            :disabled="!before_phases"
           />
         </el-form-item>
       </el-row>
       <el-row>
         <el-checkbox
           v-model="avenant.is_delais"
+          :disabled="!before_phases"
           @change="updateReference"
         >
           Avenant délai
@@ -103,7 +108,7 @@
           label="Nouvelle date :"
           prop="new_dates"
           style="margin-top: 10px; margin-bottom: -15px;"
-          :rules="avenant.is_delais ? [{required: true, message: 'Obligatoire', trigger: 'change'}] : []"
+          :rules="avenant.is_delais ? [{required: true, message: 'Obligatoire', trigger: 'change' }] : []"
         >
           <el-date-picker
             v-model="avenant.new_dates"
@@ -113,12 +118,14 @@
             size="small"
             format="dd/MM/yyyy"
             value-format="yyyy-MM-dd"
+            :disabled="!before_phases"
           />
         </el-form-item>
       </el-row>
       <el-row>
         <el-checkbox
           v-model="avenant.is_methodo"
+          :disabled="!before_phases"
           @change="updateReference"
         >
           Avenant méthodologique
@@ -127,6 +134,7 @@
       <el-row>
         <el-checkbox
           v-model="avenant.is_cdc"
+          :disabled="!before_phases"
           @change="updateReference"
         >
           Avenant du cahier des charges
@@ -135,6 +143,7 @@
       <el-row>
         <el-checkbox
           v-model="avenant.is_budget"
+          :disabled="!before_phases"
           @change="updateReference"
         >
           Avenant budget
@@ -162,6 +171,7 @@
       v-show="!before_phases"
       v-model="avenant.groupes.groupes"
       :small="false"
+      :disabled="edit_rdms"
       @add-us="addUS"
       @add-groupe="addGroupe"
       @add-phase="addPhase"
@@ -170,24 +180,55 @@
       @delete-us="deleteUS"
     />
     <el-button
-      v-show="!before_phases"
+      v-show="(!before_phases) && !(edit_rdms)"
       type="success"
+      :disabled="loading"
       style="margin-top: 20px;"
       @click="validatePhases()"
     >
       Valider les phases
     </el-button>
+    <el-button
+      v-show="edit_rdms"
+      :disabled="loading"
+      type="text"
+      icon="el-icon-plus"
+      @click="addMission"
+    >
+      Ajouter une mission
+    </el-button>
+    <MissionForm
+      v-show="edit_rdms"
+      :value="missions"
+      :loading="loading"
+      :phases="phases"
+      :consultants="realisateurs"
+      @save="validateRDMs"
+    />
+    <el-row style="position: relative;">
+      <el-button
+        v-show="!before_phases"
+        :disabled="loading"
+        type="danger"
+        icon="el-icon-trash"
+        style="margin-top: -30px; position: absolute; right: 20px;"
+        @click="deleteAvenant()"
+      >
+        Arrêter et supprimer cet avenant
+      </el-button>
+    </el-row>
   </BaseComponent>
 </template>
 
 <script>
 import MemberPicker from "@/modules/membres/components/MemberPicker"
 import PhasesForm from "@/modules/etudes/components/forms/PhasesForm"
+import MissionForm from "@/modules/etudes/components/forms/MissionForm"
 import Utils from "@/mixins/Utils"
 const axios = require("axios")
 export default {
   name: "AvenantCreer",
-  components: {MemberPicker, PhasesForm},
+  components: {MemberPicker, PhasesForm, MissionForm},
   mixins: [Utils],
   data () {
     return {
@@ -195,6 +236,12 @@ export default {
       employes: [],
       loading: true,
       before_phases: true,
+      edit_rdms: false,
+      // Missions
+      missions: [],
+      realisateurs: [],
+      phases: [],
+      //
       amountOfAvenants: 0,
       etude_num: "",
       sourceGroupes: [],
@@ -271,6 +318,33 @@ export default {
     })
   },
   methods: {
+    validateRDMs () {
+      //
+    },
+    addMission () {
+      this.missions.push({
+        consultant: "",
+        missionBegin: "",
+        missionEnd: "",
+        percentageJunior: "0.55",
+        JEHNumber: 1,
+        JEHPrice: 400,
+        phases: []
+      })
+    },
+    deleteAvenant () {
+      this.loading = true
+      axios.delete(
+        `/api/avenants/${this.avenant.id}/`,
+        {withCredentials: true}
+      ).then(() => {
+        this.$message({message: "Action annulée avec succès.", type: "success"})
+        this.$router.push(`/etudes/${this.$route.params.id}/voir?active=Avenants`)
+      }).catch((err) => {
+        this.$message({message: "Impossible de supprimer l'avenant : " + err, type: "error"})
+        this.loading = false
+      })
+    },
     validatePhases () {
       this.loading = true
       axios.put(
@@ -279,7 +353,17 @@ export default {
         {withCredentials: true}
       ).then(() => {
         this.$message({message: "Les Groupes et Phases ont bien été enregistrés", type: "success"})
-        this.$router.push(`/etudes/${this.$route.params.id}/voir?active=Avenants`)
+        this.edit_rdms = true
+        axios.get(
+          "/api/realisateurs/",
+          {withCredentials: true}
+        ).then((resRea) => {
+          resRea.data.forEach((elt) => elt.value = this.nicePeople(elt))
+          this.realisateurs = resRea.data
+        }).catch((err) => {
+          this.$message({ message: "Impossible de récupérer les membres de la JE : " + err, type: "error" })
+        }).finally(() => this.loading = false)
+        this.avenant.groupes.groupes.forEach(g => this.phases.push(...g.phases))
       }).catch((err) => {
         this.$message({message: "Erreur lors de l'enregistrement : " + err, type: "error"})
         if (err.response && err.response.status === 400) {
@@ -291,8 +375,7 @@ export default {
             type: "error",
             offset: 40})
         }
-        this.loading = false
-      })
+      }).finally(() => this.loading = false)
     },
     startModifPhases () {
       this.$refs.formAvenant.validate((valid) => {
@@ -305,7 +388,8 @@ export default {
           ).then(res => {
             // L'intéret de la manipulation est de créer l'avenant, et puis d'ensuite seulement ajouter les US et faire les manip dasn le GroupesSet
             this.before_phases = false // on passe en mode 'modif de phase'
-            this.avenant.groupes = res.data
+            this.avenant.id = res.data.id
+            this.avenant.groupes = res.data.groupes
             this.$message({ message: "L'avenant a été créé. Merci de paramétrer les nouvelles phases." , type: "success" })
             this.updateReference()
           }).catch(err => {

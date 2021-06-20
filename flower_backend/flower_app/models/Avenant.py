@@ -5,7 +5,7 @@ from rest_framework import serializers
 from .Etude import Etude
 from .People.Membre import Membre
 from .People.Employe import Employe
-from .GroupePhase import GroupesSet, GroupesSetSerializer
+from .GroupePhase import Groupe, GroupesSet, GroupesSetSerializer, Phase, US
 
 def createNewGS():
     return GroupesSet.objects.create().id
@@ -16,6 +16,7 @@ def getNewNumber(project):
 class Avenant(models.Model):
     # Étude concernée
     project = models.ForeignKey(Etude, on_delete=models.CASCADE)
+    author = models.ForeignKey(Membre, on_delete=models.SET_NULL, null=True, related_name="avenants_made")
     number = models.PositiveSmallIntegerField(null=True, blank=True, default=0) # numéro dans l'étude. Remplie par le serializer. Si == 0 c'est vide
     comment = models.TextField(null=True,blank=True) # un commentaire optionnel pouvant être laissé par le chargé
     # Signataires
@@ -34,7 +35,7 @@ class Avenant(models.Model):
 
     @property
     def hasGroupes(self):
-        return self.groupes != None
+        return (self.groupes != None) and (self.groupes.groupe_set.count() > 0)
 
     @property
     def reference(self):
@@ -43,11 +44,28 @@ class Avenant(models.Model):
             (('', 'M,')[self.is_methodo]) +
             (('', 'C,')[self.is_cdc]) +
             (('', 'B,')[self.is_budget])
-        )[:-1]
+        )[:-1] # le [:-1] sert, bien évidemment, à retirer la virgule en rab'
         return 'AV' + str(self.number) + '-' + modes + '_' + str(self.project.number)
 
     def __str__(self):
         return "Avenant["+self.project.name+"]:"+self.reference
+    
+    def delete(self):
+        #Delete also US, Phases and Groupes
+        groupeset_id = self.groupes.id
+        for us in US.objects.all():
+            if us.phase.groupe.owner.id == groupeset_id:
+                us.delete()
+        for phase in Phase.objects.all():
+            if phase.groupe.owner.id == groupeset_id:
+                phase.delete()
+        for groupe in Groupe.objects.all():
+            if groupe.owner.id == groupeset_id:
+                groupe.delete()
+        # Delete avevant
+        super(Avenant, self).delete()
+        # Delete GS
+        GroupesSet.objects.get(pk=groupeset_id).delete()
     
 class AvenantSerializer(serializers.ModelSerializer):
     reference = serializers.ReadOnlyField()
