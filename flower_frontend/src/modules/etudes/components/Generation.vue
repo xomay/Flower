@@ -105,7 +105,7 @@
             align="center"
           >
             <template slot-scope="scope">
-              <span>{{ scope.row.JEHNumber * scope.row.JEHPrice }}€</span>
+              <span>{{ scope.row.remunerationRaw }}€</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -217,10 +217,13 @@ export default {
     allowDevisGenerate () { return this.etude.currentGroupes.groupes.length > 0 }
   },
   created () {
-    axios.get(`/api/etudes/${this.$route.params.id}/ce/`, { withCredentials: true }).then((response) => {
+    axios.get(
+      `/api/etudes/${this.$route.params.id}/ce/`,
+      {withCredentials: true}
+    ).then((response) => {
       this.displaysCE = response.data.description != ""
     }).catch(err => {
-      this.$message({ message: "Une erreur est survenue lors de la récupération de la CE : " + err, type: "error" })
+      this.$message({ message: "Erreur lors de la récupération de l'étude : " + err, type: "error" })
     })
   },
   methods: {

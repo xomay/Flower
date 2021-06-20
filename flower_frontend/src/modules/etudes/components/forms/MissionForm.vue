@@ -107,12 +107,22 @@
       </el-row>
       <el-divider />
     </el-form>
+    <el-alert
+      v-show="value.length == 0"
+      title="Vous n'avez ajouté aucune RdM"
+      type="warning"
+      description="Apputez sur le bouton ci-dessus pour en ajouter."
+      :closable="false"
+      center
+      effect="dark"
+      show-icon
+    />
     <el-button
       :loading="loading"
-      type="primary"
+      type="success"
       @click="validateForm"
     >
-      Enregistrer
+      Enregistrer les missions
     </el-button>
   </div>
 </template>

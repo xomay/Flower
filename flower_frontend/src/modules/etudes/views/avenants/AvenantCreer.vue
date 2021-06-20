@@ -319,7 +319,34 @@ export default {
   },
   methods: {
     validateRDMs () {
-      //
+      this.loading = true
+      var promesses = [] // promesses à réaliser sur les objets de missions avant de changer l'étude
+      var newMissions = []
+      for(const mission of this.missions) {
+        promesses.push(this.saveMissionObject(mission))
+      }
+      // Attendre l'éxécution des promesses précédentes, et ensuite exécuter la mise à jour.
+      Promise.all(promesses).then((result) => {
+        result.forEach(r => {
+          if(r != null)
+            newMissions.push(r)
+        })
+        axios.put(
+          `/api/etudes/${this.$route.params.id}/missions/`,
+          newMissions,
+          {withCredentials: true}
+        ).then(() => {
+          this.$message({message: "Les missions ont bien été enregistrées", type: "success", offset: 40})
+          this.$router.push(`/etudes/${this.$route.params.id}/voir?active=Rédaction`)
+        }).catch((err) => {
+          this.$message({message: "Impossible de mettre à jour les missions : "+err, type: "error", offset: 40})
+        }).finally(() => {
+          this.loading = false
+        })
+      }).catch(() => {
+        this.$message({message: "Annulation de la mise à jour de RM.", type: "error"})
+        this.loading = false
+      })
     },
     addMission () {
       this.missions.push({
@@ -398,6 +425,23 @@ export default {
         } else {
           this.$message({ message: "Précisez les signataires de l'avenant." , type: "error" })
         }
+      })
+    },
+    saveMissionObject (mission_obj) {
+      mission_obj.project = this.$route.params.id
+      return new Promise((resolve, fail) => {
+        axios.post(
+          `/api/etudes/${this.$route.params.id}/missions/`,
+          mission_obj,
+          {withCredentials: true}
+        ).then((res) => {
+          resolve(res.data)
+        }).catch((err) => {
+          this.$message({message: "Impossible de register une nouvelle mission : "+err,
+            type: "error",
+            offset: 40})
+          fail(err)
+        })
       })
     },
     updateReference () {

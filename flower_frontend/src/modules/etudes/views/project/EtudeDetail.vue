@@ -110,7 +110,8 @@ export default {
         currentGroupes: {groupes:[]},
         linkedFiles: [],
         isOriginalGroupes: true,
-        avenants: []
+        avenants: [],
+        missions: []
       },
       no_phases: false,
       breadcrumb: [
@@ -132,6 +133,7 @@ export default {
       {withCredentials: true}
     ).then((res) => {
       this.etude = res.data
+      this.etude.missions = res.data.missions.filter(m => m.isCurrent == true)
       this.breadcrumb[1].name = this.etude.name
       this.no_phases = this.etude.currentGroupes.groupes.length < 1
     }).catch(() => {

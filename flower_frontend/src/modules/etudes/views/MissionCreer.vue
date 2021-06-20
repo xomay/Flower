@@ -125,9 +125,7 @@ export default {
           newMissions,
           {withCredentials: true}
         ).then(() => {
-          this.$message({message: "Les missions ont bien été enregistrées",
-            type: "success",
-            offset: 40})
+          this.$message({message: "Les missions ont bien été enregistrées", type: "success", offset: 40})
           this.$router.push(`/etudes/${this.$route.params.id}/voir?active=Rédaction`)
         }).catch((err) => {
           this.$message({message: "Impossible de mettre à jour les missions : "+err, type: "error", offset: 40})
