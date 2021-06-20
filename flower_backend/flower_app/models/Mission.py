@@ -26,16 +26,29 @@ class Mission(models.Model):
     missionEnd = models.DateField(blank=True, null=True)
     percentageJunior = models.FloatField(default=0.55)
     JEHNumber = models.IntegerField(default=1)
-    JEHPrice = models.DecimalField(default=400, max_digits=10, decimal_places=2)
     phases = models.ManyToManyField(Phase, default=emptyList, blank=True)
 #    number_this_year = models.IntegerField(default=generateNumberYear)
 
     def __str__(self):
-        return 'Mission - Etude = ' + str(self.project) + ' - Consultant = ' + str(self.consultant) + ' (' + str(self.JEHNumber) + ' * ' + str(self.JEHPrice) + '€)'
+        return 'Mission - Etude = ' + str(self.project) + ' - Consultant = ' + str(self.consultant) + ' (' + str(self.JEHNumber) + 'JEH,  ' + str(self.remunerationRaw) + '€)'
     
     @property
+    def JEHNumber(self):
+        amount = 0
+        for phase in self.phases.all():
+            amount += phase.nbJEH
+        return amount
+    
+    @property
+    def totalPrice(self):
+        amount = 0
+        for phase in self.phases.all():
+            amount += phase.totalPrice
+        return amount
+
+    @property
     def remunerationRaw(self):
-        return self.JEHNumber * self.JEHPrice
+        return self.JEHNumber * self.totalPrice
 
 #    @property
 #    def reference(self):

@@ -81,42 +81,6 @@
             />
           </el-form-item>
         </el-col>
-        <el-col
-          :span="7"
-          :offset="1"
-        >
-          <el-form-item
-            label="Nombre de JEH"
-            prop="JEHNumber"
-            :rules="[
-              {required: true, message: 'Valeur obligatoire', trigger: 'blur'},
-              {required: true, pattern: /^[0-9]+$/, message: 'Entrez un nombre entier positif', trigger: 'change'}
-            ]"
-          >
-            <el-input-number
-              v-model="mission.JEHNumber"
-              :min="0"
-              :max="100"
-              controls-position="right"
-            />
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item
-            label="Prix d'un JEH"
-            prop="JEHPrice"
-            :rules="[{required: true, message: 'Valeur obligatoire', trigger: 'blur'}]"
-          >
-            <el-input-number
-              v-model="mission.JEHPrice"
-              :precision="2"
-              :step="50"
-              :min="50"
-              :max="400"
-              controls-position="right"
-            />
-          </el-form-item>
-        </el-col>
         <el-col :span="24">
           <el-form-item
             label="Phases"

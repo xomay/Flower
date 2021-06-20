@@ -80,9 +80,10 @@ class BV(models.Model):
     def remunerationBrute(self):
         return Decimal(self.rdm.remunerationRaw) * (Decimal(1) - Decimal(self.rdm.percentageJunior))
 
-    @property
-    def remunerationBruteParJEH(self):
-        return Decimal(self.rdm.JEHPrice) * (Decimal(1) - Decimal(self.rdm.percentageJunior))
+    #XXX truc supprimé
+    #@property
+    #def remunerationBruteParJEH(self):
+    #    return Decimal(self.rdm.JEHPrice) * (Decimal(1) - Decimal(self.rdm.percentageJunior))
 
     # Assiette des cotisations = Base URSAFF * nombre de JEH
     @property

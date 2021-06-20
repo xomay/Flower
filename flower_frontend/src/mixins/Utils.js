@@ -60,6 +60,9 @@ export default {
     },
     niceDateFormatter (row, column, cellValue) {
       return this.niceDate(cellValue)
+    },
+    arrayAmountFormatter (row, column, cellValue) {
+      return cellValue.length
     }
   }
 }
