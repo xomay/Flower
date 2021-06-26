@@ -64,6 +64,18 @@
               >
                 Générer la CE
               </el-button>
+              <router-link
+                v-show="!btn_ce_generate"
+                class="mr-2"
+                :to="`/etudes/${$route.params.id}/convention-etude`"
+              >
+                <el-button
+                  type="primary"
+                  icon="el-icon-edit"
+                >
+                  Rédiger la CE
+                </el-button>
+              </router-link>
               <el-button
                 v-show="btn_ce_levelup"
                 :loading="loading"
@@ -82,6 +94,7 @@
                 center
                 effect="dark"
                 show-icon
+                style="margin-top: 10px;"
               />
             </el-row>
           </el-card>
@@ -297,6 +310,7 @@
                 center
                 effect="dark"
                 show-icon
+                style="margin-top: 10px;"
               />
             </el-row>
             <el-row class="stCardRw">
@@ -379,6 +393,7 @@
                 center
                 effect="dark"
                 show-icon
+                style="margin-top: 10px;"
               />
             </el-row>
           </el-card>
@@ -498,6 +513,7 @@
                 center
                 effect="dark"
                 show-icon
+                style="margin-top: 10px;"
               />
             </el-row>
           </el-card>
@@ -560,7 +576,7 @@ export default {
     },
     // == Documents ==
     // Devis
-    btn_devis_generate () { return this.etude.groupes != undefined && this.etude.groupes.length > 0 },
+    btn_devis_generate () { return this.etude.currentGroupes.groupes.length > 0 },
     btn_devis_levelup () { return this.etude.state == 0 && this.btn_devis_generate },
     btn_devis_help () { return this.etude.state == 0 && ! this.btn_devis_levelup },
     // CE

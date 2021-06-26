@@ -1,19 +1,15 @@
 from django.http import HttpResponse
 from http import HTTPStatus
 import plotly.express as px
-from plotly.io import to_html, to_image
+from plotly.io import to_image
 import pandas as pd
-import io
-import os
-import base64
-from datetime import date, timedelta
 
 import locale
 locale.setlocale(locale.LC_TIME, "fr_FR.utf8")
 
 def computeGanttFromEtudeRaw(etude):
     data = []
-    for groupe in etude.groupe_set.order_by('index').iterator():
+    for groupe in etude.currentGroupes.groupe_set.order_by('index').iterator():
         for phase in groupe.phase_set.order_by('index').iterator():
             data.append(dict(Phase=phase.title + " ", Début=phase.beginDate, Fin=phase.finishDate, Groupe=str(groupe)))
     if len(data) > 0 :
@@ -38,7 +34,7 @@ def computeGanttFromEtude(etude, image_format="jpg"):
             response["Content-Encoding"] = "UTF-8"
             return response
     else:
-        return HttpResponse("Il n'y a pas de groupes dans cette étude !", status=HTTPStatus.NOT_FOUND)
+        return HttpResponse("Il n'y a pas de groupes dans cette étude !", status=HTTPStatus.NO_CONTENT)
 
 def computeJPGGanttFromEtude(etude, image_format="jpg"):
     return computeGanttFromEtude(etude, image_format)

@@ -1,5 +1,16 @@
 <template>
   <div>
+    <el-alert
+      v-if="!areGroupesOriginals"
+      type="info"
+      show-icon
+      :closable="false"
+      style="margin: 10px;"
+    >
+      <template slot="title">
+        <b><u>Note :</u> Il ne s'agit pas des phases originales de l'étude, mais celles d'un avenant.</b>
+      </template>
+    </el-alert>
     <router-link :to="{ name: 'etudes-phases', params: { id: this.$route.params.id } }">
       <el-button
         v-if="editable"
@@ -7,7 +18,7 @@
         icon="el-icon-edit"
         :loading="loading"
       >
-        Modifier les phases
+        {{ etude.currentGroupes.groupes.length > 0 ? "Modifier les phases" : "Créer les phases" }}
       </el-button>
     </router-link>
     <div
@@ -104,6 +115,7 @@ export default {
     groupes: { type: Array, required: true },
     loading: { type: Boolean, required: true },
     editable: { type: Boolean, required: true },
+    areGroupesOriginals: { type: Boolean, required: true },
     reaVue: { type: Boolean, default: false }
   },
   methods: {

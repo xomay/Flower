@@ -1,17 +1,19 @@
 from django.db import models
 from rest_framework import serializers
 
-from flower_app.models.CE import CE
-
-from flower_app.models.People.Employe import Employe, EmployeSerializer
-from flower_app.models.People.Membre import Membre, MembreSerializer
-from flower_app.models.People.Prospect import Prospect, ProspectSerializer
-from flower_app.models.UploadedFile import UploadedFile, UploadedFileSerializer
+from .People.Employe import Employe, EmployeSerializer
+from .People.Membre import Membre, MembreSerializer
+from .People.Prospect import Prospect, ProspectSerializer
+from .CE import CE
+from .UploadedFile import UploadedFile, UploadedFileSerializer
+from .GroupePhase import GroupesSet
 
 from decimal import Decimal
 
 def create_ce():
     return CE.objects.create().id
+def create_groupesset():
+    return GroupesSet.objects.create().id
 
 # Create your models here.
 class Etude(models.Model):
@@ -33,7 +35,11 @@ class Etude(models.Model):
     clientContact = models.ForeignKey(Employe, on_delete=models.RESTRICT, blank=True, null=True)
     
     ce = models.OneToOneField(CE, default=create_ce, on_delete=models.CASCADE)
-    # avenants ?
+
+    # Set de groupes de phases par défaut (structure originale)
+    originalGroupes = models.ForeignKey(GroupesSet, default=create_groupesset, on_delete=models.RESTRICT)
+    # Avenants :
+    # dans 'avenant_set'
 
     deposit_percentage = models.DecimalField(default=30, max_digits=10, decimal_places=2)
     deposit_sum = models.DecimalField(default=0, max_digits=10, decimal_places=2)
@@ -42,7 +48,7 @@ class Etude(models.Model):
     linkedFiles = models.ManyToManyField(UploadedFile, blank=True)
 
     def __str__(self):
-        return self.name
+        return "Étude : "+self.name
 
     @property
     def ceReference(self):
@@ -51,14 +57,14 @@ class Etude(models.Model):
     @property
     def nbJEH(self):
         total = 0
-        for groupe in self.groupe_set.iterator():
+        for groupe in self.groupes.groupe_set.iterator():
             total += groupe.nbJEH
         return total
 
     @property
     def totalPrice(self):
         total = 0
-        for groupe in self.groupe_set.iterator():
+        for groupe in self.groupes.groupe_set.iterator():
             total += groupe.totalPrice
         return total
 
@@ -70,18 +76,31 @@ class Etude(models.Model):
     def totalPriceTaxes(self):
         return round(self.totalPrice * Decimal('1.2'), 2)
 
+    @property
+    def currentGroupes(self):
+        if hasattr(self, 'avenant_set'):
+            if self.avenant_set.count() > 0:
+                # on renvoie le 1er avenant parmi les derniers qui possède une structure de groupes
+                for avenant in self.avenant_set.order_by('-id').all():
+                    if avenant.hasGroupes:
+                        return avenant.groupes
+        return self.originalGroupes
+
 class EtudeSerializer(serializers.ModelSerializer):
+    avenantsAmount = serializers.SerializerMethodField()
+    def get_avenantsAmount(self, instance):
+        return instance.avenant_set.count()
     class Meta:
         model = Etude
         fields = '__all__'
 
 
 # Can only be imported once the Etude model is completely defined ! 
-from flower_app.models.Mission import Mission, MissionSerializer, MissionDetailSerializer
-
-from flower_app.models.GroupePhase import Groupe, GroupeDetailSerializer
-from flower_app.models.Facture import FactureSerializer
-from flower_app.models.PVR import PVRSerializer
+from .Mission import MissionDetailSerializer
+from .Avenant import ShortAvenantSerializer
+from .GroupePhase import GroupesSet, GroupesSetSerializer
+from .Facture import FactureSerializer
+from .PVR import PVRSerializer
 
 class EtudeDetailSerializer(serializers.ModelSerializer):
     projectManager = MembreSerializer(read_only=True)
@@ -89,11 +108,17 @@ class EtudeDetailSerializer(serializers.ModelSerializer):
     prospect = ProspectSerializer(read_only=True)
     clientContact = EmployeSerializer(read_only=True)
     missions = MissionDetailSerializer(source='mission_set', many=True, read_only=True)
-    groupes = GroupeDetailSerializer(source='groupe_set', many=True, read_only=True)
     invoices = FactureSerializer(source='facture_set', many=True, read_only=True)
+    avenants = ShortAvenantSerializer(source='avenant_set', many=True, read_only=True)
     pvr = PVRSerializer(source='pvr_set', many=True, read_only=True)
     linkedFiles = UploadedFileSerializer(many=True, read_only=True)
     bvData = serializers.SerializerMethodField()
+    currentGroupes = serializers.SerializerMethodField()
+    isOriginalGroupes = serializers.SerializerMethodField()
+    def get_isOriginalGroupes(self, instance):
+        return instance.currentGroupes.id == instance.originalGroupes.id
+    def get_currentGroupes(self, instance):
+        return GroupesSetSerializer(instance.currentGroupes, read_only=True).data
     def get_bvData(self, instance):
         data = {}
         full = True
@@ -107,4 +132,4 @@ class EtudeDetailSerializer(serializers.ModelSerializer):
         return data
     class Meta:
         model = Etude
-        fields = '__all__'
+        exclude = ('originalGroupes',) # on ne veut juste pas sérializer le groupe original : le vrai groupe est le currentGroup ! :o

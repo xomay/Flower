@@ -78,7 +78,7 @@ export default {
       `/api/etudes/${this.$route.params.id}/`,
       { widthCredentials: true }
     ).then((res) => {
-      this.rdms = res.data.missions.filter(m => res.data.bvData[m.id] === -1)
+      this.rdms = res.data.missions.filter(m => m.isCurrent && res.data.bvData[m.id] === -1)
       this.rdms.forEach((elt) => elt.rea = `${elt.consultant.firstname} ${elt.consultant.lastname}`)
       this.rdms.forEach((elt) => elt.value = `RDM pour ${elt.rea}`)
       this.title = "Créer un BV : " + res.data.name

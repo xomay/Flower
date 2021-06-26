@@ -36,6 +36,14 @@
       sortable
     />
     <el-table-column
+      prop="avenantsAmount"
+      label="Nombre d'avenants"
+      align="center"
+      fixed="right"
+      width="180px"
+      sortable
+    />
+    <el-table-column
       label="Avancement"
       class="back"
       fixed="right"
@@ -69,8 +77,10 @@
 </template>
 
 <script>
+import Utils from "@/mixins/Utils"
 export default {
   name: "EtudesList",
+  mixins: [Utils],
   props: {
     etudes: {type : Array, required: true },
     loading: {type : Boolean, required: true },

@@ -1,20 +1,29 @@
 from django.db import models
+from django.db.models.deletion import RESTRICT
 from rest_framework import serializers
-
-from flower_app.models.Etude import Etude
-from flower_app.serializers import CustomListSerializer
-
+from ..serializers import CustomListSerializer
 from datetime import date, timedelta
+
+POSSIBILITIES_ATTR = ['etude_set', 'avenant_set']
+class GroupesSet(models.Model):
+    # depuis étude / avenant, on le récupère
+    def __str__(self):
+        for attr in POSSIBILITIES_ATTR:
+            if hasattr(self, attr):
+                coll = getattr(self, attr)
+                if coll.count() > 0:
+                    return "GS("+str(coll.first())+")"
+        return "GS_(UNDEFINED)"
 
 class Groupe(models.Model):
     title = models.CharField(max_length=60)
     index = models.IntegerField()
     description = models.TextField()
 
-    project = models.ForeignKey(Etude, on_delete=models.RESTRICT)
+    owner = models.ForeignKey(GroupesSet, on_delete=models.RESTRICT, null=True)
 
     def __str__(self):
-        return self.title
+        return self.owner.__str__() + " > " + self.title
 
     @property
     def nbJEH(self):
@@ -45,7 +54,7 @@ class Phase(models.Model):
     groupe = models.ForeignKey(Groupe, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.title
+        return self.groupe.__str__() + " > " + self.title
 
     @property
     def totalPrice(self):
@@ -69,7 +78,7 @@ class US(models.Model):
     state = models.CharField(max_length=5, choices=US_STATES, default='DEFIN')
     phase = models.ForeignKey(Phase, on_delete=models.CASCADE)
     def __str__(self):
-        return "US(" + self.phase.groupe.project.name + ">"+self.phase.groupe.title+")['"+self.name+"']"
+        return "US(" + str(self.phase.__str__()) + ")["+self.name+"]"
     class Meta:
        verbose_name = 'US'
        verbose_name_plural = 'US'
@@ -113,7 +122,7 @@ class GroupeSerializer(serializers.ModelSerializer):
         instance.title = validated_data.get('title', instance.title)
         instance.index = validated_data.get('index', instance.index)
         instance.description = validated_data.get('description', instance.description)
-        instance.project = validated_data.get('project', instance.project)
+        instance.owner = validated_data.get('owner', instance.owner)
         instance.save()
 
         phases = validated_data.get('phase_set')
@@ -154,4 +163,11 @@ class GroupeDetailSerializer(serializers.ModelSerializer):
     phases = PhaseSerializer(source='phase_set', many=True)
     class Meta:
         model = Groupe
+        fields = '__all__'
+
+class GroupesSetSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(required=False, write_only=False)
+    groupes = GroupeDetailSerializer(source='groupe_set', many=True, read_only=True)
+    class Meta:
+        model = GroupesSet
         fields = '__all__'

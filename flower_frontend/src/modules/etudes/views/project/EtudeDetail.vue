@@ -13,6 +13,14 @@
         </el-button>
       </router-link>
     </template>
+    <el-alert
+      v-if="no_phases"
+      title="Attention"
+      description="Aucune phase n'a été définie pour cette étude."
+      type="error"
+      show-icon
+      :closable="false"
+    />
     <el-tabs
       v-model="currentTab"
       @tab-click="handleTabChange"
@@ -22,12 +30,18 @@
         name="Récapitulatif"
       />
       <el-tab-pane
-        label="Phases"
+        :label="no_phases ? 'Créer les phases' : 'Phases'"
         name="Phases"
       />
       <el-tab-pane
+        v-if="!no_phases"
         label="Rédaction"
         name="Rédaction"
+      />
+      <el-tab-pane
+        v-if="!no_phases"
+        label="Avenants"
+        name="Avenants"
       />
       <el-tab-pane
         label="Avancement"
@@ -50,7 +64,8 @@
     </div>
     <Phases
       v-show="currentTab === 'Phases'"
-      :groupes="etude.groupes"
+      :groupes="etude.currentGroupes.groupes"
+      :are-groupes-originals="etude.isOriginalGroupes"
       :etude="etude"
       :editable="true"
       :loading="loading"
@@ -60,6 +75,11 @@
       v-show="currentTab === 'Rédaction'"
       :etude="etude"
       @deleteInvoice="deleteInvoice"
+    />
+    <Avenants
+      v-show="currentTab === 'Avenants'"
+      :can-add-avenant="etude.state < 6"
+      :avenants="etude.avenants"
     />
     <ManageStep
       v-show="currentTab === 'Avancement'"
@@ -74,21 +94,26 @@ import Phases from "../../components/Phases"
 import Generation from "../../components/Generation"
 import ManageStep from "../../components/ManageStep"
 import UploaderLocal from "@/components/UploaderLocal"
+import Avenants from "../../components/Avenants"
 
 const axios = require("axios")
 
 export default {
   name: "EtudeDetail",
-  components: {Summary, Phases, Generation, ManageStep, UploaderLocal},
+  components: {Summary, Phases, Generation, ManageStep, UploaderLocal, Avenants},
   data () {
     return {
       currentTab: this.$route.query.active || "Récapitulatif",
       loading: false,
       etude: {
         name: "", // valeurs par défault afin d'éviter des warnings inutiles.
-        groupes: [],
-        linkedFiles: []
+        currentGroupes: {groupes:[]},
+        linkedFiles: [],
+        isOriginalGroupes: true,
+        avenants: [],
+        missions: []
       },
+      no_phases: false,
       breadcrumb: [
         {
           name: "Suivi d'étude",
@@ -108,9 +133,11 @@ export default {
       {withCredentials: true}
     ).then((res) => {
       this.etude = res.data
+      this.etude.missions = res.data.missions.filter(m => m.isCurrent == true)
       this.breadcrumb[1].name = this.etude.name
+      this.no_phases = this.etude.currentGroupes.groupes.length < 1
     }).catch(() => {
-      this.$message({ message: "Impossible de récupérer l'études pour le moment", type: "error" })
+      this.$message({ message: "Impossible de récupérer l'étude pour le moment", type: "error" })
     }).finally(() => {
       this.loading = false
     })

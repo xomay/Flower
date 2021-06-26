@@ -1,13 +1,11 @@
 from django.db import models
 from rest_framework import serializers
-import datetime
-from django.apps import apps
 
-from flower_app.models.People.Realisateur import Realisateur, RealisateurSerializer
-from flower_app.models.Etude import Etude
-from flower_app.models.GroupePhase import Phase
-from flower_app.serializers import CustomListSerializer
-from flower_app.models.BaseUrsaff import getLastBase
+from .People.Realisateur import Realisateur, RealisateurSerializer
+from .Etude import Etude
+from .GroupePhase import GroupesSetSerializer, Phase
+from ..serializers import CustomListSerializer
+from .BaseUrsaff import getLastBase
 
 def emptyList():
     return []
@@ -28,16 +26,37 @@ class Mission(models.Model):
     missionEnd = models.DateField(blank=True, null=True)
     percentageJunior = models.FloatField(default=0.55)
     JEHNumber = models.IntegerField(default=1)
-    JEHPrice = models.DecimalField(default=400, max_digits=10, decimal_places=2)
     phases = models.ManyToManyField(Phase, default=emptyList, blank=True)
 #    number_this_year = models.IntegerField(default=generateNumberYear)
 
+    @property
+    def groupeSet(self):
+        return self.phases.first().groupe.owner
+
     def __str__(self):
-        return 'Mission - Etude = ' + str(self.project) + ' - Consultant = ' + str(self.consultant) + ' (' + str(self.JEHNumber) + ' * ' + str(self.JEHPrice) + '€)'
+        return 'Mission - Etude = ' + str(self.project) + ' - Consultant = ' + str(self.consultant) + ' (' + str(self.JEHNumber) + 'JEH,  ' + str(self.remunerationRaw) + '€)'
     
     @property
+    def JEHNumber(self):
+        amount = 0
+        for phase in self.phases.all():
+            amount += phase.nbJEH
+        return amount
+    
+    @property
+    def totalPrice(self):
+        amount = 0
+        for phase in self.phases.all():
+            amount += phase.totalPrice
+        return amount
+
+    @property
     def remunerationRaw(self):
-        return self.JEHNumber * self.JEHPrice
+        return self.JEHNumber * self.totalPrice
+    
+    @property
+    def isCurrent(self):
+        return self.groupeSet.id == self.project.currentGroupes.id
 
 #    @property
 #    def reference(self):
@@ -50,6 +69,12 @@ class Mission(models.Model):
 
 class MissionSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False, write_only=False)
+    groupeSetId = serializers.SerializerMethodField()
+    isCurrent = serializers.ReadOnlyField()
+    remunerationRaw = serializers.ReadOnlyField()
+    JEHNumber = serializers.ReadOnlyField()
+    def get_groupeSetId(self, obj):
+        return obj.groupeSet.id
     class Meta:
         model = Mission
         fields = '__all__'
@@ -57,14 +82,15 @@ class MissionSerializer(serializers.ModelSerializer):
 
 class MissionDetailSerializer(serializers.ModelSerializer):
     consultant = RealisateurSerializer(read_only=True)
-    remunerationRaw = serializers.SerializerMethodField()
+    remunerationRaw = serializers.ReadOnlyField()
+    JEHNumber = serializers.ReadOnlyField()
     assietteCotisation = serializers.SerializerMethodField()
+    groupeSet = GroupesSetSerializer(read_only=True)
     bv_id = serializers.SerializerMethodField()
+    isCurrent = serializers.ReadOnlyField()
     class Meta:
         model = Mission
         fields = '__all__'
-    def get_remunerationRaw(self, obj):
-        return obj.remunerationRaw
     def get_assietteCotisation(self, obj):
         return getLastBase().baseValue * obj.JEHNumber
     def get_bv_id(self, obj):

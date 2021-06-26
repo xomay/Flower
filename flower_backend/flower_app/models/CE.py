@@ -1,8 +1,8 @@
 from django.db import models
 from rest_framework import serializers
 
-from flower_app.models.People.Employe import Employe, EmployeSerializer
-from flower_app.models.People.Membre import Membre, MembreSerializer
+from .People.Employe import Employe, EmployeSerializer
+from .People.Membre import Membre, MembreSerializer
 
 # Create your models here.
 class CE(models.Model):

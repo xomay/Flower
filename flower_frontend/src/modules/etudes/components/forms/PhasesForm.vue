@@ -10,18 +10,19 @@
         <el-button
           type="text"
           icon="el-icon-caret-top"
-          :disabled="index === 0"
+          :disabled="index === 0 || disabled"
           @click="exchangeGroupes(index, index-1)"
         />
         <el-button
           type="text"
           icon="el-icon-caret-bottom"
-          :disabled="index === (value.length - 1)"
+          :disabled="index === (value.length - 1) || disabled"
           @click="exchangeGroupes(index, index+1)"
         />
         <el-button
           type="text"
           icon="el-icon-delete"
+          :disabled="disabled"
           @click="deleteGroupe(groupe.id, index)"
         />
       </h2>
@@ -29,6 +30,7 @@
       <el-input
         v-model="groupe.description"
         type="textarea"
+        :disabled="disabled"
       />
       <el-table
         class="grid"
@@ -46,6 +48,7 @@
                       type="textarea"
                       :autosize="{ minRows: 3, maxRows: 4}"
                       placeholder="Description de la phase"
+                      :disabled="disabled"
                     />
                   </el-row>
                   <el-row>
@@ -55,6 +58,7 @@
                       type="textarea"
                       :autosize="{ minRows: 3, maxRows: 4}"
                       placeholder="Méthodologie de la phase"
+                      :disabled="disabled"
                     />
                   </el-row>
                 </el-col>
@@ -74,6 +78,7 @@
                           v-model="usData.row.name"
                           type="text"
                           placeholder="Nom de l'US"
+                          :disabled="disabled"
                         />
                       </template>
                     </el-table-column>
@@ -88,6 +93,7 @@
                           icon="el-icon-minus"
                           type="danger"
                           plain
+                          :disabled="disabled"
                           @click="deleteUS(usData.row, props.row)"
                         />
                       </template>
@@ -96,6 +102,7 @@
                   <el-button
                     type="text"
                     icon="el-icon-plus"
+                    :disabled="disabled"
                     @click="addUS(props.row)"
                   >
                     Ajouter une US
@@ -109,7 +116,10 @@
           label="Titre"
         >
           <template slot-scope="props">
-            <el-input v-model="props.row.title" />
+            <el-input
+              v-model="props.row.title"
+              :disabled="disabled"
+            />
           </template>
         </el-table-column>
         <el-table-column
@@ -124,6 +134,7 @@
               :max="99"
               style="width: 90%"
               size="small"
+              :disabled="disabled"
             />
           </template>
         </el-table-column>
@@ -132,7 +143,10 @@
           label="Prix JEH"
         >
           <template slot-scope="props">
-            <el-input v-model="props.row.priceJEH" />
+            <el-input
+              v-model="props.row.priceJEH"
+              :disabled="disabled"
+            />
           </template>
         </el-table-column>
         <el-table-column
@@ -144,11 +158,12 @@
             <el-date-picker
               v-model="props.row.beginDate"
               type="date"
-              placeholder="Choississez un jour"
+              placeholder="Choisissez un jour"
               width="200"
               size="mini"
               format="dd-MM-yyyy"
               value-format="yyyy-MM-dd"
+              :disabled="disabled"
             />
           </template>
         </el-table-column>
@@ -165,6 +180,7 @@
               :max="99"
               style="width: 90%"
               size="small"
+              :disabled="disabled"
             />
           </template>
         </el-table-column>
@@ -175,11 +191,13 @@
             <el-button
               type="text"
               icon="el-icon-caret-top"
+              :disabled="disabled"
               @click="exchangeItems(index, props.$index, props.$index - 1)"
             /><br>
             <el-button
               type="text"
               icon="el-icon-caret-bottom"
+              :disabled="disabled"
               @click="exchangeItems(index, props.$index, props.$index + 1)"
             />
           </template>
@@ -190,6 +208,7 @@
           <template slot-scope="props">
             <el-button
               type="text"
+              :disabled="disabled"
               icon="el-icon-delete"
               @click="deletePhase(props.row, groupe)"
             />
@@ -200,6 +219,7 @@
         <el-button
           type="text"
           icon="el-icon-plus"
+          :disabled="disabled"
           @click="addPhase(groupe)"
         >
           Ajouter une phase
@@ -207,7 +227,10 @@
       </div>
     </div>
     <div class="flex justify-center">
-      <el-button @click="addGroupe">
+      <el-button
+        :disabled="disabled"
+        @click="addGroupe"
+      >
         Ajouter un groupe
       </el-button>
     </div>
@@ -219,7 +242,8 @@ export default {
   name: "PhasesForm",
   props: {
     value: { type: Array, required: true },
-    small: { type: Boolean, required: true }
+    small: { type: Boolean, required: true },
+    disabled: { type: Boolean, default: false }
   },
   methods: {
     addGroupe () {
