@@ -18,6 +18,7 @@
           :item-list="rdms"
           :loading="loading"
           placeholder="Mission"
+          style="width: 100%;"
           @input="updatedRDM()"
           @clear="bv.rdm = -1"
         />

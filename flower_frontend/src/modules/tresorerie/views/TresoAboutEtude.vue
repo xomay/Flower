@@ -279,7 +279,7 @@ export default {
       `/api/etudes/${this.$route.params.id}/bvs/`,
       {withCredentials: true}
     ).then((res) => {
-      this.bvs = res.data
+      this.bvs = res.data.filter(bv => bv.rdm.isCurrent)
     }).catch((err) => {
       this.$message({message: "Impossible de récupérer les BV pour le moment: "+err, type: "error"})
     })
