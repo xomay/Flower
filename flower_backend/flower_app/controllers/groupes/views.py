@@ -26,6 +26,8 @@ class GroupeView(generics.ListCreateAPIView, generics.UpdateAPIView):
 class GroupeDetailView(generics.DestroyAPIView):
     permission_classes = [IsAuthenticated, HasGroupPermission]
     required_groups = {
+        'GET': ['ROLE_ADMIN'],
+        'PUT': ['ROLE_ADMIN'],
         'DELETE': ['ROLE_CA']                               #from modules/etudes/views/PhaseModifier.vue to delete a group
     }
     serializer_class = GroupeSerializer
