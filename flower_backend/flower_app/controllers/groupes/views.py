@@ -4,7 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import generics
 
 from flower_app.controllers.permissions import HasGroupPermission
-from flower_app.models.GroupePhase import Groupe, GroupeSerializer
+from flower_app.models.GroupePhase import Groupe, GroupeSerializer, GroupeSerializerBasic
 
 class GroupeView(generics.ListCreateAPIView, generics.UpdateAPIView):
     permission_classes = [IsAuthenticated, HasGroupPermission]
@@ -30,5 +30,5 @@ class GroupeDetailView(generics.RetrieveUpdateDestroyAPIView):
         'PUT': ['ROLE_ADMIN'],
         'DELETE': ['ROLE_CA']                               #from modules/etudes/views/PhaseModifier.vue to delete a group
     }
-    serializer_class = GroupeSerializer
+    serializer_class = GroupeSerializerBasic
     queryset = Groupe.objects.all()

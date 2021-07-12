@@ -109,6 +109,12 @@ class PhaseSerializer(serializers.ModelSerializer):
             del validated_data['us_set']
         return Phase.objects.create(**validated_data)
 
+
+class GroupeSerializerBasic(serializers.ModelSerializer):
+    class Meta:
+        fields = '__all__'
+        model = Groupe
+
 class GroupeSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False, write_only=False)
     phases = PhaseSerializer(source='phase_set', many=True)
