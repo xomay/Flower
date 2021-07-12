@@ -23,7 +23,7 @@ class GroupeView(generics.ListCreateAPIView, generics.UpdateAPIView):
         serializer.save()
         return Response(serializer.data)
 
-class GroupeDetailView(generics.DestroyAPIView):
+class GroupeDetailView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated, HasGroupPermission]
     required_groups = {
         'GET': ['ROLE_ADMIN'],
