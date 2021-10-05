@@ -57,14 +57,14 @@ class Etude(models.Model):
     @property
     def nbJEH(self):
         total = 0
-        for groupe in self.groupes.groupe_set.iterator():
+        for groupe in self.currentGroupes.groupe_set.iterator():
             total += groupe.nbJEH
         return total
 
     @property
     def totalPrice(self):
         total = 0
-        for groupe in self.groupes.groupe_set.iterator():
+        for groupe in self.currentGroupes.groupe_set.iterator():
             total += groupe.totalPrice
         return total
 
