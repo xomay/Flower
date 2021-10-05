@@ -7,6 +7,7 @@ router = routers.DefaultRouter()
 urlpatterns = [
     path('etudes/', include('flower_app.controllers.etudes.urls')),
     path('etudes/groupes/', include('flower_app.controllers.groupes.urls')),
+    path('etudes/groupessets/', include('flower_app.controllers.groupessets.urls')),
     path('etudes/phases/', include('flower_app.controllers.phases.urls')),
     path('etudes/uss/', include('flower_app.controllers.uss.urls')),
     path('tresorerie/factures/', include('flower_app.controllers.factures.urls')),
