@@ -31,6 +31,13 @@ class Groupe(models.Model):
         for phase in self.phase_set.iterator():
             total += phase.nbJEH
         return total
+        
+    @property
+    def nbPhases(self):
+        total = 0
+        for phase in self.phase_set.iterator():
+            total += 1
+        return total
 
     @property
     def totalPrice(self):
@@ -108,6 +115,12 @@ class PhaseSerializer(serializers.ModelSerializer):
         if 'us_set' in validated_data:
             del validated_data['us_set']
         return Phase.objects.create(**validated_data)
+
+
+class GroupeSerializerBasic(serializers.ModelSerializer):
+    class Meta:
+        fields = '__all__'
+        model = Groupe
 
 class GroupeSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False, write_only=False)
