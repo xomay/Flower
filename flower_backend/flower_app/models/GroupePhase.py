@@ -31,6 +31,13 @@ class Groupe(models.Model):
         for phase in self.phase_set.iterator():
             total += phase.nbJEH
         return total
+        
+    @property
+    def nbPhases(self):
+        total = 0
+        for phase in self.phase_set.iterator():
+            total += 1
+        return total
 
     @property
     def totalPrice(self):
