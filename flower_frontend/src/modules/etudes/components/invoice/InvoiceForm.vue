@@ -181,7 +181,8 @@
             label="Prix HT"
             prop="taxFreeAmount"
             :rules="[
-              {required: true, pattern: /^[0-9]+(|.[0-9]+)$/, message: 'Entrez un prix valide.', trigger: 'change'},
+              // Now we also accept negatives values (thanks to Elodie Juvé xd)
+              {required: true, pattern: /^(|-)[0-9]+(|.[0-9]+)$/, message: 'Entrez un prix valide.', trigger: 'change'},
               {required: true, message: 'Obligatoire', trigger: 'change'}
             ]"
           >
