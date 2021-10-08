@@ -24,6 +24,9 @@ class Etude(models.Model):
 
     creation_date = models.DateTimeField(auto_now_add=True)
     modification_date = models.DateTimeField(auto_now=True)
+    # State < 0 : étude avortée
+    # State dans [0,9] : en cours
+    # State == 10 : étude terminée
     state = models.IntegerField(default=0)
     qualiValidatePeda = models.BooleanField(default=False)
     confidential = models.BooleanField()
@@ -48,7 +51,17 @@ class Etude(models.Model):
     linkedFiles = models.ManyToManyField(UploadedFile, blank=True)
 
     def __str__(self):
-        return "Étude : "+self.name
+        if(self.isAvorted):
+            state = "[avortée]"
+        elif(self.state >= 10):
+            state = "[finie]"
+        else:
+            state = ""
+        return "Étude '"+self.name + "' " + state
+
+    @property
+    def isAvorted(self):
+        return self.state < 0
 
     @property
     def ceReference(self):
@@ -122,8 +135,11 @@ class EtudeDetailSerializer(serializers.ModelSerializer):
     bvData = serializers.SerializerMethodField()
     currentGroupes = serializers.SerializerMethodField()
     isOriginalGroupes = serializers.SerializerMethodField()
+    isAvorted = serializers.SerializerMethodField()
     def get_isOriginalGroupes(self, instance):
         return instance.currentGroupes.id == instance.originalGroupes.id
+    def get_isAvorted(self, instance):
+        return instance.isAvorted
     def get_currentGroupes(self, instance):
         return GroupesSetSerializer(instance.currentGroupes, read_only=True).data
     def get_bvData(self, instance):
