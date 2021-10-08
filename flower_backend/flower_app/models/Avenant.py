@@ -37,6 +37,11 @@ class Avenant(models.Model):
     def hasGroupes(self):
         return (self.groupes != None) and (self.groupes.groupe_set.count() > 0)
 
+    # Mirror the owner's #canBeEdited property. Used by GroupeSet.
+    @property
+    def canBeEdited(self):
+        return self.project.canBeEdited
+
     @property
     def reference(self):
         modes = str(

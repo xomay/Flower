@@ -14,6 +14,16 @@
       </router-link>
     </template>
     <el-alert
+      v-if="etude.isAborted"
+      title="Attention, étude avortée"
+      type="warning"
+      description="Cette étude a été avortée. Vous pouvez encore la consulter et générer des documents, mais vous ne pourrez plus la modifier."
+      :closable="false"
+      center
+      effect="dark"
+      show-icon
+    />
+    <el-alert
       v-if="no_phases"
       title="Attention"
       description="Aucune phase n'a été définie pour cette étude."
@@ -44,6 +54,7 @@
         name="Avenants"
       />
       <el-tab-pane
+        v-if="!etude.isAborted"
         label="Avancement"
         name="Avancement"
       />
@@ -78,10 +89,11 @@
     />
     <Avenants
       v-show="currentTab === 'Avenants'"
-      :can-add-avenant="etude.state < 6"
+      :can-add-avenant="etude.state < 6 && !etude.isAborted && !etude.isFinished"
       :avenants="etude.avenants"
     />
     <ManageStep
+      v-if="!etude.isAborted"
       v-show="currentTab === 'Avancement'"
       :etude="etude"
     />

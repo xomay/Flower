@@ -19,6 +19,8 @@ class AvenantListCreateView(generics.ListCreateAPIView):
 
     def post(self, request, *args, **kwargs):
         etude = Etude.objects.get(pk=request._data['project'])
+        if not etude.canBeEdited:
+            JsonResponse({'message': "L'étude n'est pas modifiable."}, status=HTTPStatus.FORBIDDEN)
         originalGS = etude.currentGroupes.groupe_set
 
         id_instance = self.create(request, *args, **kwargs).data['id']

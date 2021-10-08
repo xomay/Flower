@@ -1,6 +1,7 @@
 <template>
   <div class="flex flex-col">
     <EtudeSteps
+      v-if="!etude.isAborted"
       :etude="etude"
       :descriptions="getgantt"
     />

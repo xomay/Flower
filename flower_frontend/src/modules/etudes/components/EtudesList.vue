@@ -14,16 +14,30 @@
     >
       <template slot-scope="scope">
         <el-button
+          :style="scope.row.isAborted ? 'color: red;' : (scope.row.isFinished ? 'color: green;' : '')"
           type="text"
           @click="clicked(scope.row.id)"
         >
           {{ scope.row.name }}
         </el-button>
         <span
-          v-if="scope.row.confidential"
-          class="confiStyle"
+          v-if="scope.row.confidential && !scope.row.isAborted"
+          class="bigGray"
+          style="margin-right: 12px;"
         >
-          Confidentielle
+          [Confidentielle]
+        </span>
+        <span
+          v-if="scope.row.isAborted"
+          class="bigRed"
+        >
+          [Étude avortée]
+        </span>
+        <span
+          v-if="scope.row.isFinished"
+          class="bigGreen"
+        >
+          [Étude terminée]
         </span>
       </template>
     </el-table-column>
@@ -50,19 +64,26 @@
       align="center"
     >
       <template slot-scope="scope">
-        <el-col>
-          <div class="progress">
-            <div
-              class="progress-value"
-              :style="getPercentage(scope.row.state)"
-            />
-          </div>
-        </el-col>
-        <el-col
-          style="text-align: left !important;"
-        >
-          {{ getState(scope.row.state) }}
-        </el-col>
+        <div v-if="scope.row.isAborted">
+          <p style="color: rgb(97, 4, 4); font-size:120%;">
+            <b>Étude avortée.</b>
+          </p>
+        </div>
+        <div v-else>
+          <el-col>
+            <div class="progress">
+              <div
+                class="progress-value"
+                :style="getPercentage(scope.row.state)"
+              />
+            </div>
+          </el-col>
+          <el-col
+            style="text-align: left !important;"
+          >
+            {{ getState(scope.row.state) }}
+          </el-col>
+        </div>
       </template>
     </el-table-column>
     <el-table-column
@@ -111,6 +132,7 @@ export default {
       case 9: return "Le BV doit être payé."
       case 10: return "Étude terminée."
       }
+      return "Étude avortée."
     }
   }
 }
@@ -142,8 +164,21 @@ export default {
   .progress-value {
     animation: load 3s normal forwards;
     box-shadow: 0 10px 40px -10px rgba(58, 219, 9, 0.144);
+    background: rgb(31, 148, 2);
     border-radius: 100px;
-    background: rgb(49, 122, 15);
     height: 100%;
+  }
+
+  .bigRed {
+    color: rgb(165, 27, 27);
+    font-weight: bold;
+  }
+  .bigGreen {
+    color: rgb(23, 197, 38);
+    font-weight: bold;
+  }
+  .bigGray {
+    color: rgb(17, 55, 70);
+    font-weight: bold;
   }
 </style>
