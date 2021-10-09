@@ -189,6 +189,7 @@
                 type="text"
                 icon="el-icon-delete"
                 :loading="loading"
+                :disabled="etude.isAborted"
                 @click="deletePVR(scope.row.id, scope.$index)"
               />
             </template>

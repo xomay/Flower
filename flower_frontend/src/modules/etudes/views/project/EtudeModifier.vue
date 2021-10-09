@@ -22,6 +22,7 @@
       @onConfirm="abortEtude()"
     >
       <el-button
+        v-if="!etude.isAborted"
         slot="reference"
         icon="el-icon-document-delete"
         type="danger"
