@@ -6,13 +6,20 @@ from datetime import date, timedelta
 
 POSSIBILITIES_ATTR = ['etude_set', 'avenant_set']
 class GroupesSet(models.Model):
-    # depuis étude / avenant, on le récupère
-    def __str__(self):
+
+    # depuis étude / avenant, on récupère l'owner
+    @property
+    def owner(self):
         for attr in POSSIBILITIES_ATTR:
             if hasattr(self, attr):
                 coll = getattr(self, attr)
                 if coll.count() > 0:
-                    return "GS("+str(coll.first())+")"
+                    return coll.first()
+        return None
+        
+    def __str__(self):
+        if self.owner != None:
+            return "GS("+str(self.owner)+")"
         return "GS_(UNDEFINED)"
 
 class Groupe(models.Model):

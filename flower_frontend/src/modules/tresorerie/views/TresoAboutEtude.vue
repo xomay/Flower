@@ -3,6 +3,16 @@
     :title="title"
     :breadcrumb="breadcrumb"
   >
+    <el-alert
+      v-if="etude.isAborted"
+      title="Attention, étude avortée"
+      type="warning"
+      description="Cette étude a été avortée. Vous pouvez encore la consulter et générer des documents, mais vous ne pourrez plus la modifier."
+      :closable="false"
+      center
+      effect="dark"
+      show-icon
+    />
     <el-row>
       <el-col :span="10">
         <Summary
@@ -61,6 +71,7 @@
                   <el-button
                     type="text"
                     icon="el-icon-edit"
+                    :disabled="etude.isAborted"
                   />
                 </router-link>
                 <el-popconfirm
@@ -78,6 +89,7 @@
                     type="text"
                     icon="el-icon-delete"
                     :loading="loading"
+                    :disabled="etude.isAborted"
                   />
                 </el-popconfirm>
               </template>
@@ -90,6 +102,7 @@
               type="success"
               class="factButton"
               icon="el-icon-plus"
+              :disabled="etude.isAborted"
             >
               Ajouter une facture
             </el-button>
@@ -161,6 +174,7 @@
                   <el-button
                     type="text"
                     icon="el-icon-edit"
+                    :disabled="etude.isAborted"
                   />
                 </router-link>
               </template>

@@ -24,6 +24,7 @@
           <el-button
             type="primary"
             icon="el-icon-edit"
+            :disabled="etude.isAborted"
           >
             Rédiger la CE
           </el-button>
@@ -52,6 +53,7 @@
             <el-button
               type="text"
               icon="el-icon-edit"
+              :disabled="etude.isAborted"
             >
               Modifier
             </el-button>
@@ -132,6 +134,7 @@
             <el-button
               type="text"
               icon="el-icon-plus"
+              :disabled="etude.isAborted"
             >
               Ajouter
             </el-button>
@@ -179,12 +182,14 @@
                 <el-button
                   type="text"
                   icon="el-icon-edit"
+                  :disabled="etude.isAborted"
                 />
               </router-link>
               <el-button
                 type="text"
                 icon="el-icon-delete"
                 :loading="loading"
+                :disabled="etude.isAborted"
                 @click="deletePVR(scope.row.id, scope.$index)"
               />
             </template>

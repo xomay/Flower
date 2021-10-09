@@ -11,6 +11,26 @@
       :taken-ids="takenIds"
       @save="saveProject"
     />
+    <el-popconfirm
+      title="Confirmez-vous l'avortement de cette étude ?"
+      icon="el-icon-info"
+      icon-color="red"
+      confirm-button-type="danger"
+      confirm-button-text="OUI"
+      cancel-button-type="success"
+      cancel-button-text="NON"
+      @onConfirm="abortEtude()"
+    >
+      <el-button
+        v-if="!etude.isAborted"
+        slot="reference"
+        icon="el-icon-document-delete"
+        type="danger"
+        :loading="loading"
+      >
+        Avorter l'étude
+      </el-button>
+    </el-popconfirm>
   </BaseComponent>
 </template>
 
@@ -104,6 +124,24 @@ export default {
     })
   },
   methods: {
+    abortEtude () {
+      this.loading = true
+      axios.put(
+        `/api/etudes/${this.etude.id}/`,
+        {
+          ...this.etude,
+          state: -1 // state < 0 is a abortion
+        },
+        {withCredentials: true}
+      ).then(() => {
+        this.$message({message: "L'étude a bien été avortée.", type: "success", offset: 40})
+        this.$router.push(`/etudes/${this.etude.id}/voir`)
+      }).catch((err) => {
+        this.$message({message: "Impossible d'avorter l'étude pour le moment : " + err.message, type: "error"})
+      }).finally(() => {
+        this.loading = false
+      })
+    },
     saveProject () {
       this.loading = true
       axios.put(
@@ -111,19 +149,13 @@ export default {
         this.etude,
         {withCredentials: true}
       ).then(() => {
-        this.$message({message: "L'étude a bien été modifié.", type: "success", offset: 40})
-        this.$router.push("/etudes/"+this.etude.id+"/voir")
+        this.$message({message: "L'étude a bien été modifiée.", type: "success", offset: 40})
+        this.$router.push(`/etudes/${this.etude.id}/voir`)
       }).catch((err) => {
-        this.$message({message: "Erreur lors de l'enregistrement : " + err, type: "error"})
-        if (err.response && err.response.status === 400) {
-          this.$message({message: "Le formulaire comporte des erreurs.",
-            type: "error",
-            offset: 40})
-        } else {
-          this.$message({message: "Impossible de créer l'étude pour le moment.",
-            type: "error",
-            offset: 40})
-        }
+        if (err.response && err.response.status === 400)
+          this.$message({message: "Le formulaire comporte des erreurs.", type: "error", offset: 40})
+        else
+          this.$message({message: "Impossible de modifier l'étude pour le moment : " + err.message, type: "error", offset: 40})
       }).finally(() => {
         this.loading = false
       })

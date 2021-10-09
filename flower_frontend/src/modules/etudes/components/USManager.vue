@@ -14,7 +14,7 @@
         <SliderUSState
           :us="us"
           :tooltip="index === uss.length - 1"
-          :loading="loading"
+          :loading="loading || disabled"
           :rea-vue="reaVue"
           style="colored"
           @change="usChanged"
@@ -31,7 +31,8 @@ export default {
   components: { SliderUSState },
   props: {
     uss: { type: Array, required: true },
-    loading: { type: Boolean, required: true },
+    loading: { type: Boolean, required: true, default () { return false } },
+    disabled: { type: Boolean, default () { return false } },
     reaVue: { type: Boolean, default: false }
   },
   methods: {

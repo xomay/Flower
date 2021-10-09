@@ -24,6 +24,9 @@ class Etude(models.Model):
 
     creation_date = models.DateTimeField(auto_now_add=True)
     modification_date = models.DateTimeField(auto_now=True)
+    # State < 0 : étude avortée
+    # State dans [0,9] : en cours
+    # State == 10 : étude terminée
     state = models.IntegerField(default=0)
     qualiValidatePeda = models.BooleanField(default=False)
     confidential = models.BooleanField()
@@ -48,7 +51,27 @@ class Etude(models.Model):
     linkedFiles = models.ManyToManyField(UploadedFile, blank=True)
 
     def __str__(self):
-        return "Étude : "+self.name
+        if(self.isAborted):
+            state = "[avortée]"
+        elif(self.isFinished):
+            state = "[finie]"
+        else:
+            state = ""
+        return "Étude '"+self.name + "' " + state
+
+    @property
+    def isAborted(self):
+        return self.state < 0
+    @property
+    def isFinished(self):
+        return self.state >= 10
+    
+    # Indique si l'on peut modifier les phases, les RDM, les factures, ... liés à cette étude. Les fields, eux, peuvent être modifiés.
+    # Pour l'instant, une étude reste modifiable même après qu'elle soit terminée.
+    # Ainsi, on interdit seulement les modifs une fois l'étude avortée. À voir si on change ça après ou pas.
+    @property
+    def canBeEdited(self):
+        return (not self.isAborted)
 
     @property
     def ceReference(self):
@@ -95,8 +118,14 @@ class Etude(models.Model):
 
 class EtudeSerializer(serializers.ModelSerializer):
     avenantsAmount = serializers.SerializerMethodField()
+    isAborted = serializers.SerializerMethodField()
+    isFinished = serializers.SerializerMethodField()
     def get_avenantsAmount(self, instance):
         return instance.avenant_set.count()
+    def get_isAborted(self, instance):
+        return instance.isAborted
+    def get_isFinished(self, instance):
+        return instance.isFinished
     class Meta:
         model = Etude
         fields = '__all__'
@@ -122,8 +151,14 @@ class EtudeDetailSerializer(serializers.ModelSerializer):
     bvData = serializers.SerializerMethodField()
     currentGroupes = serializers.SerializerMethodField()
     isOriginalGroupes = serializers.SerializerMethodField()
+    isAborted = serializers.SerializerMethodField()
+    isFinished = serializers.SerializerMethodField()
     def get_isOriginalGroupes(self, instance):
         return instance.currentGroupes.id == instance.originalGroupes.id
+    def get_isAborted(self, instance):
+        return instance.isAborted
+    def get_isFinished(self, instance):
+        return instance.isFinished
     def get_currentGroupes(self, instance):
         return GroupesSetSerializer(instance.currentGroupes, read_only=True).data
     def get_bvData(self, instance):

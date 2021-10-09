@@ -17,6 +17,7 @@
         type="primary"
         icon="el-icon-edit"
         :loading="loading"
+        :disabled="etude.isAborted"
       >
         {{ etude.currentGroupes.groupes.length > 0 ? "Modifier les phases" : "Créer les phases" }}
       </el-button>
@@ -54,6 +55,7 @@
                 :uss="scope.row.uss"
                 :loading="loading"
                 :rea-vue="reaVue"
+                :disabled="etude.isAborted"
                 @us-change="updateUS"
               />
             </el-row>
