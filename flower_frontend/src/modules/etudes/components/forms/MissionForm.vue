@@ -94,6 +94,7 @@
               class="w-full"
               multiple
               placeholder="Phases"
+              @change="phases_updated"
             >
               <el-option
                 v-for="item in phases"
@@ -167,6 +168,9 @@ export default {
     },
     goBack () {
       this.$router.push(`/etudes/${this.$route.params.id}/voir?active=Rédaction`)
+    },
+    phases_updated (rdms_ids) {
+      this.$emit("phases-selection", rdms_ids)
     }
   }
 }

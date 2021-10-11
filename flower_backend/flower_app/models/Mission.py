@@ -34,7 +34,10 @@ class Mission(models.Model):
         return self.phases.first().groupe.owner
 
     def __str__(self):
-        return 'Mission - Etude = ' + str(self.project) + ' - Consultant = ' + str(self.consultant) + ' (' + str(self.JEHNumber) + 'JEH,  ' + str(self.remunerationRaw) + '€)'
+        prefix = ""
+        if not self.isCurrent:
+            prefix = "[OUTDATED]"
+        return prefix + "[RDM]" + str(self.project) + ", réa=" + str(self.consultant) + ", (" + str(self.JEHNumber) + "JEH,  " + str(self.remunerationRaw) + "€)"
     
     @property
     def JEHNumber(self):
@@ -52,7 +55,7 @@ class Mission(models.Model):
 
     @property
     def remunerationRaw(self):
-        return (1 - float(self.percentageJunior)) * float(self.totalPrice)
+        return round((1 - float(self.percentageJunior)) * float(self.totalPrice), 2)
     
     @property
     def isCurrent(self):

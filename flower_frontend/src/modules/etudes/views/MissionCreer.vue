@@ -12,12 +12,23 @@
         Ajouter
       </el-button>
     </template>
+    <el-alert
+      v-if="unpicked_phases.length > 0"
+      title="Attention, des phases n'ont pas été sélectionnées"
+      type="warning"
+      :description="printUselected()"
+      :closable="false"
+      center
+      effect="dark"
+      show-icon
+    />
     <MissionForm
       v-model="missions"
       :phases="phases"
       :loading="loading"
       :consultants="consultants"
       @save="saveMissions"
+      @phases-selection="pickedPhasesUpdated"
     />
   </BaseComponent>
 </template>
@@ -56,22 +67,26 @@ export default {
       loading: false
     }
   },
+  computed: {
+    // Phases non sélectionnées par les RDM
+    unpicked_phases () {
+      return this.phases.filter(ph => ! ph.hasRDM)
+    }
+  },
   beforeCreate () {
     axios.get(
       `/api/etudes/${this.$route.params.id}/`,
       {withCredentials: true}
     ).then((res) => {
-      this.phases = res.data.currentGroupes .groupes.map((groupe) => groupe.phases).flat()
+      this.phases = res.data.currentGroupes.groupes.map((groupe) => groupe.phases).flat()
       res.data.missions.forEach((mission) => {
         mission.consultant = mission.consultant.id
       })
-      this.missions = res.data.missions.slice()
+      this.missions = res.data.missions.filter(mission => mission.isCurrent).slice()
       this.originalIDs = this.missions.map(m => m.id)
       this.breadcrumb[1].name = res.data.name
     }).catch((err) => {
-      this.$message({message: "Impossible de récupérer l'étude : "+err,
-        type: "error",
-        offset: 40})
+      this.$message({message: "Impossible de récupérer l'étude : "+err, type: "error", offset: 40})
     })
     axios.get(
       "/api/realisateurs",
@@ -79,13 +94,20 @@ export default {
     ).then((res) => {
       res.data.forEach((realisateur) => realisateur.value = `${realisateur.firstname} ${realisateur.lastname}`)
       this.consultants = res.data
+      console.log(this.missions, this.consultants)
     }).catch((err) => {
-      this.$message({message: "Impossible de récupérer les membres : "+err,
-        type: "error",
-        offset: 40})
+      this.$message({message: "Impossible de récupérer les membres : "+err, type: "error", offset: 40})
     })
   },
   methods: {
+    pickedPhasesUpdated (rmds_ids) {
+      this.phases = this.phases.map(ph => {
+        return {
+          ...ph,
+          hasRDM: rmds_ids.includes(ph.id)
+        }
+      })
+    },
     addMission () {
       this.missions.push({
         consultant: "",
@@ -168,6 +190,9 @@ export default {
           fail(err)
         })
       })
+    },
+    printUselected () {
+      return "Phases non sélectionnées : [" + this.unpicked_phases.map(ph => ph.title).join(", ") + "]."
     }
   }
 }

@@ -78,6 +78,10 @@ class Phase(models.Model):
     def finishDate(self):
         return (self.beginDate + timedelta(days=self.period)).isoformat()
 
+    @property
+    def hasRDM(self):
+        return self.mission_set.count() > 0
+
 class US(models.Model):
     name = models.CharField(max_length=200, null=False)
     index = models.IntegerField()
@@ -109,6 +113,7 @@ class PhaseSerializer(serializers.ModelSerializer):
     uss = USSerializer(source='us_set', many=True)
     finishDate = serializers.SerializerMethodField()
     totalPrice = serializers.SerializerMethodField()
+    hasRDM = serializers.SerializerMethodField()
     class Meta:
         model = Phase
         fields = '__all__'
@@ -117,6 +122,8 @@ class PhaseSerializer(serializers.ModelSerializer):
         return obj.finishDate
     def get_totalPrice(self, obj):
         return obj.totalPrice
+    def get_hasRDM(self, obj):
+        return obj.hasRDM
 
     def create(self, validated_data):
         if 'us_set' in validated_data:
