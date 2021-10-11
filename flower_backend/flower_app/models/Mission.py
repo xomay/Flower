@@ -52,7 +52,7 @@ class Mission(models.Model):
 
     @property
     def remunerationRaw(self):
-        return (1 - self.percentageJunior) * self.totalPrice
+        return (1 - float(self.percentageJunior)) * float(self.totalPrice)
     
     @property
     def isCurrent(self):
