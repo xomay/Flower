@@ -52,7 +52,7 @@ class Mission(models.Model):
 
     @property
     def remunerationRaw(self):
-        return self.JEHNumber * self.totalPrice
+        return (1 - self.percentageJunior) * self.totalPrice
     
     @property
     def isCurrent(self):
