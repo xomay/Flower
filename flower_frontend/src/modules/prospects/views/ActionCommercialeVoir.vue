@@ -49,12 +49,10 @@
       </el-table-column>
       <el-table-column
         label="Date"
+        prop="date"
+        :formatter="niceDateFormatter"
         sortable
-      >
-        <template slot-scope="scope">
-          {{ niceDate(scope.row.date) }}
-        </template>
-      </el-table-column>
+      />
       <el-table-column
         prop="type"
         label="Type d'action"
