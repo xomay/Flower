@@ -31,17 +31,13 @@
             :data="etude.invoices"
           >
             <el-table-column
-              prop="invoiceNumber"
+              prop="reference"
               label="Référence"
               align="center"
               fixed="left"
               width="140px"
               sortable
-            >
-              <template slot-scope="scope">
-                {{ scope.row.invoiceType }}_{{ scope.row.invoiceNumber }}
-              </template>
-            </el-table-column>
+            />
             <el-table-column
               prop="description"
               label="Objet"
@@ -103,6 +99,7 @@
               class="factButton"
               icon="el-icon-plus"
               :disabled="etude.isAborted"
+              :loading="loading"
             >
               Ajouter une facture
             </el-button>
@@ -132,6 +129,7 @@
               align="center"
               fixed="left"
               width="170px"
+              :formatter="niceDateFormatter"
               sortable
             />
             <el-table-column

@@ -1,5 +1,6 @@
 from django.db import models
 from rest_framework import serializers
+from datetime import datetime
 
 from flower_app.models.Etude import Etude
 from flower_app.models.People.Prospect import Prospect
@@ -23,25 +24,25 @@ class Facture(models.Model):
     description = models.TextField()
 
     def __str__(self):
-        return self.description
+        return self.reference + " > " + self.description
 
     @property
     def reference(self):
-        return str(self.invoiceNumber)
+        return self.invoiceType + "_" + self.issueDate.strftime("%y%m") + str(self.invoiceNumber).rjust(2, "0")
 
     @property
     def amountTaxes(self):
         total = 0
         for detail in self.facturedetail_set.iterator():
             total += detail.taxesAmount
-        return total
+        return round(total, 2)
 
     @property
     def amountWithoutTaxes(self):
         total = 0
         for detail in self.facturedetail_set.iterator():
             total += detail.taxFreeAmount
-        return total
+        return round(total, 2)
 
     @property
     def totalToPay(self):
