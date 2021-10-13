@@ -26,6 +26,12 @@ class Prospect(models.Model):
 
     def __str__(self):
         return self.name
+    
+    @property
+    def addresse_facturation(self):
+        if self.address_tresorerie == None or self.address_tresorerie == "":
+            return self.address + ", " + str(self.postcode) + " " + self.town
+        return self.address_tresorerie
 
     def anonymiser(self):
         self.address = settings.ANONYMISATION_STRING
