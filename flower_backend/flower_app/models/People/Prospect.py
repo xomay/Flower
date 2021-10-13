@@ -9,6 +9,7 @@ from flower_app.models.Prospection import Action, ContactWay
 class Prospect(models.Model):
     name = models.CharField(max_length=60)
     address = models.CharField(max_length=200)
+    address_tresorerie = models.TextField(blank=True, null=True)
     postcode = models.CharField(max_length=20)
     town = models.CharField(max_length=60)
     charge = models.ForeignKey(Membre, blank=True, null=True, on_delete=models.SET_NULL)
@@ -28,6 +29,7 @@ class Prospect(models.Model):
 
     def anonymiser(self):
         self.address = settings.ANONYMISATION_STRING
+        self.address_tresorerie = settings.ANONYMISATION_STRING
         self.town = settings.ANONYMISATION_STRING
         self.name = settings.ANONYMISATION_STRING
         self.postcode = settings.ANONYMISATION_STRING
