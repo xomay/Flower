@@ -25,8 +25,10 @@ export default {
     },
     // @returns date formatted as yyyy-mm-dd
     generateDateToday () {
-      const date_now = new Date()
-      return date_now.getFullYear() +"-"+ (date_now.getMonth() < 9 ? "0" : "")+ (date_now.getMonth()+1) +"-"+(date_now.getDate() < 10 ? "0" : "")+ (date_now.getDate())
+      return this.generateDate(new Date())
+    },
+    generateDate (date) {
+      return date.getFullYear() +"-"+ (date.getMonth() < 9 ? "0" : "")+ (date.getMonth()+1) +"-"+(date.getDate() < 10 ? "0" : "")+ (date.getDate())
     },
     // @returns today's last two digits of the year. ("21" if the year is 2021)
     generateYearDigits () {
@@ -63,6 +65,12 @@ export default {
     },
     arrayAmountFormatter (row, column, cellValue) {
       return cellValue.length
-    }
+    },
+    // Date utils
+    addDaysToDate (date, days) {
+      var result = new Date(date)
+      result.setDate(result.getDate() + days)
+      return result
+    },
   }
 }
