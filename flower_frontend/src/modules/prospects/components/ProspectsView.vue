@@ -1,10 +1,7 @@
 <template>
   <div>
     <span><i class="el-icon-user-solid" /> Nom : {{ prospect.name }}</span><br>
-    <span><i class="el-icon-location" /> Adresse : {{ prospect.address }}; {{ prospect.postcode }}, {{ prospect.town }}</span><br>
-    <div v-if="prospect.address_tresorerie != null && prospect.address_tresorerie != ''">
-      <span><i class="el-icon-location" /> Adresse de trésorerie : {{ prospect.address_tresorerie }}</span><br><br>
-    </div>
+    <span><i class="el-icon-location" /> Adresse : {{ prospect.address }}; {{ prospect.postcode }}, {{ prospect.town }}</span><br><br>
     <span v-show="displayCharge">
       <i class="el-icon-user" /> Chargé dev'co :
       <el-link

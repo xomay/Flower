@@ -70,21 +70,6 @@
       </el-form-item>
     </el-col>
     <el-col :span="24">
-      <el-form-item
-        label="Addresse de facturation"
-        prop="address_tresorerie"
-        label-width="200px"
-      >
-        <el-input
-          v-model="value.address_tresorerie"
-          type="textarea"
-          :rows="2"
-          resize="none"
-          placeholder="Identique à l'addresse ci-dessus."
-        />
-      </el-form-item>
-    </el-col>
-    <el-col :span="24">
       <span>
         Moyens de contact :
       </span>
