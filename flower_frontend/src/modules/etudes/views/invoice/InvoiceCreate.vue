@@ -14,14 +14,12 @@
 
 <script>
 import InvoiceForm from "../../components/invoice/InvoiceForm"
-import Utils from "@/mixins/Utils"
 
 const axios = require("axios")
 
 export default {
   name: "InvoiceCreate",
   components: {InvoiceForm},
-  mixins: [Utils],
   data () {
     return {
       loading: false,
@@ -30,8 +28,8 @@ export default {
         accountingPeriod: 2021,
         invoiceNumber: "",
         invoiceType: "",
-        issueDate: this.generateDateToday(),
-        paymentDate: this.generateDate(this.addDaysToDate(new Date(), 30)),
+        issueDate: "",
+        paymentDate: "",
         description: "",
         details: []
       },
