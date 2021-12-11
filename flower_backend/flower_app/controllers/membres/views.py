@@ -75,6 +75,6 @@ class OpenAccountView(generics.UpdateAPIView):
         try:
             print("Send mail to new user.")
             send_mail_user_account_creation(membre, new_username, new_password)
-        except:
-            print("Impossible d'envoyer l'email !")
+        except Exception as e:
+            print("Impossible d'envoyer l'email : " +str(e))
         return Response(data={"username": newAccount.username}, status=HTTPStatus.CREATED)
