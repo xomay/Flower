@@ -29,7 +29,7 @@ def send_mail_user_account_creation(membre, username, password):
         'password': password,
         'connection_url': "{}/#/login".format(settings.FRONT_END)
     }
-    send_mail(context, params_je, 'user_account_create', membre.email_insa)
+    send_mail(context, params_je, 'user_account_create', membre.email)
 
 #def send_mail_user_account_deletion(realisateur):
 #    params_je = ParamsJE.objects.get(pk=1)
