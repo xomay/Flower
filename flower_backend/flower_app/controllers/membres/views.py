@@ -34,8 +34,8 @@ class MembreDetailView(generics.RetrieveUpdateAPIView):
     permission_classes = [IsAuthenticated, HasGroupPermission]
     required_groups = {
         'GET': ['ROLE_CA'],
-        'PUT': ['ROLE_ADMIN'],
-        'PATCH': ['ROLE_ADMIN']
+        'PUT': ['ROLE_CA'],
+        'PATCH': ['ROLE_CA']
     }
     serializer_class = MembreSerializer
     queryset = Membre.objects.all()
