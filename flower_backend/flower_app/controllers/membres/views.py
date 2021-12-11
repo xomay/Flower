@@ -65,8 +65,10 @@ class OpenAccountView(generics.UpdateAPIView):
         print("new password >"+new_password)
         newAccount = User(
             username=new_username,
+            email=membre.email,
             password=new_password
         )
+        newAccount.set_password(new_password)
         newAccount.save()
         membre.user = newAccount
         membre.save()
