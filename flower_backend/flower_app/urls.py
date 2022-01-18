@@ -28,5 +28,6 @@ urlpatterns = [
     path('signature/', include('flower_app.controllers.signature.urls')),
     path('bv/', include('flower_app.controllers.bv.urls')),
     path('avenants/', include('flower_app.controllers.avenants.urls')),
+    path('test/', include('flower_app.controllers.test.urls')),
     # path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 ]
