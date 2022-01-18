@@ -40,10 +40,7 @@ def createSignature(membre):
         image_editable.text((hrz_offset + 10 + sizeNomPrenom,vrt_offset + post_bold_offset), '• ' + posteName, (85, 85, 85), font=text_font)
     # ☎ <Téléphone JE> • 📞 <numéro de téléphone>
     vrt_offset += 3
-    mobile_text = ""
-    if membre.mobile != "":
-        mobile_text = ' • 📞 ' + betterMobile(membre.mobile)
-    image_editable.text((hrz_offset,vrt_offset+line_offset), '☎ '+ params.je_phone + mobile_text, (85, 85, 85), font=text_emote)
+    image_editable.text((hrz_offset,vrt_offset+line_offset), '☎ '+ params.je_phone + ' • 📞 ' + betterMobile(membre.mobile), (85, 85, 85), font=text_emote)
     # 💼 <nom je> • <slogan>
     jeEmote = '💼 '
     image_editable.text((hrz_offset,vrt_offset+line_offset*2), jeEmote, (85, 85, 85), font=text_emote)
