@@ -54,7 +54,6 @@ class OpenAccountView(generics.UpdateAPIView):
             email=realisateur.email_insa,
             password=new_password
         )
-        newAccount.set_password(new_password)
         newAccount.save()
         realisateur.user = newAccount
         realisateur.save()

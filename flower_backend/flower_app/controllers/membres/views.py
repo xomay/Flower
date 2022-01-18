@@ -6,12 +6,10 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import generics
 
 from http import HTTPStatus
-import random, string
 
 from flower_app.controllers.permissions import HasGroupPermission
 from flower_app.models.People.Membre import Membre, MembreSerializer
 from flower_app.models.Poste import Poste
-from flower_app.email.mail_user_accounts import send_mail_user_account_creation
 
 class MembreView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated, HasGroupPermission]
@@ -34,8 +32,8 @@ class MembreDetailView(generics.RetrieveUpdateAPIView):
     permission_classes = [IsAuthenticated, HasGroupPermission]
     required_groups = {
         'GET': ['ROLE_CA'],
-        'PUT': ['ROLE_CA'],
-        'PATCH': ['ROLE_CA']
+        'PUT': ['ROLE_ADMIN'],
+        'PATCH': ['ROLE_ADMIN']
     }
     serializer_class = MembreSerializer
     queryset = Membre.objects.all()
@@ -59,24 +57,13 @@ class OpenAccountView(generics.UpdateAPIView):
     queryset = Membre.objects.all()
     def update(self, request, pk):
         membre = Membre.objects.get(id=pk)
-        new_username = "{firstname}.{lastname}".format(firstname=membre.firstname, lastname=membre.lastname).replace(" ", "").lower()
-        new_password = ''.join(random.choice(string.ascii_letters + string.digits) for i in range(16))
-        print("new username >"+new_username)
-        print("new password >"+new_password)
         newAccount = User(
-            username=new_username,
-            email=membre.email,
-            password=new_password
+            username="{firstname}.{lastname}".format(firstname=membre.firstname, lastname=membre.lastname).replace(" ", "").lower(),
+            password=""
         )
-        newAccount.set_password(new_password)
         newAccount.save()
         membre.user = newAccount
         membre.save()
         groupCA = Group.objects.get(name='ROLE_CA') 
         groupCA.user_set.add(newAccount)
-        try:
-            print("Send mail to new user.")
-            send_mail_user_account_creation(membre, new_username, new_password)
-        except Exception as e:
-            print("Impossible d'envoyer l'email : " +str(e))
         return Response(data={"username": newAccount.username}, status=HTTPStatus.CREATED)

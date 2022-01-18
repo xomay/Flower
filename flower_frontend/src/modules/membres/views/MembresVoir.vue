@@ -120,15 +120,15 @@
           slot-scope="scope"
         >
           <el-button
-            v-show="isButtonOn(scope.row.id)"
-            ref="btn_{{scope.row.id}}"
+            v-show="isButtonOn(scope.$index)"
+            ref="btn_{{scope.$index}}"
             size="medium"
             type="warning"
-            @click="openAccount(scope.row.id)"
+            @click="openAccount(scope.$index)"
           >
             Ouvrir un compte utilisateur
           </el-button>
-          <el-col v-show="!isButtonOn(scope.row.id)">
+          <el-col v-show="!isButtonOn(scope.$index)">
             <div class="grid-content bg-purple-light" />
           </el-col>
         </template>
@@ -185,33 +185,17 @@ export default {
   methods: {
     openAccount (memberID) {
       if(this.isAdmin()) {
-        let t=0
-        for (let i = 0; i < 200; i++) {
-          if (this.membres[i].id == memberID) {
-            t=1
-            if( ! this.membres[i].user ) {
-              this.mixinRegisterMember(axios, this.membres[i])
-            } else {
-              this.$message({ message: "Une erreur est survenue : le compte était déjà présent.", type: "error" })
-            }
-          }
+        if( ! this.membres[memberID].user ) {
+          this.mixinRegisterMember(axios, this.membres[memberID])
+        } else {
+          this.$message({ message: "Une erreur est survenue : le compte était déjà présent.", type: "error" })
         }
-        if ( t==0)
-          this.$message({ message: "Une erreur est survenue : Utilisateur introuvable.", type: "error" })
       } else {
         this.$message({ message: "Il faut être administrateur pour faire cette action !", type: "error" })
       }
     },
-    isButtonOn (ID) {
-      let t=0
-      for (let i = 0; i < 200; i++) {
-        if (this.membres[i].id == ID) {
-          t=1
-          return ! this.membres[i].user
-        }
-      }
-      if ( t==0)
-        this.$message({ message: "Une erreur est survenue : Utilisateur introuvable.", type: "error" })
+    isButtonOn (memberID) {
+      return ! this.membres[memberID].user
     },
     refilterUser (displayWithUser) {
       if(displayWithUser)
