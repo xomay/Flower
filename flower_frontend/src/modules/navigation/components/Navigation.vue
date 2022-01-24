@@ -246,14 +246,14 @@ export default {
                 {name: "Créer une action commerciale",
                   url: "/prospects/actionCommerciale/ajouter"}
               ]
-            },
+            }/*,
             {
               title: "Génération",
               children: [
                 {name: "Devis",
                   url: "/generation/devis"}
               ]
-            }
+            }*/
           ]
         })
       }
