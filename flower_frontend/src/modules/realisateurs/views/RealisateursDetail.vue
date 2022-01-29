@@ -18,6 +18,13 @@
         :realisateur="realisateur"
       />
     </div>
+    <el-button
+      :loading="loadingopenaccount"
+      type="warning"
+      @click="downloadBA()"
+    >
+      Générer BA
+    </el-button>
     <div style="width: 60%; float:right; margin-left: 5%">
       <RealisateurCommentsView
         :realisateur="realisateur"
@@ -93,7 +100,41 @@ export default {
         count ++
       }
       return str
+    },
+    downloadBA () {
+      console.log()
+      axios.get(
+        `/api/publish/barea/${this.realisateur.id}`,
+        {withCredentials: true,
+          responseType: "blob"}
+      ).then((response) => {
+        this.createDownloadElement(
+          response.data,
+          `BA-${this.realisateur.lastname}-${this.realisateur.firstname}.docx`
+        )
+      }).
+        catch((err) => {
+          this.$message({message: `Une erreur est survenue lors de la génération du bulletin d'adhésion : ${err}`,
+            type: "error"})
+        }).
+        finally(() => {
+          this.loading = false
+        })
+    },
+    createDownloadElement (data, filename) {
+      const fileURL = window.URL.createObjectURL(new Blob([data])),
+        fileLink = document.createElement("a")
+
+      fileLink.href = fileURL
+      fileLink.setAttribute(
+        "download",
+        filename
+      )
+      document.body.appendChild(fileLink)
+
+      fileLink.click()
     }
   }
 }
+
 </script>
