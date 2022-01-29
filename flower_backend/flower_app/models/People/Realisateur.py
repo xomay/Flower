@@ -44,7 +44,7 @@ class Realisateur(Personne):
     nationality = models.CharField(max_length=60, default="FR")
     birth_date = models.DateField()
     birth_place = models.CharField(max_length=60)
-
+    ba = models.DateField(null=True)
     CHOICES_FILIERES = [
         ('INFO','INFO'),
         ('EII', 'EII'),
@@ -60,7 +60,8 @@ class Realisateur(Personne):
     comments = models.ManyToManyField(RealisateurComment, blank=True)
     security_social_number = models.CharField(max_length=15)
     filiere = models.CharField(max_length=5, choices=CHOICES_FILIERES, default='INFO')
-
+    
+    
     def __str__(self):
         return self.firstname + ' ' + self.lastname
 

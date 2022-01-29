@@ -7,10 +7,11 @@ from flower_app.models.Etude import Etude
 from flower_app.models.Facture import Facture
 from flower_app.models.Mission import Mission
 from flower_app.models.People.Membre import Membre
+from flower_app.models.People.Realisateur import Realisateur
 from flower_app.models.PVR import PVR
 from flower_app.models.NdF import NdF
 from flower_app.models.BV import BV
-
+from datetime import date
 from flower_app.controllers.gantt.gantt import computeGanttFromEtudeRaw
 
 import tempfile
@@ -82,6 +83,34 @@ class BVView(generics.RetrieveAPIView):
             'bv': bv,
             'rea': bv.rdm.consultant
         }, 'BV.docx', bv.reference)
+class BAView(generics.RetrieveAPIView):
+    permission_classes = [IsAuthenticated, HasGroupPermission]
+    required_groups = {
+        'GET': ['ROLE_CA']
+    }
+    def retrieve(request, self, etudiant_id):
+        rea = Membre.objects.get(pk=etudiant_id)
+        if rea.ba == None:
+            rea.ba = date.today() 
+        rea.save() 
+        monsieurmadame = 'Monsieur' if rea.gender=='M.' else 'Madame'
+        ref = 'Ba_'+rea.lastname[0]+rea.firstname[0]+str(rea.ba)+'_'+str(etudiant_id)
+        return computeDocx({'ba':{'etudiant': rea, 'ref': ref.upper(), 'monsieurmadame': monsieurmadame}}, 'BA.docx','BA-' + ref)
+
+class BAReaView(generics.RetrieveAPIView):
+    permission_classes = [IsAuthenticated, HasGroupPermission]
+    required_groups = {
+        'GET': ['ROLE_CA']
+    }
+    def retrieve(request, self, etudiant_id):
+        rea = Realisateur.objects.get(pk=etudiant_id)
+        if rea.ba == None:
+            rea.ba = date.today() 
+        rea.save() 
+        monsieurmadame = 'Monsieur' if rea.gender=='M.' else 'Madame'
+        ref = 'Ba_Rea_'+rea.lastname[0]+rea.firstname[0]+str(rea.ba)+'_'+str(etudiant_id)
+        return computeDocx({'ba':{'etudiant': rea, 'ref': ref.upper(), 'monsieurmadame': monsieurmadame}}, 'BA.docx','BA-' + ref)
+
 
 class FactureView(generics.RetrieveAPIView):
     permission_classes = [IsAuthenticated, HasGroupPermission]

@@ -11,5 +11,7 @@ urlpatterns = [
     path('rdm/<int:rdm_id>/', views.RDMView.as_view()),
     path('ndf/<int:ndf_id>/', views.NdFView.as_view()),
     path('bv/<int:bv_id>/', views.BVView.as_view()),
+    path('ba/<int:etudiant_id>', views.BAView.as_view()),
+    path('barea/<int:etudiant_id>', views.BAReaView.as_view()),
     path('devis/', views.CustomDevisView.as_view())
 ]
