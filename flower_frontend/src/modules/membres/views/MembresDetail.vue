@@ -40,13 +40,17 @@
         ( {{ sub.poste }} )
       </div>
     </div>
-    <el-button
-      :loading="loadingopenaccount"
-      type="warning"
-      @click="downloadBA()"
-    >
-      Générer BA
-    </el-button>
+    <br>
+    <div>
+      <span><div v-if="member.ba">BA: {{ member.ba }}</div><div v-if="!member.ba">Ba: Non généré</div></span><br>
+      <el-button
+        :loading="loadingopenaccount"
+        type="warning"
+        @click="downloadBA()"
+      >
+        Générer BA
+      </el-button>
+    </div>
   </BaseComponent>
 </template>
 
