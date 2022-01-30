@@ -41,15 +41,24 @@
       </div>
     </div>
     <br>
-    <div>
-      <span><div v-if="member.ba">BA: {{ member.ba }}</div><div v-if="!member.ba">Ba: Non généré</div></span><br>
-      <el-button
-        :loading="loadingopenaccount"
-        type="warning"
-        @click="downloadBA()"
-      >
-        Générer BA
-      </el-button>
+    <div style="width: 20%; float:center; margin-left: 30%">
+      <table class="styled-table">
+          <tbody>
+            <tr></tr>
+            <tr>
+              <td class="rowStyle noRight">
+                <span><div v-if="member.ba">BA: {{ member.ba }}</div><div v-if="!member.ba">Ba: Non généré</div></span>
+                <el-button
+                  :loading="loadingopenaccount"
+                  type="warning"
+                  @click="downloadBA()"
+                >
+                  Générer BA
+                </el-button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
     </div>
   </BaseComponent>
 </template>
