@@ -24,16 +24,26 @@
       />
     </div>
     <br>
-    <div style="width: 100%; float:left; margin-left: 32%">
-      <span><div v-if="realisateur.ba">BA: {{ realisateur.ba }}</div><div v-if="!realisateur.ba">Ba: Non généré</div></span>
-      <el-button
-        :loading="loadingopenaccount"
-        type="warning"
-        @click="downloadBA()"
-      >
-        Générer BA
-      </el-button>
-      <br><br>
+    <div style="width: 5%; float:center; margin-left: 0%">
+    </div>
+    <div style="width: 25%; float:center; margin-left: 25%">
+      <table class="styled-table">
+        <tbody>
+          <tr></tr>
+          <tr>
+            <td class="rowStyle noRight">
+              <span><div v-if="realisateur.ba">BA: {{ realisateur.ba }}</div><div v-if="!realisateur.ba">Ba: Non généré</div></span>
+              <el-button
+                :loading="loadingopenaccount"
+                type="warning"
+                @click="downloadBA()"
+              >
+                Générer BA
+              </el-button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </BaseComponent>
 </template>
