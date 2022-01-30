@@ -18,17 +18,22 @@
         :realisateur="realisateur"
       />
     </div>
-    <el-button
-      :loading="loadingopenaccount"
-      type="warning"
-      @click="downloadBA()"
-    >
-      Générer BA
-    </el-button>
     <div style="width: 60%; float:right; margin-left: 5%">
       <RealisateurCommentsView
         :realisateur="realisateur"
       />
+    </div>
+    <br>
+    <div style="width: 100%; float:left; margin-left: 32%">
+      <span><div v-if="realisateur.ba">BA: {{ realisateur.ba }}</div><div v-if="!realisateur.ba">Ba: Non généré</div></span>
+      <el-button
+        :loading="loadingopenaccount"
+        type="warning"
+        @click="downloadBA()"
+      >
+        Générer BA
+      </el-button>
+      <br><br>
     </div>
   </BaseComponent>
 </template>
