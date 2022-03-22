@@ -193,7 +193,7 @@ export default {
     },
     // validators
     numberValidator (rule, value, callback) {
-      if ( ! String(value).match(/^\d+(|.\d+)$/g)) {
+      if ( ! String(value).match(/^-?\d+(|.\d+)$/g)) {
         callback(new Error("Nombre non valide"))
       } else {
         callback()
