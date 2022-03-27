@@ -21,6 +21,7 @@ from .models.UploadedFile import UploadedFile
 from .models.BaseUrsaff import BaseUrsaff
 from .models.BV import BV, Cotisation
 from .models.Avenant import Avenant
+from .models.BA import BA
 
 # Register your models here.
 admin.site.register(CE)
@@ -39,6 +40,7 @@ admin.site.register(TypeAction)
 admin.site.register(Action)
 admin.site.register(Realisateur)
 admin.site.register(RealisateurComment)
+admin.site.register(BA)
 admin.site.register(Competence)
 admin.site.register(ParamsJE)
 admin.site.register(NdF)
