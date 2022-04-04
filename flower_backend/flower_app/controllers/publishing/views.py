@@ -11,36 +11,43 @@ from flower_app.models.People.Realisateur import Realisateur
 from flower_app.models.PVR import PVR
 from flower_app.models.NdF import NdF
 from flower_app.models.BV import BV
+from flower_app.models.BA import BA
 from datetime import date
 from flower_app.controllers.gantt.gantt import computeGanttFromEtudeRaw
 
 import tempfile
 
+
 class DevisView(generics.RetrieveAPIView):
     permission_classes = [IsAuthenticated, HasGroupPermission]
     required_groups = {
-        'GET': ['ROLE_CA']                                      #from modules/etudes/components/Generation.vue in modules/etudes/views/EtudeDetails.vue
+        # from modules/etudes/components/Generation.vue in modules/etudes/views/EtudeDetails.vue
+        'GET': ['ROLE_CA']
     }
 
     def retrieve(request, self, etude_id):
         etude = Etude.objects.get(pk=etude_id)
-        return computeDocx({'etude': etude}, 'DEVIS.docx','DEVIS-' + etude.name)
-        
+        return computeDocx({'etude': etude}, 'DEVIS.docx', 'DEVIS-' + etude.name)
+
+
 class CustomDevisView(generics.CreateAPIView):
     permission_classes = [IsAuthenticated, HasGroupPermission]
     required_groups = {
-        'POST': ['ROLE_CA']                                     #from modules/prospects/views/Devis.vue
+        'POST': ['ROLE_CA']  # from modules/prospects/views/Devis.vue
     }
 
     def create(self, request):
         etude = request.data
-        etude['projectManager'] = Membre.objects.get(pk=etude['projectManager'])
-        return computeDocx({'etude': etude}, 'DEVIS_JSON.docx','DEVIS-' + etude['name'])
+        etude['projectManager'] = Membre.objects.get(
+            pk=etude['projectManager'])
+        return computeDocx({'etude': etude}, 'DEVIS_JSON.docx', 'DEVIS-' + etude['name'])
+
 
 class CEView(generics.RetrieveAPIView):
     permission_classes = [IsAuthenticated, HasGroupPermission]
     required_groups = {
-        'GET': ['ROLE_CA']                                      #from modules/etudes/components/Generation.vue in modules/etudes/views/EtudeDetails.vue
+        # from modules/etudes/components/Generation.vue in modules/etudes/views/EtudeDetails.vue
+        'GET': ['ROLE_CA']
     }
 
     def retrieve(request, self, etude_id):
@@ -49,17 +56,20 @@ class CEView(generics.RetrieveAPIView):
         tmp_img_file = tempfile.NamedTemporaryFile(delete=None, suffix='.jpg')
         svgData.write_image(tmp_img_file)
         images = {'gantt': tmp_img_file.name}
-        return computeDocx({'etude': etude}, 'CETUDE.docx','CE-' + etude.name, images=images)
-        
+        return computeDocx({'etude': etude}, 'CETUDE.docx', 'CE-' + etude.name, images=images)
+
+
 class RDMView(generics.RetrieveAPIView):
     permission_classes = [IsAuthenticated, HasGroupPermission]
     required_groups = {
-        'GET': ['ROLE_CA']                                      #from modules/etudes/components/Generation.vue in modules/etudes/views/EtudeDetails.vue
+        # from modules/etudes/components/Generation.vue in modules/etudes/views/EtudeDetails.vue
+        'GET': ['ROLE_CA']
     }
 
     def retrieve(request, self, rdm_id):
         mission = Mission.objects.get(pk=rdm_id)
-        return computeDocx({'mission': mission}, 'RDM.docx','RDM-' + mission.project.name)
+        return computeDocx({'mission': mission}, 'RDM.docx', 'RDM-' + mission.project.name)
+
 
 class NdFView(generics.RetrieveAPIView):
     permission_classes = [IsAuthenticated, HasGroupPermission]
@@ -70,6 +80,7 @@ class NdFView(generics.RetrieveAPIView):
     def retrieve(request, self, ndf_id):
         ndf = NdF.objects.get(pk=ndf_id)
         return computeDocx({'ndf': ndf}, 'NF.docx', ndf.reference)
+
 
 class BVView(generics.RetrieveAPIView):
     permission_classes = [IsAuthenticated, HasGroupPermission]
@@ -83,49 +94,75 @@ class BVView(generics.RetrieveAPIView):
             'bv': bv,
             'rea': bv.rdm.consultant
         }, 'BV.docx', bv.reference)
+
+
 class BAView(generics.RetrieveAPIView):
     permission_classes = [IsAuthenticated, HasGroupPermission]
     required_groups = {
         'GET': ['ROLE_CA']
     }
+
     def retrieve(request, self, etudiant_id):
         rea = Membre.objects.get(pk=etudiant_id)
         if rea.ba == None:
-            rea.ba = date.today() 
-        rea.save() 
-        monsieurmadame = 'Monsieur' if rea.gender=='M.' else 'Madame'
-        ref = 'Ba_'+rea.lastname[0]+rea.firstname[0]+str(rea.ba)+'_'+str(etudiant_id)
-        return computeDocx({'ba':{'etudiant': rea, 'ref': ref.upper(), 'monsieurmadame': monsieurmadame}}, 'BA.docx','BA-' + ref)
+            rea.ba = date.today()
+            if BA.objects.filter(year=rea.ba.year, type="CA").first():
+                ba_iterator = BA.objects.get(year=rea.ba.year, type="CA")
+                ba_iterator.iterator = ba_iterator.iterator + 1
+                rea.ba_id = ba_iterator.iterator
+                ba_iterator.save()
+            else:
+                ba_iterator = BA(type="CA", year=rea.ba.year, iterator=0)
+                rea.ba_id = ba_iterator.iterator
+                ba_iterator.save()
+        rea.save()
+        monsieurmadame = 'Monsieur' if rea.gender == 'M.' else 'Madame'
+        ref = 'BA_'+str(rea.ba.year % 100)+'_C' + '%03d' % rea.ba_id
+        return computeDocx({'ba': {'etudiant': rea, 'ref': ref.upper(), 'monsieurmadame': monsieurmadame}}, 'BA.docx', 'BA-' + ref)
+
 
 class BAReaView(generics.RetrieveAPIView):
     permission_classes = [IsAuthenticated, HasGroupPermission]
     required_groups = {
         'GET': ['ROLE_CA']
     }
+
     def retrieve(request, self, etudiant_id):
         rea = Realisateur.objects.get(pk=etudiant_id)
         if rea.ba == None:
-            rea.ba = date.today() 
-        rea.save() 
-        monsieurmadame = 'Monsieur' if rea.gender=='M.' else 'Madame'
-        ref = 'Ba_Rea_'+rea.lastname[0]+rea.firstname[0]+str(rea.ba)+'_'+str(etudiant_id)
-        return computeDocx({'ba':{'etudiant': rea, 'ref': ref.upper(), 'monsieurmadame': monsieurmadame}}, 'BA.docx','BA-' + ref)
+            rea.ba = date.today()
+            if BA.objects.filter(year=rea.ba.year, type="REA").first():
+                ba_iterator = BA.objects.get(year=rea.ba.year, type="REA")
+                ba_iterator.iterator = ba_iterator.iterator + 1
+                rea.ba_id = ba_iterator.iterator
+                ba_iterator.save()
+            else:
+                ba_iterator = BA(type="REA", year=rea.ba.year, iterator=0)
+                rea.ba_id = ba_iterator.iterator
+                ba_iterator.save()
+        rea.save()
+        monsieurmadame = 'Monsieur' if rea.gender == 'M.' else 'Madame'
+        ref = 'BA_'+str(rea.ba.year % 100)+'_R' + '%03d' % rea.ba_id
+        return computeDocx({'ba': {'etudiant': rea, 'ref': ref.upper(), 'monsieurmadame': monsieurmadame}}, 'BA.docx', 'BA-' + ref)
 
 
 class FactureView(generics.RetrieveAPIView):
     permission_classes = [IsAuthenticated, HasGroupPermission]
     required_groups = {
-        'GET': ['ROLE_CA']                                      #from modules/etudes/components/Generation.vue in modules/etudes/views/EtudeDetails.vue
+        # from modules/etudes/components/Generation.vue in modules/etudes/views/EtudeDetails.vue
+        'GET': ['ROLE_CA']
     }
 
     def retrieve(request, self, facture_id):
         invoice = Facture.objects.get(pk=facture_id)
         return computeDocx({'facture': invoice}, 'FA.docx', str(invoice))
 
+
 class PVRView(generics.RetrieveAPIView):
     permission_classes = [IsAuthenticated, HasGroupPermission]
     required_groups = {
-        'GET': ['ROLE_CA']                                      #from modules/etudes/components/Generation.vue in modules/etudes/views/EtudeDetails.vue
+        # from modules/etudes/components/Generation.vue in modules/etudes/views/EtudeDetails.vue
+        'GET': ['ROLE_CA']
     }
 
     def retrieve(request, self, pvr_id):
