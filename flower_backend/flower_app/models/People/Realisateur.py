@@ -45,6 +45,7 @@ class Realisateur(Personne):
     birth_date = models.DateField()
     birth_place = models.CharField(max_length=60)
     ba = models.DateField(null=True)
+    ba_id = models.IntegerField(null=True)
     CHOICES_FILIERES = [
         ('INFO','INFO'),
         ('EII', 'EII'),
