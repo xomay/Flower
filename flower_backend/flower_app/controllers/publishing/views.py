@@ -56,7 +56,13 @@ class CEView(generics.RetrieveAPIView):
         tmp_img_file = tempfile.NamedTemporaryFile(delete=None, suffix='.jpg')
         svgData.write_image(tmp_img_file)
         images = {'gantt': tmp_img_file.name}
-        return computeDocx({'etude': etude}, 'CETUDE.docx', 'CE-' + etude.name, images=images)
+        print(etude.contractType)
+        if(etude.contractType=='CCA'):
+            return computeDocx({'etude': etude}, 'CCA.docx', 'CCA-' + etude.name, images=images)
+        elif(etude.contractType=='BC'):
+            return computeDocx({'etude': etude}, 'BC.docx', 'BC-' + etude.name, images=images)
+        else:
+            return computeDocx({'etude': etude}, 'CETUDE.docx', 'CE-' + etude.name, images=images)
 
 
 class RDMView(generics.RetrieveAPIView):
