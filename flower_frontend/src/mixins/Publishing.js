@@ -30,6 +30,26 @@ export default {
         this.loading = false
       })
     },
+    downloadCCA () {
+      this.loading = true
+      axios.get(`/api/publish/etude/${this.etude.id}/cca/`, { withCredentials: true, responseType: "blob" }).then((response) => {
+        this.createDownloadElement(response.data, "CCA-" + this.etude.name + ".docx")
+      }).catch(err => {
+        this.$message({ message: "Une erreur est survenue lors de la génération du devis : " + err, type: "error" })
+      }).finally(() => {
+        this.loading = false
+      })
+    },
+    downloadBC () {
+      this.loading = true
+      axios.get(`/api/publish/etude/${this.etude.id}/bc/`, { withCredentials: true, responseType: "blob" }).then((response) => {
+        this.createDownloadElement(response.data, "BC-" + this.etude.name + ".docx")
+      }).catch(err => {
+        this.$message({ message: "Une erreur est survenue lors de la génération du devis : " + err, type: "error" })
+      }).finally(() => {
+        this.loading = false
+      })
+    },
     downloadRDM (rdmId) {
       this.loading = true
       axios.get(`/api/publish/rdm/${rdmId}`, { withCredentials: true, responseType: "blob" }).then((response) => {

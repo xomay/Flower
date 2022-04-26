@@ -13,40 +13,95 @@
       v-model="activeCollapses"
       class="mt-2"
     >
-      <el-collapse-item name="0">
-        <template slot="title">
-          <span class="mr-2 text-lg">Convention Etude</span>
-        </template>
-        <router-link
-          class="mr-2"
-          :to="`/etudes/${$route.params.id}/convention-etude`"
-        >
-          <el-button
-            type="primary"
-            icon="el-icon-edit"
-            :disabled="etude.isAborted"
+      <template v-if="this.etude.contractType=='CE'">
+        <el-collapse-item name="0">
+          <template slot="title">
+            <span class="mr-2 text-lg">Convention Etude</span>
+          </template>
+          <router-link
+            class="mr-2"
+            :to="`/etudes/${$route.params.id}/convention-etude`"
           >
-            Rédiger la CE
+            <el-button
+              type="primary"
+              icon="el-icon-edit"
+              :disabled="etude.isAborted"
+            >
+              Rédiger la CE {{this.etude.contractType}}
+            </el-button>
+          </router-link>
+          <el-button
+            v-if="displaysCE"
+            type="success"
+            :loading="loading"
+            icon="el-icon-download"
+            @click="downloadCE"
+          >
+            Générer la CE
           </el-button>
-        </router-link>
-        <el-button
-          v-if="displaysCE"
-          type="success"
-          :loading="loading"
-          icon="el-icon-download"
-          @click="downloadCE"
-        >
-          Générer la CE
-        </el-button>
-        <el-button
-          v-else
-          type="success"
-          plain
-          disabled
-        >
-          Générer la CE
-        </el-button>
-      </el-collapse-item>
+          <el-button
+            v-else
+            type="success"
+            plain
+            disabled
+          >
+            Générer la CE
+          </el-button>
+        </el-collapse-item>
+      </template>
+      <template v-else>
+        <el-collapse-item name="0">
+          <template slot="title">
+            <span class="mr-2 text-lg">Convention Cadre Agile</span>
+          </template>
+          <router-link
+            class="mr-2"
+            :to="`/etudes/${$route.params.id}/convention-etude`"
+          >
+            <el-button
+              type="primary"
+              icon="el-icon-edit"
+              :disabled="etude.isAborted"
+            >
+              Rédiger la CCA
+            </el-button>
+          </router-link>
+          <el-button
+            v-if="displaysCE"
+            type="success"
+            :loading="loading"
+            icon="el-icon-download"
+            @click="downloadCCA"
+          >
+            Générer la CCA
+          </el-button>
+          <el-button
+            v-else
+            type="success"
+            plain
+            disabled
+          >
+            Générer la CCA
+          </el-button>
+          <el-button
+            v-if="displaysCE"
+            type="success"
+            :loading="loading"
+            icon="el-icon-download"
+            @click="downloadBC"
+          >
+            Générer le BC
+          </el-button>
+          <el-button
+            v-else
+            type="success"
+            plain
+            disabled
+          >
+            Générer le BC
+          </el-button>
+        </el-collapse-item>
+      </template>
       <el-collapse-item name="1">
         <template slot="title">
           <span class="mr-2 text-lg">Récapitulatifs de mission</span> <router-link :to="`/etudes/${$route.params.id}/missions`">
