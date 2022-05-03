@@ -18,6 +18,7 @@ class PVR(models.Model):
     documentType = models.CharField(max_length=1, choices=PVR_CHOICES)
     signingDate = models.DateField()
     deliverable = models.TextField()
+    guaranteeDuration = models.IntegerField(null=True, default=90)
 
     def __str__(self):
         return self.reference

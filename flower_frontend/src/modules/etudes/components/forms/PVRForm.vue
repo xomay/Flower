@@ -39,6 +39,17 @@
       </el-col>
       <el-col :span="12">
         <el-form-item
+          label="Durée de garantie"
+          prop="guaranteeDuration"
+        >
+          <el-input-number
+            v-model="guaranteeDuration"
+            controls-position="right"
+          />
+        </el-form-item>
+      </el-col>
+      <el-col :span="12">
+        <el-form-item
           label="Signataire Junior"
           prop="signer1"
         >
@@ -104,11 +115,15 @@ export default {
     return {
       members: [],
       employees: [],
+      guaranteeDuration: 90,
       formRules: {
         documentType: [
           {required: true, message: "Obligatoire", trigger: "blur"}
         ],
         signingDate: [
+          {required: true, message: "Obligatoire", trigger: "blur"}
+        ],
+        guaranteeDuration: [
           {required: true, message: "Obligatoire", trigger: "blur"}
         ],
         signer1: [
@@ -148,6 +163,7 @@ export default {
       })
     },
     validateForm () {
+      this.value.guaranteeDuration = this.guaranteeDuration
       this.$refs.PVRFormRef.validate((r) => {
         if(r) {
           this.$emit("save")
@@ -173,6 +189,6 @@ export default {
           offset: 40})
       })
     }
-  }
+  },
 }
 </script>

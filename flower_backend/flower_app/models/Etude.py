@@ -22,7 +22,6 @@ class Etude(models.Model):
     name = models.CharField(max_length=60)
     description = models.TextField(blank=True,default='')
     contractType = models.TextField(default='CE')
-
     creation_date = models.DateTimeField(auto_now_add=True)
     modification_date = models.DateTimeField(auto_now=True)
     # State < 0 : étude avortée
