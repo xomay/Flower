@@ -603,6 +603,31 @@
           </el-card>
         </template>
       </el-step>
+      <!-- GUARANTEE (11) -->
+      <el-step
+        title="Garantie"
+      >
+        <template slot="description">
+          <el-card style="font-size: 120%;">
+            <template v-if="guaranteeEnd!=null">
+            <el-row v-show="!is_guarantee_over">
+              <i class="el-icon-close" />
+              Cette étude est sous garantie jusqu'au {{guaranteeEnd.getDay()+"/"+(guaranteeEnd.getMonth()+1)+"/"+guaranteeEnd.getFullYear()}}.
+            </el-row>
+            <el-row v-show="is_guarantee_over">
+              <i class="el-icon-check" />
+              Cette étude n'est plus sous garantie.
+            </el-row>
+            </template>
+            <template v-else>
+              <el-row>
+                <i class="el-icon-close" />
+                Importez le PVRF pour démarrer la période de garantie.
+              </el-row>
+            </template>
+          </el-card>
+        </template>
+      </el-step>
       <!-- x -->
     </el-steps>
   </div>
@@ -641,6 +666,12 @@ export default {
     reas () {
       return this.etude.missions == undefined ? [] : this.etude.missions.map(m => m.consultant)
     },
+    guaranteeEnd () {
+      if(this.pvrfs[0] == undefined){
+        return null
+      }
+      return new Date(new Date(this.pvrfs[0].signingDate).valueOf() + 1000*60*60*24*this.pvrfs[0].guaranteeDuration)
+    },
     // == Documents ==
     // Devis
     btn_devis_generate () { return this.etude.currentGroupes.groupes.length > 0 },
@@ -677,6 +708,12 @@ export default {
     btn_bv_alert () { return this.etude.state == 9 },
     // Fin
     is_over () { return this.etude.state == 10 },
+    is_guarantee_over () {
+      if(this.guaranteeEnd == null){
+        return false
+      }
+      return this.guaranteeEnd.valueOf() < Date.now()
+    }
   },
   watch: {
     etude (nv) {
@@ -723,6 +760,7 @@ export default {
         this.loading = false
       })
     },
+
     getConsultantName (mission) {
       if(mission.consultant == undefined) {
         return "(vide)"
@@ -757,7 +795,7 @@ export default {
     },
     getEnding () {
       return this.is_over ? "success" : "primary"
-    }
+    },
   }
 }
 </script>
