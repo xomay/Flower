@@ -47,60 +47,60 @@
         </template>
       </el-step>
       <template v-if="etude.contractType=='CE'">
-      <!-- CE (1) -->
-      <el-step title="CE">
-        <template slot="description">
-          <el-card>
-            <el-row>
-              La <b>C</b>onvention d'<b>É</b>tude doit être rédigée puis envoyé au client. Elle contient la proposition commerciale.
-            </el-row>
-            <el-row class="stCardRw">
-              <el-button
-                type="primary"
-                :loading="loading"
-                icon="el-icon-download"
-                :disabled="!btn_ce_generate"
-                plain
-                @click="downloadCE"
-              >
-                Générer la CE
-              </el-button>
-              <router-link
-                v-show="!btn_ce_generate"
-                class="mr-2"
-                :to="`/etudes/${$route.params.id}/convention-etude`"
-              >
+        <!-- CE (1) -->
+        <el-step title="CE">
+          <template slot="description">
+            <el-card>
+              <el-row>
+                La <b>C</b>onvention d'<b>É</b>tude doit être rédigée puis envoyé au client. Elle contient la proposition commerciale.
+              </el-row>
+              <el-row class="stCardRw">
                 <el-button
                   type="primary"
-                  icon="el-icon-edit"
+                  :loading="loading"
+                  icon="el-icon-download"
+                  :disabled="!btn_ce_generate"
+                  plain
+                  @click="downloadCE"
                 >
-                  Rédiger la CE
+                  Générer la CE
                 </el-button>
-              </router-link>
-              <el-button
-                v-show="btn_ce_levelup"
-                :loading="loading"
-                type="success"
-                icon="el-icon-check"
-                @click="levelupTo(2)"
-              >
-                La CE a été signé
-              </el-button>
-              <el-alert
-                v-show="btn_ce_help"
-                title="CE non rédigée !"
-                type="warning"
-                description="Appuyez sur 'Rédaction' puis 'Convention Etude' afin de rédiger la CE pour cette étude."
-                :closable="false"
-                center
-                effect="dark"
-                show-icon
-                style="margin-top: 10px;"
-              />
-            </el-row>
-          </el-card>
-        </template>
-      </el-step>
+                <router-link
+                  v-show="!btn_ce_generate"
+                  class="mr-2"
+                  :to="`/etudes/${$route.params.id}/convention-etude`"
+                >
+                  <el-button
+                    type="primary"
+                    icon="el-icon-edit"
+                  >
+                    Rédiger la CE
+                  </el-button>
+                </router-link>
+                <el-button
+                  v-show="btn_ce_levelup"
+                  :loading="loading"
+                  type="success"
+                  icon="el-icon-check"
+                  @click="levelupTo(2)"
+                >
+                  La CE a été signé
+                </el-button>
+                <el-alert
+                  v-show="btn_ce_help"
+                  title="CE non rédigée !"
+                  type="warning"
+                  description="Appuyez sur 'Rédaction' puis 'Convention Etude' afin de rédiger la CE pour cette étude."
+                  :closable="false"
+                  center
+                  effect="dark"
+                  show-icon
+                  style="margin-top: 10px;"
+                />
+              </el-row>
+            </el-card>
+          </template>
+        </el-step>
       </template>
       <template v-else>
         <!-- CCA (1) -->
@@ -138,7 +138,10 @@
                   class="mr-2"
                   :to="`/etudes/${$route.params.id}/convention-etude`"
                 >
-                  <el-button type="primary" icon="el-icon-edit">
+                  <el-button
+                    type="primary"
+                    icon="el-icon-edit"
+                  >
                     Rédiger la CCA
                   </el-button>
                 </router-link>
@@ -610,14 +613,14 @@
         <template slot="description">
           <el-card style="font-size: 120%;">
             <template v-if="guaranteeEnd!=null">
-            <el-row v-show="!is_guarantee_over">
-              <i class="el-icon-close" />
-              Cette étude est sous garantie jusqu'au {{guaranteeEnd.getDay()+"/"+(guaranteeEnd.getMonth()+1)+"/"+guaranteeEnd.getFullYear()}}.
-            </el-row>
-            <el-row v-show="is_guarantee_over">
-              <i class="el-icon-check" />
-              Cette étude n'est plus sous garantie.
-            </el-row>
+              <el-row v-show="!is_guarantee_over">
+                <i class="el-icon-close" />
+                Cette étude est sous garantie jusqu'au {{ guaranteeEnd.getDay()+"/"+(guaranteeEnd.getMonth()+1)+"/"+guaranteeEnd.getFullYear() }}.
+              </el-row>
+              <el-row v-show="is_guarantee_over">
+                <i class="el-icon-check" />
+                Cette étude n'est plus sous garantie.
+              </el-row>
             </template>
             <template v-else>
               <el-row>

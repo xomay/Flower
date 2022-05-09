@@ -13,7 +13,7 @@
       v-model="activeCollapses"
       class="mt-2"
     >
-      <template v-if="this.etude.contractType=='CE'">
+      <template v-if="etude.contractType=='CE'">
         <el-collapse-item name="0">
           <template slot="title">
             <span class="mr-2 text-lg">Convention Etude</span>
@@ -27,7 +27,7 @@
               icon="el-icon-edit"
               :disabled="etude.isAborted"
             >
-              Rédiger la CE {{this.etude.contractType}}
+              Rédiger la CE {{ etude.contractType }}
             </el-button>
           </router-link>
           <el-button
