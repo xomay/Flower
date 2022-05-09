@@ -3,6 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import generics
 from django.http import HttpResponse
+from django.core.signing import Signer
 from datetime import datetime
 from http import HTTPStatus
 from flower_app.controllers.permissions import HasGroupPermission
@@ -70,3 +71,11 @@ class RemoveFactureLineView(generics.DestroyAPIView):
     }
     serializer_class = FactureDetailSerializer
     queryset = FactureDetail.objects.all()
+
+class GetSharedFacturePath(APIView):
+    def get(self, request, facture_id):
+        if(not request.user.is_authenticated):
+            return HttpResponse(None, status=HTTPStatus.FORBIDDEN)
+        signer = Signer()
+        key = signer.sign('facture'+str(facture_id))
+        return HttpResponse('/api/publish/facture/1/shared/'+key, status=HTTPStatus.OK)
