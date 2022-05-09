@@ -59,6 +59,12 @@
               <template slot-scope="scope">
                 <el-button
                   type="text"
+                  icon="el-icon-link"
+                  :loading="loading"
+                  @click="getLink(scope.row.id)"
+                />
+                <el-button
+                  type="text"
                   icon="el-icon-download"
                   :loading="loading"
                   @click="downloadInvoice(scope.row.id)"
@@ -365,7 +371,20 @@ export default {
     },
     pushToRealisateur (rea_id) {
       this.$router.push(`/realisateurs/${rea_id}/voir`)
-    }
+    },
+    getLink (invoiceId) {
+      this.loadingInvoice = true
+      axios.get(`/api/tresorerie/factures/sharedurl/${invoiceId}`, { withCredentials: true }).then((response) => {
+        console.log(response)
+        let url = location.protocol + "//" + location.host + response.data
+        navigator.clipboard.writeText(url)
+        this.$message({ message: "Lien copié", type: "succes" })
+      }).catch(err => {
+        this.$message({ message: "Une erreur est survenue lors de la génération du lien de la facture : " + err, type: "error" })
+      }).finally(() => {
+        this.loadingInvoice = false
+      })
+    },
   }
 }
 </script>
