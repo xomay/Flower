@@ -3,6 +3,9 @@ from rest_framework import generics
 
 from flower_app.controllers.permissions import HasGroupPermission
 from .publishing import computeDocx
+from django.core.signing import Signer
+from django.http import HttpResponse
+from http import HTTPStatus
 from flower_app.models.Etude import Etude
 from flower_app.models.Facture import Facture
 from flower_app.models.Mission import Mission
@@ -189,6 +192,23 @@ class FactureView(generics.RetrieveAPIView):
     def retrieve(request, self, facture_id):
         invoice = Facture.objects.get(pk=facture_id)
         return computeDocx({'facture': invoice}, 'FA.docx', str(invoice))
+
+class SharedFactureView(generics.RetrieveAPIView):
+    permission_classes = []
+    required_groups = {
+        # from modules/etudes/components/Generation.vue in modules/etudes/views/EtudeDetails.vue
+        'GET': []
+    }
+
+    def retrieve(request, self, facture_id, key):
+        signer = Signer()
+        expected_key = signer.sign('facture'+str(facture_id))
+        if(key == expected_key):
+            invoice = Facture.objects.get(pk=facture_id)
+            return computeDocx({'facture': invoice}, 'FA.docx', str(invoice))
+        else:
+            return HttpResponse("Invalid signature", status=HTTPStatus.FORBIDDEN)
+        
 
 
 class PVRView(generics.RetrieveAPIView):

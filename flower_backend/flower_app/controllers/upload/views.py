@@ -5,6 +5,7 @@ import json
 from datetime import datetime
 from http import HTTPStatus
 from django.http import HttpResponse, JsonResponse
+from django.core.signing import Signer
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from flower_app.controllers.permissions import is_in_group, get_groups
@@ -92,6 +93,30 @@ class UploadFileView(APIView):
             return Response(None, status=HTTPStatus.OK)
         else:
             return Response("Vous n'êtes pas authentifié.", status=HTTPStatus.UNAUTHORIZED)
+
+class SharedUploadFileView(APIView):
+    def get(self, request, id, key):
+        signer = Signer()
+        expected_key = signer.sign('file'+str(id))
+        if(key != expected_key):
+            return HttpResponse("Invalid signature", status=HTTPStatus.FORBIDDEN)
+            
+        try:
+            file = UploadedFile.objects.get(pk=id)
+        except:
+            return Response("Fichier non trouvé.", status=HTTPStatus.NOT_FOUND)
+        response = HttpResponse(file.data.storage.open(file.data.name, mode='rb'), content_type='application/force-download')
+        response['Content-Disposition'] = 'attachment; filename=%s' % smart_str(file.data.name.split('/')[1])
+        response['X-Sendfile'] = smart_str(file.data.path)
+        return response
+
+class GetSharedUploadFilePath(APIView):
+    def get(self, request, id):
+        if(not request.user.is_authenticated):
+            return HttpResponse(None, status=HTTPStatus.FORBIDDEN)
+        signer = Signer()
+        key = signer.sign('file'+str(id))
+        return HttpResponse('/api/upload/'+str(id)+'/shared/'+key, status=HTTPStatus.OK)
 
 class GetMemoryView(APIView):
     def get(self, request):

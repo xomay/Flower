@@ -9,6 +9,7 @@ urlpatterns = [
     path('etude/<int:etude_id>/bc/', views.BCView.as_view()),
     path('etude/<int:etude_id>/cca/', views.CCAView.as_view()),
     path('facture/<int:facture_id>/', views.FactureView.as_view()),
+    path('facture/<int:facture_id>/shared/<str:key>', views.SharedFactureView.as_view()),
     path('pvr/<int:pvr_id>/', views.PVRView.as_view()),
     path('rdm/<int:rdm_id>/', views.RDMView.as_view()),
     path('ndf/<int:ndf_id>/', views.NdFView.as_view()),

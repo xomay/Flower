@@ -61,12 +61,12 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 CORS_ORIGIN_WHITELIST = ['http://localhost:8080']
 CORS_ALLOW_CREDENTIALS = True
-# SESSION_COOKIE_SAMESITE = False
-# CSRF_TRUSTED_ORIGINS = [
-#     'http://localhost:8080',
-#     'http://127.0.0.1:8080',
-# ]
-# CSRF_COOKIE_NAME = 'csrftoken'
+SESSION_COOKIE_SAMESITE = False
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:8080',
+    'http://127.0.0.1:8080',
+]
+CSRF_COOKIE_NAME = 'csrftoken'
 
 ROOT_URLCONF = 'flower_backend.urls'
 
