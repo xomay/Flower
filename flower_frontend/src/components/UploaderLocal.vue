@@ -92,6 +92,12 @@
           <template slot-scope="scope">
             <el-button
               type="text"
+              icon="el-icon-link"
+              :loading="loading"
+              @click="getLink(scope.row.id)"
+            />
+            <el-button
+              type="text"
               :icon="scope.row.got ? 'el-icon-check' : 'el-icon-download'"
               :disabled="scope.row.got"
               :loading="loading || loadingLocal"
@@ -206,7 +212,20 @@ export default {
       }).finally(() => {
         this.loadingLocal = false
       })
-    }
+    },
+    getLink (uploadId) {
+      this.loadingInvoice = true
+      axios.get(`/api/upload/sharedurl/${uploadId}`, { withCredentials: true }).then((response) => {
+        console.log(response)
+        let url = location.protocol + "//" + location.host + response.data
+        navigator.clipboard.writeText(url)
+        this.$message({ message: "Lien copié", type: "succes" })
+      }).catch(err => {
+        this.$message({ message: "Une erreur est survenue lors de la génération du lien du document : " + err, type: "error" })
+      }).finally(() => {
+        this.loadingInvoice = false
+      })
+    },
   }
 }
 </script>

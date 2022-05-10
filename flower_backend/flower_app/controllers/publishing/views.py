@@ -170,7 +170,6 @@ class SharedFactureView(generics.RetrieveAPIView):
     def retrieve(request, self, facture_id, key):
         signer = Signer()
         expected_key = signer.sign('facture'+str(facture_id))
-        print(expected_key)
         if(key == expected_key):
             invoice = Facture.objects.get(pk=facture_id)
             return computeDocx({'facture': invoice}, 'FA.docx', str(invoice))
