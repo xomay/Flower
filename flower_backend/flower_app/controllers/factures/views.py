@@ -78,4 +78,4 @@ class GetSharedFacturePath(APIView):
             return HttpResponse(None, status=HTTPStatus.FORBIDDEN)
         signer = Signer()
         key = signer.sign('facture'+str(facture_id))
-        return HttpResponse('/api/publish/facture/1/shared/'+key, status=HTTPStatus.OK)
+        return HttpResponse('/api/publish/facture/'+str(facture_id)+'/shared/'+key, status=HTTPStatus.OK)

@@ -4,6 +4,8 @@ from rest_framework import generics
 from flower_app.controllers.permissions import HasGroupPermission
 from .publishing import computeDocx
 from django.core.signing import Signer
+from django.http import HttpResponse
+from http import HTTPStatus
 from flower_app.models.Etude import Etude
 from flower_app.models.Facture import Facture
 from flower_app.models.Mission import Mission
@@ -172,6 +174,8 @@ class SharedFactureView(generics.RetrieveAPIView):
         if(key == expected_key):
             invoice = Facture.objects.get(pk=facture_id)
             return computeDocx({'facture': invoice}, 'FA.docx', str(invoice))
+        else:
+            return HttpResponse("Invalid signature", status=HTTPStatus.FORBIDDEN)
         
 
 
