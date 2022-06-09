@@ -104,7 +104,13 @@ class RDMView(generics.RetrieveAPIView):
 
     def retrieve(request, self, rdm_id):
         mission = Mission.objects.get(pk=rdm_id)
-        return computeDocx({'mission': mission}, 'RDM.docx', 'RDM-' + mission.project.name)
+        rea =mission.consultant
+        if rea.ba != None:
+            ref = 'RM_'+str(rea.ba.year % 100)+'C' + '%03d' % rea.ba_id+'_'+str(mission.project.number)
+            return computeDocx({'rdm':{'mission': mission,'ref':ref}}, 'RDM.docx', 'RDM-' + mission.project.name)
+        else:
+            return HttpResponse("Réalisateur sans BA généré", status=HTTPStatus.FORBIDDEN)
+
 
 
 class NdFView(generics.RetrieveAPIView):
