@@ -63,6 +63,9 @@
         <el-option value="CCA">
           Convention cadre agile
         </el-option>
+        <el-option value="BC">
+          Bon de commande
+        </el-option>
       </el-select>
     </el-form-item>
     <el-col :span="12">

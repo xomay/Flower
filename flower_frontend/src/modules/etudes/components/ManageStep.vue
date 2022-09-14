@@ -46,15 +46,29 @@
           </el-card>
         </template>
       </el-step>
-      <template v-if="etude.contractType=='CE'">
-        <!-- CE (1) -->
-        <el-step title="CE">
-          <template slot="description">
-            <el-card>
-              <el-row>
-                La <b>C</b>onvention d'<b>É</b>tude doit être rédigée puis envoyé au client. Elle contient la proposition commerciale.
-              </el-row>
-              <el-row class="stCardRw">
+      <!-- CE (1) -->
+      <el-step title="CE">
+        <template slot="description">
+          <el-card>
+            <el-row>
+              La <b>C</b>onvention d'<b>É</b>tude doit être rédigée puis envoyé au client. Elle contient la proposition commerciale.
+            </el-row>
+            <el-row class="stCardRw">
+              <el-button
+                type="primary"
+                :loading="loading"
+                icon="el-icon-download"
+                :disabled="!btn_ce_generate"
+                plain
+                @click="downloadCE"
+              >
+                Générer la CE
+              </el-button>
+              <router-link
+                v-show="!btn_ce_generate"
+                class="mr-2"
+                :to="`/etudes/${$route.params.id}/convention-etude`"
+              >
                 <el-button
                   type="primary"
                   :loading="loading"
@@ -65,111 +79,31 @@
                 >
                   Générer la CE
                 </el-button>
-                <router-link
-                  v-show="!btn_ce_generate"
-                  class="mr-2"
-                  :to="`/etudes/${$route.params.id}/convention-etude`"
-                >
-                  <el-button
-                    type="primary"
-                    icon="el-icon-edit"
-                  >
-                    Rédiger la CE
-                  </el-button>
-                </router-link>
-                <el-button
-                  v-show="btn_ce_levelup"
-                  :loading="loading"
-                  type="success"
-                  icon="el-icon-check"
-                  @click="levelupTo(2)"
-                >
-                  La CE a été signé
-                </el-button>
-                <el-alert
-                  v-show="btn_ce_help"
-                  title="CE non rédigée !"
-                  type="warning"
-                  description="Appuyez sur 'Rédaction' puis 'Convention Etude' afin de rédiger la CE pour cette étude."
-                  :closable="false"
-                  center
-                  effect="dark"
-                  show-icon
-                  style="margin-top: 10px;"
-                />
-              </el-row>
-            </el-card>
-          </template>
-        </el-step>
-      </template>
-      <template v-else>
-        <!-- CCA (1) -->
-        <el-step title="CCA">
-          <template slot="description">
-            <el-card>
-              <el-row>
-                La <b>C</b>onvention <b>C</b>adre <b>Agile</b> et le <b>B</b>on
-                de <b>C</b>ommande doivent être rédigés puis envoyés au client.
-                Ils contiennent la proposition commerciale.
-              </el-row>
-              <el-row class="stCardRw">
-                <el-button
-                  type="primary"
-                  :loading="loading"
-                  icon="el-icon-download"
-                  :disabled="!btn_ce_generate"
-                  plain
-                  @click="downloadCCA"
-                >
-                  Générer la CCA
-                </el-button>
-                <el-button
-                  type="primary"
-                  :loading="loading"
-                  icon="el-icon-download"
-                  :disabled="!btn_ce_generate"
-                  plain
-                  @click="downloadBC"
-                >
-                  Générer le BC
-                </el-button>
-                <router-link
-                  v-show="!btn_ce_generate"
-                  class="mr-2"
-                  :to="`/etudes/${$route.params.id}/convention-etude`"
-                >
-                  <el-button
-                    type="primary"
-                    icon="el-icon-edit"
-                  >
-                    Rédiger la CCA
-                  </el-button>
-                </router-link>
-                <el-button
-                  v-show="btn_ce_levelup"
-                  :loading="loading"
-                  type="success"
-                  icon="el-icon-check"
-                  @click="levelupTo(2)"
-                >
-                  La CCA a été signé
-                </el-button>
-                <el-alert
-                  v-show="btn_ce_help"
-                  title="CCA non rédigée !"
-                  type="warning"
-                  description="Appuyez sur 'Rédaction' puis 'Convention Cadre Agile' afin de rédiger la CCA pour cette étude."
-                  :closable="false"
-                  center
-                  effect="dark"
-                  show-icon
-                  style="margin-top: 10px"
-                />
-              </el-row>
-            </el-card>
-          </template>
-        </el-step>
-      </template>
+              </router-link>
+              <el-button
+                v-show="btn_ce_levelup"
+                :loading="loading"
+                type="success"
+                icon="el-icon-check"
+                @click="levelupTo(2)"
+              >
+                La CE a été signé
+              </el-button>
+              <el-alert
+                v-show="btn_ce_help"
+                title="CE non rédigée !"
+                type="warning"
+                description="Appuyez sur 'Rédaction' puis 'Convention Etude' afin de rédiger la CE pour cette étude."
+                :closable="false"
+                center
+                effect="dark"
+                show-icon
+                style="margin-top: 10px;"
+              />
+            </el-row>
+          </el-card>
+        </template>
+      </el-step>
       <!-- RDM (2) -->
       <el-step title="RM">
         <template slot="description">

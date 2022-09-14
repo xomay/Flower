@@ -59,40 +59,13 @@ class CEView(generics.RetrieveAPIView):
         tmp_img_file = tempfile.NamedTemporaryFile(delete=None, suffix='.jpg')
         svgData.write_image(tmp_img_file)
         images = {'gantt': tmp_img_file.name}
-
-        return computeDocx({'etude': etude}, 'CETUDE.docx', 'CE-' + etude.name, images=images)
-
-class BCView(generics.RetrieveAPIView):
-    permission_classes = [IsAuthenticated, HasGroupPermission]
-    required_groups = {
-        # from modules/etudes/components/Generation.vue in modules/etudes/views/EtudeDetails.vue
-        'GET': ['ROLE_CA']
-    }
-
-    def retrieve(request, self, etude_id):
-        etude = Etude.objects.get(pk=etude_id)
-        svgData = computeGanttFromEtudeRaw(etude)[1]
-        tmp_img_file = tempfile.NamedTemporaryFile(delete=None, suffix='.jpg')
-        svgData.write_image(tmp_img_file)
-        images = {'gantt': tmp_img_file.name}
-
-        return computeDocx({'etude': etude}, 'BC.docx', 'BC-' + etude.name, images=images)
-
-class CCAView(generics.RetrieveAPIView):
-    permission_classes = [IsAuthenticated, HasGroupPermission]
-    required_groups = {
-        # from modules/etudes/components/Generation.vue in modules/etudes/views/EtudeDetails.vue
-        'GET': ['ROLE_CA']
-    }
-
-    def retrieve(request, self, etude_id):
-        etude = Etude.objects.get(pk=etude_id)
-        svgData = computeGanttFromEtudeRaw(etude)[1]
-        tmp_img_file = tempfile.NamedTemporaryFile(delete=None, suffix='.jpg')
-        svgData.write_image(tmp_img_file)
-        images = {'gantt': tmp_img_file.name}
-        
-        return computeDocx({'etude': etude}, 'CCA.docx', 'CCA-' + etude.name, images=images)
+        print(etude.contractType)
+        if(etude.contractType=='CCA'):
+            return computeDocx({'etude': etude}, 'CCA.docx', 'CCA-' + etude.name, images=images)
+        elif(etude.contractType=='BC'):
+            return computeDocx({'etude': etude}, 'BC.docx', 'BC-' + etude.name, images=images)
+        else:
+            return computeDocx({'etude': etude}, 'CETUDE.docx', 'CE-' + etude.name, images=images)
 
 
 class RDMView(generics.RetrieveAPIView):
