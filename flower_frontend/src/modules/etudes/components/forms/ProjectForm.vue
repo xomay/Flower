@@ -51,23 +51,6 @@
         placeholder="Description succincte de l'étude"
       />
     </el-form-item>
-    <el-form-item
-      label="Type de contrat"
-      prop="contractType"
-      label-width="140px"
-    >
-      <el-select v-model="value.contractType">
-        <el-option value="CE">
-          Convention étude
-        </el-option>
-        <el-option value="CCA">
-          Convention cadre agile
-        </el-option>
-        <el-option value="BC">
-          Bon de commande
-        </el-option>
-      </el-select>
-    </el-form-item>
     <el-col :span="12">
       <el-form-item
         label="Mandat"
@@ -166,9 +149,6 @@ export default {
           {required: true, message: "Obligatoire", trigger: "blur"}
         ],
         description: [
-          {required: true, message: "Obligatoire", trigger: "blur"}
-        ],
-        contractType: [
           {required: true, message: "Obligatoire", trigger: "blur"}
         ],
         mandat: [
