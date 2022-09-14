@@ -21,11 +21,6 @@ class Etude(models.Model):
     number = models.IntegerField()
     name = models.CharField(max_length=60)
     description = models.TextField(blank=True,default='')
-<<<<<<< HEAD
-    contractType = models.TextField(default='CE')
-=======
-
->>>>>>> parent of 2c427d3... etude contract type selection
     creation_date = models.DateTimeField(auto_now_add=True)
     modification_date = models.DateTimeField(auto_now=True)
     # State < 0 : étude avortée
