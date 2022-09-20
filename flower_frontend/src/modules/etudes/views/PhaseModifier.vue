@@ -106,6 +106,32 @@ export default {
         this.loading = false
       })
     },
+    lastPhaseEnd (groupe) {
+      let date = new Date()
+      if(groupe.phases.length == 0){ //if no other phase in the group, last phase of the full etude
+        for(let i in this.groupes){
+          let currentGroupe = this.groupes[i]
+          for(let j in currentGroupe.phases){
+            let phase = currentGroupe.phases[j]
+            let end = new Date(phase.beginDate)
+            end.setDate(end.getDate() + phase.period)
+            if(date.getTime()<end.getTime()){
+              date = end
+            }
+          }
+        }
+      }else{
+        for(let i in groupe.phases){
+          let phase = groupe.phases[i]
+          let end = new Date(phase.beginDate)
+          end.setDate(end.getDate() + phase.period)
+          if(date.getTime()<end.getTime()){
+            date = end
+          }
+        }
+      }
+      return date.getFullYear()+"-"+(date.getMonth()+1)+"-"+date.getDate()
+    },
     addPhase (groupe) {
       this.loading = true
       const newIndex = (Math.max.apply(
@@ -115,7 +141,8 @@ export default {
         newPhase = {
           index: newIndex,
           uss: [],
-          groupe: groupe.id
+          groupe: groupe.id,
+          beginDate: this.lastPhaseEnd(groupe)
         }
       axios.post(
         "/api/etudes/phases/",
