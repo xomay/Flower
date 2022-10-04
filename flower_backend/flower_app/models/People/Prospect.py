@@ -8,10 +8,12 @@ from flower_app.models.Prospection import Action, ContactWay
 
 class Prospect(models.Model):
     name = models.CharField(max_length=60)
-    address = models.CharField(max_length=200)
+    address = models.CharField(max_length=200, blank=True, null=True)
     address_tresorerie = models.TextField(blank=True, null=True)
-    postcode = models.CharField(max_length=20)
-    town = models.CharField(max_length=60)
+    postcode = models.CharField(max_length=20, blank=True, null=True)
+    town = models.CharField(max_length=60, blank=True, null=True)
+    type = models.CharField(max_length=60, blank=True, null=True)
+    domain = models.CharField(max_length=60, blank=True, null=True)
     charge = models.ForeignKey(Membre, blank=True, null=True, on_delete=models.SET_NULL)
     AV_LEVELS = [
         ('NC','Nouveau Prospect'),

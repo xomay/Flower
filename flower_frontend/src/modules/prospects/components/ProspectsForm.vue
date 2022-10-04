@@ -7,13 +7,40 @@
   >
     <el-col :span="24">
       <el-form-item
-        label="Nom du prospect"
+        label="Nom de l'entreprise"
         prop="name"
         label-width="200px"
       >
         <el-input
           v-model="value.name"
-          placeholder="Nom de l'entreprise"
+          placeholder="entreprise"
+        />
+      </el-form-item>
+    </el-col>
+    <el-col :span="10">
+      <el-form-item
+        label="Type d'entreprise"
+        prop="type"
+        label-width="200px"
+      >
+        <el-input
+          v-model="value.type"
+          placeholder="Type"
+        />
+      </el-form-item>
+    </el-col>
+    <el-col
+      :span="12"
+      :offset="2"
+    >
+      <el-form-item
+        label="Domaine de l'entreprise"
+        prop="domain"
+        label-width="200px"
+      >
+        <el-input
+          v-model="value.domain"
+          placeholder="Domaine"
         />
       </el-form-item>
     </el-col>
@@ -135,18 +162,6 @@ export default {
       firstWatch: true,
       formRules: {
         name: [
-          {required: true, message: "Obligatoire", trigger: "blur"}
-        ],
-        charge: [
-          {required: true, message: "Obligatoire", trigger: "change"}
-        ],
-        address: [
-          {required: true, message: "Obligatoire", trigger: "blur"}
-        ],
-        postcode: [
-          {required: true, message: "Obligatoire", trigger: "blur"}
-        ],
-        town: [
           {required: true, message: "Obligatoire", trigger: "blur"}
         ]
       }

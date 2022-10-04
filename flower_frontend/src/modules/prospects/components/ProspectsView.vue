@@ -2,6 +2,8 @@
   <div>
     <span><i class="el-icon-user-solid" /> Nom : {{ prospect.name }}</span><br>
     <span><i class="el-icon-location" /> Adresse : {{ prospect.address }}; {{ prospect.postcode }}, {{ prospect.town }}</span><br>
+    <span><i class="el-icon-doc-text" /> Type d'entreprise : {{ prospect.type }}</span><br>
+    <span><i class="el-icon-chart-pie" /> Domaine : {{ prospect.domain }}</span><br>
     <div v-if="prospect.address_tresorerie != null && prospect.address_tresorerie != ''">
       <span><i class="el-icon-location" /> Adresse de trésorerie : {{ prospect.address_tresorerie }}</span><br><br>
     </div>
