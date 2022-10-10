@@ -5,6 +5,7 @@
     :rules="formRules"
     label-position="left"
   >
+  <el-row :gutter="5">
     <el-col :span="24">
       <el-form-item
         label="Genre"
@@ -60,13 +61,24 @@
         <el-input v-model="value.mobile" />
       </el-form-item>
     </el-col>
-    <el-col :span="24">
+    <el-col :span="11">
       <el-form-item
         label="Poste"
         prop="position"
         label-width="120px"
       >
         <el-input v-model="value.position" />
+      </el-form-item>
+    </el-col>
+    <el-col :span="11">
+    </el-col>
+    <el-col :span="11">
+      <el-form-item
+        label="Alumni"
+        prop="alumni"
+        label-width="120px"
+      >
+        <el-checkbox v-model="value.alumni" />
       </el-form-item>
     </el-col>
     <el-col :span="24">
@@ -88,6 +100,7 @@
         </el-button>
       </el-form-item>
     </el-col>
+    </el-row>
   </el-form>
 </template>
 
@@ -122,21 +135,10 @@ export default {
         ],
         email: [
           {
-            required: true,
-            message: "Obligatoire",
-            trigger: "blur"
-          },
-          {
-            required: true,
             pattern: /^[\w\\.=-]+@[\w\\.-]+\.[\w]{2,3}$/,
             message: "Cette valeur doit être un email valide.",
             trigger: "blur"
           }
-        ],
-        position: [
-          {required: true,
-            message: "Obligatoire",
-            trigger: "blur"}
         ]
       }
     }
