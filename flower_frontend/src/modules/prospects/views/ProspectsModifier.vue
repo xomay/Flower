@@ -64,6 +64,9 @@ export default {
     },
     updateProspect () {
       this.loading = true
+      if(this.prospect.charge === undefined){
+        this.prospect.charge = null
+      }
       axios.put(
         `/api/prospects/${this.$route.params.id}/`,
         this.prospect,
@@ -95,6 +98,9 @@ export default {
       ).then((res) => {
         res.data.forEach((mem) => mem.value = `${mem.firstname} ${mem.lastname}`)
         this.members = res.data
+        this.members.push({
+          value: "Non assigné"
+        })
       }).catch((err) => {
         this.$message({message: "Impossible de récupérer les membres : "+err, type: "error"})
       })

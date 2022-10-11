@@ -4,6 +4,7 @@
     <span>Email : {{ employe.email }}</span><br>
     <span>Mobile : {{ employe.mobile }}</span><br>
     <span>Poste : {{ employe.position }}</span><br>
+    <span>Alumni : {{ (employe.alumni)?'oui':'non' }}</span><br>
   </div>
 </template>
 
