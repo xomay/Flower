@@ -13,10 +13,10 @@ class Facture(models.Model):
     invoiceNumber = models.CharField(max_length=20)
 
     INVOICE_CHOICES = [
-        ('FA', 'Facture d\'achat'),
-        ('FVA', 'Facture d\'acompte'),
-        ('FVI', 'Facture intermédiaire'),
-        ('FVS', 'Facture de solde')
+        ('A', 'Facture d\'achat'),
+        ('SU', 'Facture d\'acompte'),
+        ('I', 'Facture intermédiaire'),
+        ('S', 'Facture de solde')
     ]
     invoiceType = models.CharField(max_length=3, choices=INVOICE_CHOICES)
     issueDate = models.DateField()
@@ -28,7 +28,7 @@ class Facture(models.Model):
 
     @property
     def reference(self):
-        return self.invoiceType + "_" + self.issueDate.strftime("%y%m") + str(self.invoiceNumber).rjust(2, "0")
+        return 'FV'+self.issueDate.strftime("%y%m") + str(self.invoiceNumber).rjust(2, "0")+'_'+self.invoiceType
 
     @property
     def amountTaxes(self):

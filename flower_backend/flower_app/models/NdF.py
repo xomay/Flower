@@ -52,14 +52,12 @@ class NdF(models.Model):
     def niceNumberInYear(self):
         number = self.numberThisYear
         if(number < 10):
-            return '00'+str(number)
-        elif(number < 100):
             return '0'+str(number)
         return str(number) 
 
     @property
     def reference(self):
-        return str(self.mandat)[-2:] + '-NF' + self.niceNumberInYear() + "-" + self.niceMembre()
+        return 'NF'+self.date.strftime("%y%m")+self.niceNumberInYear()
         
     def __str__(self):
         return self.reference
