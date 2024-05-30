@@ -1,37 +1,35 @@
-import Vue from "vue"
-import App from "./App.vue"
-import router from "./router"
-import store from "./store"
+import { createApp } from 'vue'
+import { createRouter, createWebHistory } from 'vue-router'
+import { createStore } from 'vuex'
+import App from './App.vue'
+import routes from './router' // Ensure your routes are exported as an array
+import storeOptions from './store' // Ensure your store options are exported
 
-import ElementUI from "element-ui"
-import locale from "element-ui/lib/locale/lang/fr"
-import "element-ui/lib/theme-chalk/index.css"
-import VueCookies from "vue-cookies"
+// Please note that ElementUI is not yet compatible with Vue 3
+// import ElementUI from 'element-ui'
+// import locale from 'element-ui/lib/locale/lang/fr'
+// import 'element-ui/lib/theme-chalk/index.css'
 
-import authentication from "@/modules/authentication"
-import navigation from "@/modules/navigation"
-import dashboard from "@/modules/dashboard"
-import etudes from "@/modules/etudes"
-import membres from "@/modules/membres"
-import prospects from "@/modules/prospects"
+import VueCookies from 'vue-cookies'
 
-Vue.use(
-  ElementUI,
-  {locale,
-    size: "medium"}
-)
-Vue.use(VueCookies)
-Vue.use(authentication)
-Vue.use(navigation)
-Vue.use(dashboard)
-Vue.use(etudes)
-Vue.use(membres)
-Vue.use(prospects)
+import authentication from '@/modules/authentication'
+import navigation from '@/modules/navigation'
+import dashboard from '@/modules/dashboard'
+import etudes from '@/modules/etudes'
+import membres from '@/modules/membres'
+import prospects from '@/modules/prospects'
+import router from './router'
 
-Vue.config.productionTip = false
+const routerInstance = createRouter({
+  history: createWebHistory(),
+  routes: router.options.routes,
+})
 
-new Vue({
-  router,
-  store,
-  render: (h) => h(App)
-}).$mount("#app")
+const store = createStore(storeOptions)
+
+const app = createApp(App)
+app.use(routerInstance)
+app.use(store)
+// app.use(ElementUI, { locale }) // Commented out until ElementUI is compatible with Vue 3
+app.use(VueCookies)
+app.mount('#app')
