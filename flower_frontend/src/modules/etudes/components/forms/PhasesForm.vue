@@ -37,7 +37,7 @@
         :data="groupe.phases"
       >
         <el-table-column type="expand">
-          <template slot-scope="props">
+          <template v-slot="props">
             <div class="flex flew-row">
               <div class="flex-grow">
                 <el-col :span="8">
@@ -73,7 +73,7 @@
                       label="Liste des US"
                       align="center"
                     >
-                      <template slot-scope="usData">
+                      <template v-slot="usData">
                         <el-input
                           v-model="usData.row.name"
                           type="text"
@@ -88,7 +88,7 @@
                       width="80px"
                       fixed="right"
                     >
-                      <template slot-scope="usData">
+                      <template v-slot="usData">
                         <el-button
                           icon="el-icon-minus"
                           type="danger"
@@ -115,7 +115,7 @@
         <el-table-column
           label="Titre"
         >
-          <template slot-scope="props">
+          <template v-slot="props">
             <el-input
               v-model="props.row.title"
               :disabled="disabled"
@@ -126,7 +126,7 @@
           width="110"
           label="Nb JEH"
         >
-          <template slot-scope="props">
+          <template v-slot="props">
             <el-input-number
               v-model="props.row.nbJEH"
               controls-position="right"
@@ -142,7 +142,7 @@
           width="100"
           label="Prix JEH"
         >
-          <template slot-scope="props">
+          <template v-slot="props">
             <el-input
               v-model="props.row.priceJEH"
               :disabled="disabled"
@@ -154,15 +154,15 @@
           width="150"
           label="Date de début"
         >
-          <template slot-scope="props">
+          <template v-slot="props">
             <el-date-picker
               v-model="props.row.beginDate"
               type="date"
               placeholder="Choisissez un jour"
               width="200"
               size="mini"
-              format="dd-MM-yyyy"
-              value-format="yyyy-MM-dd"
+              format="DD-MM-YYYY"
+              value-format="YYYY-MM-DD"
               :disabled="disabled"
             />
           </template>
@@ -172,7 +172,7 @@
           width="110"
           label="Durée (jours)"
         >
-          <template slot-scope="props">
+          <template v-slot="props">
             <el-input-number
               v-model="props.row.period"
               controls-position="right"
@@ -187,7 +187,7 @@
         <el-table-column
           width="50"
         >
-          <template slot-scope="props">
+          <template v-slot="props">
             <el-button
               type="text"
               icon="el-icon-caret-top"
@@ -205,7 +205,7 @@
         <el-table-column
           width="50"
         >
-          <template slot-scope="props">
+          <template v-slot="props">
             <el-button
               type="text"
               :disabled="disabled"

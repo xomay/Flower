@@ -118,7 +118,7 @@
               <el-table-column
                 label="Consultant"
               >
-                <template slot-scope="scope">
+                <template v-slot="scope">
                   <el-link
                     type="primary"
                     :style="'margin-left: 6px'"
@@ -139,7 +139,7 @@
               <el-table-column
                 label="Nombre de phases"
               >
-                <template slot-scope="scope">
+                <template v-slot="scope">
                   <span>{{ scope.row.phases.length }}</span>
                 </template>
               </el-table-column>
@@ -150,12 +150,12 @@
               <el-table-column
                 label="Montant brut"
               >
-                <template slot-scope="scope">
+                <template v-slot="scope">
                   <span>{{ scope.row.JEHNumber * scope.row.JEHPrice }}€</span>
                 </template>
               </el-table-column>
               <el-table-column label="Opérations">
-                <template slot-scope="scope">
+                <template v-slot="scope">
                   <el-button
                     type="text"
                     icon="el-icon-download"
@@ -417,7 +417,7 @@
                 :data="reas"
               >
                 <el-table-column label="Consultant">
-                  <template slot-scope="scope">
+                  <template v-slot="scope">
                     <el-link
                       type="primary"
                       :style="'margin-left: 6px'"
@@ -428,7 +428,7 @@
                   </template>
                 </el-table-column>
                 <el-table-column label="Commentaire">
-                  <template slot-scope="scope">
+                  <template v-slot="scope">
                     <el-row v-show="getComment(scope.row.comments).date">
                       <el-rate
                         :value="getComment(scope.row.comments).rating"

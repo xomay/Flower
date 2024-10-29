@@ -4,6 +4,8 @@ import { createStore } from 'vuex'
 import App from './App.vue'
 import routes from './router' // Ensure your routes are exported as an array
 import storeOptions from './store' // Ensure your store options are exported
+import ElementPlus from 'element-plus'
+import 'element-plus/dist/index.css'
 
 // Please note that ElementUI is not yet compatible with Vue 3
 // import ElementUI from 'element-ui'
@@ -19,6 +21,7 @@ import etudes from '@/modules/etudes'
 import membres from '@/modules/membres'
 import prospects from '@/modules/prospects'
 import router from './router'
+import axios from '../axiosConfig'
 
 const routerInstance = createRouter({
   history: createWebHistory(),
@@ -28,8 +31,9 @@ const routerInstance = createRouter({
 const store = createStore(storeOptions)
 
 const app = createApp(App)
+app.config.globalProperties.$axios = axios;
 app.use(routerInstance)
 app.use(store)
-// app.use(ElementUI, { locale }) // Commented out until ElementUI is compatible with Vue 3
 app.use(VueCookies)
+app.use(ElementPlus)
 app.mount('#app')

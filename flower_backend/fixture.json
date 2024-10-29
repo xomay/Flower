@@ -927,7 +927,7 @@
         "password": "pbkdf2_sha256$216000$JsDppuPNCAug$nGC7UqDA+OzRpEwJTlNh1D0yRzy0zNqjpKlN4NFzE6U=",
         "last_login": "2020-12-13T17:37:45.526Z",
         "is_superuser": true,
-        "username": "admin",
+        "username": "adminsi",
         "first_name": "",
         "last_name": "",
         "email": "si@ouest-insa.fr",
@@ -1333,8 +1333,7 @@
     "fields": {
         "title": "Version 0",
         "index": 1,
-        "description": "Travail du resp SI du mandat 2020",
-        "project": 1
+        "description": "Travail du resp SI du mandat 2020"
     }
 },
 {
@@ -1343,8 +1342,7 @@
     "fields": {
         "title": "Arrivée du pole SI",
         "index": 2,
-        "description": "Amélioration et complétion du travail déjà réalisé",
-        "project": 1
+        "description": "Amélioration et complétion du travail déjà réalisé"
     }
 },
 {
@@ -1353,8 +1351,7 @@
     "fields": {
         "title": "Déploiement V1",
         "index": 3,
-        "description": "Déploiement interne pour tester le logiciel dans la structure",
-        "project": 1
+        "description": "Déploiement interne pour tester le logiciel dans la structure"
     }
 },
 {
@@ -1364,7 +1361,7 @@
         "title": "Backend",
         "index": 1,
         "description": "Dev de la première version du backend",
-        "goals": "avoir une version basic permettant des actions de base, et pouvant être liée au front-end",
+        "methodologie": "avoir une version basic permettant des actions de base, et pouvant être liée au front-end",
         "beginDate": "2020-07-30",
         "period": 90,
         "nbJEH": 10,
@@ -1379,7 +1376,7 @@
         "title": "Front-end",
         "index": 2,
         "description": "Dev de la première version du front-end",
-        "goals": "Lier le front au back et avoir une première interface, avec des formulaires, une interface de connexion, et une jolie navbar",
+        "methodologie": "Lier le front au back et avoir une première interface, avec des formulaires, une interface de connexion, et une jolie navbar",
         "beginDate": "2020-08-03",
         "period": 90,
         "nbJEH": 9,
@@ -1394,7 +1391,7 @@
         "title": "Définition des besoins",
         "index": 1,
         "description": "Organiser des réunions avec chaque pole de la structure",
-        "goals": "Définir les besoins et voir comment améliorer l'erp",
+        "methodologie": "Définir les besoins et voir comment améliorer l'erp",
         "beginDate": "2020-10-27",
         "period": 90,
         "nbJEH": 3,
@@ -1409,7 +1406,7 @@
         "title": "Améliorations du logiciel",
         "index": 2,
         "description": "Application des objectifs trouvés dans la phase précédente",
-        "goals": "Avoir le Meilleur ERP possible",
+        "methodologie": "Avoir le Meilleur ERP possible",
         "beginDate": "2020-11-24",
         "period": 90,
         "nbJEH": 8,
@@ -1424,7 +1421,7 @@
         "title": "Déploiement et mise en ligne",
         "index": 1,
         "description": "Déploiement sur le serveur, création des comptes, formation",
-        "goals": "Proposer une version béta aux administrateurs de Ouest-insa",
+        "methodologie": "Proposer une version béta aux administrateurs de Ouest-insa",
         "beginDate": "2021-02-01",
         "period": 60,
         "nbJEH": 2,
@@ -1439,7 +1436,7 @@
         "title": "Résolution des bugs et améliorations",
         "index": 2,
         "description": "Report les bug et les résoudre",
-        "goals": "Rendre l'ERP commercialisable",
+        "methodologie": "Rendre l'ERP commercialisable",
         "beginDate": "2021-02-01",
         "period": 60,
         "nbJEH": 4,
@@ -1456,8 +1453,6 @@
         "missionBegin": null,
         "missionEnd": null,
         "percentageJunior": 0.55,
-        "JEHNumber": 1,
-        "JEHPrice": "400.00",
         "phases": []
     }
 },
@@ -1466,12 +1461,10 @@
     "pk": 2,
     "fields": {
         "project": 1,
-        "consultant": 4,
+        "consultant": null,
         "missionBegin": "2020-07-01",
         "missionEnd": "2020-12-31",
         "percentageJunior": 0.55,
-        "JEHNumber": 30,
-        "JEHPrice": "400.00",
         "phases": []
     }
 },
@@ -1480,12 +1473,10 @@
     "pk": 3,
     "fields": {
         "project": 1,
-        "consultant": 2,
+        "consultant": null,
         "missionBegin": "2020-11-01",
         "missionEnd": "2021-03-31",
         "percentageJunior": 0.55,
-        "JEHNumber": 15,
-        "JEHPrice": "400.00",
         "phases": []
     }
 }

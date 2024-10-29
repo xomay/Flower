@@ -51,8 +51,8 @@
           <el-date-picker
             v-model="comment.date"
             placeholder="Choisissez un jour"
-            format="dd-MM-yyyy"
-            value-format="yyyy-MM-dd"
+            format="DD-MM-YYYY"
+            value-format="YYYY-MM-DD"
             type="date"
             :first-day-of-week="1"
           />

@@ -80,7 +80,7 @@
         label="Membre"
         sortable
       >
-        <template slot-scope="scope">
+        <template v-slot="scope">
           <router-link :to="`/membres/${scope.row.id}/voir`">
             <el-button
               type="text"
@@ -117,7 +117,7 @@
         label="Créer un compte"
       >
         <template
-          slot-scope="scope"
+          v-slot="scope"
         >
           <el-button
             v-show="isButtonOn(scope.row.id)"

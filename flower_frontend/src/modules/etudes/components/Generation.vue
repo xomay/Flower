@@ -67,7 +67,7 @@
             label="Consultant"
             align="center"
           >
-            <template slot-scope="scope">
+            <template v-slot="scope">
               <el-link
                 type="primary"
                 :style="'margin-left: 6px'"
@@ -93,7 +93,7 @@
             label="Nombre de phases"
             align="center"
           >
-            <template slot-scope="scope">
+            <template v-slot="scope">
               <span>{{ scope.row.phases.length }}</span>
             </template>
           </el-table-column>
@@ -106,7 +106,7 @@
             label="Montant brut"
             align="center"
           >
-            <template slot-scope="scope">
+            <template v-slot="scope">
               <span>{{ scope.row.remunerationRaw }}€</span>
             </template>
           </el-table-column>
@@ -115,7 +115,7 @@
             align="center"
             fixed="right"
           >
-            <template slot-scope="scope">
+            <template v-slot="scope">
               <el-button
                 type="text"
                 icon="el-icon-download"
@@ -150,7 +150,7 @@
             align="center"
             fixed="left"
           >
-            <template slot-scope="scope">
+            <template v-slot="scope">
               <span v-if="scope.row.documentType === 'I'">PVRI</span>
               <span v-else>PVRF</span>
             </template>
@@ -171,7 +171,7 @@
             align="center"
             fixed="right"
           >
-            <template slot-scope="scope">
+            <template v-slot="scope">
               <el-button
                 type="text"
                 icon="el-icon-download"

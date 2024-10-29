@@ -9,7 +9,9 @@
 </template>
 
 <script>
-const axios = require("axios");
+import axios from "axios";  // Utilisation de l'importation ES6
+
+// Configuration d'axios pour CSRF
 axios.defaults.xsrfCookieName = "csrftoken";
 axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
 
@@ -20,7 +22,7 @@ export default {
       loading: true,
     };
   },
-  beforeCreate() {
+  created() {  // Utiliser 'created' au lieu de 'beforeCreate'
     axios
       .get("/api/accounts/login", { withCredentials: true })
       .then((res) => {
@@ -29,14 +31,13 @@ export default {
         this.loading = false;
       })
       .catch(() => {
-        // Allows unsigned users to go to password reset pages
+        // Permet aux utilisateurs non connectés d'accéder aux pages de réinitialisation de mot de passe
         if (this.$route.path.includes("passwordreset")) {
           this.loading = false;
           return;
         }
-        this.$router.push("/login", () => {
-          this.loading = false;
-        });
+        this.$router.push("/login");
+        this.loading = false; // Déplacer cela ici pour s'assurer que loading est mis à false
       });
   },
 };
@@ -46,6 +47,7 @@ export default {
 @import "tailwindcss/base";
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
+@import 'element-plus/theme-chalk/index.css';
 
 :root {
   --main-bg-color: #545c64;

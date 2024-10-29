@@ -42,8 +42,8 @@
           >
             <el-date-picker
               v-model="mission.missionBegin"
-              format="dd-MM-yyyy"
-              value-format="yyyy-MM-dd"
+              format="DD-MM-YYYY"
+              value-format="YYYY-MM-DD"
               type="date"
             />
           </el-form-item>
@@ -56,8 +56,8 @@
           >
             <el-date-picker
               v-model="mission.missionEnd"
-              format="dd/MM/yyyy"
-              value-format="yyyy-MM-dd"
+              format="DD/MM/YYYY"
+              value-format="YYYY-MM-DD"
               type="date"
             />
           </el-form-item>

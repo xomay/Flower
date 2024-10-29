@@ -17,7 +17,7 @@
         fixed="left"
         sortable
       >
-        <template slot-scope="scope">
+        <template v-slot="scope">
           <router-link :to="`/realisateurs/${scope.row.author.id}/voir`">
             <el-button
               type="text"
@@ -42,7 +42,7 @@
         fixed="right"
         sortable
       >
-        <template slot-scope="scope">
+        <template v-slot="scope">
           {{ niceSize(scope.row.size) }}
         </template>
       </el-table-column>
@@ -62,7 +62,7 @@
         fixed="right"
         sortable
       >
-        <template slot-scope="scope">
+        <template v-slot="scope">
           <el-button
             type="text"
             icon="el-icon-link"

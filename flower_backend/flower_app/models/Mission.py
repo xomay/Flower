@@ -25,7 +25,6 @@ class Mission(models.Model):
     missionBegin = models.DateField(blank=True, null=True)
     missionEnd = models.DateField(blank=True, null=True)
     percentageJunior = models.FloatField(default=0.55)
-    JEHNumber = models.IntegerField(default=1)
     phases = models.ManyToManyField(Phase, default=emptyList, blank=True)
 #    number_this_year = models.IntegerField(default=generateNumberYear)
 

@@ -105,8 +105,8 @@
         >
           <el-date-picker
             v-model="bv.date"
-            format="dd/MM/yyyy"
-            value-format="yyyy-MM-dd"
+            format="DD-MM-YYYY"
+            value-format="YYYY-MM-DD"
             type="date"
           />
         </el-form-item>

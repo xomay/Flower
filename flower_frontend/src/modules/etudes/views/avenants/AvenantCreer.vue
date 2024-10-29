@@ -56,8 +56,8 @@
               placeholder="Choisissez un jour"
               width="200"
               size="medium"
-              format="dd/MM/yyyy"
-              value-format="yyyy-MM-dd"
+              format="DD-MM-YYYY"
+              value-format="YYYY-MM-DD"
               :disabled="!before_phases"
             />
           </el-form-item>
@@ -116,8 +116,8 @@
             placeholder="Fin de l'étude"
             width="200"
             size="small"
-            format="dd/MM/yyyy"
-            value-format="yyyy-MM-dd"
+            format="DD-MM-YYYY"
+            value-format="YYYY-MM-DD"
             :disabled="!before_phases"
           />
         </el-form-item>

@@ -4,6 +4,7 @@
     :model="value"
     :rules="formRules"
     label-position="left"
+    :style="'margin: 15px'"
   >
     <el-row :gutter="5">
       <el-col :span="12">
@@ -15,7 +16,7 @@
           <el-input
             v-model="value.firstname"
             placeholder="Prénom du membre de la JE"
-            @input="autoFillEmails()"
+            @input="autoFillEmails"
           />
         </el-form-item>
       </el-col>
@@ -28,7 +29,7 @@
           <el-input
             v-model="value.lastname"
             placeholder="Nom du membre de la JE"
-            @input="autoFillEmails()"
+            @input="autoFillEmails"
           />
         </el-form-item>
       </el-col>
@@ -38,16 +39,10 @@
           prop="gender"
           label-width="26%"
         >
-          <el-select v-model="value.gender">
-            <el-option value="M.">
-              M.
-            </el-option>
-            <el-option value="Mme.">
-              Mme.
-            </el-option>
-            <el-option value="">
-              Non renseigné
-            </el-option>
+          <el-select v-model="value.gender" placeholder="Sélectionner le genre">
+            <el-option value="M.">M.</el-option>
+            <el-option value="Mme.">Mme.</el-option>
+            <el-option value="">Non renseigné</el-option>
           </el-select>
         </el-form-item>
       </el-col>
@@ -62,19 +57,20 @@
             controls-position="right"
             :min="2020"
             :max="2050"
+            placeholder="Année de promotion"
           />
         </el-form-item>
       </el-col>
       <el-col :span="24">
         <el-form-item
-          label="Poste :"
+          label="Poste"
           prop="poste"
           label-width="13%"
         >
           <ItemPicker
             v-model="value.poste"
             :item-list="postes"
-            placeholder="Poste"
+            placeholder="Sélectionner un poste"
             :style="'width: 100%'"
             @input="editPoste"
           />
@@ -86,7 +82,10 @@
           prop="email"
           label-width="13%"
         >
-          <el-input v-model="value.email" />
+          <el-input
+            v-model="value.email"
+            placeholder="Email INSA"
+          />
         </el-form-item>
       </el-col>
       <el-col :span="24">
@@ -95,7 +94,10 @@
           prop="email_junior"
           label-width="13%"
         >
-          <el-input v-model="value.email_junior" />
+          <el-input
+            v-model="value.email_junior"
+            placeholder="Email Juniors"
+          />
         </el-form-item>
       </el-col>
       <el-col :span="24">
@@ -106,7 +108,7 @@
         >
           <el-input
             v-model="value.mobile"
-            placeholder="Numéro de téléphone personnel du membre"
+            placeholder="Numéro de téléphone personnel"
           />
         </el-form-item>
       </el-col>
@@ -118,7 +120,7 @@
         >
           <el-input
             v-model="value.address"
-            placeholder="Addresse (numéro et rue)"
+            placeholder="Adresse (numéro et rue)"
           />
         </el-form-item>
       </el-col>
@@ -130,7 +132,7 @@
         >
           <el-input
             v-model="value.postcode"
-            placeholder="Addresse (code postal)"
+            placeholder="Code postal"
           />
         </el-form-item>
       </el-col>
@@ -142,7 +144,7 @@
         >
           <el-input
             v-model="value.town"
-            placeholder="Addresse (ville)"
+            placeholder="Ville"
           />
         </el-form-item>
       </el-col>
@@ -154,7 +156,7 @@
         >
           <el-input
             v-model="value.country"
-            placeholder="Addresse (pays)"
+            placeholder="Pays"
           />
         </el-form-item>
       </el-col>
@@ -178,8 +180,8 @@
         >
           <el-date-picker
             v-model="value.birth_date"
-            format="dd-MM-yyyy"
-            value-format="yyyy-MM-dd"
+            format="DD/MM/YYYY"
+            value-format="YYYY-MM-DD"
             type="date"
             placeholder="Date de naissance"
             :first-day-of-week="1"
@@ -209,10 +211,7 @@
           </el-button>
         </el-form-item>
       </el-col>
-      <el-col
-        v-if="!value.user && canOpenAccount"
-        :span="24"
-      >
+      <el-col v-if="canOpenAccount" :span="24">
         <el-form-item>
           <el-button
             :loading="loadingopenaccount"
@@ -237,23 +236,22 @@ export default {
     postes: { type: Array, required: true },
     loading: { type: Boolean, required: true },
     loadingopenaccount: { type: Boolean, required: true },
-    posteName: { type: String, default () { return "NULL" } },
-    canOpenAccount: { type: Boolean, default () { return false } }
+    canOpenAccount: { type: Boolean, default: false }
   },
   data () {
     return {
       formRules: {
         firstname: [
-          {required: true, message: "Obligatoire", trigger: "blur"}
+          { required: true, message: "Obligatoire", trigger: "blur" }
         ],
         lastname: [
-          {required: true, message: "Obligatoire", trigger: "blur"}
+          { required: true, message: "Obligatoire", trigger: "blur" }
         ],
         gender: [
-          {required: true, message: "Obligatoire", trigger: "blur"}
+          { required: true, message: "Obligatoire", trigger: "change" }
         ],
         promotion: [
-          {required: true, message: "Obligatoire", trigger: "blur"}
+          { required: true, message: "Obligatoire", trigger: "blur" }
         ],
         email: [
           {
@@ -262,10 +260,9 @@ export default {
             trigger: "blur"
           },
           {
-            required: true,
-            pattern: /^[\w\\.=-]+@insa-rennes.fr$/,
-            message: "Cette valeur doit être un email INSA valide.",
-            trigger: "change"
+            pattern: /^[\w\.-]+@insa-rennes\.fr$/,
+            message: "Email INSA valide requis.",
+            trigger: "blur"
           }
         ],
         email_junior: [
@@ -275,22 +272,21 @@ export default {
             trigger: "blur"
           },
           {
-            required: true,
-            pattern: /^[\w\\.=-]+@ouest-insa.fr$/,
-            message: "Cette valeur doit être un email ouest-insa valide.",
-            trigger: "change"
+            pattern: /^[\w\.-]+@ouest-insa\.fr$/,
+            message: "Email Juniors valide requis.",
+            trigger: "blur"
           }
         ],
         mobile: [
           {
             required: false,
-            pattern: /^(?:(?:\+|00)33[\s.-]{0,3}(?:\(0\)[\s.-]{0,3})?|0)[1-9](?:(?:[\s.-]?\d{2}){4}|\d{2}(?:[\s.-]?\d{3}){2})$/,
-            message: "Cette valeur doit être un numéro de téléphone valide.",
-            trigger: "change"
+            pattern: /^(?:(?:\+|00)33[\s.-]?(?:\(0\)[\s.-]?)?|0)[1-9](?:(?:[\s.-]?\d{2}){4}|\d{2}(?:[\s.-]?\d{3}){2})$/,
+            message: "Numéro de téléphone valide requis.",
+            trigger: "blur"
           }
         ],
         address: [
-          {required: true, message: "Obligatoire", trigger: "blur"}
+          { required: true, message: "Obligatoire", trigger: "blur" }
         ],
         postcode: [
           {
@@ -299,68 +295,70 @@ export default {
             trigger: "blur"
           },
           {
-            required: true,
-            pattern: /^[ 0-9]+$/,
-            message: "Cette valeur doit être un code postal valide"
+            pattern: /^[0-9]{5}$/,
+            message: "Code postal valide requis.",
+            trigger: "blur"
           }
         ],
         town: [
-          {required: true, message: "Obligatoire", trigger: "blur"}
+          { required: true, message: "Obligatoire", trigger: "blur" }
         ],
         poste: [
-          {required: true, message: "Obligatoire", trigger: "blur"},
-          {required: true, validator: this.validatePoste, trigger: "blur"}
+          { required: true, message: "Obligatoire", trigger: "blur" },
+          { validator: this.validatePoste, trigger: "blur" }
         ],
         country: [
-          {required: true, message: "Obligatoire", trigger: "blur"}
+          { required: true, message: "Obligatoire", trigger: "blur" }
         ],
         nationality: [
-          {required: true, message: "Obligatoire", trigger: "blur"}
+          { required: true, message: "Obligatoire", trigger: "blur" }
         ],
         birth_date: [
-          {required: true, message: "Obligatoire", trigger: "blur"}
+          { required: true, message: "Obligatoire", trigger: "blur" }
         ],
         birth_place: [
-          {required: true, message: "Obligatoire", trigger: "blur"}
+          { required: true, message: "Obligatoire", trigger: "blur" }
         ]
       }
     }
   },
   methods: {
-    validateForm (mode) {
-      this.$refs.memFormRef.validate((r) => {
-        if(r) {
-          if(mode == "save")
-            this.$emit("save")
-          else if(mode == "openaccount")
-            this.$emit("openaccount")
+    validateForm(mode) {
+      this.$refs.memFormRef.validate((valid) => {
+        if (valid) {
+          this.$emit(mode === "save" ? "save" : "openaccount");
         } else {
-          this.$message({ message: "Certains champs ne sont pas valides !",type:"error"})
+          this.$message({
+            message: "Certains champs ne sont pas valides !",
+            type: "error"
+          });
         }
-      })
+      });
     },
-    validatePoste (rule, value, callback) {
+    validatePoste(rule, value, callback) {
       if (value < 1) {
-        callback(new Error("poste non défini !"))
+        callback(new Error("Poste non défini !"));
       } else {
-        callback()
+        callback();
       }
     },
-    autoFillEmails () {
-      if(this.value.firstname != "" && this.value.lastname != "") {
-        const prefix = this.handleToEmail(this.value.firstname + "." + this.value.lastname)
-        this.value.email = prefix + "@insa-rennes.fr"
-        this.value.email_junior = prefix + "@ouest-insa.fr"
+    autoFillEmails() {
+      if (this.value.firstname && this.value.lastname) {
+        const prefix = this.handleToEmail(`${this.value.firstname}.${this.value.lastname}`);
+        this.value.email = `${prefix}@insa-rennes.fr`;
+        this.value.email_junior = `${prefix}@ouest-insa.fr`;
       }
     },
-    handleToEmail (text) {
+    handleToEmail(text) {
       return text.toLowerCase()
-        .replaceAll("é", "e").replaceAll("è", "e").replaceAll("ê", "e").replaceAll("ë", "e")
-        .replaceAll("à", "a").replaceAll("â", "a").replaceAll("ô", "o").replaceAll("ï", "i").replaceAll("î", "i")
-        .replaceAll(" ", "-")
+        .replace(/é|è|ê|ë/g, "e")
+        .replace(/à|â/g, "a")
+        .replace(/ô/g, "o")
+        .replace(/ï|î/g, "i")
+        .replace(/ /g, "-");
     },
-    editPoste (newPoste) {
-      this.value.poste = newPoste
+    editPoste(newPoste) {
+      this.value.poste = newPoste;
     }
   }
 }

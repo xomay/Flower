@@ -5,3 +5,5 @@ pip install Django, psutil, requests, kaleido, django-rest-passwordreset, django
 The Backend will be used to manage the interactions with the database.\
 It receive requests from the front and decide how to interpret it with the request type. 
 Admin username : admin/password: configure locally; see the setup instructions.
+
+Installing collected packages: pytz, kaleido, docopt, django-rest-passwordreset, urllib3, tzdata, typing-extensions, tenacity, sqlparse, python-dateutil, psutil, Pillow, numpy, num2words, mysqlclient, MarkupSafe, lxml, idna, charset-normalizer, certifi, babel, requests, python-docx, plotly, pandas, jinja2, docx, asgiref, docxcompose, Django, docxtpl, djangorestframework, django-cors-headers

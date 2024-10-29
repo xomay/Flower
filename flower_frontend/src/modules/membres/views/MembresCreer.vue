@@ -5,6 +5,7 @@
   >
     <MemberForm
       v-model="form"
+      :value="form"
       :postes="postes"
       :loadingopenaccount="loading"
       :loading="loading"
@@ -68,7 +69,7 @@ export default {
   methods: {
     registerMember () {
       this.loading = true
-      axios.post(
+      this.$axios.post(
         "/api/membres/",
         this.form,
         {withCredentials: true}

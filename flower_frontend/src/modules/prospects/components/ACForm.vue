@@ -48,8 +48,8 @@
         >
           <el-date-picker
             v-model="value.date"
-            format="dd-MM-yyyy"
-            value-format="yyyy-MM-dd"
+            format="DD-MM-YYYY"
+            value-format="YYYY-MM-DD"
             type="date"
             placeholder="Date de l'action"
             :first-day-of-week="1"

@@ -5,6 +5,7 @@
     label-position="left"
     size="small"
     :rules="formRules"
+    :style="'margin: 15px'"
   >
     <el-row :gutter="5">
       <el-col :span="12">
@@ -112,7 +113,7 @@
         <el-form-item
           label="Numéro de sécurité sociale :"
           prop="security_social_number"
-          label-width="26%"
+          label-width="30%"
         >
           <el-input
             v-model="value.security_social_number"
@@ -224,8 +225,8 @@
         >
           <el-date-picker
             v-model="value.birth_date"
-            format="dd-MM-yyyy"
-            value-format="yyyy-MM-dd"
+            format="DD-MM-YYYY"
+            value-format="YYYY-MM-DD"
             type="date"
             placeholder="Date de naissance"
             :first-day-of-week="1"

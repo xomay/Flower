@@ -12,7 +12,7 @@
       fixed="left"
       sortable
     >
-      <template slot-scope="scope">
+      <template v-slot="scope">
         <el-button
           :style="scope.row.isAborted ? 'color: red;' : (scope.row.isFinished ? 'color: green;' : '')"
           type="text"
@@ -63,7 +63,7 @@
       fixed="right"
       align="center"
     >
-      <template slot-scope="scope">
+      <template v-slot="scope">
         <div v-if="scope.row.isAborted">
           <p style="color: rgb(97, 4, 4); font-size:120%;">
             <b>Étude avortée.</b>

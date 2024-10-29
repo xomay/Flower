@@ -88,8 +88,8 @@
         >
           <el-date-picker
             v-model="value.issueDate"
-            format="dd-MM-yyyy"
-            value-format="yyyy-MM-dd"
+            format="DD-MM-YYYY"
+            value-format="YYYY-MM-DD"
             placeholder="Date d'émission"
             type="date"
             @change="dateEmissionChanged"
@@ -103,8 +103,8 @@
         >
           <el-date-picker
             v-model="value.paymentDate"
-            format="dd-MM-yyyy"
-            value-format="yyyy-MM-dd"
+            format="DD-MM-YYYY"
+            value-format="YYYY-MM-DD"
             placeholder="Date de paiement"
             type="date"
           />
