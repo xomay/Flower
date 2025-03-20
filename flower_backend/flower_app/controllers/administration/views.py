@@ -1,3 +1,4 @@
+import os
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.http import JsonResponse
@@ -10,6 +11,8 @@ from flower_app.controllers.permissions import HasGroupPermission
 from flower_app.models.ParamsJE import ParamsJE, ParamsJESerializer
 from flower_app.models.Poste import Poste, PosteSerializer
 from flower_app.models.BaseUrsaff import BaseUrsaff, BaseUrsaffSerializer, getLastBase
+from django.core.files.storage import FileSystemStorage
+
 
 # Paramètres généraux
 
@@ -91,3 +94,28 @@ class BaseUrsaffLastView(APIView):
                 serializer = BaseUrsaffSerializer(getLastBase(), read_only=True)
                 return JsonResponse(serializer.data, status=HTTPStatus.OK)
         return Response(None, status=HTTPStatus.FORBIDDEN)
+    
+
+class DoctypeImportView(APIView):
+    def post(self, request, title):
+        print(request.FILES)
+        print(title)
+        if request.FILES:
+            uploaded_file = request.FILES["file"]
+            print(uploaded_file)
+            print("cwd : "+ os.getcwd())
+            save_path = os.path.abspath(os.path.join(os.getcwd(), "doctypes"))
+            print(save_path)
+
+            # Vérifier si le dossier existe, sinon le créer
+            if not os.path.exists(save_path):
+                os.makedirs(save_path)
+
+            # Enregistrer le fichier
+            file_storage = FileSystemStorage(location=save_path)
+            print(file_storage)
+            file_name = file_storage.save(title, uploaded_file)
+
+            return Response({"message": "Fichier uploadé avec succès", "file_path": file_name}, status=HTTPStatus.OK)
+        
+        return Response({"error": "Aucun fichier reçu"}, status=HTTPStatus.BAD_REQUEST)

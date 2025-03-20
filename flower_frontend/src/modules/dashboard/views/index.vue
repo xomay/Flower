@@ -20,7 +20,7 @@
     <el-divider />
     <el-row>
       <i class="versionText">
-        Version actuelle : <u>alphadev</u>
+        Version actuelle : <u>mathysdev</u>
       </i>
     </el-row>
     <el-divider />
@@ -45,8 +45,8 @@ export default {
     },
     getData () {
       return [
-        {name: "Objectif CA 2021", fill: 77},
-        {name: "Participation aux questionnaires qualité", fill: 23}
+        {name: "Objectif CA 2025", fill: 0},
+        {name: "Participation aux questionnaires qualité", fill: 60}
       ]
     }
   }

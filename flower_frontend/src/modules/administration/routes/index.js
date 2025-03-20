@@ -13,6 +13,11 @@ const routes = [
     path: "administration/uploads",
     name: "uploads-je",
     component: () => import("../views/UploadManagement")
+  },
+  {
+    path: "administration/doctypes",
+    name: "doctypes-je",
+    component: () => import("../views/DoctypeConfig")
   }
 ]
 

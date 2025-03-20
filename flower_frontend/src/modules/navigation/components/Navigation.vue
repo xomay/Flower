@@ -143,7 +143,9 @@ export default {
                 {name: "Liste des postes",
                   url: "/administration/postes"},
                 {name: "Gérer les uploads",
-                  url: "/administration/uploads"}
+                  url: "/administration/uploads"},
+                {name: "Gérer les doctypes",
+                  url: "/administration/doctypes"}
               ]
             }
           ]

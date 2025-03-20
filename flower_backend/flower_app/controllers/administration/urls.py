@@ -16,4 +16,8 @@ urlpatterns = [
     path('base-ursaff/', views.BaseUrsaffView.as_view()),
     path('base-ursaff/last/', views.BaseUrsaffLastView.as_view()),
     path('base-ursaff/<int:pk>/', views.BaseUrsaffDetailView.as_view()),
+
+    #Import de doctypes
+    #path('doctypes/', views.DoctypeImportView.as_view()),
+    path('doctypes/<str:title>/', views.DoctypeImportView.as_view()),
 ]
