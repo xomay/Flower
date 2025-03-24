@@ -80,7 +80,9 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
+SOCIALACCOUNT_AUTO_SIGNUP = True
 ACCOUNT_DEFAULT_HTTP_PROTOCOL = "http"
+LOGIN_REDIRECT_URL = "http://localhost:8080"
 
 # Django allauth config
 SITE_ID = 1
