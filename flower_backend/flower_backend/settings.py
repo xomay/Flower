@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
     'flower_app.apps.FlowerAppConfig',
     'rest_framework',
     'corsheaders',
@@ -82,13 +83,16 @@ SOCIALACCOUNT_PROVIDERS = {
 
 SOCIALACCOUNT_AUTO_SIGNUP = True
 ACCOUNT_DEFAULT_HTTP_PROTOCOL = "http"
-LOGIN_REDIRECT_URL = "http://localhost:8080"
+LOGIN_REDIRECT_URL = "http://localhost:8080/"
 
 # Django allauth config
-SITE_ID = 1
+SITE_ID = 2
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = 'GOOGLE_CLIENT_ID '
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'GOOGLE_CLIENT_SECRET'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -112,17 +116,18 @@ CORS_ALLOWED_ORIGINS = [
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:8080',
     'http://127.0.0.1:8080',
+    'http://127.0.0.1:8000',
 ]
 CSRF_COOKIE_NAME = 'csrftoken'
 
 # Configurer correctement les cookies
-SESSION_COOKIE_SAMESITE = "None"  # Autoriser cross-origin
+SESSION_COOKIE_SAMESITE = "Lax"  # Autoriser cross-origin
 SESSION_COOKIE_SECURE = False  # Mettre True si HTTPS
 SESSION_ENGINE = "django.contrib.sessions.backends.db"
 # Forcer Django à toujours envoyer sessionid
 SESSION_SAVE_EVERY_REQUEST = True
 
-CSRF_COOKIE_SAMESITE = "None"
+CSRF_COOKIE_SAMESITE = "Lax"
 CSRF_COOKIE_SECURE = False
 CSRF_COOKIE_HTTPONLY = False
 

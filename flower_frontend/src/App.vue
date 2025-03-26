@@ -1,9 +1,5 @@
 <template>
-  <div
-    id="app"
-    v-loading="loading"
-    :class="{'h-screen': loading}"
-  >
+  <div id="app" v-loading="loading" :class="{ 'h-screen': loading }">
     <router-view v-if="!loading" />
   </div>
 </template>
@@ -24,15 +20,15 @@ export default {
     };
   },
   created() {  // Utiliser 'created' au lieu de 'beforeCreate'
-  console.log("App created");
-  console.log(document.cookie);
+    console.log("App created");
+    console.log(document.cookie);
     axios
-      .get("/api/accounts/login", {
-        withCredentials: true 
-        })
+      .post("/api/accounts/login", {
+        withCredentials: true
+      })
       .then((res) => {
         console.log(res);
-        this.$store.currentUser   = res.data;
+        this.$store.currentUser = res.data;
         this.loading = false;
       })
       .catch((error) => {
@@ -62,7 +58,7 @@ export default {
   --main-bg-color: #545c64;
 }
 
-.el-loading-spinner > .circular {
+.el-loading-spinner>.circular {
   margin: auto !important;
 }
 

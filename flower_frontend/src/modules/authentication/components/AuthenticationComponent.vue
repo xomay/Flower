@@ -1,5 +1,5 @@
 <template>
-  <el-card class="w-64 mx-auto my-8"> <!-- Centrer la carte -->
+  <el-card class="w-64 mx-auto my-8">
     <img src="@/assets/Logo_fond_blanc.jpg" alt="Logo" />
     <h1 class="text-center font-semibold m-2">Connexion</h1>
     <el-form ref="authentFormRef" :model="authForm">
@@ -23,20 +23,17 @@
         />
       </el-form-item>
     </el-form>
-    <el-button
-      class="w-full"
-      type="primary"
-      :loading="connectionLoading"
-      @click="validateForm()">
+    <el-button class="w-full" type="primary" :loading="connectionLoading" @click="validateForm()">
       Connexion
     </el-button>
+    
+    <!-- Bouton de connexion avec Google -->
+    <el-button class="w-full mt-2" type="danger" @click="redirectToGoogleAuth">
+      Connexion avec Google
+    </el-button>
+    
     <router-link :to="`/passwordreset`">Mot de passe oublié</router-link>
-    <el-alert
-      v-if="errorMessage"
-      :title="errorMessage"
-      type="error"
-      show-icon
-    />
+    <el-alert v-if="errorMessage" :title="errorMessage" type="error" show-icon />
   </el-card>
 </template>
 
@@ -89,6 +86,9 @@ export default {
       .finally(() => {
         this.connectionLoading = false;
       });
+    },
+    redirectToGoogleAuth() {
+      window.location.href = "http://127.0.0.1:8000/accounts/google/login/";
     }
   }
 };
