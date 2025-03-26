@@ -14,6 +14,7 @@ import axios from "axios";  // Utilisation de l'importation ES6
 // Configuration d'axios pour CSRF
 axios.defaults.xsrfCookieName = "csrftoken";
 axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
+axios.defaults.withCredentials = true;
 
 export default {
   name: "App",
@@ -23,14 +24,22 @@ export default {
     };
   },
   created() {  // Utiliser 'created' au lieu de 'beforeCreate'
+  console.log("App created");
+  console.log(document.cookie);
     axios
-      .get("/api/accounts/login", { withCredentials: true })
+      .get("/api/accounts/login", {
+        withCredentials: true 
+        })
       .then((res) => {
         console.log(res);
-        this.$store.currentUser = res.data;
+        this.$store.currentUser   = res.data;
         this.loading = false;
       })
-      .catch(() => {
+      .catch((error) => {
+        console.log("Not logged in");
+        console.log("Headers envoyés:", error.config.headers);
+        console.log("Cookies actuels:", document.cookie);
+        console.log(this.$store)
         // Permet aux utilisateurs non connectés d'accéder aux pages de réinitialisation de mot de passe
         if (this.$route.path.includes("passwordreset")) {
           this.loading = false;
