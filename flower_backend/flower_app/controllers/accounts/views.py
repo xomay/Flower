@@ -7,43 +7,58 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from ..permissions import is_in_group, get_groups
 from django.http import JsonResponse
+from allauth.socialaccount.models import SocialAccount
+
 
 
 class LoginView(APIView):
     def post(self, request):
-        print("Post: ", request.build_absolute_uri())  # Debugging info
-        print("Post: ", request.headers)  # Debugging info
+        print("Post: ", request.build_absolute_uri())  
+        print("Post: ", request.headers)  
+
+        if not request.user.is_authenticated:
+            return Response({
+                'error': 'Utilisateur non authentifié'
+            }, status = HTTPStatus.UNAUTHORIZED)
+
         try:
-            # Adapter GoogleOAuth2 pour récupérer l'utilisateur à partir du token
-            google_adapter = GoogleOAuth2Adapter()
-            sociallogin = SocialLogin(adapter=google_adapter)
+            social_account = SocialAccount.objects.get(
+                user=request.user, 
+                provider='google'
+            )
 
-            # Compléter le login avec le token reçu
-            sociallogin.token = token
-            complete_social_login(request, sociallogin)
+            user = request.user
+            google_data = social_account.extra_data
 
-            # Si l'utilisateur est authentifié
-            if sociallogin.is_authenticated:
-                # Assigner le backend d'authentification
-                request.user.backend = 'allauth.account.auth_backends.AuthenticationBackend'
-
-                # Se connecter avec l'utilisateur
-                perform_login(request, sociallogin.user, post_save=True)
-
-                # Réponse avec les informations utilisateur
-                return Response({
-                    'username': sociallogin.user.username,
-                    'roles': get_groups(sociallogin.user)
-                }, status=HTTPStatus.ACCEPTED)
-            else:
-                return Response({"msg": "Authentification échouée avec Google"}, status=HTTPStatus.UNAUTHORIZED)
-
-        except OAuth2Error as e:
-            # Si une erreur OAuth se produit, renvoyer un message d'erreur
-            return Response({"msg": "Erreur OAuth avec Google", "error": str(e)}, status=HTTPStatus.BAD_REQUEST)
+            return Response({
+                'user': {
+                    'id': user.id,
+                    'email': google_data.get('email'),
+                    'name': google_data.get('name'),
+                    'picture': google_data.get('picture'),
+                    'is_staff': user.is_staff,
+                    'is_active': user.is_active
+                },
+                'social_account': {
+                    'uid': social_account.uid,
+                    'provider': social_account.provider,
+                    'last_login': social_account.last_login
+                },
+                'extra_data': google_data,
+                'roles': get_groups(user),
+            })
+        
+        except SocialAccount.DoesNotExist:
+            return Response({
+                'error': 'Compte social non trouvé'
+            }, status=HTTPStatus.NOT_FOUND)
+        
         except Exception as e:
-            # Attraper toute autre erreur et la renvoyer
-            return Response({"msg": "Erreur inattendue", "error": str(e)}, status=HTTPStatus.INTERNAL_SERVER_ERROR)
+            print(f"Erreur lors de la connexion : {e}")
+            return Response({
+                'error': 'Erreur de connexion',
+                'details': str(e)
+            }, status=HTTPStatus.INTERNAL_SERVER_ERROR)
 
 
 class LogoutView(APIView):                              #from logout button (modules/navigation/Navigation.vue)
