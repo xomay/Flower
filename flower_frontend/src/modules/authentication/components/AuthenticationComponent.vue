@@ -1,6 +1,6 @@
 <template>
   <el-card class="w-64 mx-auto my-8">
-    <img src="@/assets/Logo_fond_blanc.jpg" alt="Logo" />
+    <img src="@/assets/Logo_fond_blanc.jpg" :style="logoStyle" alt="Logo" />
     <h1 class="text-center font-semibold m-2">Connexion</h1>
     <el-form ref="authentFormRef" :model="authForm">
       <el-form-item
@@ -23,23 +23,14 @@
         />
       </el-form-item>
     </el-form>
-    <el-button class="w-full" type="primary" :loading="connectionLoading" @click="validateForm()">
-      Connexion
-    </el-button>
-    
-    <!-- Bouton de connexion avec Google -->
-    <el-button class="w-full mt-2" type="danger" @click="redirectToGoogleAuth">
+    <el-button type="danger" @click="redirectToGoogleAuthSimple">
       Connexion avec Google
     </el-button>
-    
-    <router-link :to="`/passwordreset`">Mot de passe oublié</router-link>
-    <el-alert v-if="errorMessage" :title="errorMessage" type="error" show-icon />
+        <el-alert v-if="errorMessage" :title="errorMessage" type="error" show-icon />
   </el-card>
 </template>
 
 <script>
-import axios from "axios";
-
 export default {
   name: "LoginComponent",
   data() {
@@ -48,48 +39,23 @@ export default {
         username: "",
         password: ""
       },
+      logoStyle: {
+        width: '100%',
+      },
       connectionLoading: false,
-      errorMessage: ""
+      errorMessage: "",
     };
   },
+
   methods: {
-    validateForm() {
-      this.errorMessage = "";
-      this.$refs.authentFormRef.validate((r) => {
-        if (r) {
-          this.submitAuthForm();
-        } else {
-          this.$message({ message: "Certains champs ne sont pas remplis !", type: "error" });
-          this.errorMessage = "Certains champs ne sont pas remplis.";
-        }
-      });
-    },
-    submitAuthForm() {
-      this.connectionLoading = true;
-      this.errorMessage = "";
-      axios.post(
-        "/api/accounts/login",
-        this.authForm,
-        { withCredentials: true }
-      )
-      .then((res) => {
-        this.$store.currentUser = res.data;
-        this.$router.push("/");
-      })
-      .catch((err) => {
-        if (err.response && err.response.status === 401) {
-          this.errorMessage = "Les identifiants ne correspondent à aucun compte.";
-        } else {
-          this.errorMessage = err.message;
-        }
-      })
-      .finally(() => {
-        this.connectionLoading = false;
-      });
-    },
-    redirectToGoogleAuth() {
-      window.location.href = "http://127.0.0.1:8000/accounts/google/login/";
+    async redirectToGoogleAuthSimple(){
+    try {
+      window.location.href = 'http://127.0.0.1:8000/accounts/google/login/';
+    } catch (error) {
+      console.error('Erreur de connexion Google', error);
     }
-  }
+  },
+  validateForm() {},
+  },
 };
 </script>

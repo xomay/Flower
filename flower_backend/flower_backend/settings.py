@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
+    'rest_framework.authtoken',
 ]
 
 MIDDLEWARE = [
@@ -74,22 +75,23 @@ SOCIALACCOUNT_PROVIDERS = {
             'profile',
             'email',
         ],
-        'AUTH_PARAMS': {
-            'access_type': 'online',
-        },
         'OAUTH_PKCE_ENABLED': True,
+        'AUTH_PARAMS': {
+            'prompt': 'select_account'
+        },
     }
 }
 
+SOCIALACCOUNT_LOGIN_ON_GET = True
 SOCIALACCOUNT_AUTO_SIGNUP = True
 ACCOUNT_DEFAULT_HTTP_PROTOCOL = "http"
 LOGIN_REDIRECT_URL = "http://127.0.0.1:8080/"
 
 # Django allauth config
-SITE_ID = 2
-ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_AUTHENTICATION_METHOD = 'email'
+SITE_ID = 3
+ACCOUNT_EMAIL_VERIFICATION = "none"
+ACCOUNT_SIGNUP_FIELDS = ['email*', 'username*', 'password1*', 'password2*']
+ACCOUNT_LOGIN_METHODS = {'email'}
 
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = 'GOOGLE_CLIENT_ID '
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'GOOGLE_CLIENT_SECRET'
@@ -157,7 +159,7 @@ WSGI_APPLICATION = 'flower_backend.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
-
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',

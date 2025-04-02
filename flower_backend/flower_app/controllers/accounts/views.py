@@ -1,25 +1,38 @@
-from django.middleware.csrf import get_token
 from django.http import JsonResponse
-from django.contrib.auth import authenticate, login, logout
-import json
+from django.contrib.auth import login, logout
+from django.views import View
 from http import HTTPStatus
+from flower_app.models.People.Membre import Membre
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from ..permissions import is_in_group, get_groups
+from ..permissions import get_groups
 from django.http import JsonResponse
 from allauth.socialaccount.models import SocialAccount
-
-
+from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 
 class LoginView(APIView):
     def post(self, request):
         print("Post: ", request.build_absolute_uri())  
-        print("Post: ", request.headers)  
+
+        print("Request" + str(request))
+        print("UID" + str(request.data.get('uid')))
 
         if not request.user.is_authenticated:
-            return Response({
-                'error': 'Utilisateur non authentifié'
-            }, status = HTTPStatus.UNAUTHORIZED)
+            try:
+                social_account = SocialAccount.objects.get(
+                    uid=request.data.get('uid'), 
+                    provider='google'
+                )
+                
+                user = social_account.user
+                login(request, user)
+                
+            except SocialAccount.DoesNotExist:
+                return Response({
+                    'error': 'Utilisateur non trouvé ou non autorisé'
+                }, status=HTTPStatus.UNAUTHORIZED)
+
+        print(f"User: {request.user}")
 
         try:
             social_account = SocialAccount.objects.get(
@@ -29,6 +42,20 @@ class LoginView(APIView):
 
             user = request.user
             google_data = social_account.extra_data
+
+
+            try: 
+                membre = Membre.objects.get(user=user)
+            except Membre.DoesNotExist:  # Si aucun Membre associé à l'utilisateur
+                print("Cet utilisateur est connecté pour la première fois")
+                try:
+                    membre = Membre.objects.get(email_junior=google_data.get('email'))
+                    membre.user = user
+                    membre.save()
+                except Membre.DoesNotExist:
+                    print("Aucun membre trouvé avec cet email")
+                    membre = None  # Assigner une valeur par défaut pour éviter les erreurs
+
 
             return Response({
                 'user': {
