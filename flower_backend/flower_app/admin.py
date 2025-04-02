@@ -46,10 +46,14 @@ admin.site.register(ParamsJE)
 admin.site.register(NdF)
 admin.site.register(NdFDetail)
 admin.site.register(US)
-admin.site.register(Poste)
 admin.site.register(UploadedFile)
 admin.site.register(BaseUrsaff)
 admin.site.register(BV)
 admin.site.register(Cotisation)
 admin.site.register(GroupesSet)
 admin.site.register(Avenant)
+
+class PosteAdmin(admin.ModelAdmin):
+    filter_horizontal = ('role',)  # Active l'interface "Available groups" ↔ "Chosen groups"
+
+admin.site.register(Poste, PosteAdmin)
