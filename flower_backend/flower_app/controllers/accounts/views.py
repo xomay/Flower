@@ -3,6 +3,7 @@ from django.contrib.auth import login, logout
 from django.views import View
 from http import HTTPStatus
 from flower_app.models.People.Membre import Membre
+from flower_app.models.Poste import Poste
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from ..permissions import get_groups
@@ -46,6 +47,8 @@ class LoginView(APIView):
 
             try: 
                 membre = Membre.objects.get(user=user)
+                poste = Poste.objects.get(membre=membre)
+                print("Groups : ", get_groups(poste))
             except Membre.DoesNotExist:  # Si aucun Membre associé à l'utilisateur
                 print("Cet utilisateur est connecté pour la première fois")
                 try:
@@ -72,7 +75,7 @@ class LoginView(APIView):
                     'last_login': social_account.last_login
                 },
                 'extra_data': google_data,
-                'roles': get_groups(user),
+                'roles': get_groups(poste),
             })
         
         except SocialAccount.DoesNotExist:

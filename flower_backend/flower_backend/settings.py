@@ -88,7 +88,7 @@ ACCOUNT_DEFAULT_HTTP_PROTOCOL = "http"
 LOGIN_REDIRECT_URL = "http://127.0.0.1:8080/"
 
 # Django allauth config
-SITE_ID = 3
+SITE_ID = 5
 ACCOUNT_EMAIL_VERIFICATION = "none"
 ACCOUNT_SIGNUP_FIELDS = ['email*', 'username*', 'password1*', 'password2*']
 ACCOUNT_LOGIN_METHODS = {'email'}

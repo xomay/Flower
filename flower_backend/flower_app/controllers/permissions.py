@@ -13,6 +13,9 @@ def is_in_group(user, group_name):
 def get_groups(user):
     return list(Group.objects.filter(user = user).values_list('name', flat=True))
 
+def get_groups(poste):
+    return list(Group.objects.filter(poste = poste).values_list('name', flat=True))
+
 class HasGroupPermission(permissions.BasePermission):
     """
     Ensure user is in required groups.
