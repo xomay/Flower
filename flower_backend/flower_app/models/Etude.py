@@ -36,7 +36,7 @@ class Etude(models.Model):
     projectManager = models.ForeignKey(Membre, on_delete=models.RESTRICT, related_name="projectManager", blank=True, null=True)
     clientContact = models.ForeignKey(Employe, on_delete=models.RESTRICT, blank=True, null=True)
     
-    ce = models.OneToOneField(CE, default=create_ce, on_delete=models.CASCADE)
+    ce_bc = models.OneToOneField(CE, default=create_ce, on_delete=models.CASCADE)
 
     # Set de groupes de phases par défaut (structure originale)
     originalGroupes = models.ForeignKey(GroupesSet, default=create_groupesset, on_delete=models.RESTRICT)

@@ -63,7 +63,7 @@ class Phase(models.Model):
     period = models.IntegerField(default=14)
     
     nbJEH = models.IntegerField(default=1)
-    priceJEH = models.DecimalField(default=400, max_digits=10, decimal_places=2)
+    priceJEH = models.DecimalField(default=450, max_digits=10, decimal_places=2)
 
     groupe = models.ForeignKey(Groupe, on_delete=models.CASCADE)
 
