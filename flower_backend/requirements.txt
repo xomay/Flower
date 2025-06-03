@@ -12,3 +12,4 @@ pandas
 mysqlclient
 Django
 django-allauth
+PyJWT

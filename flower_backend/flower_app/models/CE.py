@@ -1,6 +1,7 @@
 from django.db import models
 from rest_framework import serializers
 
+from .CC import CC
 from .People.Employe import Employe, EmployeSerializer
 from .People.Membre import Membre, MembreSerializer
 
@@ -13,6 +14,14 @@ class CE(models.Model):
     depositAmount = models.DecimalField(default=30, max_digits=10, decimal_places=2)
     consultantNumber = models.IntegerField(default=1)
     description = models.TextField(default='')
+    # spec = cdc
+    spec = models.TextField(default='')
+    controls = models.JSONField(default=list, blank=True)
+    deliverable = models.TextField(default='')
+    real_desc = models.TextField(default='')
+    hasMaterialFees = models.BooleanField(default=False)
+    materialFees = models.DecimalField(default=0.0, max_digits=10, decimal_places=2)
+    materialDesc = models.TextField(default='')
 
     def __str__(self):
         return 'CE'
@@ -28,3 +37,9 @@ class CEDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = CE
         fields = '__all__'
+    
+class BC(CE):
+    cc = models.ForeignKey(CC, on_delete=models.RESTRICT, blank=True, null=True)
+
+    def __str__(self):
+        return f'BC ({super().__str__()})'
