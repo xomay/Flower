@@ -7,7 +7,7 @@ from django.http import JsonResponse
 from datetime import datetime
 
 from flower_app.controllers.permissions import HasGroupPermission, HasReaPermissionToSeeEtude
-from flower_app.models.CE import CE, CESerializer, CEDetailSerializer
+from flower_app.models.DocEtude import DocEtude, CESerializer, CEDetailSerializer
 from flower_app.models.Etude import Etude, EtudeSerializer, EtudeDetailSerializer
 from flower_app.models.UploadedFile import UploadedFile, UploadedFileSerializer
 from flower_app.models.GroupePhase import Groupe, Phase, GroupeSerializer, PhaseSerializer
@@ -174,7 +174,7 @@ class CEView(generics.RetrieveUpdateAPIView):
     def update(self, request, pk):
         serializer = CESerializer(data=request.data)
         if (serializer.is_valid(raise_exception=True)):
-            CE.objects.filter(id=request.data['id']).update(**serializer.data)
+            DocEtude.objects.filter(id=request.data['id']).update(**serializer.data)
             return Response(serializer.data)
         return Response()
 

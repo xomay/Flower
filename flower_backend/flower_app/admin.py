@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models.CE import CE
+from .models.DocEtude import DocEtude
 from .models.People.Employe import Employe
 from .models.Etude import Etude
 from .models.Facture import Facture
@@ -24,7 +24,7 @@ from .models.Avenant import Avenant
 from .models.BA import BA
 
 # Register your models here.
-admin.site.register(CE)
+admin.site.register(DocEtude)
 admin.site.register(Employe)
 admin.site.register(Etude)
 admin.site.register(Facture)

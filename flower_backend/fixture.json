@@ -1180,7 +1180,7 @@
     }
 },
 {
-    "model": "flower_app.ce",
+    "model": "flower_app.docetude",
     "pk": 1,
     "fields": {
         "signer1": null,
@@ -1209,7 +1209,7 @@
         "qualityManager": 3,
         "projectManager": 2,
         "clientContact": null,
-        "ce": 1,
+        "docEtude": 1,
         "deposit_percentage": "30.00",
         "deposit_sum": "0.00",
         "application_fees": "0.00"

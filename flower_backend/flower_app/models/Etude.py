@@ -1,17 +1,18 @@
 from django.db import models
 from rest_framework import serializers
 
+from .CC import CC
 from .People.Employe import Employe, EmployeSerializer
 from .People.Membre import Membre, MembreSerializer
 from .People.Prospect import Prospect, ProspectSerializer
-from .CE import CE
+from .DocEtude import DocEtude
 from .UploadedFile import UploadedFile, UploadedFileSerializer
 from .GroupePhase import GroupesSet
 
 from decimal import Decimal
 
-def create_ce():
-    return CE.objects.create().id
+def create_doc():
+    return DocEtude.objects.create().id
 def create_groupesset():
     return GroupesSet.objects.create().id
 
@@ -36,7 +37,8 @@ class Etude(models.Model):
     projectManager = models.ForeignKey(Membre, on_delete=models.RESTRICT, related_name="projectManager", blank=True, null=True)
     clientContact = models.ForeignKey(Employe, on_delete=models.RESTRICT, blank=True, null=True)
     
-    ce_bc = models.OneToOneField(CE, default=create_ce, on_delete=models.CASCADE)
+    docEtude = models.OneToOneField(DocEtude, default=create_doc, on_delete=models.CASCADE)
+    cc = models.ForeignKey(CC, on_delete=models.RESTRICT, blank=True, null=True)
 
     # Set de groupes de phases par défaut (structure originale)
     originalGroupes = models.ForeignKey(GroupesSet, default=create_groupesset, on_delete=models.RESTRICT)

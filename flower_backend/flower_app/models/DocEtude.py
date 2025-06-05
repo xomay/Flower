@@ -6,7 +6,7 @@ from .People.Employe import Employe, EmployeSerializer
 from .People.Membre import Membre, MembreSerializer
 
 # Create your models here.
-class CE(models.Model):
+class DocEtude(models.Model):
     signer1 = models.ForeignKey(Membre, on_delete=models.RESTRICT, blank=True, null=True)
     signer2 = models.ForeignKey(Employe, on_delete=models.RESTRICT, blank=True, null=True)
     signDate = models.DateTimeField(blank=True, null=True)
@@ -28,18 +28,12 @@ class CE(models.Model):
 
 class CESerializer(serializers.ModelSerializer):
     class Meta:
-        model = CE
+        model = DocEtude
         fields = '__all__'
 
 class CEDetailSerializer(serializers.ModelSerializer):
     signer1 = MembreSerializer(read_only=True)
     signer2 = EmployeSerializer(read_only=True)
     class Meta:
-        model = CE
+        model = DocEtude
         fields = '__all__'
-    
-class BC(CE):
-    cc = models.ForeignKey(CC, on_delete=models.RESTRICT, blank=True, null=True)
-
-    def __str__(self):
-        return f'BC ({super().__str__()})'
