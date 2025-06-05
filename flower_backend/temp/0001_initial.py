@@ -165,7 +165,7 @@ class Migration(migrations.Migration):
                 ('deposit_percentage', models.DecimalField(decimal_places=2, default=30, max_digits=10)),
                 ('deposit_sum', models.DecimalField(decimal_places=2, default=0, max_digits=10)),
                 ('application_fees', models.DecimalField(decimal_places=2, default=0, max_digits=10)),
-                ('ce', models.OneToOneField(default=flower_app.models.Etude.create_ce, on_delete=django.db.models.deletion.CASCADE, to='flower_app.ce')),
+                ('ce', models.OneToOneField(default=flower_app.models.Etude.create_doc, on_delete=django.db.models.deletion.CASCADE, to='flower_app.ce')),
                 ('clientContact', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.RESTRICT, to='flower_app.employe')),
                 ('originalGroupes', models.ForeignKey(default=flower_app.models.Etude.create_groupesset, on_delete=django.db.models.deletion.RESTRICT, to='flower_app.groupesset')),
             ],
