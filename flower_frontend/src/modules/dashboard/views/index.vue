@@ -4,11 +4,11 @@
     <el-row justify="center">
       <h1 style="text-align: center;">
         Bienvenue
-        <font
+        <p
           color="blue"
         >
           {{ getUsername() }}
-        </font>
+        </p>
       </h1>
     </el-row>
     <el-divider />

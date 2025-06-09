@@ -19,6 +19,11 @@ import ProjectForm from "../../components/forms/ProjectForm"
 
 const axios = require("axios")
 
+// Configuration d'axios pour CSRF
+axios.defaults.xsrfCookieName = "csrftoken";
+axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
+axios.defaults.withCredentials = true;
+
 export default {
   name: "EtudeCreer",
   components: { ProjectForm },
@@ -40,7 +45,7 @@ export default {
         clientContact: "",
         name: "",
         description: "",
-        mandat: 2021,
+        mandat: 2025,
         number: "",
         confidential: false,
         qualiValidatePeda: false,
@@ -59,7 +64,7 @@ export default {
     ).then((res) => {
       const year = new Date().getFullYear()
       const baseInt = parseInt(year.toString().slice(-2) + "000", 10)
-      this.takenIds = res.data.filter(etu => etu.mandat == year).map(etu => etu.number)
+      this.takenIds = res.data.filter(etu => etu.mandat === year).map(etu => etu.number)
       const amount = this.takenIds.length
       const result = amount + baseInt
       this.form.number = result

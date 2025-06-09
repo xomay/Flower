@@ -71,18 +71,18 @@
         sortable
       >
         <template slot-scope="scope">
-          <font
+          <p
             v-if="scope.row.rating == -1"
             color="gray"
           >
             <i>néant</i>
-          </font>
-          <font
+          </p>
+          <p
             v-else
             :color="getRatingColor(scope.row.rating)"
           >
             {{ scope.row.rating }} / 10
-          </font>
+          </p>
         </template>
       </el-table-column>
       <el-table-column

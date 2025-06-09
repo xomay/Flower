@@ -1,12 +1,14 @@
+import { defineAsyncComponent } from "vue"
+
 const navigation = {
-  install (Vue) {
-    Vue.component(
+  install (app) {
+    app.component(
       "Navigation",
-      () => import("./components/Navigation")
+      defineAsyncComponent(() => import("./components/Navigation.vue"))
     )
-    Vue.component(
+    app.component(
       "BaseComponent",
-      () => import("./components/Base")
+      defineAsyncComponent(() => import("./components/Base.vue"))
     )
   }
 }

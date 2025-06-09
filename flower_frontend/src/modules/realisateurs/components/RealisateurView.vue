@@ -51,11 +51,11 @@
             Fillière
           </td>
           <td>
-            <font
+            <p
               class="fontStyled"
             >
               {{ realisateur.filiere }}
-            </font>
+            </p>
           </td>
         </tr>
       </tbody>

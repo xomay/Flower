@@ -1,8 +1,8 @@
 const authentication = {
-  install (Vue) {
-    Vue.component(
+  install (app) {
+    app.component(
       "Authentication",
-      () => import("./components/AuthenticationComponent")
+      () => import("./components/AuthenticationComponent.vue")
     )
   }
 }

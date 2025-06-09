@@ -4,9 +4,9 @@
     :breadcrumb="breadcrumb"
   >
     Votre signature :<br>
-    <i><font color="gray">
+    <i><p color="gray">
       Faites un clic droit puis "enregistrer l'image" pour sauvegarder votre signature.
-    </font></i>
+    </p></i>
     <div
       v-show="displaysSignature"
       v-loading="!signatureJPG"

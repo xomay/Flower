@@ -17,14 +17,14 @@
         </el-menu-item>
       </router-link>
       <template v-for="(item, index) in menu">
-        <el-submenu
+        <el-sub-menu
           v-if="item.children.length > 0"
           :key="index"
           :index="index.toString()"
         >
-          <template slot="title">
-            <i :class="item.icon" />
-            <span slot="title">{{ item.title }}</span>
+          <template #title>
+            <el-icon><component :is="item.icon" /></el-icon>
+            <span>{{ item.title }}</span>
           </template>
           <span
             v-for="(subItem, subIndex) in item.children"
@@ -45,7 +45,7 @@
               :to="subItem.url"
             ><el-menu-item :index="subItem.url">{{ subItem.name }}</el-menu-item></router-link>
           </span>
-        </el-submenu>
+        </el-sub-menu>
       </template>
     </el-menu>
     <div class="flex-grow">
@@ -55,13 +55,8 @@
           class="dark"
           @click="collapse = ! collapse"
         >
-          <i
-            v-if="collapse"
-            class="el-icon-s-unfold"
-          /><i
-            v-else
-            class="el-icon-s-fold"
-          />
+            <el-icon v-if="collapse"><Expand /></el-icon>
+            <el-icon v-else><Fold /></el-icon>
         </el-button>
         <el-dropdown
           trigger="click"
@@ -73,7 +68,7 @@
           >
             <i class="el-icon-s-tools" />
           </el-button>
-          <el-dropdown-menu slot="dropdown">
+          <el-dropdown-menu #dropdown>
             <el-dropdown-item command="profile">
               <i class="el-icon-user" />{{ this.$store.currentUser.username }}
             </el-dropdown-item>
@@ -132,7 +127,7 @@ export default {
     addAdminStuff () {
       if ( this.isAdmin() ) {
         this.menu.push({
-          icon: "el-icon-setting",
+          icon: "Tools",
           title: "Administration",
           children: [
             {
@@ -156,7 +151,7 @@ export default {
     addTresoStuff () {
       if ( this.isTreso() ) {
         this.menu.push({
-          icon: "el-icon-money",
+          icon: "Money",
           title: "Trésorerie",
           children: [
             {
@@ -186,7 +181,7 @@ export default {
     addCAStuff () {
       if (this.isCA() ) {
         this.menu.push({
-          icon: "el-icon-user-solid",
+          icon: "UserFilled",
           title: "Gestion Associative",
           children: [
             {
@@ -210,7 +205,7 @@ export default {
           ]
         },
         {
-          icon: "el-icon-s-management",
+          icon: "Management",
           title: "Suivi d'Etude",
           children: [
             {name: "Voir les études",
@@ -220,7 +215,7 @@ export default {
           ]
         },
         {
-          icon: "el-icon-data-line",
+          icon: "DataLine",
           title: "Performance",
           children: [
             {name: "Suivi Dev'co",
@@ -228,7 +223,7 @@ export default {
           ]
         },
         {
-          icon: "el-icon-s-custom",
+          icon: "Avatar",
           title: "Prospection",
           children: [
             {
@@ -264,7 +259,7 @@ export default {
     addReaStuff () {
       if ( this.isRea() ) {
         this.menu.push({
-          icon: "el-icon-folder-opened",
+          icon: "FolderOpened",
           title: "Mes études",
           children: [
             {
@@ -293,7 +288,7 @@ div.topbar button {
   font-size: 20px;
   @apply py-0 px-4 !important;
 }
-.el-menu-item, .el-submenu__title {
+.el-menu-item, .el-sub-menu__title {
   height: 40px !important;
   line-height: 40px !important;
 }
