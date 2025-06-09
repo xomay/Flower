@@ -42,9 +42,9 @@
         sortable
       >
         <template slot-scope="scope">
-          <font style="color: #333333;">
+          <p style="color: #333333;">
             <b>{{ scope.row.name }}</b>
-          </font>
+          </p>
         </template>
       </el-table-column>
       <el-table-column

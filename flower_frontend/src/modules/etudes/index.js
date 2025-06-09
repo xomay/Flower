@@ -1,6 +1,6 @@
 const module = {
-  install (Vue) {
-    Vue.component(
+  install (app) {
+    app.component(
       "EtudeVoir",
       () => import("./views/EtudeVoir")
     )

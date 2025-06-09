@@ -58,7 +58,7 @@ export default {
       ]
     }
   },
-  beforeCreate () {
+  created () {
     this.loading = true
     axios.get(
       "/api/etudes/",

@@ -66,7 +66,7 @@
           prop="title"
         >
           <template slot-scope="scope">
-            {{ scope.row.title }} : <i><font color="gray">{{ scope.row.description }}</font></i>
+            {{ scope.row.title }} : <i><p color="gray">{{ scope.row.description }}</p></i>
           </template>
         </el-table-column>
         <el-table-column

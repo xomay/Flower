@@ -169,7 +169,7 @@ class CEView(generics.RetrieveUpdateAPIView):
     }
     serializer_class = CESerializer
     def retrieve(self, request, pk):
-        return Response(CEDetailSerializer(Etude.objects.get(id=pk).ce).data)
+        return Response(CEDetailSerializer(Etude.objects.get(id=pk).docEtude).data)
 
     def update(self, request, pk):
         serializer = CESerializer(data=request.data)

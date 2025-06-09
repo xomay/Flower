@@ -1,7 +1,7 @@
 <template>
   <el-form
     ref="prosFormRef"
-    :model="value"
+    :model="modelValue"
     :rules="formRules"
     label-position="left"
   >
@@ -12,7 +12,7 @@
         label-width="200px"
       >
         <el-input
-          v-model="value.name"
+          v-model="modelValue.name"
           placeholder="entreprise"
         />
       </el-form-item>
@@ -24,7 +24,7 @@
         label-width="200px"
       >
         <el-input
-          v-model="value.type"
+          v-model="modelValue.type"
           placeholder="Type"
         />
       </el-form-item>
@@ -39,7 +39,7 @@
         label-width="200px"
       >
         <el-input
-          v-model="value.domain"
+          v-model="modelValue.domain"
           placeholder="Domaine"
         />
       </el-form-item>
@@ -51,7 +51,7 @@
         label-width="200px"
       >
         <MemberPicker
-          v-model="value.charge"
+          v-model="modelValue.charge"
           :item-list="members"
           placeholder="Chargé dev'co"
         />
@@ -64,7 +64,7 @@
         label-width="200px"
       >
         <el-input
-          v-model="value.address"
+          v-model="modelValue.address"
           placeholder="Numéro et nom de rue"
         />
       </el-form-item>
@@ -76,7 +76,7 @@
         label-width="200px"
       >
         <el-input
-          v-model="value.postcode"
+          v-model="modelValue.postcode"
           placeholder="Code postal de l'entreprise"
         />
       </el-form-item>
@@ -91,7 +91,7 @@
         label-width="200px"
       >
         <el-input
-          v-model="value.town"
+          v-model="modelValue.town"
           placeholder="Ville de l'entreprise"
         />
       </el-form-item>
@@ -103,7 +103,7 @@
         label-width="200px"
       >
         <el-input
-          v-model="value.address_tresorerie"
+          v-model="modelValue.address_tresorerie"
           type="textarea"
           :rows="2"
           resize="none"
@@ -116,7 +116,7 @@
         Moyens de contact :
       </span>
       <ContactsGroup
-        :value="value.contactWay"
+        :value="modelValue.contactWay"
         @add-field="contactsAddField"
         @delete-field="contactsRemoveField"
       />
@@ -151,11 +151,12 @@ export default {
   name: "ProspectsForm",
   components: {ContactsGroup, MemberPicker},
   props: {
-    value: { type: Object, required: true },
+    modelValue: { type: Object, required: true },
     members: { type: Array, required: true },
     loading: Boolean,
     deletable: Boolean
   },
+  emits: ["save", "delete"],
   data () {
     return {
       breadcrumb: [],
@@ -178,14 +179,14 @@ export default {
       })
     },
     saveProspect () {
-      this.value.contactWay = this.value.contactWay.filter(str => /\S/.test(str))
+      this.modelValue.contactWay = this.modelValue.contactWay.filter(str => /\S/.test(str))
       this.$emit("save")
     },
     contactsAddField () {
-      this.value.contactWay.push("")
+      this.modelValue.contactWay.push("")
     },
     contactsRemoveField (index) {
-      this.value.contactWay.splice(
+      this.modelValue.contactWay.splice(
         index,
         1
       )

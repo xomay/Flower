@@ -1,7 +1,7 @@
 <template>
   <el-form
     ref="formProject"
-    :model="value"
+    :model="modelValue"
     :rules="formRules"
     label-position="left"
   >
@@ -11,12 +11,11 @@
       label-width="140px"
     >
       <MemberPicker
-        v-model="value.prospect"
+        v-model="modelValue.prospect"
         :item-list="prospects"
         placeholder="Prospect"
         @input="updateEmployes(true)"
-        @clear="clearEmploye()"
-      />
+        @clear="clearEmploye()"/>
     </el-form-item>
     <el-form-item
       label="Contact client"
@@ -25,10 +24,9 @@
     >
       <MemberPicker
         ref="employesInput"
-        v-model="value.clientContact"
+        v-model="modelValue.clientContact"
         :item-list="employes"
-        placeholder="Contact client"
-      />
+        placeholder="Contact client"/>
     </el-form-item>
     <el-form-item
       label="Nom de l'étude"
@@ -36,19 +34,20 @@
       label-width="140px"
     >
       <el-input
-        v-model="value.name"
+        v-model="modelValue.name"
         placeholder="Entrez le nom de la future étude"
       />
     </el-form-item>
     <el-form-item
-      label="Présentation de l'étude"
+      label="Présentation du contexte de l'étude"
       prop="description"
       label-width="140px"
     >
       <el-input
-        v-model="value.description"
+        v-model="modelValue.description"
         type="textarea"
         placeholder="Description succincte de l'étude"
+        :rows="5"
       />
     </el-form-item>
     <el-col :span="12">
@@ -58,7 +57,7 @@
         label-width="140px"
       >
         <el-input-number
-          v-model="value.mandat"
+          v-model="modelValue.mandat"
           controls-position="right"
           :min="2020"
           :max="2050"
@@ -73,7 +72,7 @@
         label-width="140px"
       >
         <el-input-number
-          v-model="value.number"
+          v-model="modelValue.number"
           controls-position="right"
           :min="21000"
           :max="50000"
@@ -85,7 +84,7 @@
       prop="confidential"
       label-width="140px"
     >
-      <el-checkbox v-model="value.confidential" />
+      <el-checkbox v-model="modelValue.confidential" />
     </el-form-item>
     <el-form-item
       label="Suiveur de projet"
@@ -93,10 +92,9 @@
       label-width="140px"
     >
       <MemberPicker
-        v-model="value.projectManager"
+        v-model="modelValue.projectManager"
         :item-list="members"
-        placeholder="Suiveur de projet"
-      />
+        placeholder="Suiveur de projet"/>
     </el-form-item>
     <el-form-item
       label="Suiveur qualité"
@@ -104,10 +102,9 @@
       label-width="140px"
     >
       <MemberPicker
-        v-model="value.qualityManager"
+        v-model="modelValue.qualityManager"
         :item-list="members"
-        placeholder="Suiveur qualité"
-      />
+        placeholder="Suiveur qualité"/>
     </el-form-item>
     <el-form-item>
       <el-button
@@ -129,7 +126,7 @@ export default {
   name: "ProjectForm",
   components: {MemberPicker},
   props: {
-    value: { type: Object, required: true },
+    modelValue: { type: Object, required: true },
     loading: { type: Boolean, required: true },
     members: { type: Array, required: true },
     prospects: { type: Array, required: true },
@@ -194,21 +191,21 @@ export default {
     },
     mandatEdited (nv) {
       const lastYear = nv.toString().slice(-2)
-      const lastNumber = this.value.number.toString().slice(-3)
-      this.value.number = parseInt(lastYear+lastNumber)
+      const lastNumber = this.modelValue.number.toString().slice(-3)
+      this.modelValue.number = parseInt(lastYear+lastNumber)
     },
     updateEmployes (remove) {
       if(remove) {
-        this.value.clientContact = ""
+        this.modelValue.clientContact = ""
       }
-      if(this.value.prospect != undefined && this.value.prospect > 0) {
+      if(this.modelValue.prospect !== undefined && this.modelValue.prospect > 0) {
         axios.get(
-          `/api/prospects/${this.value.prospect}/employes/`,
+          `/api/prospects/${this.modelValue.prospect}/employes/`,
           { withCredentials: true }
         ).then((res) => {
           res.data.forEach((elt) => elt.value = `${elt.firstname} ${elt.lastname}`)
           this.employes = res.data
-          if(this.employes.length == 0)
+          if(this.employes.length === 0)
             this.$message({message: "Ce prospect n'a aucun employé...", trype: "warning"})
         }).catch((err) => {
           this.$message({message: "Impossible de récupérer les employés de ce prospect : " + err, type: "error"})
@@ -217,7 +214,7 @@ export default {
     },
     clearEmploye () {
       this.$refs.employesInput.clear()
-      this.value.clientContact = ""
+      this.modelValue.clientContact = ""
     }
   }
 }

@@ -15,13 +15,14 @@
 export default {
   name: "MemberPicker",
   props: {
-    value: { type: undefined, required: true },
+    modelValue: { type: undefined, required: true },
     itemList: { type: Array, required: true },
     placeholder: { type: String, required: true },
     cleareable: { type: Boolean, default: true },
     disabled: { type: Boolean, default: false },
     forceValue: { type: String, default () { return null } }
   },
+  emits: ["update:modelValue", "checkEvent", "clear"],
   data () {
     return {
       autocompleteValue: "",
@@ -53,7 +54,7 @@ export default {
     handleSelectvalue (value) {
       this.autocompleteValue = value.value
       this.$emit(
-        "input",
+        "update:modelValue",
         value.id
       )
     },
