@@ -3,12 +3,16 @@ from rest_framework import serializers
 
 from .People.Employe import Employe, EmployeSerializer
 from .People.Membre import Membre, MembreSerializer
+from .People.Prospect import Prospect, ProspectSerializer
+
 
 # Create your models here.
 class CC(models.Model):
+    prospect = models.ForeignKey(Prospect, on_delete=models.RESTRICT, blank=True, null=True)
     signer1 = models.ForeignKey(Membre, on_delete=models.RESTRICT, blank=True, null=True)
     signer2 = models.ForeignKey(Employe, on_delete=models.RESTRICT, blank=True, null=True)
     signDate = models.DateTimeField(blank=True, null=True)
+    number = models.IntegerField(blank=True, null=True)
     period = models.IntegerField(default=2)
     name = models.CharField(max_length=60)
     description = models.TextField(blank=True,default='')
@@ -23,6 +27,7 @@ class CCSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class CCDetailSerializer(serializers.ModelSerializer):
+    prospect = ProspectSerializer(read_only=True)
     signer1 = MembreSerializer(read_only=True)
     signer2 = EmployeSerializer(read_only=True)
     class Meta:

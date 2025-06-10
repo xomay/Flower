@@ -7,6 +7,7 @@ from django.http import JsonResponse
 from datetime import datetime
 
 from flower_app.controllers.permissions import HasGroupPermission, HasReaPermissionToSeeEtude
+from flower_app.models.CC import CCSerializer, CC, CCDetailSerializer
 from flower_app.models.DocEtude import DocEtude, CESerializer, CEDetailSerializer
 from flower_app.models.Etude import Etude, EtudeSerializer, EtudeDetailSerializer
 from flower_app.models.UploadedFile import UploadedFile, UploadedFileSerializer
@@ -26,6 +27,15 @@ class EtudeListCreateView(generics.ListCreateAPIView):
     }
     serializer_class = EtudeSerializer
     queryset = Etude.objects.all()
+
+class CCListCreateView(generics.ListCreateAPIView):
+    permission_classes = [IsAuthenticated, HasGroupPermission]
+    required_groups = {
+        'GET': ['ROLE_CA'],
+        'POST': ['ROLE_CA']
+    }
+    serializer_class = CCSerializer
+    queryset = CC.objects.all()
 
 class EtudeRetrieveUpdateView(generics.RetrieveUpdateAPIView):
     permission_classes = [IsAuthenticated, HasGroupPermission]
@@ -177,6 +187,24 @@ class CEView(generics.RetrieveUpdateAPIView):
             DocEtude.objects.filter(id=request.data['id']).update(**serializer.data)
             return Response(serializer.data)
         return Response()
+
+class CCView(generics.RetrieveUpdateAPIView):
+    permission_classes = [IsAuthenticated, HasGroupPermission]
+    required_groups = {
+        'GET': ['ROLE_CA'],
+        'PUT': ['ROLE_CA'],
+        'PATCH': ['ROLE_CA']
+    }
+    serializer_class = CCSerializer
+    def retrieve(self, request, pk):
+        return Response(CCDetailSerializer(CC.objects.get(id=pk)).data)
+
+    """def update(self, request, pk):
+        serializer = CESerializer(data=request.data)
+        if (serializer.is_valid(raise_exception=True)):
+            DocEtude.objects.filter(id=request.data['id']).update(**serializer.data)
+            return Response(serializer.data)
+        return Response()"""#Pas encore adapté
 
 class MissionsView(generics.ListCreateAPIView, generics.UpdateAPIView):
     permission_classes = [IsAuthenticated, HasGroupPermission]

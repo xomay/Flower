@@ -1,52 +1,25 @@
 <template>
   <div>
     <div
-      v-for="(groupe, index) in value"
+      v-for="(groupe, index) in modelValue"
       :key="index"
       class="my-4"
     >
-      <h2>
-        Groupe {{ index + 1 }}
-        <el-button
-          type="text"
-          icon="el-icon-caret-top"
-          :disabled="index === 0 || disabled"
-          @click="exchangeGroupes(index, index-1)"
-        />
-        <el-button
-          type="text"
-          icon="el-icon-caret-bottom"
-          :disabled="index === (value.length - 1) || disabled"
-          @click="exchangeGroupes(index, index+1)"
-        />
-        <el-button
-          type="text"
-          icon="el-icon-delete"
-          :disabled="disabled"
-          @click="deleteGroupe(groupe.id, index)"
-        />
-      </h2>
-      <el-input v-model="groupe.title" />
-      <el-input
-        v-model="groupe.description"
-        type="textarea"
-        :disabled="disabled"
-      />
       <el-table
         class="grid"
         :data="groupe.phases"
+        :row-key="row => row.id"
       >
         <el-table-column type="expand">
-          <template v-slot="props">
-            <div class="flex flew-row">
-              <div class="flex-grow">
-                <el-col :span="8">
+          <template #default="{ row }">
+            <el-row>
+                <el-col :span="12">
                   <el-row>
                     Description :
                     <el-input
-                      v-model="props.row.description"
+                      v-model="row.description"
                       type="textarea"
-                      :autosize="{ minRows: 3, maxRows: 4}"
+                      :autosize="{ minRows: 5, maxRows: 7}"
                       placeholder="Description de la phase"
                       :disabled="disabled"
                     />
@@ -54,28 +27,28 @@
                   <el-row>
                     Méthodologie :
                     <el-input
-                      v-model="props.row.methodologie"
+                      v-model="row.methodologie"
                       type="textarea"
-                      :autosize="{ minRows: 3, maxRows: 4}"
+                      :autosize="{ minRows: 5, maxRows: 7}"
                       placeholder="Méthodologie de la phase"
                       :disabled="disabled"
                     />
                   </el-row>
                 </el-col>
                 <el-col
-                  :span="15"
+                  :span="10"
                   :offset="1"
                 >
                   <el-table
-                    :data="props.row.uss"
+                    :data="row.uss"
                   >
                     <el-table-column
                       label="Liste des US"
                       align="center"
                     >
-                      <template v-slot="usData">
+                      <template #default="{ row : usRow}">
                         <el-input
-                          v-model="usData.row.name"
+                          v-model="usRow.name"
                           type="text"
                           placeholder="Nom de l'US"
                           :disabled="disabled"
@@ -88,36 +61,35 @@
                       width="80px"
                       fixed="right"
                     >
-                      <template v-slot="usData">
+                      <template #default="{ row: usRow }">
                         <el-button
-                          icon="el-icon-minus"
+                          icon="Minus"
                           type="danger"
                           plain
                           :disabled="disabled"
-                          @click="deleteUS(usData.row, props.row)"
+                          @click="deleteUS(usRow, row)"
                         />
                       </template>
                     </el-table-column>
                   </el-table>
                   <el-button
                     type="text"
-                    icon="el-icon-plus"
+                    icon="Plus"
                     :disabled="disabled"
-                    @click="addUS(props.row)"
+                    @click="addUS(row)"
                   >
                     Ajouter une US
                   </el-button>
                 </el-col>
-              </div>
-            </div>
+            </el-row>
           </template>
         </el-table-column>
         <el-table-column
           label="Titre"
         >
-          <template v-slot="props">
+          <template #default="{row}">
             <el-input
-              v-model="props.row.title"
+              v-model="row.title"
               :disabled="disabled"
             />
           </template>
@@ -126,9 +98,9 @@
           width="110"
           label="Nb JEH"
         >
-          <template v-slot="props">
+          <template #default="{row}">
             <el-input-number
-              v-model="props.row.nbJEH"
+              v-model="row.nbJEH"
               controls-position="right"
               :min="1"
               :max="99"
@@ -142,9 +114,9 @@
           width="100"
           label="Prix JEH"
         >
-          <template v-slot="props">
+          <template #default="{row}">
             <el-input
-              v-model="props.row.priceJEH"
+              v-model="row.priceJEH"
               :disabled="disabled"
             />
           </template>
@@ -154,13 +126,13 @@
           width="150"
           label="Date de début"
         >
-          <template v-slot="props">
+          <template #default="{row}">
             <el-date-picker
-              v-model="props.row.beginDate"
+              v-model="row.beginDate"
               type="date"
               placeholder="Choisissez un jour"
               width="200"
-              size="mini"
+              size="small"
               format="DD-MM-YYYY"
               value-format="YYYY-MM-DD"
               :disabled="disabled"
@@ -172,9 +144,9 @@
           width="110"
           label="Durée (jours)"
         >
-          <template v-slot="props">
+          <template #default="{row}">
             <el-input-number
-              v-model="props.row.period"
+              v-model="row.period"
               controls-position="right"
               :min="1"
               :max="99"
@@ -190,13 +162,13 @@
           <template v-slot="props">
             <el-button
               type="text"
-              icon="el-icon-caret-top"
+              icon="Top"
               :disabled="disabled"
               @click="exchangeItems(index, props.$index, props.$index - 1)"
             /><br>
             <el-button
               type="text"
-              icon="el-icon-caret-bottom"
+              icon="Bottom"
               :disabled="disabled"
               @click="exchangeItems(index, props.$index, props.$index + 1)"
             />
@@ -205,12 +177,12 @@
         <el-table-column
           width="50"
         >
-          <template v-slot="props">
+          <template #default="{row}">
             <el-button
               type="text"
               :disabled="disabled"
-              icon="el-icon-delete"
-              @click="deletePhase(props.row, groupe)"
+              icon="Delete"
+              @click="deletePhase(row, groupe)"
             />
           </template>
         </el-table-column>
@@ -218,21 +190,13 @@
       <div class="flex justify-center">
         <el-button
           type="text"
-          icon="el-icon-plus"
+          icon="Plus"
           :disabled="disabled"
           @click="addPhase(groupe)"
         >
           Ajouter une phase
         </el-button>
       </div>
-    </div>
-    <div class="flex justify-center">
-      <el-button
-        :disabled="disabled"
-        @click="addGroupe"
-      >
-        Ajouter un groupe
-      </el-button>
     </div>
   </div>
 </template>
@@ -241,10 +205,11 @@
 export default {
   name: "PhasesForm",
   props: {
-    value: { type: Array, required: true },
+    modelValue: { type: Array, required: true },
     small: { type: Boolean, required: true },
     disabled: { type: Boolean, default: false }
   },
+  emits: ["update:modelValue","add-groupe", "add-phase", "add-us", "delete-phase", "delete-group", "delete-us"],
   methods: {
     addGroupe () {
       this.$emit("add-groupe")
@@ -256,30 +221,30 @@ export default {
       this.$emit("add-us", phase)
     },
     exchangeGroupes (index1, index2) {
-      if (index1 < 0 || index1 >= this.value.length || index2 < 0 || index2 >= this.value.length) {
+      if (index1 < 0 || index1 >= this.modelValue.length || index2 < 0 || index2 >= this.modelValue.length) {
         return
       }
       [
-        this.value[index1].index,
-        this.value[index2].index
+        this.modelValue[index1].index,
+        this.modelValue[index2].index
       ] = [
-        this.value[index2].index,
-        this.value[index1].index
+        this.modelValue[index2].index,
+        this.modelValue[index1].index
       ]
-      this.value = this.value.sort((a, b) => a.index - b.index)
+      this.modelValue = this.modelValue.sort((a, b) => a.index - b.index)
     },
     exchangeItems (groupe_index, index1, index2) {
-      if (index1 < 0 || index1 >= this.value[groupe_index].phases.length || index2 < 0 || index2 >= this.value[groupe_index].phases.length) {
+      if (index1 < 0 || index1 >= this.modelValue[groupe_index].phases.length || index2 < 0 || index2 >= this.modelValue[groupe_index].phases.length) {
         return
       }
       [
-        this.value[groupe_index].phases[index1].index,
-        this.value[groupe_index].phases[index2].index
+        this.modelValue[groupe_index].phases[index1].index,
+        this.modelValue[groupe_index].phases[index2].index
       ] = [
-        this.value[groupe_index].phases[index2].index,
-        this.value[groupe_index].phases[index1].index
+        this.modelValue[groupe_index].phases[index2].index,
+        this.modelValue[groupe_index].phases[index1].index
       ]
-      this.value[groupe_index].phases = this.value[groupe_index].phases.sort((a, b) => a.index - b.index)
+      this.modelValue[groupe_index].phases = this.modelValue[groupe_index].phases.sort((a, b) => a.index - b.index)
     },
     deleteGroupe (groupeId, groupeIndex) {
       this.$emit("delete-groupe", {groupeId, groupeIndex})

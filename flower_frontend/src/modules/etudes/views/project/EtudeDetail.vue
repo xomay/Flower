@@ -7,7 +7,7 @@
       <router-link :to="`/etudes/${$route.params.id}/modifier`">
         <el-button
           type="text"
-          icon="el-icon-edit"
+          icon="EditPen"
         >
           Modifier
         </el-button>
@@ -62,6 +62,8 @@
     <div v-show="currentTab === 'Récapitulatif'">
       <Summary
         :etude="etude"
+        :getgantt="true"
+        :reaVue="false"
       />
       <hr style="margin: 12px; margin-bottom: 25px">
       <div>
@@ -109,6 +111,10 @@ import UploaderLocal from "@/components/UploaderLocal"
 import Avenants from "../../components/Avenants"
 
 const axios = require("axios")
+// Configuration d'axios pour CSRF
+axios.defaults.xsrfCookieName = "csrftoken";
+axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
+axios.defaults.withCredentials = true;
 
 export default {
   name: "EtudeDetail",
@@ -123,7 +129,8 @@ export default {
         linkedFiles: [],
         isOriginalGroupes: true,
         avenants: [],
-        missions: []
+        missions: [],
+        hasCC: false,
       },
       no_phases: false,
       breadcrumb: [
@@ -147,7 +154,8 @@ export default {
       this.etude = res.data
       this.etude.missions = res.data.missions.filter(m => m.isCurrent == true)
       this.breadcrumb[1].name = this.etude.name
-      this.no_phases = this.etude.currentGroupes.groupes.length < 1
+      this.etude.hasCC = this.etude.cc > 0
+      this.no_phases = this.etude.currentGroupes.groupes.length < 1 || this.etude.currentGroupes.groupes[0].phases.length < 1
     }).catch(() => {
       this.$message({ message: "Impossible de récupérer l'étude pour le moment", type: "error" })
     }).finally(() => {
@@ -162,22 +170,24 @@ export default {
       this.etude.invoices = this.etude.invoices.filter(i => i.id !== invoiceId)
     },
     usChanged (us, newState) {
-      this.loading = true
-      axios.put(
-        `/api/etudes/uss/${us.id}/`,
-        {
-          ...us,
-          state: newState
-        },
-        { withCredentials: true }
-      ).then(() => {
-        this.$message({message: "US mis à jour", type: "success"})
-        us.state = newState
-      }).catch((err) => {
-        this.$message({message: "Impossible de mettre à jour l'US : " + err, type: "error"})
-      }).finally(() => {
-        this.loading = false
-      })
+      if (us.id){
+        this.loading = true
+        axios.put(
+          `/api/etudes/uss/${us.id}/`,
+          {
+            ...us,
+            state: newState
+          },
+          { withCredentials: true }
+        ).then(() => {
+          this.$message({message: "US mis à jour", type: "success"})
+          us.state = newState
+        }).catch((err) => {
+          this.$message({message: "Impossible de mettre à jour l'US : " + err, type: "error"})
+        }).finally(() => {
+          this.loading = false
+        })
+      }
     }
   }
 }

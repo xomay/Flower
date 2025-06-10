@@ -9,7 +9,7 @@
       class="flex-1"
     >
       <span v-if="etude.prospect && !reaVue">
-        <i class="el-icon-user-solid" /> <u>Prospect :</u>
+        <el-icon><UserFilled/></el-icon> <u>Prospect :</u>
         <el-link
           type="primary"
           :style="'margin-left: 12px'"
@@ -20,7 +20,7 @@
         <br>
       </span>
       <span v-if="etude.clientContact && !reaVue">
-        <i class="el-icon-user-solid" /> <u>Contact client :</u>
+        <el-icon><UserFilled/></el-icon> <u>Contact client :</u>
         <el-link
           type="primary"
           :style="'margin-left: 12px'"
@@ -31,17 +31,17 @@
         <br><br>
       </span>
       <span>
-        <i class="el-icon-date" /> <u>Mandat:</u> {{ etude.mandat }}
+        <el-icon><Calendar/></el-icon> <u>Mandat:</u> {{ etude.mandat }}
       </span><br>
       <span>
-        <i class="el-icon-star-off" /> Numéro de l'étude : <b>{{ etude.number }}</b>.
+        <el-icon><Star/></el-icon> Numéro de l'étude : <b>{{ etude.number }}</b>.
       </span><br><br>
       <span>
-        <i class="el-icon-document" /> <u>Description :</u>
+        <el-icon><Document/></el-icon> <u>Description :</u>
         <br>{{ etude.description }}
       </span><br><br>
       <span v-if="etude.projectManager">
-        <i class="el-icon-user" /> Chargé d'étude :
+        <el-icon><User/></el-icon> Chargé d'étude :
         <el-link
           v-if="!reaVue"
           type="primary"
@@ -56,7 +56,7 @@
         <br>
       </span>
       <span v-if="etude.qualityManager && !reaVue">
-        <i class="el-icon-user" /> Suiveur qualité :
+        <el-icon><User/></el-icon> Suiveur qualité :
         <el-link
           type="primary"
           :style="'margin-left: 12px'"

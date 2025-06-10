@@ -8,16 +8,18 @@
       align-center
     >
       <el-step
-        title="Devis"
-        :description="descriptions ? 'Devis rédigé et envoyé' : ''"
+        title="PC"
+        :description="descriptions ? 'Proposition Commerciale rédigé et envoyé' : ''"
       />
       <el-step
-        title="CE"
-        :description="descriptions ? 'Convention d\'Étude rédigée et envoyée' : ''"
+        :title="etude.hasCC ? 'BC' : 'CE'"
+        :description="descriptions ? 
+        etude.hasCC ? 'Bon de Commande rédigé et envoyé' : 'Convention d\'Étude rédigée et envoyée' : 
+        ''"
       />
       <el-step
         title="RDM"
-        :description="descriptions ? 'Revelé De Mission rédigé et envoyé' : ''"
+        :description="descriptions ? 'Récapitulatif De Mission rédigé et envoyé' : ''"
       />
       <el-step
         title="FA"
