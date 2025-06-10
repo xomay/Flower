@@ -31,7 +31,7 @@ export default {
   },
   watch: {
     itemList () {
-      const found = this.itemList.find((item) => item.id === this.value)
+      const found = this.itemList.find((item) => item.id === this.modelValue)
       this.autocompleteValue = found ? found.value : ""
       if(this.forcedSync !== null) {
         this.autocompleteValue = this.forcedSync
@@ -40,6 +40,14 @@ export default {
     forceValue (v) {
       this.forcedSync = v
       this.autocompleteValue = this.forcedSync
+    },
+    modelValue () {
+      if (this.modelValue){
+        const found = this.itemList.find((item) => item.id === this.modelValue)
+        this.autocompleteValue = found ? found.value : ""
+      }else {
+        this.autocompleteValue = ""
+      }
     }
   },
   methods: {
@@ -61,6 +69,7 @@ export default {
     // Used by reference to manually clear the content.
     clear () {
       this.autocompleteValue = ""
+      this.$emit("update:modelValue", "")
     }
   }
 }

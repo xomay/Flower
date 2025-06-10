@@ -1,7 +1,7 @@
 <template>
   <el-table
     class="grid"
-    :data="value"
+    :data="modelValue"
   >
     <el-table-column
       prop="documentType"
@@ -26,19 +26,19 @@
       <template slot-scope="scope">
         <el-button
           type="text"
-          icon="el-icon-download"
+          icon="Download"
           :loading="loading"
           @click="$emit('download', scope.row.id)"
         />
         <router-link :to="`/etudes/${$route.params.id}/pvr/modifier/${scope.row.id}`">
           <el-button
             type="text"
-            icon="el-icon-edit"
+            icon="Edit"
           />
         </router-link>
         <el-button
           type="text"
-          icon="el-icon-delete"
+          icon="Delete"
           :loading="loading"
           @click="$emit('delete', scope.row.id, scope.$index)"
         />
@@ -51,9 +51,10 @@
 export default {
   name: "PVRTable",
   props: {
-    value: { type: Array, required: true },
+    modelValue: { type: Array, required: true },
     loading: { type: Boolean, required: true }
   },
+  emits: ["download", "delete"],
   methods: {
     clickDownload (id) {
       this.$emit("download", id)

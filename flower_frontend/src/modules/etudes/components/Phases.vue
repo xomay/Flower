@@ -15,11 +15,11 @@
       <el-button
         v-if="editable"
         type="primary"
-        icon="el-icon-edit"
+        icon="EditPen"
         :loading="loading"
         :disabled="etude.isAborted"
       >
-        {{ etude.currentGroupes.groupes.length > 0 ? "Modifier les phases" : "Créer les phases" }}
+        {{ this.etude.currentGroupes.groupes.length > 0 && this.etude.currentGroupes.groupes.length > 0 ? "Modifier les phases" : "Créer les phases" }}
       </el-button>
     </router-link>
     <div
@@ -27,46 +27,43 @@
       :key="index"
       class="my-4"
     >
-      <h2 class="fatH2">
-        Groupe {{ index + 1 }} : {{ groupe.title }}
-      </h2>
-      <small>{{ groupe.description }}</small>
       <el-table
         class="grid"
         :data="groupe.phases"
-        style="color: black;"
+        style="color: black; width: 100%;"
         :header-row-style="{color: 'black'}"
+        :row-key="row => row.id"
       >
-        <el-table-column type="expand">
-          <template slot-scope="scope">
-            <el-row
+        <el-table-column type="expand" >
+          <template #default="{ row }">
+            <div style="margin-left: 40px; margin-top: 10px;">
+              <el-row
               v-if="!reaVue"
-              v-show="scope.row.methodologie != ''"
+              v-show="row.methodologie != ''"
               style="margin-bottom: 20px;"
-            >
+              >
               <b>Méthodologie :</b><br>
-              <p>{{ scope.row.methodologie }}</p>
+              <p>{{ row.methodologie }}</p>
               <hr
-                style="border-width: 1px; border-color: #bfbfd7; width: 30%; margin: auto auto;"
+              style="border-width: 1px; border-color: #bfbfd7; width: 30%; margin: auto auto;"
               >
             </el-row>
-            <el-row>
-              <USManager
-                :uss="scope.row.uss"
-                :loading="loading"
-                :rea-vue="reaVue"
-                :disabled="etude.isAborted"
-                @us-change="updateUS"
-              />
-            </el-row>
+            <USManager
+            :uss="row.uss"
+            :loading="loading"
+            :rea-vue="reaVue"
+            :disabled="etude.isAborted"
+            @us-change="updateUS"
+            />
+            </div>
           </template>
         </el-table-column>
         <el-table-column
           label="Titre"
           prop="title"
         >
-          <template slot-scope="scope">
-            {{ scope.row.title }} : <i><p color="gray">{{ scope.row.description }}</p></i>
+          <template #default="{row}">
+            {{ row.title }} : <i><p color="gray">{{ row.description }}</p></i>
           </template>
         </el-table-column>
         <el-table-column

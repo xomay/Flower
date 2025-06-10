@@ -3,12 +3,13 @@
     <el-row
       v-for="(us, index) in uss"
       :key="index"
+      style="margin-bottom: 10px;"
     >
       <el-col :span="4">
         {{ us.name }}
       </el-col>
       <el-col
-        :span="20"
+        :span="19"
         style="margin-top: -10px"
       >
         <SliderUSState

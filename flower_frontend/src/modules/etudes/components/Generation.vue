@@ -4,7 +4,7 @@
       type="success"
       :loading="loading"
       :disabled="!allowDevisGenerate"
-      icon="el-icon-download"
+      icon="Download"
       @click="downloadDevis"
     >
       Générer le devis
@@ -14,8 +14,8 @@
       class="mt-2"
     >
       <el-collapse-item name="0">
-        <template slot="title">
-          <span class="mr-2 text-lg">Convention Etude</span>
+        <template #title>
+          <span class="mr-2 text-lg">{{ etude.hasCC ? 'Bon de Commande' : "Convention d'Étude" }}</span>
         </template>
         <router-link
           class="mr-2"
@@ -23,20 +23,20 @@
         >
           <el-button
             type="primary"
-            icon="el-icon-edit"
+            icon="Edit"
             :disabled="etude.isAborted"
           >
-            Rédiger la CE
+            Rédiger {{ etude.hasCC ? 'le BC' : "la CE" }}
           </el-button>
         </router-link>
         <el-button
           v-if="displaysCE"
           type="success"
           :loading="loading"
-          icon="el-icon-download"
+          icon="Download"
           @click="downloadCE"
         >
-          Générer la CE
+          Générer {{ etude.hasCC ? 'le BC' : "la CE" }}
         </el-button>
         <el-button
           v-else
@@ -44,15 +44,15 @@
           plain
           disabled
         >
-          Générer la CE
+          Générer {{ etude.hasCC ? 'le BC' : "la CE" }}
         </el-button>
       </el-collapse-item>
       <el-collapse-item name="1">
-        <template slot="title">
+        <template #title>
           <span class="mr-2 text-lg">Récapitulatifs de mission</span> <router-link :to="`/etudes/${$route.params.id}/missions`">
             <el-button
               type="text"
-              icon="el-icon-edit"
+              icon="Edit"
               :disabled="etude.isAborted"
             >
               Modifier
@@ -67,13 +67,13 @@
             label="Consultant"
             align="center"
           >
-            <template v-slot="scope">
+            <template #default="{row}">
               <el-link
                 type="primary"
                 :style="'margin-left: 6px'"
-                @click="pushToConsultant(scope.row)"
+                @click="pushToConsultant(row)"
               >
-                {{ nicePeople(scope.row.consultant) }}
+                {{ nicePeople(row.consultant) }}
               </el-link>
             </template>
           </el-table-column>
@@ -93,8 +93,8 @@
             label="Nombre de phases"
             align="center"
           >
-            <template v-slot="scope">
-              <span>{{ scope.row.phases.length }}</span>
+            <template #default="{row}">
+              <span>{{ row.phases.length }}</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -106,8 +106,8 @@
             label="Montant brut"
             align="center"
           >
-            <template v-slot="scope">
-              <span>{{ scope.row.remunerationRaw }}€</span>
+            <template #default="{row}">
+              <span>{{ row.remunerationRaw }}€</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -115,12 +115,12 @@
             align="center"
             fixed="right"
           >
-            <template v-slot="scope">
+            <template #default="{row}">
               <el-button
                 type="text"
-                icon="el-icon-download"
+                icon="Download"
                 :loading="loading"
-                @click="downloadRDM(scope.row.id)"
+                @click="downloadRDM(row.id)"
               >
                 RDM
               </el-button>
@@ -129,11 +129,11 @@
         </el-table>
       </el-collapse-item>
       <el-collapse-item name="2">
-        <template slot="title">
+        <template #title>
           <span class="mr-2 text-lg">PVR</span> <router-link :to="`/etudes/${$route.params.id}/pvr/ajouter`">
             <el-button
               type="text"
-              icon="el-icon-plus"
+              icon="Plus"
               :disabled="etude.isAborted"
             >
               Ajouter
@@ -150,8 +150,8 @@
             align="center"
             fixed="left"
           >
-            <template v-slot="scope">
-              <span v-if="scope.row.documentType === 'I'">PVRI</span>
+            <template #default="{row}">
+              <span v-if="row.documentType === 'I'">PVRI</span>
               <span v-else>PVRF</span>
             </template>
           </el-table-column>
@@ -171,26 +171,26 @@
             align="center"
             fixed="right"
           >
-            <template v-slot="scope">
+            <template #default="{ row, $index }">
               <el-button
                 type="text"
-                icon="el-icon-download"
+                icon="Download"
                 :loading="loading"
-                @click="downloadPVR(scope.row.id)"
+                @click="downloadPVR(row.id)"
               />
               <router-link :to="`/etudes/${$route.params.id}/pvr/modifier/${scope.row.id}`">
                 <el-button
                   type="text"
-                  icon="el-icon-edit"
+                  icon="Edit"
                   :disabled="etude.isAborted"
                 />
               </router-link>
               <el-button
                 type="text"
-                icon="el-icon-delete"
+                icon="Delete"
                 :loading="loading"
                 :disabled="etude.isAborted"
-                @click="deletePVR(scope.row.id, scope.$index)"
+                @click="deletePVR(row.id, $index)"
               />
             </template>
           </el-table-column>

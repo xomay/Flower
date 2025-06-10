@@ -69,7 +69,8 @@ export default {
         confidential: false,
         projectManager: 0,
         qualityManager: 0,
-        linkedFiles: []
+        linkedFiles: [],
+        docType: "ce",
       },
       membres: [],
       prospects: [],
@@ -103,6 +104,11 @@ export default {
       this.etude.linkedFiles = this.etude.linkedFiles.map(lf => lf.id)
       this.etude.prospect = this.etude.prospect.id
       this.breadcrumb[1].name = this.etude.name
+      if (this.etude.cc) {
+        this.etude.docType = "bc"
+      } else {
+        this.etude.docType = "ce"
+      }
       axios.get(
         "/api/membres/",
         {withCredentials: true}

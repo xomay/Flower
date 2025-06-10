@@ -7,30 +7,30 @@
       :active="etude.state"
     >
       <!-- DEVIS (0) -->
-      <el-step title="Devis">
-        <template slot="description">
+      <el-step title="Proposition Commerciale">
+        <template #description>
           <el-card>
-            <el-row>
-              Une fois l'étude enregistrée et les phases renseignées, le <b>devis</b> peut être généré. Il doit être envoyé au prospect.
-            </el-row>
+            <div>
+              Une fois l'étude enregistrée et les phases renseignées, la <b>PC</b> peut être générée. Elle doit être envoyé au prospect.
+            </div>
             <el-row class="stCardRw">
               <el-button
                 :disabled="!btn_devis_generate"
                 :loading="loading"
                 type="primary"
                 plain
-                icon="el-icon-download"
+                icon="Download"
               >
-                Générer le devis
+                Générer la PC
               </el-button>
               <el-button
                 v-show="btn_devis_levelup"
                 :loading="loading"
                 type="success"
-                icon="el-icon-check"
+                icon="Check"
                 @click="levelupTo(1)"
               >
-                Le devis a été envoyé
+                La PC a été envoyée
               </el-button>
               <el-alert
                 v-show="btn_devis_help"
@@ -47,22 +47,25 @@
         </template>
       </el-step>
       <!-- CE (1) -->
-      <el-step title="CE">
-        <template slot="description">
+      <el-step :title="etude.hasCC ? 'BC' : 'CE'">
+        <template #description>
           <el-card>
-            <el-row>
+            <template v-if="etude.hasCC">
+              Le <b>B</b>on de <b>C</b>ommande doit être rédigé puis envoyé au client. Il contient la proposition commerciale.
+            </template>
+            <template v-else>
               La <b>C</b>onvention d'<b>É</b>tude doit être rédigée puis envoyé au client. Elle contient la proposition commerciale.
-            </el-row>
+            </template>
             <el-row class="stCardRw">
               <el-button
                 type="primary"
                 :loading="loading"
-                icon="el-icon-download"
+                icon="Download"
                 :disabled="!btn_ce_generate"
                 plain
                 @click="downloadCE"
               >
-                Générer la CE
+                Générer {{ etude.hasCC ? 'le BC' : "la CE" }}
               </el-button>
               <router-link
                 v-show="!btn_ce_generate"
@@ -72,26 +75,26 @@
                 <el-button
                   type="primary"
                   :loading="loading"
-                  icon="el-icon-download"
+                  icon="Download"
                   :disabled="!btn_ce_generate"
                   plain
                   @click="downloadCE"
                 >
-                  Générer la CE
+                  Générer {{ etude.hasCC ? 'le BC' : "la CE" }}
                 </el-button>
               </router-link>
               <el-button
                 v-show="btn_ce_levelup"
                 :loading="loading"
                 type="success"
-                icon="el-icon-check"
+                icon="Check"
                 @click="levelupTo(2)"
               >
-                La CE a été signé
+                {{ etude.hasCC ? 'Le BC' : "La CE" }} a été signé
               </el-button>
               <el-alert
                 v-show="btn_ce_help"
-                title="CE non rédigée !"
+                :title="etude.hasCC ? 'BC non rédigé' : 'CE non rédigée'"
                 type="warning"
                 description="Appuyez sur 'Rédaction' puis 'Convention Etude' afin de rédiger la CE pour cette étude."
                 :closable="false"
@@ -106,11 +109,11 @@
       </el-step>
       <!-- RDM (2) -->
       <el-step title="RM">
-        <template slot="description">
+        <template #description>
           <el-card>
-            <el-row>
+            <div>
               Les <b>R</b>apports de <b>M</b>ission sont envoyés aux réalisateurs. Ils détaillent les phases à accomplir et le nombre de JEH qui les concerne.
-            </el-row>
+            </div>
             <el-table
               class="grid"
               :data="etude.missions"
@@ -118,7 +121,7 @@
               <el-table-column
                 label="Consultant"
               >
-                <template v-slot="scope">
+                <template #default="scope">
                   <el-link
                     type="primary"
                     :style="'margin-left: 6px'"
@@ -139,7 +142,7 @@
               <el-table-column
                 label="Nombre de phases"
               >
-                <template v-slot="scope">
+                <template #default="scope">
                   <span>{{ scope.row.phases.length }}</span>
                 </template>
               </el-table-column>
@@ -150,15 +153,15 @@
               <el-table-column
                 label="Montant brut"
               >
-                <template v-slot="scope">
+                <template #default="scope">
                   <span>{{ scope.row.JEHNumber * scope.row.JEHPrice }}€</span>
                 </template>
               </el-table-column>
               <el-table-column label="Opérations">
-                <template v-slot="scope">
+                <template #default="scope">
                   <el-button
                     type="text"
-                    icon="el-icon-download"
+                    icon="Download"
                     plain
                     :loading="loading"
                     @click="downloadRDM(scope.row.id)"
@@ -173,7 +176,7 @@
                 v-show="btn_rdm_levelup"
                 :loading="loading"
                 type="success"
-                icon="el-icon-check"
+                icon="Check"
                 @click="levelupTo(3)"
               >
                 Les RDM ont été signés
@@ -190,18 +193,15 @@
       </el-step>
       <!-- FA (3) -->
       <el-step title="FA">
-        <template slot="description">
+        <template #description>
           <el-card>
-            <el-row>
+            <div>
               La <b>F</b>acture d'<b>A</b>compte doit être payée par le client.
               <p>
-                <i
-                  class="el-icon-s-flag"
-                  icon-color="red"
-                />
+                <el-icon><Flag /></el-icon>
                 <u>C'est à la trésorerie de générer et valider le paiement.</u>
               </p>
-            </el-row>
+            </div>
             <el-row class="stCardRw">
               <el-alert
                 v-show="btn_fa_alert"
@@ -227,7 +227,7 @@
                   v-show="btn_fa_alert"
                   slot="reference"
                   type="danger"
-                  icon="el-icon-s-check"
+                  icon="Check"
                 >
                   Pas de FA pour cette étude
                 </el-button>
@@ -238,11 +238,11 @@
       </el-step>
       <!-- PVRI (4) -->
       <el-step title="PVRI">
-        <template slot="description">
+        <template #description>
           <el-card>
-            <el-row>
+            <div>
               Le <b>P</b>rocès <b>V</b>erbal de <b>R</b>ecette <b>I</b>ntermédiaire doit être édité puis signé par le client.
-            </el-row>
+            </div>
             <PVRTable
               v-model="pvris"
               :loading="loading"
@@ -253,7 +253,7 @@
               <el-button
                 v-show="btn_pvri_levelup"
                 type="success"
-                icon="el-icon-check"
+                icon="Check"
                 @click="levelupTo(5)"
               >
                 Le PVRI a été signé
@@ -262,7 +262,7 @@
                 <el-button
                   v-show="btn_pvri_help"
                   type="warning"
-                  icon="el-icon-plus"
+                  icon="Plus"
                 >
                   Il faut un PVRI : en créer un.
                 </el-button>
@@ -281,7 +281,7 @@
                   v-show="btn_pvri_bypass && !btn_pvri_levelup"
                   slot="reference"
                   type="danger"
-                  icon="el-icon-s-check"
+                  icon="Check"
                 >
                   Pas de PVRI pour cette étude
                 </el-button>
@@ -292,18 +292,15 @@
       </el-step>
       <!-- FI (5) -->
       <el-step title="FI">
-        <template slot="description">
+        <template #description>
           <el-card>
-            <el-row>
+            <div>
               La <b>F</b>acture <b>I</b>ntermédiaire doit être payée par le client.
               <p>
-                <i
-                  class="el-icon-s-flag"
-                  icon-color="red"
-                />
+                <el-icon><Flag /></el-icon>
                 <u>C'est à la trésorerie de générer et valider le paiement.</u>
               </p>
-            </el-row>
+            </div>
             <el-row class="stCardRw">
               <el-alert
                 v-show="btn_fi_alert"
@@ -341,11 +338,11 @@
       </el-step>
       <!-- PVRF (6) -->
       <el-step title="PVRF">
-        <template slot="description">
+        <template #description>
           <el-card>
-            <el-row>
+            <div>
               Le <b>P</b>rocès <b>V</b>erbal de <b>R</b>ecette <b>F</b>inal doit être édité puis signé par le client.
-            </el-row>
+            </div>
             <PVRTable
               v-model="pvrfs"
               :loading="loading"
@@ -375,18 +372,15 @@
       </el-step>
       <!-- FS (7) -->
       <el-step title="FS">
-        <template slot="description">
+        <template #description>
           <el-card>
-            <el-row>
+            <div>
               La <b>F</b>acture de <b>S</b>olde doit être payée par le client.
               <p>
-                <i
-                  class="el-icon-s-flag"
-                  icon-color="red"
-                />
+                <el-icon><Flag /></el-icon>
                 <u>C'est à la trésorerie de générer et valider le paiement.</u>
               </p>
-            </el-row>
+            </div>
             <el-row class="stCardRw">
               <el-alert
                 v-show="btn_fs_alert"
@@ -405,19 +399,19 @@
       </el-step>
       <!-- Rapport péda (8) -->
       <el-step title="Rapport péda">
-        <template slot="description">
+        <template #description>
           <el-card>
-            <el-row>
+            <div>
               Le <b>Rapport pédagogique</b> doit être renseigné par le réa.<br>
               Le travail de chaque réalisateur doit être commenté de manière interne.
-            </el-row>
+            </div>
             <el-row class="stCardRw">
               <el-table
                 class="grid"
                 :data="reas"
               >
                 <el-table-column label="Consultant">
-                  <template v-slot="scope">
+                  <template #default="scope">
                     <el-link
                       type="primary"
                       :style="'margin-left: 6px'"
@@ -428,7 +422,7 @@
                   </template>
                 </el-table-column>
                 <el-table-column label="Commentaire">
-                  <template v-slot="scope">
+                  <template #default="scope">
                     <el-row v-show="getComment(scope.row.comments).date">
                       <el-rate
                         :value="getComment(scope.row.comments).rating"
@@ -495,18 +489,15 @@
       </el-step>
       <!-- BV (9) -->
       <el-step title="BV">
-        <template slot="description">
+        <template #description>
           <el-card>
-            <el-row>
+            <div>
               Le <b>B</b>ulletin de <b>V</b>ersement doit être validé par le client et le pôle tréso.
               <p>
-                <i
-                  class="el-icon-s-flag"
-                  icon-color="red"
-                />
+                <el-icon><Flag color="red"/></el-icon>
                 <u>C'est à la trésorerie de générer et valider le BV.</u>
               </p>
-            </el-row>
+            </div>
             <el-row class="stCardRw">
               <el-alert
                 v-show="btn_bv_alert"
@@ -527,14 +518,14 @@
       <el-step
         title="Fin"
       >
-        <template slot="description">
+        <template #description>
           <el-card style="font-size: 120%;">
             <el-row v-show="is_over">
-              <i class="el-icon-check" />
+              <el-icon><Check /></el-icon>
               Cette étude est <b><u>TERMINÉE</u></b>. Bravo à tous ! :D
             </el-row>
             <el-row v-show="!is_over">
-              <i class="el-icon-close" />
+              <el-icon><Close /></el-icon>
               Cette étude n'est pas encore terminée. Bon courage ! :)
             </el-row>
           </el-card>
@@ -544,21 +535,21 @@
       <el-step
         title="Garantie"
       >
-        <template slot="description">
+        <template #description>
           <el-card style="font-size: 120%;">
             <template v-if="guaranteeEnd!=null">
               <el-row v-show="!is_guarantee_over">
-                <i class="el-icon-close" />
+                <el-icon><Close /></el-icon>
                 Cette étude est sous garantie jusqu'au {{ guaranteeEnd.getDay()+"/"+(guaranteeEnd.getMonth()+1)+"/"+guaranteeEnd.getFullYear() }}.
               </el-row>
               <el-row v-show="is_guarantee_over">
-                <i class="el-icon-check" />
+                <el-icon><Check /></el-icon>
                 Cette étude n'est plus sous garantie.
               </el-row>
             </template>
             <template v-else>
               <el-row>
-                <i class="el-icon-close" />
+                <el-icon><Close /></el-icon>
                 Importez le PVRF pour démarrer la période de garantie.
               </el-row>
             </template>
@@ -588,7 +579,7 @@ export default {
       comments: []
     }
   },
-  beforeCreated () {
+  beforeCreate () {
     if(this.etude.state == undefined)
       this.etude.state = 0
   },

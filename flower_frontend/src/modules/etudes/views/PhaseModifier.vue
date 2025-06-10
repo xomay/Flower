@@ -36,6 +36,10 @@
 <script>
 import PhasesForm from "../components/forms/PhasesForm"
 const axios = require("axios")
+// Configuration d'axios pour CSRF
+axios.defaults.xsrfCookieName = "csrftoken";
+axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
+axios.defaults.withCredentials = true;
 
 export default {
   name: "PhasesModifier",

@@ -1,5 +1,5 @@
 <template>
-  <dir>
+  <div>
     <el-alert
       v-if="avenants.length == 0"
       title="Note"
@@ -107,7 +107,7 @@
         </el-button>
       </el-timeline-item>
     </el-timeline>
-  </dir>
+  </div>
 </template>
 
 <script>

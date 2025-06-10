@@ -66,14 +66,14 @@
             type="default"
             class="dark"
           >
-            <i class="el-icon-s-tools" />
+            <el-icon><Tools /></el-icon>
           </el-button>
           <el-dropdown-menu #dropdown>
             <el-dropdown-item command="profile">
-              <i class="el-icon-user" />{{ this.$store.currentUser.username }}
+              <el-icon><User /></el-icon>{{ this.$store.currentUser.username }}
             </el-dropdown-item>
             <el-dropdown-item command="logout">
-              <i class="el-icon-close" />Se déconnecter
+              <el-icon><Close /></el-icon>Se déconnecter
             </el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
@@ -211,7 +211,9 @@ export default {
             {name: "Voir les études",
               url: "/etudes"},
             {name: "Créer une étude",
-              url: "/etudes/ajouter"}
+              url: "/etudes/ajouter"},
+            {name: "Créer une Convention Cadre",
+              url: "/etudes/ajoutercc"}
           ]
         },
         {

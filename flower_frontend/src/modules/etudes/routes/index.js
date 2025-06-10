@@ -5,6 +5,11 @@ const routes = [
     component: () => import("../views/project/EtudeCreer")
   },
   {
+    path: "etudes/ajoutercc",
+    name: "etudes-ajoutercc",
+    component: () => import("../views/projectConvention/ConvCadreCreer.vue")
+  },
+  {
     path: "etudes",
     name: "etudes",
     component: () => import("../views/EtudeVoir")
