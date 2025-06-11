@@ -30,6 +30,11 @@ const routes = [
     component: () => import("../views/PhaseModifier")
   },
   {
+    path: "etudes/:id/cdc",
+    name: "etudes-cdc",
+    component: () => import("../views/CdCModifier")
+  },
+  {
     path: "etudes/:id/convention-etude",
     name: "etudes-convention-etude",
     component: () => import("../views/projectConvention/EtudeConvention")

@@ -44,6 +44,10 @@
         name="Phases"
       />
       <el-tab-pane
+        label="Cahier des charges"
+        name="CdC"
+      />
+      <el-tab-pane
         v-if="!no_phases"
         label="Rédaction"
         name="Rédaction"
@@ -84,6 +88,14 @@
       :loading="loading"
       @us-change="usChanged"
     />
+    <CdC
+      v-show="currentTab === 'CdC'"
+      :cdc="etude.spec"
+      :etude="etude"
+      :editable="true"
+      :loading="loading"
+      @us-change="usChanged"
+    />
     <Generation
       v-show="currentTab === 'Rédaction'"
       :etude="etude"
@@ -105,6 +117,7 @@
 <script>
 import Summary from "../../components/Summary"
 import Phases from "../../components/Phases"
+import CdC from "../../components/CdC"
 import Generation from "../../components/Generation"
 import ManageStep from "../../components/ManageStep"
 import UploaderLocal from "@/components/UploaderLocal"
@@ -118,7 +131,7 @@ axios.defaults.withCredentials = true;
 
 export default {
   name: "EtudeDetail",
-  components: {Summary, Phases, Generation, ManageStep, UploaderLocal, Avenants},
+  components: {Summary, Phases,CdC, Generation, ManageStep, UploaderLocal, Avenants},
   data () {
     return {
       currentTab: this.$route.query.active || "Récapitulatif",
@@ -131,6 +144,7 @@ export default {
         avenants: [],
         missions: [],
         hasCC: false,
+        spec: "test",
       },
       no_phases: false,
       breadcrumb: [
@@ -156,6 +170,7 @@ export default {
       this.breadcrumb[1].name = this.etude.name
       this.etude.hasCC = this.etude.cc > 0
       this.no_phases = this.etude.currentGroupes.groupes.length < 1 || this.etude.currentGroupes.groupes[0].phases.length < 1
+      this.etude.spec = this.etude.docEtude.spec
     }).catch(() => {
       this.$message({ message: "Impossible de récupérer l'étude pour le moment", type: "error" })
     }).finally(() => {

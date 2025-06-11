@@ -5,7 +5,7 @@ from .CC import CC
 from .People.Employe import Employe, EmployeSerializer
 from .People.Membre import Membre, MembreSerializer
 from .People.Prospect import Prospect, ProspectSerializer
-from .DocEtude import DocEtude
+from .DocEtude import DocEtude, CEDetailSerializer
 from .UploadedFile import UploadedFile, UploadedFileSerializer
 from .GroupePhase import GroupesSet
 
@@ -154,6 +154,7 @@ class EtudeDetailSerializer(serializers.ModelSerializer):
     isOriginalGroupes = serializers.SerializerMethodField()
     isAborted = serializers.SerializerMethodField()
     isFinished = serializers.SerializerMethodField()
+    docEtude = CEDetailSerializer(read_only=True)
     def get_isOriginalGroupes(self, instance):
         return instance.currentGroupes.id == instance.originalGroupes.id
     def get_isAborted(self, instance):
