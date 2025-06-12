@@ -6,33 +6,35 @@
     label-position="left"
   >
     <el-form-item
-      label="Date d'envoi"
-      prop="signDate"
-      label-width="140px"
-      style="margin-top: 30px;"
-    >
-      <el-date-picker
-        v-model="pc.signDate"
-        type="date"
-        placeholder="Choisissez un jour"
-      />
-    </el-form-item>
-    <el-form-item
       label="Acompte"
       label-width="140px"
+      style="margin-top: 30px;"
     >
       <el-checkbox v-model="pc.deposit" />
     </el-form-item>
     <el-form-item
       label="Pourcentage acompte"
       label-width="140px"
+      style="margin-bottom: 40px;"
     >
       <el-input-number
         v-model="pc.depositAmount"
         controls-position="right"
-        :min="0"
-        :max="100"
+        :min=0
+        :max=100
         :disabled="!pc.deposit"
+      />
+    </el-form-item>
+    <el-form-item
+      label="Montant des frais"
+      label-width="140px"
+      prop="application_fees"
+    >
+      <el-input-number
+        v-model="pc.application_fees"
+        controls-position="right"
+        :min=0
+        :max=500
       />
     </el-form-item>
     <el-col :span="24" v-if="etude.prospect">
@@ -40,7 +42,6 @@
         label="Adresse"
         prop="address"
         label-width="140px"
-        style="margin-top: 30px;"
       >
         <el-input v-model="pc.address" />
       </el-form-item>
@@ -134,7 +135,10 @@ export default {
         ],
         deliverable: [
           {required: true, message: "Obligatoire", trigger: "blur"}
-        ]
+        ],
+        application_fees: [
+          {required: true, message: "Obligatoire", trigger: "blur"}
+        ],
       }
     }
   },
@@ -149,16 +153,11 @@ export default {
   },
   methods: {
     savePC () {
+      this.pc.signDate = new Date()
       this.etude.prospect.address = this.pc.address
       this.etude.prospect.postcode = this.pc.postcode
       this.etude.prospect.town = this.pc.town
-      console.log("PC :",this.pc)
-      console.log("Prospect :",{
-            address: this.pc.address,
-            postcode: this.pc.postcode,
-            town: this.pc.town,
-            id: this.pc.prospect
-          })
+      this.etude.application_fees = this.pc.application_fees
       axios.put(
         `/api/etudes/${this.$route.params.id}/ce/`,
         {
@@ -167,6 +166,8 @@ export default {
           depositAmount: this.pc.depositAmount,
           deliverable: this.pc.deliverable,
           description: this.pc.description,
+          signer1: this.etude.docEtude.signer1.id,
+          signer2: this.etude.docEtude.signer2.id,
           id: this.pc.id,
         },
         {withCredentials: true}
@@ -183,8 +184,24 @@ export default {
           },
           {withCredentials: true}
         ).then(() => {
-          this.$message({message: "Le prospect a bien été mis à jour", type: "success"})
-          this.$router.push(`/etudes/${this.$route.params.id}/voir`)
+          axios.put(
+            `/api/etudes/${this.$route.params.id}/`,
+            {
+              prospect: this.etude.prospect.id,
+              application_fees: this.etude.application_fees,
+              confidential: this.etude.confidential,
+              name: this.etude.name,
+              description: this.etude.description,
+              mandat: this.etude.mandat,
+              number: this.etude.number,
+              id: this.etude.id
+            },
+            {withCredentials: true}
+          ).then(() => {
+            this.$router.push(`/etudes/${this.$route.params.id}/voir`)
+          }).catch((err) => {
+            this.$message({message: "Impossible de sauvegarder la PC : "+err, type: "error"})
+          })
         }).catch((err) => {
           this.$message({message: err, type: "error"})
         }).finally(() => {
@@ -232,10 +249,12 @@ export default {
         {withCredentials: true}
       ).then((res) => {
         this.pc = res.data
+        console.log("PC : ", this.pc)
         this.pc.address = this.etude.prospect.address
         this.pc.postcode = this.etude.prospect.postcode
         this.pc.town = this.etude.prospect.town
         this.pc.prospect = this.etude.prospect.id
+        this.pc.application_fees = Number(this.etude.application_fees)
         this.autocomplete = {signer1: this.personFullname(this.pc.signer1),
           signer2: this.personFullname(this.pc.signer2)}
         this.pc.signer1 = this.pc.signer1 ? this.pc.signer1.id : null

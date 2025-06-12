@@ -29,14 +29,15 @@
         placeholder="Entrez le nom du signataire du prospect"/>
     </el-form-item>
     <el-form-item
-      label="Date de signature"
+      label="Montant des frais"
       label-width="140px"
-      prop="signDate"
+      prop="application_fees"
+      style="margin-bottom: 40px;"
     >
-      <el-date-picker
-        v-model="ce.signDate"
-        type="date"
-        placeholder="Choisissez un jour"
+      <el-input-number
+        v-model="ce.application_fees"
+        controls-position="right"
+        :min="0"
       />
     </el-form-item>
     <el-form-item
@@ -234,6 +235,9 @@ export default {
         description: [
           { required: true, message: "Le contexte et les objectifs de l'étude sont obligatoires", trigger: "blur" }
         ],
+        application_fees: [
+          { required: true, message: "Le montant des frais est obligatoire", trigger: "blur" }
+        ]
       }
     }
   },
@@ -268,14 +272,32 @@ export default {
       return ""
     },
     saveCE () {
-      console.log("CE :", this.ce)
+      this.ce.signDate = new Date()
+      this.etude.application_fees = this.ce.application_fees
       axios.put(
         `/api/etudes/${this.$route.params.id}/ce/`,
         this.ce,
         {withCredentials: true}
       ).then(() => {
-        this.$message({message: "Le document a bien été mis à jour", type: "success"})
-        this.$router.push(`/etudes/${this.$route.params.id}/voir`)
+        axios.put(
+            `/api/etudes/${this.$route.params.id}/`,
+            {
+              prospect: this.etude.prospect.id,
+              application_fees: this.etude.application_fees,
+              confidential: this.etude.confidential,
+              name: this.etude.name,
+              description: this.etude.description,
+              mandat: this.etude.mandat,
+              number: this.etude.number,
+              id: this.etude.id
+            },
+            {withCredentials: true}
+          ).then(() => {
+            this.$message({message: "Le document a bien été mis à jour", type: "success"})
+            this.$router.push(`/etudes/${this.$route.params.id}/voir`)
+          }).catch((err) => {
+            this.$message({message: "Impossible de sauvegarder les infos : "+err, type: "error"})
+          })
       }).catch((err) => {
         this.$message({message: "Impossible de sauvegarder les infos : "+err, type: "error"})
       })
@@ -323,6 +345,7 @@ export default {
           signer2: this.personFullname(this.ce.signer2)}
         this.ce.signer1 = this.ce.signer1 ? this.ce.signer1.id : null
         this.ce.signer2 = this.ce.signer2 ? this.ce.signer2.id : null
+        this.ce.application_fees = Number(this.etude.application_fees)
       }).catch((err) => {
         this.$message({message: err, type: "error"})
       })
