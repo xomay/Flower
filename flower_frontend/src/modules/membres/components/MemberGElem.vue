@@ -5,7 +5,6 @@
     :placeholder="placeholder"
     :force-value="begin"
     :style="{width:'100%'}"
-    @input="inputed"
   />
 </template>
 
@@ -21,6 +20,7 @@ export default {
     itemList: { type: Array, required: true },
     placeholder: { type: String, required: true }
   },
+  emits: ["inputOver"],
   data () {
     return {
       ret: "",
@@ -39,7 +39,10 @@ export default {
           this.begin = found.value
         }
       }
-    }
+    },
+    ret () {
+      this.inputed(this.ret)
+    },
   },
   methods: {
     inputed (value) {

@@ -9,6 +9,7 @@
         :loading="loading"
         :deletable="true"
         :members="members"
+        :employes="employes"
         @save="updateProspect"
         @delete="deleteProspect"
       />
@@ -19,6 +20,10 @@
 <script>
 import ProspectsForm from "../components/ProspectsForm"
 const axios = require("axios")
+// Configuration d'axios pour CSRF
+axios.defaults.xsrfCookieName = "csrftoken"
+axios.defaults.xsrfHeaderName = "X-CSRFTOKEN"
+axios.defaults.withCredentials = true
 
 export default {
   name: "ProspectsModifier",
@@ -27,6 +32,7 @@ export default {
     return {
       prospect: {},
       members: [],
+      employes: [],
       loading: false,
       breadcrumb: [
         {
@@ -46,7 +52,7 @@ export default {
   },
   created () {
     this.getProspect()
-    this.getMembers()
+    this.getEmployes()
   },
   methods: {
     getProspect () {
@@ -55,11 +61,22 @@ export default {
         {withCredentials: true}
       ).then((res) => {
         this.prospect = res.data
+        console.log("prospect :", this.prospect)
         this.breadcrumb[1].name = this.prospect.name
         if(this.prospect.contactWay.length == 0)
           this.prospect.contactWay = [""]
       }).catch((err) => {
         this.$message({message: "Impossible de récupérer le prospect : "+err, type: "error"})
+      })
+    },
+    getEmployes () {
+      axios.get(
+        `/api/prospects/${this.$route.params.id}/employes/`,
+        {withCredentials: true}
+      ).then((res) => {
+        this.employes = res.data
+      }).catch((err) => {
+        this.$message({message: "Erreur lors de la récupération des employés : "+err, type: "error"})
       })
     },
     updateProspect () {

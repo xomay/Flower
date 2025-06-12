@@ -1,7 +1,7 @@
 <template>
   <el-form
     ref="employeFormRef"
-    :model="value"
+    :model="modelValue"
     :rules="formRules"
     label-position="left"
   >
@@ -12,7 +12,7 @@
         prop="gender"
         label-width="120px"
       >
-        <el-select v-model="value.gender">
+        <el-select v-model="modelValue.gender" placeholder="Entrez le genre">
           <el-option value="M.">
             M.
           </el-option>
@@ -31,7 +31,7 @@
         prop="firstname"
         label-width="120px"
       >
-        <el-input v-model="value.firstname" />
+        <el-input v-model="modelValue.firstname" placeholder="Prénom"/>
       </el-form-item>
     </el-col>
     <el-col :span="12">
@@ -40,7 +40,7 @@
         prop="lastname"
         label-width="120px"
       >
-        <el-input v-model="value.lastname" />
+        <el-input v-model="modelValue.lastname" placeholder="Nom"/>
       </el-form-item>
     </el-col>
     <el-col :span="24">
@@ -49,7 +49,7 @@
         prop="email"
         label-width="120px"
       >
-        <el-input v-model="value.email" />
+        <el-input v-model="modelValue.email" placeholder="Mail"/>
       </el-form-item>
     </el-col>
     <el-col :span="24">
@@ -58,7 +58,7 @@
         prop="mobile"
         label-width="120px"
       >
-        <el-input v-model="value.mobile" />
+        <el-input v-model="modelValue.mobile" placeholder="Téléphone"/>
       </el-form-item>
     </el-col>
     <el-col :span="11">
@@ -67,7 +67,7 @@
         prop="position"
         label-width="120px"
       >
-        <el-input v-model="value.position" />
+        <el-input v-model="modelValue.position" placeholder="Poste"/>
       </el-form-item>
     </el-col>
     <el-col :span="11">
@@ -78,7 +78,7 @@
         prop="alumni"
         label-width="120px"
       >
-        <el-checkbox v-model="value.alumni" />
+        <el-checkbox v-model="modelValue.alumni" />
       </el-form-item>
     </el-col>
     <el-col :span="24">
@@ -108,15 +108,21 @@
 export default {
   name: "EmployesForm",
   props: {
-    value: { type: Object, required: true },
+    modelValue: { type: Object, required: true },
     loading: Boolean,
     deletable: Boolean
   },
+  emits: ["save", "delete"],
   data () {
     return {
       breadcrumb: [],
       formRules: {
         gender: [
+          {required: true,
+            message: "Obligatoire",
+            trigger: "blur"}
+        ],
+        position: [
           {required: true,
             message: "Obligatoire",
             trigger: "blur"}
@@ -135,11 +141,12 @@ export default {
         ],
         email: [
           {
+            required: true,
             pattern: /^[\w\\.=-]+@[\w\\.-]+\.[\w]{2,3}$/,
             message: "Cette valeur doit être un email valide.",
             trigger: "blur"
           }
-        ]
+        ],
       }
     }
   },
