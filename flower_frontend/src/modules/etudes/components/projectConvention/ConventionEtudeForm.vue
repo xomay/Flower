@@ -2,34 +2,36 @@
   <el-form
     :model="ce"
     label-position="left"
+    :rules="formRules"
+    ref="ceForm"
   >
     <el-form-item
       label="Signataire Junior"
-      label-width="20%"
+      label-width="140px"
+      style="margin-top: 30px;"
+      prop="signer1"
     >
-      <el-autocomplete
-        v-model="autocomplete.signer1"
-        class="inline-input"
-        :fetch-suggestions="querySearchMember"
-        placeholder="Entrez le nom du signataire de la junior"
-        @select="handleSelectSigner1"
-      />
+      <MemberPicker
+        v-model="ce.signer1"
+        :item-list="members"
+        placeholder="Entrez le nom du signataire Junior"/>
     </el-form-item>
+
     <el-form-item
       label="Signataire prospect"
-      label-width="20%"
+      label-width="140px"
+      prop="signer2"
+      style="margin-bottom: 40px;"
     >
-      <el-autocomplete
-        v-model="autocomplete.signer2"
-        class="inline-input"
-        :fetch-suggestions="querySearchEmployee"
-        placeholder="Entrez le nom du signataire du prospect"
-        @select="handleSelectSigner2"
-      />
+      <MemberPicker
+        v-model="ce.signer2"
+        :item-list="employees"
+        placeholder="Entrez le nom du signataire du prospect"/>
     </el-form-item>
     <el-form-item
       label="Date de signature"
-      label-width="20%"
+      label-width="140px"
+      prop="signDate"
     >
       <el-date-picker
         v-model="ce.signDate"
@@ -38,26 +40,10 @@
       />
     </el-form-item>
     <el-form-item
-      label="Acompte"
-      label-width="20%"
-    >
-      <el-checkbox v-model="ce.deposit" />
-    </el-form-item>
-    <el-form-item
-      label="Pourcentage acompte"
-      label-width="20%"
-    >
-      <el-input-number
-        v-model="ce.depositAmount"
-        controls-position="right"
-        :min="0"
-        :max="100"
-        :disabled="!ce.deposit"
-      />
-    </el-form-item>
-    <el-form-item
       label="Nombre d'intervenants"
-      label-width="20%"
+      label-width="140px"
+      prop="consultantNumber"
+      style="margin-bottom: 40px;"
     >
       <el-input-number
         v-model="ce.consultantNumber"
@@ -65,13 +51,133 @@
         :min="1"
       />
     </el-form-item>
-    <el-form-item label="Ouest INSA réalisera, pour le compte du Client, une étude consistant en">
+    <el-form-item 
+      label="Contexte et objectifs de l'étude"
+      label-width="140px"
+      prop="description">
       <el-input
         v-model="ce.description"
         type="textarea"
-        :rows="4"
-        placeholder="Description de la prestation proposée"
+        :rows="7"
+        placeholder="Description concise de l’entreprise et de l’activité du client dans un premier paragraphe. (5-6 lignes)
+Description du contexte du client et des raisons qui l’amène à l’émission de cette CC en un ou deux paragraphes.
+Présentation de la solution livrée au client."
       />
+    </el-form-item>
+    <el-form-item 
+      label="Présentation des intervenants"
+      label-width="140px"
+      prop="real_desc">
+      <el-input
+        v-model="ce.real_desc"
+        type="textarea"
+        :rows="7"
+        placeholder='Présentez votre intervenant ou votre futur intervenant s’il n’est pas encore choisi. 
+Mettez en avant ses compétences, expériences… : tout élément valorisant. Vous pouvez aussi faire transparaître ses motivations'
+      />
+    </el-form-item>
+    <el-form-item
+      label="Frais matériels ou de déplacements"
+      label-width="140px"
+      style="margin-bottom: 40px;"
+    >
+      <el-checkbox v-model="ce.hasMaterialFees" />
+    </el-form-item>
+    <el-form-item
+      v-if="ce.hasMaterialFees"
+      label="Montant des frais matériels"
+      label-width="140px"
+      style="margin-bottom: 40px;"
+    >
+      <el-input-number
+        v-model="ce.materialFees"
+        controls-position="right"
+        :min=0
+        :max=1000
+      />
+    </el-form-item>
+    <el-form-item
+      v-if="ce.hasMaterialFees"
+      label="Description des frais matériels"
+      label-width="140px"
+      style="margin-bottom: 40px;"
+    >
+      <el-input
+        v-model="ce.materialDesc"
+        type="textarea"
+        :rows="3"
+        placeholder="Description des frais matériels ou de déplacements"
+      />
+    </el-form-item>
+    <el-form-item
+      label="Points de contrôle"
+      label-width="140px">
+      <el-table
+      class="grid"
+      :data="ce.controls"
+      :row-key="row => row.id"
+      >
+        <el-table-column
+          label="Description"
+        >
+          <template #default="{row}">
+            <el-input
+              v-model="row.desc"
+              placeholder="Description du point de contrôle"
+            />
+          </template>
+        </el-table-column>
+        <el-table-column
+          width="200"
+          label="Format"
+        >
+          <template #default="{row}">
+            <el-autocomplete
+              v-model="row.format"
+              class="inline-input"
+              :fetch-suggestions="querySearchFormat"
+              placeholder="Entrez le format"
+            />
+          </template>
+        </el-table-column>
+        <el-table-column
+          width="110"
+          label="Nécessaire à la phase"
+        >
+          <template #default="{row}">
+            <el-input-number
+              v-model="row.phase"
+              controls-position="right"
+              :min="1"
+              :max="99"
+              style="width: 90%"
+              size="small"
+            />
+          </template>
+        </el-table-column>
+        <el-table-column
+          width="80"
+        >
+          <template #default="{row}">
+            <el-button
+              type="text"
+              icon="Delete"
+              @click="deleteControl(row, ce.controls)"
+            />
+          </template>
+        </el-table-column>
+      </el-table>
+      <div class="my-4" style="width: 100%;">
+        <div class="flex justify-center">
+          <el-button
+          type="text"
+          icon="Plus"
+          @click="addControl(ce.controls)"
+          >
+          Ajouter un point de contrôle
+        </el-button>
+      </div>
+    </div>
     </el-form-item>
     <el-form-item>
       <el-button
@@ -85,9 +191,13 @@
 </template>
 
 <script>
+import MemberPicker from "@/modules/membres/components/MemberPicker"
 const axios = require("axios")
 export default {
   name: "ConventionEtudeForm",
+  components: {
+    MemberPicker
+  },
   props: {
     etude: { type: Object, required: true }
   },
@@ -96,7 +206,35 @@ export default {
       ce: {},
       autocomplete: {},
       members: [],
-      employees: []
+      employees: [],
+      formats: [
+        { value: "Pdf" },
+        { value: "Word" },
+        { value: "Excel" },
+        { value: "PowerPoint" },
+        { value: "Texte" },
+        { value: "Image" }
+      ],
+      formRules: {
+        signDate: [
+          { required: true, message: "La date de signature est obligatoire", trigger: "blur" }
+        ],
+        signer1: [
+          { required: true, message: "Le signataire junior est obligatoire", trigger: "blur" }
+        ],
+        signer2: [
+          { required: true, message: "Le signataire prospect est obligatoire", trigger: "blur" }
+        ],
+        consultantNumber: [
+          { required: true, message: "Le nombre d'intervenants est obligatoire", trigger: "blur" }
+        ],
+        real_desc: [
+          { required: true, message: "La présentation des intervenants est obligatoire", trigger: "blur" }
+        ],
+        description: [
+          { required: true, message: "Le contexte et les objectifs de l'étude sont obligatoires", trigger: "blur" }
+        ],
+      }
     }
   },
   watch: {
@@ -109,22 +247,18 @@ export default {
     this.getMembers()
   },
   methods: {
-    handleSelectSigner1 (member) {
-      this.ce.signer1 = member.id
+    addControl (controls) {
+      controls.push({id: controls.length + 1, desc: "", format: "", phase: ""})
     },
-    querySearchMember (queryString, cb) {
-      const results = queryString ? this.members.filter((member) => this.personFullname(member).toLowerCase().
-        includes(queryString)) : this.members
-      results.forEach((result) => result.value = this.personFullname(result))
-      cb(results)
+    deleteControl (control, controls) {
+      const index = controls.indexOf(control)
+      if (index > -1) {
+        controls.splice(index, 1)
+      }
     },
-    handleSelectSigner2 (employee) {
-      this.ce.signer2 = employee.id
-    },
-    querySearchEmployee (queryString, cb) {
-      const results = queryString ? this.employees.filter((employee) => this.personFullname(employee).toLowerCase().
-        includes(queryString)) : this.employees
-      results.forEach((result) => result.value = this.personFullname(result))
+    querySearchFormat (queryString, cb) {
+      const results = queryString ? this.formats.filter((f) => f.toLowerCase().
+        includes(queryString.toLowerCase())) : this.formats
       cb(results)
     },
     personFullname (person) {
@@ -134,15 +268,16 @@ export default {
       return ""
     },
     saveCE () {
+      console.log("CE :", this.ce)
       axios.put(
         `/api/etudes/${this.$route.params.id}/ce/`,
         this.ce,
         {withCredentials: true}
       ).then(() => {
-        this.$message({message: "La CE a bien été mis à jour", type: "success"})
+        this.$message({message: "Le document a bien été mis à jour", type: "success"})
         this.$router.push(`/etudes/${this.$route.params.id}/voir`)
       }).catch((err) => {
-        this.$message({message: "Impossinle de sauvegarder la CE : "+err, type: "error"})
+        this.$message({message: "Impossible de sauvegarder les infos : "+err, type: "error"})
       })
     },
     getMembers () {
@@ -150,7 +285,9 @@ export default {
         "/api/membres",
         {withCredentials: true}
       ).then((res) => {
+        res.data.forEach(m => m.value = this.personFullname(m))
         this.members = res.data
+        console.log("Members: ", this.members)
       }).
         catch((err) => {
           this.$message({message: err,
@@ -163,6 +300,7 @@ export default {
         `/api/prospects/${prospectId}/employes/`,
         {withCredentials: true}
       ).then((res) => {
+        res.data.forEach(m => m.value = this.personFullname(m))
         this.employees = res.data
       }).
         catch((err) => {
@@ -177,6 +315,10 @@ export default {
         {withCredentials: true}
       ).then((res) => {
         this.ce = res.data
+        if (typeof this.ce.materialFees === "string") {
+          this.ce.materialFees = parseFloat(this.ce.materialFees)
+        }
+        console.log("CE : ", this.ce)
         this.autocomplete = {signer1: this.personFullname(this.ce.signer1),
           signer2: this.personFullname(this.ce.signer2)}
         this.ce.signer1 = this.ce.signer1 ? this.ce.signer1.id : null

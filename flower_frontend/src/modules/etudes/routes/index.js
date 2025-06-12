@@ -40,6 +40,11 @@ const routes = [
     component: () => import("../views/projectConvention/EtudeConvention")
   },
   {
+    path: "etudes/:id/devis",
+    name: "etudes-devis",
+    component: () => import("../views/projectConvention/EtudeDevis")
+  },
+  {
     path: "etudes/:id/missions",
     name: "etudes-missions",
     component: () => import("../views/MissionCreer")

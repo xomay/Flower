@@ -22,10 +22,30 @@ export default {
     },
     downloadCE () {
       this.loading = true
-      axios.get(`/api/publish/etude/${this.etude.id}/ce/`, { withCredentials: true, responseType: "blob" }).then((response) => {
-        this.createDownloadElement(response.data, "CE-" + this.etude.name + ".docx")
+      axios.get(`/api/publish/etude/${this.etude.id}/ce/doc/`, { withCredentials: true, responseType: "blob" }).then((response) => {
+        if (this.etude.cc){
+          this.createDownloadElement(response.data, "BC-" + this.etude.name + ".docx")
+        }else {
+          this.createDownloadElement(response.data, "CE-" + this.etude.name + ".docx")
+        }
+        
       }).catch(err => {
-        this.$message({ message: "Une erreur est survenue lors de la génération du devis : " + err, type: "error" })
+        this.$message({ message: "Une erreur est survenue lors de la génération du document : " + err, type: "error" })
+      }).finally(() => {
+        this.loading = false
+      })
+    },
+    downloadCEPdf () {
+      this.loading = true
+      axios.get(`/api/publish/etude/${this.etude.id}/ce/pdf/`, { withCredentials: true, responseType: "blob" }).then((response) => {
+        if (this.etude.cc){
+          this.createDownloadElement(response.data, "BC-" + this.etude.name + ".pdf")
+        }else {
+          this.createDownloadElement(response.data, "CE-" + this.etude.name + ".pdf")
+        }
+        
+      }).catch(err => {
+        this.$message({ message: "Une erreur est survenue lors de la génération du document : " + err, type: "error" })
       }).finally(() => {
         this.loading = false
       })

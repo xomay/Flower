@@ -1,5 +1,25 @@
 <template>
   <div>
+    <el-collapse
+      v-model="activeCollapses"
+      class="mt-2"
+    >
+    <el-collapse-item name="0">
+        <template #title>
+          <span class="mr-2 text-lg">Proposition Commerciale</span>
+        </template>
+        <router-link
+          class="mr-2"
+          :to="`/etudes/${$route.params.id}/devis`"
+        >
+          <el-button
+            type="primary"
+            icon="EditPen"
+            :disabled="etude.isAborted"
+          >
+            Rédiger la PC
+          </el-button>
+        </router-link>
     <el-button
       type="success"
       :loading="loading"
@@ -7,13 +27,10 @@
       icon="Download"
       @click="downloadDevis"
     >
-      Générer le devis
+      Générer la PC
     </el-button>
-    <el-collapse
-      v-model="activeCollapses"
-      class="mt-2"
-    >
-      <el-collapse-item name="0">
+      </el-collapse-item>
+      <el-collapse-item name="1">
         <template #title>
           <span class="mr-2 text-lg">{{ etude.hasCC ? 'Bon de Commande' : "Convention d'Étude" }}</span>
         </template>
@@ -23,7 +40,7 @@
         >
           <el-button
             type="primary"
-            icon="Edit"
+            icon="EditPen"
             :disabled="etude.isAborted"
           >
             Rédiger {{ etude.hasCC ? 'le BC' : "la CE" }}
@@ -36,7 +53,7 @@
           icon="Download"
           @click="downloadCE"
         >
-          Générer {{ etude.hasCC ? 'le BC' : "la CE" }}
+          Générer {{ etude.hasCC ? 'le BC en Docx' : "la CE en Docx" }}
         </el-button>
         <el-button
           v-else
@@ -44,15 +61,34 @@
           plain
           disabled
         >
-          Générer {{ etude.hasCC ? 'le BC' : "la CE" }}
+          Générer {{ etude.hasCC ? 'le BC en Docx' : "la CE en Docx" }}
+        </el-button>
+        <el-button
+          v-if="displaysCE"
+          type="success"
+          :loading="loading"
+          icon="Download"
+          @click="downloadCEPdf"
+          color="orange"
+        >
+          Générer {{ etude.hasCC ? 'le BC en Pdf' : "la CE en Pdf" }}
+        </el-button>
+        <el-button
+          v-else
+          type="success"
+          color="orange"
+          plain
+          disabled
+        >
+          Générer {{ etude.hasCC ? 'le BC en Pdf' : "la CE en Pdf" }}
         </el-button>
       </el-collapse-item>
-      <el-collapse-item name="1">
+      <el-collapse-item name="2">
         <template #title>
           <span class="mr-2 text-lg">Récapitulatifs de mission</span> <router-link :to="`/etudes/${$route.params.id}/missions`">
             <el-button
               type="text"
-              icon="Edit"
+              icon="EditPen"
               :disabled="etude.isAborted"
             >
               Modifier
@@ -128,7 +164,7 @@
           </el-table-column>
         </el-table>
       </el-collapse-item>
-      <el-collapse-item name="2">
+      <el-collapse-item name="3">
         <template #title>
           <span class="mr-2 text-lg">PVR</span> <router-link :to="`/etudes/${$route.params.id}/pvr/ajouter`">
             <el-button
@@ -219,7 +255,13 @@ export default {
     }
   },
   computed: {
-    allowDevisGenerate () { return this.etude.currentGroupes.groupes.length > 0 }
+    allowDevisGenerate () {
+      //console.log("Etude :", this.etude.docEtude.deliverable)
+      if (this.etude.docEtude){
+        return this.etude.docEtude.deliverable && this.etude.docEtude.signDate      
+      }
+      return false 
+    }
   },
   created () {
     axios.get(

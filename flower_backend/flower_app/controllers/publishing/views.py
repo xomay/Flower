@@ -1,8 +1,10 @@
+from decimal import Decimal
+
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import generics
 
 from flower_app.controllers.permissions import HasGroupPermission
-from .publishing import computeDocx
+from .publishing import computeDocx, computePdf
 from django.core.signing import Signer
 from django.http import HttpResponse
 from http import HTTPStatus
@@ -46,7 +48,7 @@ class CustomDevisView(generics.CreateAPIView):
         return computeDocx({'etude': etude}, 'DEVIS_JSON.docx', 'DEVIS-' + etude['name'])
 
 
-class CEView(generics.RetrieveAPIView):
+class CEViewDocx(generics.RetrieveAPIView):
     permission_classes = [IsAuthenticated, HasGroupPermission]
     required_groups = {
         # from modules/etudes/components/Generation.vue in modules/etudes/views/EtudeDetails.vue
@@ -59,13 +61,108 @@ class CEView(generics.RetrieveAPIView):
         tmp_img_file = tempfile.NamedTemporaryFile(delete=None, suffix='.jpg')
         svgData.write_image(tmp_img_file)
         images = {'gantt': tmp_img_file.name}
-        print(etude.contractType)
-        if(etude.contractType=='CCA'):
-            return computeDocx({'etude': etude}, 'CCA.docx', 'CCA-' + etude.name, images=images)
-        elif(etude.contractType=='BC'):
-            return computeDocx({'etude': etude}, 'BC.docx', 'BC-' + etude.name, images=images)
+
+        groupes = []
+        total_nbJEH = 0
+        total_HT = 0
+        duree = 0
+
+        for groupe in etude.currentGroupes.groupe_set.all():
+            phases = []
+            for phase in groupe.phase_set.all():
+                total = phase.nbJEH * phase.priceJEH
+                phases.append({
+                    "title": phase.title,
+                    "nbJEH": phase.nbJEH,
+                    "priceJEH": phase.priceJEH,
+                    "totalHT": total
+                })
+                duree += phase.period
+                total_nbJEH += phase.nbJEH
+                total_HT += total
+            groupes.append({"index": groupe.index, "phases": phases})
+
+        application_fees = etude.application_fees
+        if (etude.docEtude.hasMaterialFees):
+            material_fees = etude.docEtude.materialFees
+        total_with_fees = total_HT + application_fees
+        tva = total_with_fees * Decimal(str(0.2))
+        total_ttc = total_with_fees + tva
+        semaines = duree/7
+
+        context = {
+            "etude": etude,
+            "groupes": groupes,
+            "total_nbJEH": total_nbJEH,
+            "total_HT": total_HT,
+            "total_with_fees": total_with_fees,
+            "tva": tva,
+            "total_ttc": total_ttc,
+            "semaines": semaines,
+        }
+
+        if etude.cc is None or etude.cc == '':
+            return computeDocx(context, 'CETUDE.docx', 'CE-' + etude.name, images=images)
         else:
-            return computeDocx({'etude': etude}, 'CETUDE.docx', 'CE-' + etude.name, images=images)
+            return computeDocx(context, 'BC.docx', 'BC-' + etude.name, images=images)
+
+class CEViewPdf(generics.RetrieveAPIView):
+    permission_classes = [IsAuthenticated, HasGroupPermission]
+    required_groups = {
+        # from modules/etudes/components/Generation.vue in modules/etudes/views/EtudeDetails.vue
+        'GET': ['ROLE_CA']
+    }
+
+    def retrieve(request, self, etude_id):
+        etude = Etude.objects.get(pk=etude_id)
+        svgData = computeGanttFromEtudeRaw(etude)[1]
+        tmp_img_file = tempfile.NamedTemporaryFile(delete=None, suffix='.jpg')
+        svgData.write_image(tmp_img_file)
+        images = {'gantt': tmp_img_file.name}
+
+        groupes = []
+        total_nbJEH = 0
+        total_HT = 0
+        duree = 0
+
+        for groupe in etude.currentGroupes.groupe_set.all():
+            phases = []
+            for phase in groupe.phase_set.all():
+                total = phase.nbJEH * phase.priceJEH
+                phases.append({
+                    "title": phase.title,
+                    "nbJEH": phase.nbJEH,
+                    "priceJEH": phase.priceJEH,
+                    "totalHT": total
+                })
+                duree += phase.period
+                total_nbJEH += phase.nbJEH
+                total_HT += total
+            groupes.append({"index": groupe.index, "phases": phases})
+
+        application_fees = etude.application_fees
+        if (etude.docEtude.hasMaterialFees):
+            material_fees = etude.docEtude.materialFees
+        total_with_fees = total_HT + application_fees
+        tva = total_with_fees * Decimal(str(0.2))
+        total_ttc = total_with_fees + tva
+        semaines = duree/7
+
+        context = {
+            "etude": etude,
+            "groupes": groupes,
+            "total_nbJEH": total_nbJEH,
+            "total_HT": total_HT,
+            "total_with_fees": total_with_fees,
+            "tva": tva,
+            "total_ttc": total_ttc,
+            "semaines": semaines,
+        }
+
+        if etude.cc is None or etude.cc == '':
+            return computePdf(context, 'CETUDE.docx', 'CE-' + etude.name, images=images)
+        else:
+            return computePdf(context, 'BC.docx', 'BC-' + etude.name, images=images)
 
 
 class RDMView(generics.RetrieveAPIView):

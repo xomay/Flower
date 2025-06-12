@@ -5,7 +5,8 @@ from . import views
 
 urlpatterns = [
     path('etude/<int:etude_id>/devis/', views.DevisView.as_view()),
-    path('etude/<int:etude_id>/ce/', views.CEView.as_view()),
+    path('etude/<int:etude_id>/ce/doc/', views.CEViewDocx.as_view()),
+    path('etude/<int:etude_id>/ce/pdf/', views.CEViewPdf.as_view()),
     path('facture/<int:facture_id>/', views.FactureView.as_view()),
     path('facture/<int:facture_id>/shared/<str:key>', views.SharedFactureView.as_view()),
     path('pvr/<int:pvr_id>/', views.PVRView.as_view()),

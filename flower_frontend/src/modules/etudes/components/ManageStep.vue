@@ -30,11 +30,11 @@
                 icon="Check"
                 @click="levelupTo(1)"
               >
-                La PC a été envoyée
+                La PC a été acceptée
               </el-button>
               <el-alert
                 v-show="btn_devis_help"
-                title="Groupes non rédigés"
+                title="Phases non rédigées"
                 type="warning"
                 description="Appuyez sur Phases puis 'Modifier les phases' afin de créer les phases de cette étude."
                 :closable="false"
@@ -602,7 +602,12 @@ export default {
     },
     // == Documents ==
     // Devis
-    btn_devis_generate () { return this.etude.currentGroupes.groupes.length > 0 },
+    btn_devis_generate () { 
+      if (this.etude.docEtude){
+        return this.etude.docEtude.deliverable && this.etude.docEtude.signDate      
+      }
+      return false 
+    },
     btn_devis_levelup () { return this.etude.state == 0 && this.btn_devis_generate },
     btn_devis_help () { return this.etude.state == 0 && ! this.btn_devis_levelup },
     // CE
