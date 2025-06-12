@@ -22,7 +22,7 @@ export default {
     },
     downloadCE () {
       this.loading = true
-      axios.get(`/api/publish/etude/${this.etude.id}/ce/doc/`, { withCredentials: true, responseType: "blob" }).then((response) => {
+      axios.get(`/api/publish/etude/${this.etude.id}/ce/`, { withCredentials: true, responseType: "blob" }).then((response) => {
         if (this.etude.cc){
           this.createDownloadElement(response.data, "BC-" + this.etude.name + ".docx")
         }else {
