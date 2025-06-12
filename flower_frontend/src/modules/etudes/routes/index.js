@@ -20,6 +20,11 @@ const routes = [
     component: () => import("../views/project/EtudeModifier")
   },
   {
+    path: "cc/:id/modifier",
+    name: "cc-modifier",
+    component: () => import("../views/project/CCModifier")
+  },
+  {
     path: "etudes/:id/voir",
     name: "etudes-details",
     component: () => import("../views/project/EtudeDetail")

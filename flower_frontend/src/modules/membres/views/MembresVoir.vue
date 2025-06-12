@@ -62,7 +62,7 @@
           style="width: 40%; height: 80%"
           size="mini"
           placeholder="Entrez un nom"
-          prefix-icon="el-icon-search"
+          prefix-icon="Search"
           :disabled="!doesFilterName"
           @change="updateFilters"
           @input="updateFilters"

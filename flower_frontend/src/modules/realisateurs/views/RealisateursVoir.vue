@@ -96,7 +96,7 @@
           <el-button
             v-show="scope.row.user == null"
             type="warning"
-            icon="el-icon-plus"
+            icon="Plus"
             :loading="loading"
             @click="createReaAcccount(scope.row)"
           />
@@ -104,7 +104,7 @@
           <el-button
             v-show="scope.row.user != null"
             type="danger"
-            icon="el-icon-minus"
+            icon="Minus"
             :loading="loading"
             @click="deleteReaAcccount(scope.row)"
           />

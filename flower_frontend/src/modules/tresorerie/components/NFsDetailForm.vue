@@ -14,7 +14,7 @@
             <el-button
               :loading="loading"
               type="text"
-              icon="el-icon-caret-top"
+              icon="CaretTop"
               :disabled="index === 0"
               style="margin-left: 10px;"
               @click="exchangeBlocs(index, index-1)"
@@ -22,14 +22,14 @@
             <el-button
               :loading="loading"
               type="text"
-              icon="el-icon-caret-bottom"
+              icon="CaretBottom"
               :disabled="index === (value.length - 1)"
               @click="exchangeBlocs(index, index+1)"
             />
             <el-button
               :loading="loading"
               type="text"
-              icon="el-icon-delete"
+              icon="Delete"
               style="color: red;"
               @click="deleteBloc(detail.id, index)"
             />

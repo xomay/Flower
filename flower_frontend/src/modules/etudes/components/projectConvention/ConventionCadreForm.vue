@@ -62,24 +62,10 @@
     <el-row>
       <el-col :span="12">
         <el-form-item
-          label="Mandat"
-          prop="mandat"
-          label-width="150px"
-        >
-          <el-input-number
-            v-model="modelValue.mandat"
-            controls-position="right"
-            :min="2020"
-            :max="2050"
-            @change="mandatEdited"
-          />
-        </el-form-item>
-      </el-col>
-      <el-col :span="12">
-        <el-form-item
           label="Numéro de la convention"
           prop="number"
           label-width="150px"
+          style="margin-bottom: 30px"
         >
           <el-input-number
             v-model="modelValue.number"
@@ -89,21 +75,21 @@
           />
         </el-form-item>
       </el-col>
-    </el-row>
-    <el-col :span="12">
-      <el-form-item
+      <el-col :span="12">
+        <el-form-item
         label="Période de validité (ans)"
         prop="period"
         label-width="150px"
-      >
+        >
         <el-input-number
-          v-model="modelValue.period"
-          controls-position="right"
-          :min="0"
-          :max="5"
+        v-model="modelValue.period"
+        controls-position="right"
+        :min="0"
+        :max="5"
         />
       </el-form-item>
     </el-col>
+    </el-row>
     <el-form-item
       label="Date de signature"
       prop="signDate"

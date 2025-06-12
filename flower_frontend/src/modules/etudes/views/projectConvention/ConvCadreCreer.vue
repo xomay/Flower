@@ -64,10 +64,23 @@ export default {
     ).then((res) => {
       const year = new Date().getFullYear()
       const baseInt = parseInt(year.toString().slice(-2) + "000", 10)
-      this.takenIds = res.data.filter(etu => etu.mandat === year).map(etu => etu.number)
+      this.takenIds.push(...res.data.filter(etu => etu.mandat === year).map(etu => etu.number))
       const amount = this.takenIds.length
       const result = amount + baseInt
       this.form.number = result
+        axios.get(
+        "/api/etudes/cc/",
+        {withCredentials: true}
+      ).then((res) => {
+        const year = new Date().getFullYear()
+        const baseInt = parseInt(year.toString().slice(-2) + "000", 10)
+        this.takenIds.push(...res.data.map(cc => cc.number))
+        const amount = this.takenIds.length
+        const result = amount + baseInt + 1
+        this.form.number = result
+      }).catch((err) => {
+        this.$message({message: "Impossible de récupérer la liste des CC : " + err, type: "error", offset: 40})
+      })
     }).catch((err) => {
       this.$message({message: "Impossible de récupérer la liste des études : " + err, type: "error", offset: 40})
     })

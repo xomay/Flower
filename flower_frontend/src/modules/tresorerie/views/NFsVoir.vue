@@ -11,7 +11,7 @@
         <router-link :to="'/tresorerie/nfs/ajouter'">
           <el-button
             type="success"
-            icon="el-icon-plus"
+            icon="Plus"
             plain
           >
             Ajouter une NF
@@ -150,7 +150,7 @@
         <template slot-scope="scope">
           <el-button
             type="text"
-            icon="el-icon-download"
+            icon="Download"
             :loading="loading"
             @click="downloadNF(scope.row)"
           />

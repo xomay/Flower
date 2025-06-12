@@ -7,22 +7,22 @@
       <router-link :to="`/membres/${$route.params.id}/modifier`">
         <el-button
           type="text"
-          icon="el-icon-edit"
+          icon="Edit"
         >
           Modifier
         </el-button>
       </router-link>
     </template>
     <span><span v-if="member.gender !== ''">{{ member.gender }}</span>  {{ member.firstname }} {{ member.lastname }}</span><br>
-    <span v-if="member.poste != undefined"><i class="el-icon-monitor" /> Poste : {{ displayPoste(member) }}</span><br>
-    <span><i class="el-icon-school" /> Promotion {{ member.promotion }}</span><br>
-    <span><i class="el-icon-message" /> {{ member.email }}</span><br>
-    <span><i class="el-icon-message" /> {{ member.email_junior }}</span><br>
-    <span><i class="el-icon-mobile-phone" /> {{ member.mobile }}</span><br>
-    <span><i class="el-icon-location-outline" /> {{ member.address }} à {{ member.town }} {{ member.postcode }}</span><br>
-    <span><i class="el-icon-place" /> {{ member.country }}</span><br>
-    <span><i class="el-icon-wallet" /> {{ member.nationality }}</span><br>
-    <span><i class="el-icon-present" /> Né(e) le {{ member.birth_date }} à {{ member.birth_place }}</span><br>
+    <span v-if="member.poste != undefined"><i class="Monitor" /> Poste : {{ displayPoste(member) }}</span><br>
+    <span><el-icon><School/></el-icon> Promotion {{ member.promotion }}</span><br>
+    <span><el-icon><Message/></el-icon> {{ member.email }}</span><br>
+    <span><el-icon><Message/></el-icon> {{ member.email_junior }}</span><br>
+    <span><el-icon><Phone/></el-icon> {{ member.mobile }}</span><br>
+    <span><el-icon><Location/></el-icon> {{ member.address }} à {{ member.town }} {{ member.postcode }}</span><br>
+    <span><el-icon><Place/></el-icon> {{ member.country }}</span><br>
+    <span><el-icon><Wallet/></el-icon> {{ member.nationality }}</span><br>
+    <span><el-icon><Present/></el-icon> Né(e) le {{ member.birth_date }} à {{ member.birth_place }}</span><br>
     <br>
     <div v-if="subordinates.length > 0">
       Liste des subordonnés :

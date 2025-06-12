@@ -62,7 +62,7 @@
     <el-button
       :loading="loading"
       type="success"
-      icon="el-icon-check"
+      icon="Check"
       @click="validateForm()"
     >
       Sauvegarder le commentaire

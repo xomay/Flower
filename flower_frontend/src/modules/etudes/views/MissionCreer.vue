@@ -6,7 +6,7 @@
     <template v-slot:action>
       <el-button
         type="text"
-        icon="el-icon-plus"
+        icon="Plus"
         @click="addMission"
       >
         Ajouter

@@ -149,7 +149,7 @@
       <el-col :span="24">
         <span class="mr-2">Détails</span><el-button
           type="text"
-          icon="el-icon-plus"
+          icon="Plus"
           @click="addDetail"
         >
           Ajouter un détail

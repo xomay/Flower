@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-row
-      v-for="(member, index) in value"
+      v-for="(member, index) in modelValue"
       :key="index"
       :span="12"
       :style="{margin:'10px 10px 10px 10px'}"
@@ -10,17 +10,17 @@
         :span="2"
       >
         <el-button
-          v-if="index == value.length - 1"
+          v-if="index == modelValue.length - 1"
           type="primary"
-          size="mini"
-          icon="el-icon-plus"
+          size="small"
+          icon="Plus"
           @click="addLocalGroup()"
         />
         <el-button
           v-else
           type="info"
-          size="mini"
-          icon="el-icon-minus"
+          size="small"
+          icon="Minus"
           @click="removeLocalGroup(index)"
         />
       </el-col>
@@ -33,7 +33,7 @@
           label-width="0%"
         >
           <MemberGElem
-            :out-value="value[index]"
+            :out-value="modelValue[index]"
             :item-list="itemList"
             :placeholder="label(index)"
             :index="index"
@@ -53,9 +53,13 @@ export default {
   name: "MembersGroup",
   components: {MemberGElem},
   props: {
-    value: {type: undefined, required: true},
+    modelValue: {type: undefined, required: true},
     itemList: { type: Array, required: true },
   },
+  emits: [
+    "add-participant",
+    "delete-participant"
+  ],
   data () {
     return {
       textes: {},
@@ -64,7 +68,7 @@ export default {
   },
   watch: {
     itemList () {
-      const found = this.itemList.find((item) => item.id === this.value)
+      const found = this.itemList.find((item) => item.id === this.modelValue)
       this.autocompleteValue = found ? found.value : ""
     }
   },
@@ -83,6 +87,8 @@ export default {
     },
     inputed (groupIndex, listID) {
       var itemName = undefined
+      console.log("inputed", groupIndex, listID, this.itemList)
+      console.log("ID : ", listID)
       for (var i = 0; i < this.itemList.length; i++) {
         if(this.itemList[i].id == listID) {
           itemName = this.itemList[i].value
@@ -93,9 +99,9 @@ export default {
         this.$message("erreur")
         return
       }
-      // TODO invalidate field car membre non trouvé.
-      this.value[groupIndex] = listID
+      this.modelValue[groupIndex] = listID
       this.textes[groupIndex] = itemName
+      console.log("inputed", this.modelValue, this.textes)
     },
   }
 }

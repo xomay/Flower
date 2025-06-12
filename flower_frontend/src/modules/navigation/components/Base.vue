@@ -2,7 +2,7 @@
   <div class="p-4">
     <el-breadcrumb
       class="float-right"
-      separator-class="el-icon-arrow-right"
+      separator-class="arrowRight"
     >
       <el-breadcrumb-item
         v-for="(item, index) in breadcrumb"

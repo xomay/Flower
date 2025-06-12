@@ -24,7 +24,7 @@
         />
         <router-link :to="`/etudes/${$route.params.id}/factures/ajouter`">
           <el-button
-            icon="el-icon-edit"
+            icon="Edit"
             type="primary"
             style="margin: 10px 40%; width: 20%;"
           >
@@ -35,7 +35,7 @@
       <el-col v-show="fas.length > 0">
         <el-button
           type="success"
-          icon="el-icon-check"
+          icon="Check"
           style="margin: 10px 40%; width: 20%;"
           @click="levelupTo(4)"
         >
@@ -67,7 +67,7 @@
         />
         <router-link :to="`/etudes/${$route.params.id}/factures/ajouter`">
           <el-button
-            icon="el-icon-edit"
+            icon="Edit"
             type="primary"
             style="margin: 10px 40%; width: 20%;"
           >
@@ -78,7 +78,7 @@
       <el-col v-show="fis.length > 0">
         <el-button
           type="success"
-          icon="el-icon-check"
+          icon="Check"
           style="margin: 10px 40%; width: 20%;"
           @click="levelupTo(6)"
         >
@@ -110,7 +110,7 @@
         />
         <router-link :to="`/etudes/${$route.params.id}/factures/ajouter`">
           <el-button
-            icon="el-icon-edit"
+            icon="Edit"
             type="primary"
             style="margin: 10px 40%; width: 20%;"
           >
@@ -121,7 +121,7 @@
       <el-col v-show="fss.length > 0">
         <el-button
           type="success"
-          icon="el-icon-check"
+          icon="Check"
           style="margin: 10px 40%; width: 20%;"
           @click="levelupTo(8)"
         >
@@ -143,7 +143,7 @@
       <el-button
         v-show="etude.bvData.full"
         type="success"
-        icon="el-icon-check"
+        icon="Check"
         style="margin: 10px 40%; width: 20%;"
         @click="levelupTo(10)"
       >

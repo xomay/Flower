@@ -65,7 +65,7 @@
         <template v-slot="scope">
           <el-button
             type="text"
-            icon="el-icon-link"
+            icon="Link"
             :loading="loading"
             @click="getLink(scope.row.id)"
           />
@@ -79,7 +79,7 @@
           />
           <el-button
             type="text"
-            icon="el-icon-delete"
+            icon="Delete"
             :loading="loading"
             style="color: red;"
             @click="deleteUpload(scope.row.id, scope.$index)"

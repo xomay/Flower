@@ -327,7 +327,7 @@
                   v-show="btn_fi_alert"
                   slot="reference"
                   type="danger"
-                  icon="el-icon-s-check"
+                  icon="CircleCheck"
                 >
                   Pas de FI pour cette étude
                 </el-button>
@@ -353,7 +353,7 @@
               <el-button
                 v-show="btn_pvrf_levelup"
                 type="success"
-                icon="el-icon-check"
+                icon="Check"
                 @click="levelupTo(7)"
               >
                 Le PVRF a été signé
@@ -442,7 +442,7 @@
                         <router-link :to="`/etudes/${$route.params.id}/commentaires/${scope.row.id}/ajouter`">
                           <el-button
                             type="success"
-                            icon="el-icon-edit"
+                            icon="Edit"
                             :disabled="!btn_peda_rediger"
                           >
                             Rédiger le commentaire
@@ -472,7 +472,7 @@
                 v-show="btn_peda_levelup"
                 :loading="loading"
                 type="success"
-                icon="el-icon-check"
+                icon="Check"
                 @click="levelupTo(9)"
               >
                 Les rapports péda ont été complétés

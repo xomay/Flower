@@ -13,7 +13,7 @@
     />
     <el-popconfirm
       title="Confirmez-vous l'avortement de cette étude ?"
-      icon="el-icon-info"
+      icon="Info"
       icon-color="red"
       confirm-button-type="danger"
       confirm-button-text="OUI"
@@ -24,7 +24,7 @@
       <el-button
         v-if="!etude.isAborted"
         slot="reference"
-        icon="el-icon-document-delete"
+        icon="DocumentDelete"
         type="danger"
         :loading="loading"
       >
@@ -38,6 +38,10 @@
 import ProjectForm from "../../components/forms/ProjectForm"
 
 const axios = require("axios")
+// Configuration d'axios pour CSRF
+axios.defaults.xsrfCookieName = "csrftoken"
+axios.defaults.xsrfHeaderName = "X-CSRFTOKEN"
+axios.defaults.withCredentials = true
 
 export default {
   name: "EtudeCreer",
@@ -150,13 +154,29 @@ export default {
     },
     saveProject () {
       this.loading = true
+      this.etude.docEtude.signer1 = this.etude.docEtude.signer1.id
+      this.etude.docEtude.signer2 = this.etude.docEtude.signer2.id
       axios.put(
-        `/api/etudes/${this.etude.id}/`,
-        this.etude,
+        `/api/etudes/${this.etude.id}/ce/`,
+        this.etude.docEtude,
         {withCredentials: true}
       ).then(() => {
-        this.$message({message: "L'étude a bien été modifiée.", type: "success", offset: 40})
-        this.$router.push(`/etudes/${this.etude.id}/voir`)
+        this.etude.docEtude = this.etude.docEtude.id
+        axios.put(
+          `/api/etudes/${this.etude.id}/`,
+          this.etude,
+          {withCredentials: true}
+        ).then(() => {
+          this.$message({message: "L'étude a bien été modifiée.", type: "success", offset: 40})
+          this.$router.push(`/etudes/${this.etude.id}/voir`)
+        }).catch((err) => {
+          if (err.response && err.response.status === 400)
+            this.$message({message: "Le formulaire comporte des erreurs.", type: "error", offset: 40})
+          else
+            this.$message({message: "Impossible de modifier l'étude pour le moment : " + err.message, type: "error", offset: 40})
+        }).finally(() => {
+          this.loading = false
+        })
       }).catch((err) => {
         if (err.response && err.response.status === 400)
           this.$message({message: "Le formulaire comporte des erreurs.", type: "error", offset: 40})

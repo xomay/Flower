@@ -59,7 +59,7 @@
       </el-col>
       <el-col :span="1">
         <el-button
-          icon="el-icon-check"
+          icon="Check"
           style="margin-left: 8px; margin-top: -6px"
           :loading="loading"
           :disabled="poste.isModified == false"
@@ -70,7 +70,7 @@
       </el-col>
       <el-col :span="1">
         <el-button
-          icon="el-icon-delete"
+          icon="Delete"
           style="color: red; margin-top: -6px"
           :loading="loading"
           @click="removePoste(poste, index)"
@@ -78,7 +78,7 @@
       </el-col>
     </el-col>
     <el-button
-      icon="el-icon-plus"
+      icon="Plus"
       type="success"
       :loading="loading"
       @click="addPoste()"

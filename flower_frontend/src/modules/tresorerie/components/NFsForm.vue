@@ -89,7 +89,7 @@
           slot="reference"
           :loading="loading"
           type="danger"
-          icon="el-icon-cross"
+          icon="Cross"
         >
           Supprimer la NF
         </el-button>

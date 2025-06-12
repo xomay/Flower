@@ -25,7 +25,7 @@
       <tbody>
         <tr>
           <td>
-            <i class="el-icon-notebook-2 percent" />
+            <el-icon class="percent"><Notebook/></el-icon>
           </td>
           <td class="rowStyle">
             Promotion
@@ -34,7 +34,7 @@
         </tr>
         <tr>
           <td>
-            <i class="el-icon-first-aid-kit percent" />
+            <el-icon class="percent"><FirstAidKit/></el-icon>
           </td>
           <td class="rowStyle">
             N° de sécurité sociale
@@ -43,7 +43,7 @@
         </tr>
         <tr>
           <td>
-            <i class="el-icon-folder-opened percent" />
+            <el-icon class="percent"><FolderOpened/></el-icon>
           </td>
           <td
             class="rowStyle"
@@ -65,7 +65,7 @@
       <tbody>
         <tr>
           <td>
-            <i class="el-icon-message percent" />
+            <el-icon class="percent"><Message/></el-icon>
           </td>
           <td class="rowStyle">
             Email
@@ -74,7 +74,7 @@
         </tr>
         <tr>
           <td>
-            <i class="el-icon-message percent" />
+            <el-icon class="percent"><Message/></el-icon>
           </td>
           <td class="rowStyle">
             Email INSA
@@ -83,7 +83,7 @@
         </tr>
         <tr>
           <td>
-            <i class="el-icon-phone percent" />
+            <el-icon class="percent"><Phone/></el-icon>
           </td>
           <td class="rowStyle">
             Mobile
@@ -97,7 +97,7 @@
       <tbody>
         <tr>
           <td>
-            <i class="el-icon-map-location percent" />
+            <el-icon class="percent"><MapLocation/></el-icon>
           </td>
           <td class="rowStyle">
             Addresse
@@ -106,7 +106,7 @@
         </tr>
         <tr>
           <td>
-            <i class="el-icon-date percent" />
+            <el-icon class="percent"><Date/></el-icon>
           </td>
           <td class="rowStyle">
             Date de naissance
@@ -115,7 +115,7 @@
         </tr>
         <tr>
           <td>
-            <i class="el-icon-location-outline percent" />
+            <el-icon class="percent"><Location/></el-icon>
           </td>
           <td class="rowStyle">
             Lieu de naissance

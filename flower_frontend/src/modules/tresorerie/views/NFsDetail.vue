@@ -7,7 +7,7 @@
       <router-link :to="`/tresorerie/nfs/${$route.params.id}/modifier/`">
         <el-button
           type="text"
-          icon="el-icon-edit"
+          icon="Edit"
         >
           Modifier
         </el-button>
