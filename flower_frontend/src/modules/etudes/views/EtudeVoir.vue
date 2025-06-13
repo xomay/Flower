@@ -8,12 +8,12 @@
       type="card"
     >
       <el-tab-pane
-        label="Études du mandat"
-        name="mandat"
-      />
-      <el-tab-pane
         label="Études en cours"
         name="current"
+      />
+      <el-tab-pane
+        label="Études du mandat"
+        name="mandat"
       />
       <el-tab-pane
         label="Études terminées"
@@ -62,7 +62,7 @@ export default {
   components: { EtudesList, CCList },
   data () {
     return {
-      currentTab: "mandat",
+      currentTab: "current",
       originalEtudes: [],
       etudes: [],
       ccs: [],
