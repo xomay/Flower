@@ -87,8 +87,6 @@ export default {
     },
     inputed (groupIndex, listID) {
       var itemName = undefined
-      console.log("inputed", groupIndex, listID, this.itemList)
-      console.log("ID : ", listID)
       for (var i = 0; i < this.itemList.length; i++) {
         if(this.itemList[i].id == listID) {
           itemName = this.itemList[i].value
@@ -101,7 +99,6 @@ export default {
       }
       this.modelValue[groupIndex] = listID
       this.textes[groupIndex] = itemName
-      console.log("inputed", this.modelValue, this.textes)
     },
   }
 }

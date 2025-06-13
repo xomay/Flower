@@ -249,7 +249,6 @@ export default {
         {withCredentials: true}
       ).then((res) => {
         this.pc = res.data
-        console.log("PC : ", this.pc)
         this.pc.address = this.etude.prospect.address
         this.pc.postcode = this.etude.prospect.postcode
         this.pc.town = this.etude.prospect.town

@@ -309,7 +309,6 @@ export default {
       ).then((res) => {
         res.data.forEach(m => m.value = this.personFullname(m))
         this.members = res.data
-        console.log("Members: ", this.members)
       }).
         catch((err) => {
           this.$message({message: err,
@@ -340,7 +339,6 @@ export default {
         if (typeof this.ce.materialFees === "string") {
           this.ce.materialFees = parseFloat(this.ce.materialFees)
         }
-        console.log("CE : ", this.ce)
         this.autocomplete = {signer1: this.personFullname(this.ce.signer1),
           signer2: this.personFullname(this.ce.signer2)}
         this.ce.signer1 = this.ce.signer1 ? this.ce.signer1.id : null

@@ -142,7 +142,6 @@ export default {
       if (memberToSend.poste && typeof memberToSend.poste === "object") {
         memberToSend.poste = memberToSend.poste.id
       }
-      console.log("member is_active", this.member)
       this.loading = true
       axios.put(
         `/api/membres/${this.member.id}/`,

@@ -105,7 +105,6 @@ export default {
   },
   methods: {
     submitChanges () {
-      console.log("Submitting CC changes:", this.form)
       this.loading = true
       axios.put(
         `/api/etudes/${this.$route.params.id}/cc/`,

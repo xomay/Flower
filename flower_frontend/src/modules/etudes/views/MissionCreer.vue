@@ -94,7 +94,6 @@ export default {
     ).then((res) => {
       res.data.forEach((realisateur) => realisateur.value = `${realisateur.firstname} ${realisateur.lastname}`)
       this.consultants = res.data
-      console.log(this.missions, this.consultants)
     }).catch((err) => {
       this.$message({message: "Impossible de récupérer les membres : "+err, type: "error", offset: 40})
     })

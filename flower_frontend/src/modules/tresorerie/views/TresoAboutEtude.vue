@@ -375,7 +375,6 @@ export default {
     getLink (invoiceId) {
       this.loadingInvoice = true
       axios.get(`/api/tresorerie/factures/sharedurl/${invoiceId}`, { withCredentials: true }).then((response) => {
-        console.log(response)
         let url = location.protocol + "//" + location.host + response.data
         navigator.clipboard.writeText(url)
         this.$message({ message: "Lien copié", type: "succes" })

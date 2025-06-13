@@ -256,7 +256,6 @@ export default {
   },
   computed: {
     allowDevisGenerate () {
-      //console.log("Etude :", this.etude.docEtude.deliverable)
       if (this.etude.docEtude){
         return this.etude.docEtude.deliverable && this.etude.docEtude.signDate      
       }

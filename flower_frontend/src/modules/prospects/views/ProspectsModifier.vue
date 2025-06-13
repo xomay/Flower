@@ -61,7 +61,6 @@ export default {
         {withCredentials: true}
       ).then((res) => {
         this.prospect = res.data
-        console.log("prospect :", this.prospect)
         this.breadcrumb[1].name = this.prospect.name
         if(this.prospect.contactWay.length == 0)
           this.prospect.contactWay = [""]

@@ -117,7 +117,6 @@ export default {
       return str
     },
     downloadBA () {
-      console.log()
       axios.get(
         `/api/publish/barea/${this.realisateur.id}`,
         {withCredentials: true,

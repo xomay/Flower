@@ -109,7 +109,6 @@ export default {
   },
   methods: {
     submitProject () {
-      console.log("Submitting project form with data:", this.form)
       this.loading = true
       this.form.prospect = this.form.prospect.toString()
       axios.post(
