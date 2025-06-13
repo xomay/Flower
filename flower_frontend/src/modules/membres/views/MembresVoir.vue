@@ -49,18 +49,10 @@
         />
       </el-col>
       <el-col>
-        <el-checkbox
-          v-model="doesFilterName"
-          class="marginL"
-          @change="updateFilters"
-        />
-        <span class="marginL">
-          Filtrer par nom :
-        </span>
         <el-input
           v-model="nameFilterValue"
-          style="width: 40%; height: 80%"
-          size="mini"
+          style="width: 40%; height: 80%; margin-top: 10px;"
+          size="large"
           placeholder="Entrez un nom"
           prefix-icon="Search"
           :disabled="!doesFilterName"
@@ -69,6 +61,20 @@
         />
       </el-col>
     </el-row>
+    <el-tabs
+      v-model="currentTab"
+      type="card"
+      style="margin-top: 20px; margin-bottom: 5px;"
+    >
+      <el-tab-pane
+        label="Mandat en cours"
+        name="mandat"
+      />
+      <el-tab-pane
+        label="Tous les membres"
+        name="all"
+      />
+    </el-tabs>
     <el-table
       v-loading="loading"
       class="grid"
@@ -92,13 +98,13 @@
         </template>
       </el-table-column>
       <el-table-column
-        prop="promotion"
-        label="Promotion"
+        prop="poste"
+        label="Poste"
         sortable
       />
       <el-table-column
-        prop="poste"
-        label="Poste"
+        prop="promotion"
+        label="Promotion"
         sortable
       />
       <el-table-column
@@ -122,7 +128,7 @@
           <el-button
             v-show="isButtonOn(scope.row.id)"
             ref="btn_{{scope.row.id}}"
-            size="medium"
+            size="default"
             type="warning"
             @click="openAccount(scope.row.id)"
           >
@@ -150,13 +156,14 @@ export default {
     return {
       membres: [],
       currentSelected: [],
+      currentTab: "mandat",
       btnsDesactivated: [],
       promotionFilterValue: 2021,
       userFilterValue: false,
       nameFilterValue: "",
       doesFilterPromo: false,
       doesFilterUser: false,
-      doesFilterName: false,
+      doesFilterName: true,
       loading: true,
       breadcrumb: [
         {
@@ -176,11 +183,17 @@ export default {
       res.data.forEach((elt) => elt.poste = this.displayPoste(elt))
       this.membres = res.data
       this.currentSelected = this.membres
+      this.updateFilters()
     }).catch((err) => {
       this.$message({message: "Impossible de récupérer les membres pour le moment : " + err, type: "error"})
     }).finally(() => {
       this.loading = false
     })
+  },
+  watch: {
+    currentTab () {
+      this.updateFilters()
+    },
   },
   methods: {
     openAccount (memberID) {
@@ -226,7 +239,11 @@ export default {
       this.currentSelected = this.currentSelected.filter(m => m.fullname.toLowerCase().includes(name.toLowerCase()))
     },
     updateFilters () {
-      this.currentSelected = this.membres
+      if(this.currentTab === "mandat") {
+        this.currentSelected = this.membres.filter(m => m.is_active)
+      } else {
+        this.currentSelected = this.membres
+      }
       if(this.doesFilterName) {
         this.filterWithName(this.nameFilterValue)
       }

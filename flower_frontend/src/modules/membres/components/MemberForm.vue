@@ -1,7 +1,7 @@
 <template>
   <el-form
     ref="memFormRef"
-    :model="value"
+    :model="modelValue"
     :rules="formRules"
     label-position="left"
     :style="'margin: 15px'"
@@ -14,7 +14,7 @@
           label-width="26%"
         >
           <el-input
-            v-model="value.firstname"
+            v-model="modelValue.firstname"
             placeholder="Prénom du membre de la JE"
             @input="autoFillEmails"
           />
@@ -27,7 +27,7 @@
           label-width="26%"
         >
           <el-input
-            v-model="value.lastname"
+            v-model="modelValue.lastname"
             placeholder="Nom du membre de la JE"
             @input="autoFillEmails"
           />
@@ -39,7 +39,7 @@
           prop="gender"
           label-width="26%"
         >
-          <el-select v-model="value.gender" placeholder="Sélectionner le genre">
+          <el-select v-model="modelValue.gender" placeholder="Sélectionner le genre">
             <el-option value="M.">M.</el-option>
             <el-option value="Mme.">Mme.</el-option>
             <el-option value="">Non renseigné</el-option>
@@ -53,7 +53,7 @@
           label-width="26%"
         >
           <el-input-number
-            v-model="value.promotion"
+            v-model="modelValue.promotion"
             controls-position="right"
             :min="2020"
             :max="2050"
@@ -68,7 +68,7 @@
           label-width="13%"
         >
           <ItemPicker
-            v-model="value.poste"
+            v-model="modelValue.poste"
             :item-list="postes"
             placeholder="Sélectionner un poste"
             :style="'width: 100%'"
@@ -83,7 +83,7 @@
           label-width="13%"
         >
           <el-input
-            v-model="value.email"
+            v-model="modelValue.email"
             placeholder="Email INSA"
           />
         </el-form-item>
@@ -95,7 +95,7 @@
           label-width="13%"
         >
           <el-input
-            v-model="value.email_junior"
+            v-model="modelValue.email_junior"
             placeholder="Email Juniors"
           />
         </el-form-item>
@@ -107,7 +107,7 @@
           label-width="13%"
         >
           <el-input
-            v-model="value.mobile"
+            v-model="modelValue.mobile"
             placeholder="Numéro de téléphone personnel"
           />
         </el-form-item>
@@ -119,7 +119,7 @@
           label-width="13%"
         >
           <el-input
-            v-model="value.address"
+            v-model="modelValue.address"
             placeholder="Adresse (numéro et rue)"
           />
         </el-form-item>
@@ -131,7 +131,7 @@
           label-width="39%"
         >
           <el-input
-            v-model="value.postcode"
+            v-model="modelValue.postcode"
             placeholder="Code postal"
           />
         </el-form-item>
@@ -143,7 +143,7 @@
           label-width="39%"
         >
           <el-input
-            v-model="value.town"
+            v-model="modelValue.town"
             placeholder="Ville"
           />
         </el-form-item>
@@ -155,7 +155,7 @@
           label-width="39%"
         >
           <el-input
-            v-model="value.country"
+            v-model="modelValue.country"
             placeholder="Pays"
           />
         </el-form-item>
@@ -167,7 +167,7 @@
           label-width="13%"
         >
           <el-input
-            v-model="value.nationality"
+            v-model="modelValue.nationality"
             placeholder="Nationalité"
           />
         </el-form-item>
@@ -179,7 +179,7 @@
           label-width="26%"
         >
           <el-date-picker
-            v-model="value.birth_date"
+            v-model="modelValue.birth_date"
             format="DD/MM/YYYY"
             value-format="YYYY-MM-DD"
             type="date"
@@ -195,16 +195,17 @@
           label-width="26%"
         >
           <el-input
-            v-model="value.birth_place"
+            v-model="modelValue.birth_place"
             placeholder="Ville de naissance"
           />
         </el-form-item>
       </el-col>
       <el-col :span="24">
-        <el-form-item>
+        <el-form-item >
           <el-button
             :loading="loading"
             type="success"
+            style="margin-top: 40px"
             @click="validateForm('save')"
           >
             Enregistrer
@@ -232,12 +233,13 @@ export default {
   name: "MemberForm",
   components: { ItemPicker },
   props: {
-    value: { type: Object, required: true },
+    modelValue: { type: Object, required: true },
     postes: { type: Array, required: true },
     loading: { type: Boolean, required: true },
     loadingopenaccount: { type: Boolean, required: true },
     canOpenAccount: { type: Boolean, default: false }
   },
+  emits: ["update:modelValue", "save", "openaccount"],
   data () {
     return {
       formRules: {
@@ -343,10 +345,10 @@ export default {
       }
     },
     autoFillEmails() {
-      if (this.value.firstname && this.value.lastname) {
-        const prefix = this.handleToEmail(`${this.value.firstname}.${this.value.lastname}`);
-        this.value.email = `${prefix}@insa-rennes.fr`;
-        this.value.email_junior = `${prefix}@ouest-insa.fr`;
+      if (this.modelValue.firstname && this.modelValue.lastname) {
+        const prefix = this.handleToEmail(`${this.modelValue.firstname}.${this.modelValue.lastname}`);
+        this.modelValue.email = `${prefix}@insa-rennes.fr`;
+        this.modelValue.email_junior = `${prefix}@ouest-insa.fr`;
       }
     },
     handleToEmail(text) {
@@ -358,7 +360,7 @@ export default {
         .replace(/ /g, "-");
     },
     editPoste(newPoste) {
-      this.value.poste = newPoste;
+      this.modelValue.poste = newPoste;
     }
   }
 }

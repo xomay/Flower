@@ -7,75 +7,77 @@
       v-for="(poste, index) in postes"
       :key="index"
       style="margin-bottom: 20px"
-    >
-      <el-col :span="1">
-        Nom :
-      </el-col>
-      <el-col :span="5">
-        <el-input
-          v-model="poste.name"
-          type="text"
-          style="margin-top: -6px"
-          @input="poste.isModified = true"
-        />
-      </el-col>
-      <el-col
-        :span="2"
-        style="margin-left: 12px"
       >
-        , au féminin :
-      </el-col>
-      <el-col :span="5">
-        <el-input
-          v-model="poste.name_feminine"
-          type="text"
-          placeholder="Identique au nom masculin"
-          style="margin-top: -6px"
-          @input="poste.isModified = true"
-        />
-      </el-col>
-      <el-col
-        :span="1"
-        style="padding-left: 12px; margin-right: -8px;"
-      >
-        =>
-      </el-col>
-      <el-col :span="7">
-        <el-select
-          v-model="poste.subordinates"
-          class="w-full"
-          multiple
-          placeholder="Subordonnés"
-          style="margin-top: -6px"
-          @change="poste.isModified = true"
-        >
-          <el-option
-            v-for="(subordinate, index_s) in postes"
-            :key="index_s"
-            :label="subordinate.name"
-            :value="subordinate.id"
+    <el-row>
+        <el-col :span="1">
+          Nom :
+        </el-col>
+        <el-col :span="5">
+          <el-input
+            v-model="poste.name"
+            type="text"
+            style="margin-top: -6px"
+            @input="poste.isModified = true"
           />
-        </el-select>
-      </el-col>
-      <el-col :span="1">
-        <el-button
-          icon="Check"
-          style="margin-left: 8px; margin-top: -6px"
-          :loading="loading"
-          :disabled="poste.isModified == false"
-          :plain="poste.isModified == false"
-          type="success"
-          @click="savePoste(poste)"
-        />
-      </el-col>
-      <el-col :span="1">
-        <el-button
-          icon="Delete"
-          style="color: red; margin-top: -6px"
-          :loading="loading"
-          @click="removePoste(poste, index)"
-        />
-      </el-col>
+        </el-col>
+        <el-col
+          :span="2"
+          style="margin-left: 12px"
+        >
+          , au féminin :
+        </el-col>
+        <el-col :span="5">
+          <el-input
+            v-model="poste.name_feminine"
+            type="text"
+            placeholder="Identique au nom masculin"
+            style="margin-top: -6px"
+            @input="poste.isModified = true"
+          />
+        </el-col>
+        <el-col
+          :span="1"
+          style="padding-left: 12px; margin-right: -8px;"
+        >
+          =>
+        </el-col>
+        <el-col :span="7">
+          <el-select
+            v-model="poste.subordinates"
+            class="w-full"
+            multiple
+            placeholder="Subordonnés"
+            style="margin-top: -6px"
+            @change="poste.isModified = true"
+          >
+            <el-option
+              v-for="(subordinate, index_s) in postes"
+              :key="index_s"
+              :label="subordinate.name"
+              :value="subordinate.id"
+            />
+          </el-select>
+        </el-col>
+        <el-col :span="1">
+          <el-button
+            icon="Check"
+            style="margin-left: 8px; margin-top: -6px"
+            :loading="loading"
+            :disabled="poste.isModified == false"
+            :plain="poste.isModified == false"
+            type="success"
+            @click="savePoste(poste)"
+          />
+        </el-col>
+        <el-col :span="1">
+          <el-button
+            icon="Delete"
+            style="color: red; margin-top: -6px"
+            :loading="loading"
+            @click="removePoste(poste, index)"
+          />
+        </el-col>
+      </el-row>
     </el-col>
     <el-button
       icon="Plus"

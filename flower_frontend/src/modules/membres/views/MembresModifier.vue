@@ -21,9 +21,13 @@ import { registerMemberMixin } from "../mixins/RegisterMember.js"
 import { Permissions } from "@/mixins/Permissions"
 
 const axios = require("axios")
+// Configuration d'axios pour CSRF
+axios.defaults.xsrfCookieName = "csrftoken"
+axios.defaults.xsrfHeaderName = "X-CSRFTOKEN"
+axios.defaults.withCredentials = true
 
 export default {
-  name: "EtudeCreer",
+  name: "MembresModifier",
   components: {MemberForm},
   mixins: [registerMemberMixin, Permissions],
   data () {

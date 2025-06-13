@@ -1,6 +1,6 @@
 <template>
   <BaseComponent
-    title="Affichage d'un membre"
+    :title="title"
     :breadcrumb="breadcrumb"
   >
     <template v-slot:action>
@@ -12,6 +12,22 @@
           Modifier
         </el-button>
       </router-link>
+      <el-button
+          v-if ="member.is_active"
+          type="danger"
+          icon="CloseBold"
+          @click="toggleActive()"
+        >
+          N'est plus membre
+      </el-button>
+      <el-button
+          v-if ="!member.is_active"
+          type="warning"
+          icon="Select"
+          @click="toggleActive()"
+        >
+          Passer membre du mandat
+      </el-button>
     </template>
     <span><span v-if="member.gender !== ''">{{ member.gender }}</span>  {{ member.firstname }} {{ member.lastname }}</span><br>
     <span v-if="member.poste != undefined"><i class="Monitor" /> Poste : {{ displayPoste(member) }}</span><br>
@@ -65,6 +81,10 @@
 
 <script>
 const axios = require("axios")
+// Configuration d'axios pour CSRF
+axios.defaults.xsrfCookieName = "csrftoken"
+axios.defaults.xsrfHeaderName = "X-CSRFTOKEN"
+axios.defaults.withCredentials = true
 import Utils from "@/mixins/Utils"
 export default {
   name: "EtudeDetail",
@@ -72,6 +92,7 @@ export default {
   data () {
     return {
       member: {},
+      title: "Affichage d'un membre : <loading>",
       subordinates: [],
       breadcrumb: [
         {
@@ -92,6 +113,7 @@ export default {
     ).then((res) => {
       this.member = res.data
       this.breadcrumb[1].name = this.nicePeople(this.member)
+      this.title = `${this.nicePeople(this.member)}`
       // Chargement des subordonnés :
       if(this.member.poste != undefined) {
         const subs = this.member.poste.subordinates
@@ -112,6 +134,28 @@ export default {
   methods: {
     pushToSubordinate (sub_id) {
       this.$router.push(`/membres/${sub_id}/redirect`)
+    },
+    toggleActive () {
+      this.member.is_active = !this.member.is_active
+      const memberToSend = { ...this.member }
+      // Si poste est un objet, on envoie juste l'id
+      if (memberToSend.poste && typeof memberToSend.poste === "object") {
+        memberToSend.poste = memberToSend.poste.id
+      }
+      console.log("member is_active", this.member)
+      this.loading = true
+      axios.put(
+        `/api/membres/${this.member.id}/`,
+        memberToSend,
+        {withCredentials: true}
+      ).then(() => {
+        this.$message({message: `${this.member.is_active ? "Le membre fait partie du mandat" : "Le membre ne fait plus partie du mandat"}.`, type: "success"})
+        this.$router.push(`/membres/${this.member.id}/voir`)
+      }).catch((err) => {
+        this.$message({message: `Impossible de modifier le statut du membre : ${err}`, type: "error"})
+      }).finally(() => {
+        this.loading = false
+      })
     },
     downloadBA () {
       console.log()
