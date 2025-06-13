@@ -30,11 +30,11 @@
                 icon="Check"
                 @click="levelupTo(1)"
               >
-                La PC a été envoyée
+                La PC a été acceptée
               </el-button>
               <el-alert
                 v-show="btn_devis_help"
-                title="Groupes non rédigés"
+                title="Phases non rédigées"
                 type="warning"
                 description="Appuyez sur Phases puis 'Modifier les phases' afin de créer les phases de cette étude."
                 :closable="false"
@@ -327,7 +327,7 @@
                   v-show="btn_fi_alert"
                   slot="reference"
                   type="danger"
-                  icon="el-icon-s-check"
+                  icon="CircleCheck"
                 >
                   Pas de FI pour cette étude
                 </el-button>
@@ -353,7 +353,7 @@
               <el-button
                 v-show="btn_pvrf_levelup"
                 type="success"
-                icon="el-icon-check"
+                icon="Check"
                 @click="levelupTo(7)"
               >
                 Le PVRF a été signé
@@ -442,7 +442,7 @@
                         <router-link :to="`/etudes/${$route.params.id}/commentaires/${scope.row.id}/ajouter`">
                           <el-button
                             type="success"
-                            icon="el-icon-edit"
+                            icon="Edit"
                             :disabled="!btn_peda_rediger"
                           >
                             Rédiger le commentaire
@@ -472,7 +472,7 @@
                 v-show="btn_peda_levelup"
                 :loading="loading"
                 type="success"
-                icon="el-icon-check"
+                icon="Check"
                 @click="levelupTo(9)"
               >
                 Les rapports péda ont été complétés
@@ -602,7 +602,12 @@ export default {
     },
     // == Documents ==
     // Devis
-    btn_devis_generate () { return this.etude.currentGroupes.groupes.length > 0 },
+    btn_devis_generate () { 
+      if (this.etude.docEtude){
+        return this.etude.docEtude.deliverable && this.etude.docEtude.signDate      
+      }
+      return false 
+    },
     btn_devis_levelup () { return this.etude.state == 0 && this.btn_devis_generate },
     btn_devis_help () { return this.etude.state == 0 && ! this.btn_devis_levelup },
     // CE

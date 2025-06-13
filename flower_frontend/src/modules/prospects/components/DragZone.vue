@@ -46,26 +46,26 @@
             />
           </el-col>
         </el-row>
-        <p><i class="el-icon-office-building" /> <u>Addresse :</u> {{ item.prospect.address }}, {{ item.prospect.town }} ({{ item.prospect.postcode }})</p>
+        <p><el-icon><OfficeBuilding/></el-icon> <u>Addresse :</u> {{ item.prospect.address }}, {{ item.prospect.town }} ({{ item.prospect.postcode }})</p>
         <p v-if="item.list === 'NC'">
-          <i class="el-icon-user" /> <u>Dev'co :</u>
+          <el-icon><User/></el-icon> <u>Dev'co :</u>
           <span v-if="item.prospect.charge == null"><i>  aucun</i></span>
           <span v-else> {{ findMembre(item.prospect.charge) }}</span>
         </p>
         <p v-if="item.list === 'AR'">
-          <i class="el-icon-view" /> <u>Dernier contact :</u> {{ niceDate (item.prospect.nextDate) }}
+          <el-icon><View/></el-icon> <u>Dernier contact :</u> {{ niceDate (item.prospect.nextDate) }}
         </p>
         <p v-if="item.list === 'RDV'">
-          <i class="el-icon-date" /> <u>Date du rendez-vous :</u> {{ niceDate (item.prospect.nextDate) }}
+          <el-icon><Date/></el-icon> <u>Date du rendez-vous :</u> {{ niceDate (item.prospect.nextDate) }}
         </p>
         <p v-if="item.list === 'DS'">
-          <i class="el-icon-date" /> <u>Deadline du devis :</u> {{ niceDate (item.prospect.nextDate) }}
+          <el-icon><Date/></el-icon> <u>Deadline du devis :</u> {{ niceDate (item.prospect.nextDate) }}
         </p>
         <p
           v-for="(contact,n) in item.prospect.contactWay"
           :key="contact"
         >
-          <i class="el-icon-message" /> <u>Contact {{ n+1 }} :</u> {{ getContact(contact) }}
+          <el-icon><Message/></el-icon> <u>Contact {{ n+1 }} :</u> {{ getContact(contact) }}
         </p>
       </el-card>
     </div>

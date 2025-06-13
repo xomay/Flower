@@ -1,28 +1,44 @@
 <template>
   <BaseComponent
-    title="Affichage d'un membre"
+    :title="title"
     :breadcrumb="breadcrumb"
   >
     <template v-slot:action>
       <router-link :to="`/membres/${$route.params.id}/modifier`">
         <el-button
           type="text"
-          icon="el-icon-edit"
+          icon="Edit"
         >
           Modifier
         </el-button>
       </router-link>
+      <el-button
+          v-if ="member.is_active"
+          type="danger"
+          icon="CloseBold"
+          @click="toggleActive()"
+        >
+          N'est plus membre
+      </el-button>
+      <el-button
+          v-if ="!member.is_active"
+          type="warning"
+          icon="Select"
+          @click="toggleActive()"
+        >
+          Passer membre du mandat
+      </el-button>
     </template>
     <span><span v-if="member.gender !== ''">{{ member.gender }}</span>  {{ member.firstname }} {{ member.lastname }}</span><br>
-    <span v-if="member.poste != undefined"><i class="el-icon-monitor" /> Poste : {{ displayPoste(member) }}</span><br>
-    <span><i class="el-icon-school" /> Promotion {{ member.promotion }}</span><br>
-    <span><i class="el-icon-message" /> {{ member.email }}</span><br>
-    <span><i class="el-icon-message" /> {{ member.email_junior }}</span><br>
-    <span><i class="el-icon-mobile-phone" /> {{ member.mobile }}</span><br>
-    <span><i class="el-icon-location-outline" /> {{ member.address }} à {{ member.town }} {{ member.postcode }}</span><br>
-    <span><i class="el-icon-place" /> {{ member.country }}</span><br>
-    <span><i class="el-icon-wallet" /> {{ member.nationality }}</span><br>
-    <span><i class="el-icon-present" /> Né(e) le {{ member.birth_date }} à {{ member.birth_place }}</span><br>
+    <span v-if="member.poste != undefined"><i class="Monitor" /> Poste : {{ displayPoste(member) }}</span><br>
+    <span><el-icon><School/></el-icon> Promotion {{ member.promotion }}</span><br>
+    <span><el-icon><Message/></el-icon> {{ member.email }}</span><br>
+    <span><el-icon><Message/></el-icon> {{ member.email_junior }}</span><br>
+    <span><el-icon><Phone/></el-icon> {{ member.mobile }}</span><br>
+    <span><el-icon><Location/></el-icon> {{ member.address }} à {{ member.town }} {{ member.postcode }}</span><br>
+    <span><el-icon><Place/></el-icon> {{ member.country }}</span><br>
+    <span><el-icon><Wallet/></el-icon> {{ member.nationality }}</span><br>
+    <span><el-icon><Present/></el-icon> Né(e) le {{ member.birth_date }} à {{ member.birth_place }}</span><br>
     <br>
     <div v-if="subordinates.length > 0">
       Liste des subordonnés :
@@ -65,6 +81,10 @@
 
 <script>
 const axios = require("axios")
+// Configuration d'axios pour CSRF
+axios.defaults.xsrfCookieName = "csrftoken"
+axios.defaults.xsrfHeaderName = "X-CSRFTOKEN"
+axios.defaults.withCredentials = true
 import Utils from "@/mixins/Utils"
 export default {
   name: "EtudeDetail",
@@ -72,6 +92,7 @@ export default {
   data () {
     return {
       member: {},
+      title: "Affichage d'un membre : <loading>",
       subordinates: [],
       breadcrumb: [
         {
@@ -92,6 +113,7 @@ export default {
     ).then((res) => {
       this.member = res.data
       this.breadcrumb[1].name = this.nicePeople(this.member)
+      this.title = `${this.nicePeople(this.member)}`
       // Chargement des subordonnés :
       if(this.member.poste != undefined) {
         const subs = this.member.poste.subordinates
@@ -112,6 +134,27 @@ export default {
   methods: {
     pushToSubordinate (sub_id) {
       this.$router.push(`/membres/${sub_id}/redirect`)
+    },
+    toggleActive () {
+      this.member.is_active = !this.member.is_active
+      const memberToSend = { ...this.member }
+      // Si poste est un objet, on envoie juste l'id
+      if (memberToSend.poste && typeof memberToSend.poste === "object") {
+        memberToSend.poste = memberToSend.poste.id
+      }
+      this.loading = true
+      axios.put(
+        `/api/membres/${this.member.id}/`,
+        memberToSend,
+        {withCredentials: true}
+      ).then(() => {
+        this.$message({message: `${this.member.is_active ? "Le membre fait partie du mandat" : "Le membre ne fait plus partie du mandat"}.`, type: "success"})
+        this.$router.push(`/membres/${this.member.id}/voir`)
+      }).catch((err) => {
+        this.$message({message: `Impossible de modifier le statut du membre : ${err}`, type: "error"})
+      }).finally(() => {
+        this.loading = false
+      })
     },
     downloadBA () {
       console.log()

@@ -48,6 +48,18 @@ export default {
       }else {
         this.autocompleteValue = ""
       }
+    },
+    autocompleteValue () {
+      if (this.autocompleteValue === "") {
+        this.$emit("update:modelValue", "")
+      } else {
+        const found = this.itemList.find((item) => item.value === this.autocompleteValue)
+        if (found) {
+          this.$emit("update:modelValue", found.id)
+        } else {
+          this.$emit("update:modelValue", "")
+        }
+      }
     }
   },
   methods: {

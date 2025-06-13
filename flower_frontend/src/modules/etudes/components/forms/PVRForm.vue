@@ -87,7 +87,7 @@
       <el-col :span="24">
         <el-button
           :loading="loading"
-          icon="el-icon-plus"
+          icon="Plus"
           type="success"
           @click="validateForm"
         >

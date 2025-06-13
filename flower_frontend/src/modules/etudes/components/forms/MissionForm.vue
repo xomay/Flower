@@ -25,7 +25,7 @@
         <el-col :span="12">
           <el-button
             type="danger"
-            icon="el-icon-delete"
+            icon="Delete"
             :style="'margin-left: 5%'"
             @click="deleteMission(mission, index)"
           >

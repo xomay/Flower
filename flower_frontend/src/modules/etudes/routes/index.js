@@ -20,6 +20,11 @@ const routes = [
     component: () => import("../views/project/EtudeModifier")
   },
   {
+    path: "cc/:id/modifier",
+    name: "cc-modifier",
+    component: () => import("../views/project/CCModifier")
+  },
+  {
     path: "etudes/:id/voir",
     name: "etudes-details",
     component: () => import("../views/project/EtudeDetail")
@@ -38,6 +43,11 @@ const routes = [
     path: "etudes/:id/convention-etude",
     name: "etudes-convention-etude",
     component: () => import("../views/projectConvention/EtudeConvention")
+  },
+  {
+    path: "etudes/:id/devis",
+    name: "etudes-devis",
+    component: () => import("../views/projectConvention/EtudeDevis")
   },
   {
     path: "etudes/:id/missions",

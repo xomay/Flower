@@ -21,7 +21,7 @@ class DocEtude(models.Model):
     real_desc = models.TextField(default='')
     hasMaterialFees = models.BooleanField(default=False)
     materialFees = models.DecimalField(default=0.0, max_digits=10, decimal_places=2)
-    materialDesc = models.TextField(default='')
+    materialDesc = models.TextField(default='', blank=True)
 
     def __str__(self):
         return 'CE'

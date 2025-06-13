@@ -43,7 +43,9 @@
               style="margin-bottom: 20px;"
               >
               <b>Méthodologie :</b><br>
-              <p>{{ row.methodologie }}</p>
+              <div style="white-space: pre-wrap;">
+                {{ row.methodologie }}
+              </div>
               <hr
               style="border-width: 1px; border-color: #bfbfd7; width: 30%; margin: auto auto;"
               >

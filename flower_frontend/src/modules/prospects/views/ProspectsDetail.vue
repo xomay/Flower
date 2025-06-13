@@ -8,7 +8,7 @@
         <router-link :to="`/prospects/${$route.params.id}/modifier`">
           <el-button
             type="text"
-            icon="el-icon-edit"
+            icon="Edit"
           >
             Modifier
           </el-button>
@@ -26,7 +26,7 @@
         <router-link :to="`/prospects/${$route.params.id}/employes/ajouter`">
           <el-button
             type="text"
-            icon="el-icon-plus"
+            icon="Plus"
           >
             Ajouter
           </el-button>
@@ -42,13 +42,13 @@
           prop="firstname"
           sortable
         >
-          <template slot-scope="scope">
-            <router-link :to="`/prospects/${$route.params.id}/employes/${scope.row.id}/voir`">
+          <template #default="{ row }">
+            <router-link :to="`/prospects/${$route.params.id}/employes/${row.id}/voir`">
               <el-button
                 type="text"
                 size="small"
               >
-                {{ scope.row.firstname }} {{ scope.row.lastname }}
+                {{ row.firstname }} {{ row.lastname }}
               </el-button>
             </router-link>
           </template>

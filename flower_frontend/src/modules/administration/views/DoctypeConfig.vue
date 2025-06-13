@@ -1,106 +1,97 @@
 <template>
-  <div class="doctype-config">
-    <h1>Veuillez sélectionner le doctype à mettre à jour :</h1>
-    <div class="doctype-options">
-      <div v-for="(type, index) in documentTypes" :key="index" class="doctype-option">
-        <input 
-          type="radio" 
-          :id="type" 
-          :value="type" 
-          v-model="selectedType"
-        />
-        <label :for="type">{{ type }}</label>
-      </div>
+  <BaseComponent
+    title="Ajout de doctype"
+    :breadcrumb="breadcrumb"
+  >
+  <el-card class="doctype-config" shadow="always">
+    <el-radio-group v-model="selectedType" size="large" :max="1">
+      <el-row :gutter="20">
+        <el-col :span="8" v-for="(type, index) in documentTypes" :key="index" align="center" justify="center">
+          <el-radio-button style="margin: 5px;" border :label="type">
+            <el-icon><Document /></el-icon>
+            {{ type }}
+          </el-radio-button>
+        </el-col>
+      </el-row>
+    </el-radio-group>
+
+    <div class="file-upload" style="margin-top: 20px">
+      <el-upload
+        :auto-upload="false"
+        :show-file-list="false"
+        :before-upload="handleFileUpload"
+      >
+        <el-button type="primary">Choisir un fichier</el-button>
+        <span v-if="selectedFile" style="margin-left: 10px">{{ selectedFile.name }}</span>
+      </el-upload>
+
+      <el-button
+        type="success"
+        @click="uploadFile"
+        :disabled="!selectedFile || !selectedType"
+        style="margin-top: 10px"
+      >
+        Uploader
+      </el-button>
     </div>
-    <div class="file-upload">
-      <input type="file" @change="handleFileUpload" />
-      <button @click="uploadFile" :disabled="!selectedFile || !selectedType">Uploader</button>
-    </div>
-  </div>
+  </el-card>
+  </BaseComponent>
 </template>
 
-<script>
-const axios = require("axios");
+<script setup>
+import { ref } from 'vue'
+import axios from 'axios'
+import { ElMessage } from 'element-plus'
 
-export default {
-  data() {
-    return {
-      documentTypes: ["CE", "CC", "BC", "PVRF", "PVRI", "Avenant", "RM", "BCR"],
-      selectedType: "",
-      selectedFile: null
-    };
-  },
-  methods: {
-    handleFileUpload(event) {
-      this.selectedFile = event.target.files[0]; // Récupère le fichier sélectionné
-    },
-    async uploadFile() {
-      if (!this.selectedFile) {
-        alert("Veuillez sélectionner un fichier");
-        return;
+const documentTypes = ['CE', 'CC', 'BC', 'PVRF', 'PVRI', 'Avenant', 'RM', 'BCR', 'BA', 'BV']
+const selectedType = ref('')
+const selectedFile = ref(null)
+const breadcrumb = ref([
+  { name: 'Administration', link: '/administration/doctypes' },
+  { name: 'Gérer les doctypes', link: '/administration/doctypes' },
+])
+
+const handleFileUpload = (file) => {
+  selectedFile.value = file
+  return false // empêche l'upload auto d'el-upload
+}
+
+const getCSRFToken = () => {
+  const name = 'csrftoken'
+  const match = document.cookie.match(new RegExp(`(^| )${name}=([^;]+)`))
+  return match ? match[2] : null
+}
+
+const uploadFile = async () => {
+  try {
+    const formData = new FormData()
+    formData.append('file', selectedFile.value)
+
+    const res = await axios.post(
+      `/api/administration/doctypes/${selectedType.value}.docx/`,
+      formData,
+      {
+        withCredentials: true,
+        headers: {
+          'X-CSRFToken': getCSRFToken(),
+          'Content-Type': 'multipart/form-data',
+        },
       }
+    )
 
-      let formData = new FormData();
-      formData.append("file", this.selectedFile);
-
-      axios.post(`/api/administration/doctypes/${this.selectedType}.docx/`, formData, {
-          withCredentials: true, 
-          headers: {
-            "X-CSRFToken": this.$cookies.get("csrftoken"),//ne fonctionne pas
-            "Content-Type": "multipart/form-data",
-            "enctype": "multipart/form-data" // pour Django
-          },
-        }).then((res) => {
-          alert("Fichier uploadé :", res);
-          location.reload();
-        }).catch((err) => {
-          console.error("Erreur d'upload :", err);
-        });
-    }
+    ElMessage.success('Fichier uploadé avec succès.')
+    window.location.reload()
+  } catch (err) {
+    console.error('Erreur d\'upload :', err)
+    ElMessage.error('Échec de l\'upload.')
   }
-};
+}
 </script>
 
 <style scoped>
 .doctype-config {
   max-width: 600px;
-  margin: 0 auto;
-  margin-top: 20px;
+  margin: 30px auto;
   padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  background-color: #f9f9f9;
-}
-
-.doctype-options {
-  margin-bottom: 20px;
-}
-
-.doctype-option {
-  margin-bottom: 10px;
-}
-
-.file-upload {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-}
-
-.file-upload input[type="file"] {
-  margin-bottom: 10px;
-}
-
-.file-upload button {
-  padding: 10px 20px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.file-upload button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
 }
 </style>

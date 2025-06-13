@@ -1,14 +1,14 @@
 <template>
   <div>
-    <span><i class="el-icon-user-solid" /> Nom : {{ prospect.name }}</span><br>
-    <span><i class="el-icon-location" /> Adresse : {{ prospect.address }}; {{ prospect.postcode }}, {{ prospect.town }}</span><br>
-    <span><i class="el-icon-doc-text" /> Type d'entreprise : {{ prospect.type }}</span><br>
-    <span><i class="el-icon-chart-pie" /> Domaine : {{ prospect.domain }}</span><br>
+    <span><el-icon><UserFilled/></el-icon> Nom : {{ prospect.name }}</span><br>
+    <span><el-icon><Location/></el-icon> Adresse : {{ prospect.address }}; {{ prospect.postcode }}, {{ prospect.town }}</span><br>
+    <span><el-icon><Document/></el-icon> Type d'entreprise : {{ prospect.type }}</span><br>
+    <span><el-icon><PieChart/></el-icon> Domaine : {{ prospect.domain }}</span><br>
     <div v-if="prospect.address_tresorerie != null && prospect.address_tresorerie != ''">
-      <span><i class="el-icon-location" /> Adresse de trésorerie : {{ prospect.address_tresorerie }}</span><br><br>
+      <span><el-icon><Location/></el-icon> Adresse de trésorerie : {{ prospect.address_tresorerie }}</span><br><br>
     </div>
     <span v-show="displayCharge">
-      <i class="el-icon-user" /> Chargé dev'co :
+      <el-icon><User/></el-icon> Chargé dev'co :
       <el-link
         type="primary"
         :style="'margin-left: 12px'"
@@ -18,18 +18,18 @@
       </el-link>
     </span><br><br>
     <p v-if="prospect.advancement === 'AR'">
-      <i class="el-icon-view" /> <u>Dernier contact :</u> {{ niceDate (prospect.nextDate) }}
+      <el-icon><View/></el-icon> <u>Dernier contact :</u> {{ niceDate (prospect.nextDate) }}
     </p>
     <p v-if="prospect.advancement === 'RDV'">
-      <i class="el-icon-date" /> <u>Date du rendez-vous :</u> {{ niceDate (prospect.nextDate) }}
+      <el-icon><Date/></el-icon> <u>Date du rendez-vous :</u> {{ niceDate (prospect.nextDate) }}
     </p>
     <p v-if="prospect.advancement === 'DS'">
-      <i class="el-icon-date" /> <u>Deadline du devis :</u> {{ niceDate (prospect.nextDate) }}
+      <el-icon><Date/></el-icon> <u>Deadline du devis :</u> {{ niceDate (prospect.nextDate) }}
     </p>
     <span
       v-if="prospect.contactWay && prospect.contactWay.length > 0"
     >
-      <i class="el-icon-service" /> Moyens de contact :
+      <el-icon><Service/></el-icon> Moyens de contact :
       <ul>
         <li
           v-for="item in prospect.contactWay"

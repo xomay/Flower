@@ -56,7 +56,7 @@
         <router-link to="/prospects/ajouter/">
           <el-button
             type="success"
-            icon="el-icon-plus"
+            icon="Plus"
           />
         </router-link>
       </el-col>

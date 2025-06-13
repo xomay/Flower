@@ -14,6 +14,10 @@
 <script>
 import EmployesForm from "../components/EmployesForm"
 const axios = require("axios")
+// Configuration d'axios pour CSRF
+axios.defaults.xsrfCookieName = "csrftoken"
+axios.defaults.xsrfHeaderName = "X-CSRFTOKEN"
+axios.defaults.withCredentials = true
 
 export default {
   name: "EmployesCreer",

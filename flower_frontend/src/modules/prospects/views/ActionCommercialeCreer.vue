@@ -3,9 +3,7 @@
     title="Création d'action commerciale"
     :breadcrumb="breadcrumb"
   >
-    <h1 class="text-xl">
-      Action commerciale
-    </h1>
+    <p class="mb-4"><b>Action commerciale</b></p>
     <ACForm
       v-model="actionCommerciale"
       :loading="loading"
@@ -19,6 +17,10 @@
 import ACForm from "../components/ACForm"
 
 const axios = require("axios")
+// Configuration d'axios pour CSRF
+axios.defaults.xsrfCookieName = "csrftoken"
+axios.defaults.xsrfHeaderName = "X-CSRFTOKEN"
+axios.defaults.withCredentials = true
 
 export default {
   name: "ActionCommerciale",

@@ -59,20 +59,20 @@
               <template slot-scope="scope">
                 <el-button
                   type="text"
-                  icon="el-icon-link"
+                  icon="Link"
                   :loading="loading"
                   @click="getLink(scope.row.id)"
                 />
                 <el-button
                   type="text"
-                  icon="el-icon-download"
+                  icon="Download"
                   :loading="loading"
                   @click="downloadInvoice(scope.row.id)"
                 />
                 <router-link :to="`/etudes/${$route.params.id}/factures/modifier/${scope.row.id}`">
                   <el-button
                     type="text"
-                    icon="el-icon-edit"
+                    icon="Edit"
                     :disabled="etude.isAborted"
                   />
                 </router-link>
@@ -81,7 +81,7 @@
                   confirm-button-type="error"
                   cancel-button-text="Finalement non"
                   cancel-button-type="primary"
-                  icon="el-icon-delete"
+                  icon="Delete"
                   icon-color="red"
                   title="Voulez-vous vraiment supprimer cette facture ?"
                   @onConfirm="deleteInvoice(scope.row.id)"
@@ -89,7 +89,7 @@
                   <el-button
                     slot="reference"
                     type="text"
-                    icon="el-icon-delete"
+                    icon="Delete"
                     :loading="loading"
                     :disabled="etude.isAborted"
                   />
@@ -103,7 +103,7 @@
             <el-button
               type="success"
               class="factButton"
-              icon="el-icon-plus"
+              icon="Plus"
               :disabled="etude.isAborted"
               :loading="loading"
             >
@@ -170,14 +170,14 @@
               <template slot-scope="scope">
                 <el-button
                   type="text"
-                  icon="el-icon-download"
+                  icon="Download"
                   :loading="loading"
                   @click="downloadBV(scope.row)"
                 />
                 <router-link :to="`/tresorerie/etudes/${$route.params.id}/bvs/modifier/${scope.row.id}/`">
                   <el-button
                     type="text"
-                    icon="el-icon-edit"
+                    icon="Edit"
                     :disabled="etude.isAborted"
                   />
                 </router-link>
@@ -190,7 +190,7 @@
             v-show="can_add_bv"
             type="success"
             class="factButton"
-            icon="el-icon-plus"
+            icon="Plus"
             @click="pushToAddBV()"
           >
             Ajouter un BV
@@ -375,7 +375,6 @@ export default {
     getLink (invoiceId) {
       this.loadingInvoice = true
       axios.get(`/api/tresorerie/factures/sharedurl/${invoiceId}`, { withCredentials: true }).then((response) => {
-        console.log(response)
         let url = location.protocol + "//" + location.host + response.data
         navigator.clipboard.writeText(url)
         this.$message({ message: "Lien copié", type: "succes" })

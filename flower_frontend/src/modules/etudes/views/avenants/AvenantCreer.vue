@@ -192,7 +192,7 @@
       v-show="edit_rdms"
       :disabled="loading"
       type="text"
-      icon="el-icon-plus"
+      icon="Plus"
       @click="addMission"
     >
       Ajouter une mission
@@ -210,7 +210,7 @@
         v-show="!before_phases"
         :disabled="loading"
         type="danger"
-        icon="el-icon-trash"
+        icon="DeleteFilled"
         style="margin-top: -30px; position: absolute; right: 20px;"
         @click="deleteAvenant()"
       >

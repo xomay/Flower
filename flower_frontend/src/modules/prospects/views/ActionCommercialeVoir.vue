@@ -41,9 +41,9 @@
         label="Nom de l'action"
         sortable
       >
-        <template slot-scope="scope">
+        <template #default="{row}">
           <p style="color: #333333;">
-            <b>{{ scope.row.name }}</b>
+            <b>{{ row.name }}</b>
           </p>
         </template>
       </el-table-column>
@@ -58,8 +58,8 @@
         label="Type d'action"
         sortable
       >
-        <template slot-scope="scope">
-          {{ getActionType(scope.row.type) }}
+        <template #default="{row}">
+          {{ getActionType(row.type) }}
         </template>
       </el-table-column>
       <el-table-column
@@ -67,16 +67,16 @@
         label="Participants"
         sortable
       >
-        <template slot-scope="scope">
+        <template #default="{row}">
           <el-popover
             placement="top-start"
-            :title="participantsToTitle(scope.row.participants.length)"
+            :title="participantsToTitle(row.participants.length)"
             width="200"
             trigger="hover"
-            :content="participantsToContent(scope.row.participants)"
+            :content="participantsToContent(row.participants)"
           >
             <p slot="reference">
-              {{ participantsToTitle(scope.row.participants.length) }}
+              {{ participantsToTitle(row.participants.length) }}
             </p>
           </el-popover>
         </template>

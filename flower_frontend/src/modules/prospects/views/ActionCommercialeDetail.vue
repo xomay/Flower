@@ -7,7 +7,7 @@
       <router-link :to="`/prospects/actionCommerciale/${$route.params.id}/modifier`">
         <el-button
           type="text"
-          icon="el-icon-edit"
+          icon="Edit"
         >
           Modifier
         </el-button>

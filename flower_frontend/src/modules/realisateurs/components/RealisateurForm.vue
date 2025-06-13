@@ -3,7 +3,7 @@
     ref="reaForm"
     :model="value"
     label-position="left"
-    size="small"
+    size="default"
     :rules="formRules"
     :style="'margin: 15px'"
   >

@@ -1,7 +1,7 @@
 <template>
   <el-form
     ref="acForm"
-    :model="value"
+    :model="modelValue"
     label-position="left"
     size="small"
   >
@@ -14,7 +14,7 @@
           :rules="[{ required: true, message: 'Obligatoire' , trigger: 'blur' }]"
         >
           <el-input
-            v-model="value.name"
+            v-model="modelValue.name"
             placeholder="Nom de l'action commerciale"
           />
         </el-form-item>
@@ -30,7 +30,7 @@
           :rules="[{ required: true, message: 'Obligatoire' , trigger: 'change' }]"
         >
           <MemberPicker
-            v-model="value.type"
+            v-model="modelValue.type"
             :item-list="typesAction"
             placeholder="Type d'action"
             :style="'width: 100%'"
@@ -47,7 +47,7 @@
           :rules="[{ required: true, message: 'Obligatoire' , trigger: 'blur' }]"
         >
           <el-date-picker
-            v-model="value.date"
+            v-model="modelValue.date"
             format="DD-MM-YYYY"
             value-format="YYYY-MM-DD"
             type="date"
@@ -57,22 +57,18 @@
         </el-form-item>
       </el-col>
     </el-row>
-    <h1 class="text-xl">
-      Participants :
-    </h1>
+    <p class="mb-4"><b>Participants : </b></p>
     <el-row>
       <el-col :span="8">
         <MembersGroup
-          v-model="value.participants"
+          v-model="modelValue.participants"
           :item-list="members"
           @add-participant="addParticipant"
           @delete-participant="deleteParticipant"
         />
       </el-col>
     </el-row>
-    <h1 class="text-xl">
-      Autre :
-    </h1>
+    <p class="mb-4"><b>Autre</b></p>
     <el-form-item
       label="Consignes du resp BU :"
       prop="instructions"
@@ -80,7 +76,7 @@
       :rules="[{ required: true, message: 'Obligatoire' , trigger: 'blur' }]"
     >
       <el-input
-        v-model="value.instructions"
+        v-model="modelValue.instructions"
         type="textarea"
         placeholder="Consignes supplémentaires"
       />
@@ -118,10 +114,11 @@ export default {
   name: "ACForm",
   components: {MemberPicker, MembersGroup},
   props: {
-    value: { type: undefined, required: true },
+    modelValue: { type: undefined, required: true },
     loading: Boolean,
     deletable: Boolean
   },
+  emits: ["save", "delete"],
   data () {
     return {
       // Fields pour stocker les données.
@@ -178,12 +175,12 @@ export default {
         }
       })
 
-      if(this.value.participants.length < 1) {
+      if(this.modelValue.participants.length < 1) {
         this.$message({message: "Erreur : Il faut ajouter au moins un participant.", type: "error", offset: 40})
         valid = false
       }
-      for(var i = 0; i < this.value.participants.length; i++) {
-        if(this.value.participants[i] < 1) {
+      for(var i = 0; i < this.modelValue.participants.length; i++) {
+        if(this.modelValue.participants[i] < 1) {
           this.$message({message: `Erreur : Le participant [${i+1}] n'est pas défini.`, type: "error", offset: 40})
           valid = false
         }
@@ -194,13 +191,13 @@ export default {
       }
     },
     addParticipant () {
-      if(this.value.participants != undefined) {
-        const newParticipant = - this.value.participants.length
-        this.value.participants.push(newParticipant)
+      if(this.modelValue.participants != undefined) {
+        const newParticipant = - this.modelValue.participants.length
+        this.modelValue.participants.push(newParticipant)
       }
     },
     deleteParticipant (participantIndex) {
-      this.value.participants.splice(
+      this.modelValue.participants.splice(
         participantIndex,
         1
       )

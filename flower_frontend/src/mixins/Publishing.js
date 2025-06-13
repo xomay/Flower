@@ -1,4 +1,8 @@
 const axios = require("axios")
+// Configuration d'axios pour CSRF
+axios.defaults.xsrfCookieName = "csrftoken";
+axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
+axios.defaults.withCredentials = true;
 export default {
   methods: {
     createDownloadElement (data, filename) {
@@ -22,10 +26,54 @@ export default {
     },
     downloadCE () {
       this.loading = true
-      axios.get(`/api/publish/etude/${this.etude.id}/ce/`, { withCredentials: true, responseType: "blob" }).then((response) => {
-        this.createDownloadElement(response.data, "CE-" + this.etude.name + ".docx")
-      }).catch(err => {
-        this.$message({ message: "Une erreur est survenue lors de la génération du devis : " + err, type: "error" })
+      this.etude.docEtude.signDate = new Date()
+      this.etude.docEtude.signer1 = this.etude.docEtude.signer1.id
+      this.etude.docEtude.signer2 = this.etude.docEtude.signer2.id
+      axios.put(
+        `/api/etudes/${this.etude.id}/ce/`,
+        this.etude.docEtude,
+        {withCredentials: true}
+      ).then(() => {
+        axios.get(`/api/publish/etude/${this.etude.id}/ce/`, { withCredentials: true, responseType: "blob" }).then((response) => {
+          if (this.etude.cc){
+            this.createDownloadElement(response.data, "BC-" + this.etude.name + ".docx")
+          }else {
+            this.createDownloadElement(response.data, "CE-" + this.etude.name + ".docx")
+          }
+          
+        }).catch(err => {
+          this.$message({ message: "Une erreur est survenue lors de la génération du document : " + err, type: "error" })
+        }).finally(() => {
+          this.loading = false
+        })
+      }).catch((err) => {
+        this.$message({message: "Erreur d'enregistrement de la date : "+err, type: "error"})
+      })
+    },
+    downloadCEPdf () {
+      this.loading = true
+      this.etude.docEtude.signDate = new Date()
+      this.etude.docEtude.signer1 = this.etude.docEtude.signer1.id
+      this.etude.docEtude.signer2 = this.etude.docEtude.signer2.id
+      axios.put(
+        `/api/etudes/${this.etude.id}/ce/`,
+        this.etude.docEtude,
+        {withCredentials: true}
+      ).then(() => {
+        axios.get(`/api/publish/etude/${this.etude.id}/ce/pdf/`, { withCredentials: true, responseType: "blob" }).then((response) => {
+          if (this.etude.cc){
+            this.createDownloadElement(response.data, "BC-" + this.etude.name + ".pdf")
+          }else {
+            this.createDownloadElement(response.data, "CE-" + this.etude.name + ".pdf")
+          }
+          
+        }).catch(err => {
+          this.$message({ message: "Une erreur est survenue lors de la génération du document : " + err, type: "error" })
+        }).finally(() => {
+          this.loading = false
+        })
+      }).catch((err) => {
+        this.$message({message: "Erreur d'enregistrement de la date : "+err, type: "error"})
       }).finally(() => {
         this.loading = false
       })

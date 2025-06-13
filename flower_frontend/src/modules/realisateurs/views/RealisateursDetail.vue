@@ -7,7 +7,7 @@
       <router-link :to="`/realisateurs/${$route.params.id}/modifier`">
         <el-button
           type="text"
-          icon="el-icon-edit"
+          icon="Edit"
         >
           Modifier
         </el-button>
@@ -117,7 +117,6 @@ export default {
       return str
     },
     downloadBA () {
-      console.log()
       axios.get(
         `/api/publish/barea/${this.realisateur.id}`,
         {withCredentials: true,

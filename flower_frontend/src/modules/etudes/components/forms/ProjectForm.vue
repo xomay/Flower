@@ -73,7 +73,7 @@
       />
     </el-form-item>
     <el-form-item
-      :label="modelValue.docType === 'ce' ? 'Contexte et objectifs de l\'étude' : 'Contexte et objectifs du Bon de Commande'"
+      :label="modelValue.docType === 'ce' ? 'Présentation de l\'étude' : 'Présentation du Bon de Commande'"
       prop="description"
       label-width="140px"
     >

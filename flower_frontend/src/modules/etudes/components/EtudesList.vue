@@ -81,7 +81,7 @@
           <el-col
             style="text-align: left !important;"
           >
-            {{ getState(scope.row.state) }}
+            {{ getState(scope.row.state, scope.row.cc) }}
           </el-col>
         </div>
       </template>
@@ -116,12 +116,12 @@ export default {
         return "width: 0%"
       return "width: "+(state*10)+"%"
     },
-    getState (state) {
+    getState (state, cc) {
       if(state == undefined || this.discret)
         return ""
       switch (state) {
-      case 0: return "Les groupes sont à rédiger, le devis à envoyer."
-      case 1: return "La CE est à rédiger, envoyer et faire signer."
+      case 0: return "Les phases sont à rédiger, la PC à envoyer."
+      case 1: return `La ${cc ? 'BC' : 'CE'} est à rédiger, envoyer et faire signer.`
       case 2: return "Les RM sont à rédiger et faire signer."
       case 3: return "La FA doit être envoyée et payée."
       case 4: return "Le PVRI doit être envoyé et accepté."

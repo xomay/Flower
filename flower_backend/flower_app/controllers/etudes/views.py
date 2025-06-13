@@ -199,12 +199,12 @@ class CCView(generics.RetrieveUpdateAPIView):
     def retrieve(self, request, pk):
         return Response(CCDetailSerializer(CC.objects.get(id=pk)).data)
 
-    """def update(self, request, pk):
-        serializer = CESerializer(data=request.data)
+    def update(self, request, pk):
+        serializer = CCSerializer(data=request.data)
         if (serializer.is_valid(raise_exception=True)):
-            DocEtude.objects.filter(id=request.data['id']).update(**serializer.data)
+            CC.objects.filter(id=request.data['id']).update(**serializer.data)
             return Response(serializer.data)
-        return Response()"""#Pas encore adapté
+        return Response()
 
 class MissionsView(generics.ListCreateAPIView, generics.UpdateAPIView):
     permission_classes = [IsAuthenticated, HasGroupPermission]
