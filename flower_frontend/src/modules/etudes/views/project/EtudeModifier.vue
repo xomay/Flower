@@ -21,15 +21,16 @@
       cancel-button-text="NON"
       @onConfirm="abortEtude()"
     >
+    <template #reference>
       <el-button
         v-if="!etude.isAborted"
-        slot="reference"
         icon="DocumentDelete"
         type="danger"
         :loading="loading"
-      >
+        >
         Avorter l'étude
       </el-button>
+    </template>
     </el-popconfirm>
   </BaseComponent>
 </template>

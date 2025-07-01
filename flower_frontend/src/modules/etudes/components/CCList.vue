@@ -68,14 +68,48 @@
       </router-link>
       </template>
     </el-table-column>
+    <el-table-column
+      label="Docx"
+      align="center"
+      fixed="right"
+      width="120px"
+    >
+    <template #default="{row}">
+        <el-button
+          :disabled="row.isFinished"
+          type="text"
+          icon="Download"
+          @click="downloadCC(row)"
+        >
+        </el-button>
+      </template>
+    </el-table-column>
+    <el-table-column
+      label="PDF"
+      align="center"
+      fixed="right"
+      width="120px"
+    >
+    <template #default="{row}">
+        <el-button
+          :disabled="row.isFinished"
+          type="text"
+          icon="Download"
+          @click="downloadCCPdf(row)"
+        >
+        </el-button>
+      </template>
+    </el-table-column>
   </el-table>
 </template>
 
 <script>
 import Utils from "@/mixins/Utils"
+import Publishing from "@/mixins/Publishing"
+
 export default {
   name: "CCList",
-  mixins: [Utils],
+  mixins: [Utils, Publishing],
   props: {
     ccs: {type : Array, required: true },
     loading: {type : Boolean, required: true },

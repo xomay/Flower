@@ -68,13 +68,13 @@
         align="center"
         sortable
       >
-        <template slot-scope="scope">
-          <router-link :to="`/tresorerie/nfs/${scope.row.id}/voir`">
+        <template #default="{ row, $index }">
+          <router-link :to="`/tresorerie/nfs/${row.id}/voir`">
             <el-button
               type="text"
               size="small"
             >
-              {{ scope.row.reference }}
+              {{ row.reference }}
             </el-button>
           </router-link>
         </template>
@@ -86,13 +86,13 @@
         align="center"
         sortable
       >
-        <template slot-scope="scope">
-          <router-link :to="`/membres/${scope.row.demandeur.id}/voir`">
+        <template #default="{ row, $index }">
+          <router-link :to="`/membres/${row.demandeur.id}/voir`">
             <el-button
               type="text"
               size="small"
             >
-              {{ scope.row.demandeur.firstname + " " + scope.row.demandeur.lastname }}
+              {{ row.demandeur.firstname + " " + row.demandeur.lastname }}
             </el-button>
           </router-link>
         </template>
@@ -107,8 +107,8 @@
         align="center"
         width="120px"
       >
-        <template slot-scope="scope">
-          <span v-if="scope.row.isKilometrique">
+        <template #default="{ row, $index }">
+          <span v-if="row.isKilometrique">
             Kilométrique
           </span>
           <span v-else>
@@ -147,12 +147,12 @@
         align="center"
         width="100px"
       >
-        <template slot-scope="scope">
+        <template #default="{ row, $index }">
           <el-button
             type="text"
             icon="Download"
             :loading="loading"
-            @click="downloadNF(scope.row)"
+            @click="downloadNF(row)"
           />
         </template>
       </el-table-column>

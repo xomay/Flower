@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-row
-      v-for="(contact, index) in value"
+      v-for="(contact, index) in modelValue"
       :key="index"
       :span="12"
       :style="{margin:'10px 10px 10px 10px'}"
@@ -10,7 +10,7 @@
         :span="1"
       >
         <el-button
-          v-if="index == value.length - 1"
+          v-if="index == modelValue.length - 1"
           type="primary"
           size="mini"
           icon="Plus"
@@ -33,7 +33,7 @@
           label-width="0%"
         >
           <el-input
-            v-model="value[index]"
+            v-model="modelValue[index]"
             :placeholder="label(index)"
             :style="{width:'100%'}"
           />
@@ -47,8 +47,9 @@
 export default {
   name: "ContactsGroup",
   props: {
-    value: {type: undefined, required: true}
+    modelValue: {type: undefined, required: true}
   },
+  emits: ["add-field", "delete-field"],
   data () {
     return {
       textes: {},
@@ -57,7 +58,7 @@ export default {
   },
   watch: {
     itemList () {
-      const found = this.itemList.find((item) => item.id === this.value)
+      const found = this.itemList.find((item) => item.id === this.modelValue)
       this.autocompleteValue = found ? found.value : ""
     }
   },

@@ -5,7 +5,8 @@
     :loading="loading"
   >
     <RealisateurForm
-      :value="realisateur"
+      v-model="realisateur"
+      :members="members"
       :loading="loading"
       :ecole-suffix="mailSuffix"
       @edited="createRea"
@@ -29,10 +30,10 @@ export default {
         lastname: "",
         firstname: "",
         gender: "M.",
-        promotion: "2021",
+        promotion: 2025,
         mobile: "",
         email: "",
-        email_insa: "",
+        email_insa: "@insa-rennes.fr",
         address: "",
         postcode: "",
         town: "Rennes",
@@ -41,7 +42,11 @@ export default {
         birth_date: "",
         birth_place: "",
         filiere: "INFO",
-        security_social_number: ""
+        security_social_number: "",
+        isMember: false,
+        member: "",
+        ba: null,
+        ba_id: null,
       },
       loading: false,
       breadcrumb: [
@@ -53,13 +58,23 @@ export default {
           name: "Ajouter un réalisateur",
           link: "/realisateurs/ajouter"
         }
-      ]
+      ],
+      members: []
     }
   },
   created () {
     this.queryData(axios, "mail_suffix")
       .then((res) => this.mailSuffix = "@" + res.data[0])
       .catch((err) => this.$message({message: "Erreur: " + err, type: "error"}))
+    axios.get(
+      "/api/membres",
+      {withCredentials: true}
+    ).then((res) => {
+      res.data.forEach((elt) => elt.value = elt.firstname + " " + elt.lastname)
+      this.members = res.data
+    }).catch((err) => {
+      this.$message({message: "Impossible de récupérer la liste des prospects : " + err, type: "error", offset: 40})
+    })
   },
   methods: {
     createRea () {

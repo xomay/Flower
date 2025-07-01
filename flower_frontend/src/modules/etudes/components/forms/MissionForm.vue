@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-form
-      v-for="(mission, index) in value"
+      v-for="(mission, index) in modelValue"
       :key="index"
       ref="refFormMission"
       :model="mission"
@@ -80,6 +80,23 @@
               label="%"
             />
           </el-form-item>
+          <el-form-item
+            label="Prix du JEH"
+            prop="JEH_price"
+            label-width="50%"
+            :rows="1"
+            :rules="[
+              {required: true, message: 'Prix du JEH obligatoire', trigger: 'blur'},
+            ]"
+          >
+            <el-input-number
+              v-model="mission.JEH_price"
+              controls-position="right"
+              :min="80"
+              :max="300"
+              @change="applyJEHPrice(mission)"
+            />
+          </el-form-item>
         </el-col>
         <el-col :span="24">
           <el-form-item
@@ -94,22 +111,50 @@
               class="w-full"
               multiple
               placeholder="Phases"
-              @change="phases_updated"
+              @change="phases_updated($event, mission)"
             >
               <el-option
-                v-for="item in phases"
+                v-for="item in getAvailablePhases(mission)"
                 :key="item.id"
-                :label="item.title"
+                :label="`${item.title} (${getRemainingJEH(item.id, mission)} JEH restants)`"
                 :value="item.id"
               />
             </el-select>
           </el-form-item>
         </el-col>
       </el-row>
+      <el-table
+        class="grid"
+        :data="mission.phasesMission"
+        :row-key="row => row.id"
+      >
+        <el-table-column
+          label="Phases"
+        >
+          <template #default="{row}">
+            <span><b>Titre de la phase : </b>{{ row.title }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          width="140"
+          label="Nb JEH"
+        >
+          <template #default="{row}">
+            <el-input-number
+              v-model="row.nbJEH"
+              controls-position="right"
+              :min="1"
+              :max="getRemainingJEH(row.phaseEtude, mission)"
+              style="width: 90%"
+              size="small"
+            />
+          </template>
+        </el-table-column>
+      </el-table>
       <el-divider />
     </el-form>
     <el-alert
-      v-show="value.length == 0"
+      v-show="modelValue.length == 0"
       title="Vous n'avez ajouté aucune RdM"
       type="warning"
       description="Apputez sur le bouton ci-dessus pour en ajouter."
@@ -135,7 +180,7 @@ export default {
   name: "MissionForm",
   components: {MemberPicker},
   props: {
-    value: { type: Array, required: true },
+    modelValue: { type: Array, required: true },
     loading: { type: Boolean, required: true },
     phases: { type: Array, required: true },
     consultants: { type: Array, required: true }
@@ -147,29 +192,99 @@ export default {
   },
   methods: {
     deleteMission (mission, index) {
-      if(mission.id != undefined)
+      if(mission.id != undefined) {
         this.deletedMissions.push(mission.id)
-      this.value.splice(index, 1)
+      }
+      this.modelValue.splice(index, 1)
+    },
+    applyJEHPrice (mission) {
+      mission.phasesMission.map(phase => {
+        phase.priceJEH = mission.JEH_price
+      })
+    },
+    getTotalJEHAllocated(phaseId) {
+      return this.modelValue.reduce((total, mission) => {
+        const matching = mission.phasesMission.find(p => p.phaseEtude === phaseId)
+        return total + (matching ? Number(matching.nbJEH || 0) : 0)
+      }, 0)
+    },
+    getRemainingJEH(phaseId, currentMissionId) {
+      const phase = this.phases.find(p => p.id === phaseId)
+      const totalAvailable = phase ? phase.nbJEH : 0
+      const totalAllocatedElsewhere = this.modelValue.reduce((total, mission) => {
+        if (mission === currentMissionId) return total
+        const match = mission.phasesMission.find(p => p.phaseEtude === phaseId)
+        return total + (match ? Number(match.nbJEH || 0) : 0)
+      }, 0)
+      return Math.max(totalAvailable - totalAllocatedElsewhere, 0)
+    },
+    getAvailablePhases (currentMission) {
+      return this.phases.filter(phase => {
+        const totalAllocated = this.modelValue.reduce((total, mission) => {
+          if (mission === currentMission) return total
+          const match = mission.phasesMission.find(p => p.phaseEtude === phase.id)
+          return total + (match ? Number(match.nbJEH || 0) : 0)
+        }, 0)
+
+        return totalAllocated < phase.nbJEH || currentMission.phases.includes(phase.id)
+      })
     },
     validateForm () {
-      var result = true
-      for(const form of this.$refs.refFormMission) {
+      let result = true
+
+      // Contrôle des JEH globaux
+      for (const phase of this.phases) {
+        const total = this.getTotalJEHAllocated(phase.id)
+        if (total !== Number(phase.nbJEH)) {
+          this.$message({
+            message: `La phase "${phase.title}" a ${total}/${phase.nbJEH} JEH alloués. Vérifiez les répartitions.`,
+            type: "error"
+          })
+          result = false
+        }
+      }
+
+      for (const form of this.$refs.refFormMission) {
         form.validate((r) => {
-          if(!r)
-            result = false
+          if (!r) result = false
         })
       }
 
-      if(result) {
-        this.$emit("save", this.deletedMissions)
+      if (result) {
+        this.$emit("save", this.deletedMissions, this.deletedPhases)
       } else {
-        this.$message({message: "Certains champs sont invalides !", type: "error"})
+        this.$message({
+          message: "Certains champs sont invalides ou les JEH ne sont pas bien répartis.",
+          type: "error"
+        })
       }
     },
     goBack () {
       this.$router.push(`/etudes/${this.$route.params.id}/voir?active=Rédaction`)
     },
-    phases_updated (rdms_ids) {
+    phases_updated (rdms_ids, mission) {
+      //mission.phasesMission = this.phases.filter(phase => rdms_ids.includes(phase.id))
+      mission.phasesMission = mission.phasesMission.filter(phase => rdms_ids.includes(phase.phaseEtude))
+      rdms_ids.forEach(id => {
+        if (!mission.phasesMission.some(pm => pm.phaseEtude === id)) {
+          if (mission.originalPMs.some(pm => pm.phaseEtude === id)) {
+            // Si la phase était déjà présente, on la réutilise
+            const originalPhase = mission.originalPMs.find(pm => pm.phaseEtude === id)
+            originalPhase.priceJEH = mission.JEH_price
+            mission.phasesMission.push(originalPhase)
+          } else {
+            const phase = this.phases.find(phase => phase.id === id)
+            if (phase) {
+              phase.priceJEH = mission.JEH_price
+              mission.phasesMission.push({
+                ...phase,
+                phaseEtude: phase.id,
+                id: undefined
+              })
+            }
+          }
+        }
+      })
       this.$emit("phases-selection", rdms_ids)
     }
   }

@@ -17,6 +17,7 @@ class CC(models.Model):
     name = models.CharField(max_length=60)
     description = models.TextField(blank=True,default='')
     confidential = models.BooleanField()
+    projectManager = models.ForeignKey(Membre, on_delete=models.RESTRICT, related_name="cc_projectManager", blank=True, null=True)
 
     def __str__(self):
         return 'CC'

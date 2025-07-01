@@ -69,6 +69,10 @@
         :getgantt="true"
         :reaVue="false"
       />
+      <EtudesDahsboard
+      :etudes="[etude]"
+      :loading="loading"
+      />
       <hr style="margin: 12px; margin-bottom: 25px">
       <div>
         <b>Fichiers associés :</b>
@@ -81,17 +85,16 @@
     </div>
     <Phases
       v-show="currentTab === 'Phases'"
-      :groupes="etude.currentGroupes.groupes"
-      :are-groupes-originals="etude.isOriginalGroupes"
       :etude="etude"
+      :phases="etude.phases"
       :editable="true"
       :loading="loading"
       @us-change="usChanged"
-    />
+      ></Phases>
     <CdC
       v-show="currentTab === 'CdC'"
-      :cdc="etude.spec"
       :etude="etude"
+      :phases="etude.phases"
       :editable="true"
       :loading="loading"
       @us-change="usChanged"
@@ -100,11 +103,6 @@
       v-show="currentTab === 'Rédaction'"
       :etude="etude"
       @deleteInvoice="deleteInvoice"
-    />
-    <Avenants
-      v-show="currentTab === 'Avenants'"
-      :can-add-avenant="etude.state < 6 && !etude.isAborted && !etude.isFinished"
-      :avenants="etude.avenants"
     />
     <ManageStep
       v-if="!etude.isAborted"
@@ -122,6 +120,8 @@ import Generation from "../../components/Generation"
 import ManageStep from "../../components/ManageStep"
 import UploaderLocal from "@/components/UploaderLocal"
 import Avenants from "../../components/Avenants"
+import phases from "@/modules/etudes/components/Phases.vue";
+import EtudesDahsboard from "../../components/EtudesDahsboard.vue"
 
 const axios = require("axios")
 // Configuration d'axios pour CSRF
@@ -131,16 +131,20 @@ axios.defaults.withCredentials = true;
 
 export default {
   name: "EtudeDetail",
-  components: {Summary, Phases,CdC, Generation, ManageStep, UploaderLocal, Avenants},
+  computed: {
+    phases() {
+      return phases
+    }
+  },
+  components: {Summary, Phases, CdC, Generation, ManageStep, UploaderLocal, Avenants, EtudesDahsboard},
   data () {
     return {
       currentTab: this.$route.query.active || "Récapitulatif",
       loading: false,
       etude: {
         name: "", // valeurs par défault afin d'éviter des warnings inutiles.
-        currentGroupes: {groupes:[]},
+        phases: [],
         linkedFiles: [],
-        isOriginalGroupes: true,
         avenants: [],
         missions: [],
         hasCC: false,
@@ -166,10 +170,9 @@ export default {
       {withCredentials: true}
     ).then((res) => {
       this.etude = res.data
-      this.etude.missions = res.data.missions.filter(m => m.isCurrent == true)
+      this.etude.missions = res.data.missions
       this.breadcrumb[1].name = this.etude.name
       this.etude.hasCC = this.etude.cc > 0
-      this.no_phases = this.etude.currentGroupes.groupes.length < 1 || this.etude.currentGroupes.groupes[0].phases.length < 1
       this.etude.spec = this.etude.docEtude.spec
     }).catch(() => {
       this.$message({ message: "Impossible de récupérer l'étude pour le moment", type: "error" })

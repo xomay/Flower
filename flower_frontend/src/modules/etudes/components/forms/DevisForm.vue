@@ -70,7 +70,7 @@
     </el-row>
     <el-form-item 
       label="Contexte et objectifs de l'étude" 
-      prop="deliverable"
+      prop="description"
       label-width="140px">
       <el-input
         v-model="pc.description"
@@ -136,6 +136,9 @@ export default {
         deliverable: [
           {required: true, message: "Obligatoire", trigger: "blur"}
         ],
+        description: [
+          {required: true, message: "Obligatoire", trigger: "blur"}
+        ],
         application_fees: [
           {required: true, message: "Obligatoire", trigger: "blur"}
         ],
@@ -166,8 +169,8 @@ export default {
           depositAmount: this.pc.depositAmount,
           deliverable: this.pc.deliverable,
           description: this.pc.description,
-          signer1: this.etude.docEtude.signer1.id,
-          signer2: this.etude.docEtude.signer2.id,
+          signer1: this.etude.docEtude.signer1 ? this.etude.docEtude.signer1.id : null,
+          signer2: this.etude.docEtude.signer2 ? this.etude.docEtude.signer2.id : null,
           id: this.pc.id,
         },
         {withCredentials: true}

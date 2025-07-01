@@ -50,6 +50,7 @@ export default {
         period: 2,
         signer1: "",
         signer2: "",
+        projectManager: "",
         signDate: "",
       },
       members: [],

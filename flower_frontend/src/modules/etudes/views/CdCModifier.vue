@@ -1,15 +1,17 @@
 <template>
   <BaseComponent
-    title="Modifier les Cahier des Charges"
+    title="Modifier le Cahier des Charges"
     :breadcrumb="breadcrumb"
   >
-    <el-input
-      v-model="spec"
-      type="textarea"
-      :autosize="{ minRows: 25}"
-      placeholder="Cahier des Charges de l'étude"
-      :disabled="disabled"
-    />
+    <div v-for="(phase, idx) in phases" :key="phase.id" style="margin-top: 20px;">
+      <span>Cahier des Charges lié à la phase {{ phase.index }}</span>
+      <el-input
+        v-model="phase.spec"
+        type="textarea"
+        :autosize="{ minRows: 10 }"
+        placeholder="Cahier des charges de la phase"
+      />
+    </div>
     <el-button
       type="primary"
       style="margin-top: 20px;"
@@ -33,10 +35,8 @@ export default {
   data () {
     return {
       loading: true,
-      spec: "",
+      phases: [],
       docEtude: {},
-      isOriginalGroupes: true,
-      originalGroupOwner: -1,
       breadcrumb: [
         {
           name: "Suivi d'Etude",
@@ -59,13 +59,8 @@ export default {
       `/api/etudes/${this.$route.params.id}/`,
       {withCredentials: true}
     ).then((res) => {
-      this.isOriginalGroupes = res.data.isOriginalGroupes
-      this.originalGroupOwner = res.data.currentGroupes.id
-      res.data.groupes = res.data.currentGroupes.groupes.sort((a, b) => a.index - b.index)
-      res.data.groupes.forEach((groupe) => {
-        groupe.phases = groupe.phases.sort((a, b) => a.index - b.index)
-      })
-      this.spec = res.data.docEtude.spec
+      res.data.phases.sort((a, b) => a.index - b.index)
+      this.phases = res.data.phases
       this.docEtude = res.data.docEtude
       this.breadcrumb[1].name = res.data.name
     }).catch(() => {
@@ -78,23 +73,19 @@ export default {
     submitCdC () {
       this.loading = true
       axios.put(
-        "/api/etudes/" + this.docEtude.id + "/ce/",
-        {
-          spec: this.spec,
-          id: this.docEtude.id,
-        },
+        "/api/etudes/phases/",
+        this.phases,
         {withCredentials: true}
       ).then(() => {
-        this.$message({message: "Le Cahier des Charges a bien été enregistré", type: "success"})
+        this.$message({message: "Les Cahier des Charges ont bien été enregistrés", type: "success"})
         this.$router.push(`/etudes/${this.$route.params.id}/voir?active=CdC`)
       }).catch((err) => {
-        this.$message({message: "Erreur lors de l'enregistrement : " + err, type: "error"})
         if (err.response && err.response.status === 400) {
           this.$message({message: "Le formulaire comporte des erreurs. Vérifiez les descriptions et les objectifs des phases (menu déroulant)",
             type: "error",
             offset: 40})
         } else {
-          this.$message({message: "Impossible d'enregistrer le Cahier des Charges pour le moment",
+          this.$message({message: "Impossible d'enregistrer les Cahier des Charges pour le moment",
             type: "error",
             offset: 40})
         }

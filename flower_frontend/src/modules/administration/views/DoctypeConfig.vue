@@ -20,6 +20,7 @@
         :auto-upload="false"
         :show-file-list="false"
         :before-upload="handleFileUpload"
+        @change="onFileChange"
       >
         <el-button type="primary">Choisir un fichier</el-button>
         <span v-if="selectedFile" style="margin-left: 10px">{{ selectedFile.name }}</span>
@@ -43,7 +44,7 @@ import { ref } from 'vue'
 import axios from 'axios'
 import { ElMessage } from 'element-plus'
 
-const documentTypes = ['CE', 'CC', 'BC', 'PVRF', 'PVRI', 'Avenant', 'RM', 'BCR', 'BA', 'BV']
+const documentTypes = ['CE', 'CCA', 'BC', 'PVR', 'RDM', 'BCR', 'BA', 'BV', 'NF', 'FA']
 const selectedType = ref('')
 const selectedFile = ref(null)
 const breadcrumb = ref([
@@ -54,6 +55,10 @@ const breadcrumb = ref([
 const handleFileUpload = (file) => {
   selectedFile.value = file
   return false // empêche l'upload auto d'el-upload
+}
+
+const onFileChange = (file) => {
+  selectedFile.value = file.raw || file
 }
 
 const getCSRFToken = () => {

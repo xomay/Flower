@@ -110,7 +110,6 @@ export default {
   methods: {
     submitProject () {
       this.loading = true
-      this.form.prospect = this.form.prospect.toString()
       axios.post(
         "/api/etudes/",
         this.form,
@@ -119,8 +118,7 @@ export default {
         this.$message({message: "L'étude a bien été créée.",
           type: "success",
           offset: 40})
-        this.addGroupe(res.data.id, res.data.originalGroupes)
-        this.$router.push("/etudes")
+        this.$router.push("/etudes/" + res.data.id + "/voir")
       }).catch((err) => {
         this.$message({message: "Erreur lors de l'enregistrement : " + err, type: "error"})
         if (err.response && err.response.status === 400) {
@@ -132,29 +130,6 @@ export default {
             type: "error",
             offset: 40})
         }
-      }).finally(() => {
-        this.loading = false
-      })
-    },
-    addGroupe (projectId, ownerId) {
-      this.loading = true
-      const newGroup = {
-        title: "Groupe 1",
-        description: "Groupe unique pour les phases",
-        project: projectId,
-        index: 1,
-        owner: ownerId,
-        phases: []
-      }
-      axios.post(
-        "/api/etudes/groupes/",
-        newGroup,
-        {withCredentials: true}
-      ).then((res) => {
-        //this.$message({message: "Le groupe a bien été créé", type: "success"})
-        this.groupes.push(res.data)
-      }).catch(() => {
-        //this.$message({message: "Impossible de créer un groupe pour le moment", type: "error"})
       }).finally(() => {
         this.loading = false
       })

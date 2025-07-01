@@ -14,8 +14,6 @@ class DocEtude(models.Model):
     depositAmount = models.DecimalField(default=30, max_digits=10, decimal_places=2)
     consultantNumber = models.IntegerField(default=1)
     description = models.TextField(default='')
-    # spec = cdc
-    spec = models.TextField(default='')
     controls = models.JSONField(default=list, blank=True)
     deliverable = models.TextField(default='')
     real_desc = models.TextField(default='')

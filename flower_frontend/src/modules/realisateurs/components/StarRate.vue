@@ -7,8 +7,8 @@
     <div class="popCenter">
       <b>{{ currentValue }} / 10</b>
     </div>
+    <template #reference>
     <el-rate
-      slot="reference"
       :value="currentValue"
       :max="10"
       :disabled="!editable"
@@ -19,6 +19,7 @@
       text-color="#ffffff"
       @change="edited"
     />
+    </template>
   </el-popover>
 </template>
 
@@ -26,16 +27,17 @@
 export default {
   name:"StarRate",
   props: {
-    value: { type: undefined, required: true },
+    modelValue: { type: undefined, required: true },
     editable: { type: Boolean, default: false }
   },
+  emits: ["change"],
   data () {
     return {
       currentValue: 0
     }
   },
   watch: {
-    value (nv) {
+    modelValue (nv) {
       this.currentValue = nv
     }
   },

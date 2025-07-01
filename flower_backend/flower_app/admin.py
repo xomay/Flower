@@ -4,12 +4,11 @@ from .models.People.Employe import Employe
 from .models.Etude import Etude
 from .models.Facture import Facture
 from .models.FactureDetail import FactureDetail
-# from .models.Groupe import Groupe
 from .models.People.Membre import Membre
 from .models.People.Realisateur import Realisateur, RealisateurComment
 from .models.Mission import Mission
 from .models.PVR import PVR
-from .models.GroupePhase import GroupesSet, Groupe, Phase, US
+from .models.GroupePhase import Phase, US
 from .models.People.Prospect import Prospect
 from .models.Prospection import Action, TypeAction, ContactWay
 from .models.Competence import Competence
@@ -20,7 +19,6 @@ from .models.Poste import Poste
 from .models.UploadedFile import UploadedFile
 from .models.BaseUrsaff import BaseUrsaff
 from .models.BV import BV, Cotisation
-from .models.Avenant import Avenant
 from .models.BA import BA
 
 # Register your models here.
@@ -29,7 +27,6 @@ admin.site.register(Employe)
 admin.site.register(Etude)
 admin.site.register(Facture)
 admin.site.register(FactureDetail)
-admin.site.register(Groupe)
 admin.site.register(Membre)
 admin.site.register(Mission)
 admin.site.register(PVR)
@@ -50,8 +47,6 @@ admin.site.register(UploadedFile)
 admin.site.register(BaseUrsaff)
 admin.site.register(BV)
 admin.site.register(Cotisation)
-admin.site.register(GroupesSet)
-admin.site.register(Avenant)
 
 class PosteAdmin(admin.ModelAdmin):
     filter_horizontal = ('role',)  # Active l'interface "Available groups" ↔ "Chosen groups"

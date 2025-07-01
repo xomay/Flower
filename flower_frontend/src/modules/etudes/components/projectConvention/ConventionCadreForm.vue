@@ -38,6 +38,16 @@
         placeholder="Entrez le nom du signataire de la junior"/>
     </el-form-item>
     <el-form-item
+      label="Suiveur de projet"
+      prop="projectManager"
+      label-width="150px"
+    >
+      <MemberPicker
+        v-model="modelValue.projectManager"
+        :item-list="members"
+        placeholder="Suiveur de projet"/>
+    </el-form-item>
+    <el-form-item
       label="Nom de l'étude"
       prop="name"
       label-width="150px"
@@ -146,6 +156,9 @@ export default {
           {required: true, message: "Obligatoire", trigger: "change"}
         ],
         signer1: [
+          {required: true, message: "Obligatoire", trigger: "change"}
+        ],
+        projectManager: [
           {required: true, message: "Obligatoire", trigger: "change"}
         ],
         name: [

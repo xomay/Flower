@@ -38,7 +38,7 @@
               style="width: 80%; margin-left: 10px;"
               @input="smicHoraireChanged"
             >
-              <template slot="append">
+              <template #append>
                 €
               </template>
             </el-input>
@@ -54,7 +54,7 @@
               :disabled="true"
               style="width: 80%; margin-left: 10px;"
             >
-              <template slot="append">
+              <template #append>
                 €
               </template>
             </el-input>

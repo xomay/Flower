@@ -157,7 +157,6 @@ export default {
       })
     },
     downloadBA () {
-      console.log()
       axios.get(
         `/api/publish/ba/${this.member.id}`,
         {withCredentials: true,

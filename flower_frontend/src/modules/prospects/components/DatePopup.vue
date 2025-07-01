@@ -29,8 +29,8 @@
         />
       </el-form-item>
     </el-form>
+    <template #footer>
     <span
-      slot="footer"
       class="dialog-footer"
     >
       <el-button
@@ -45,6 +45,7 @@
         Confirmer
       </el-button>
     </span>
+    </template>
   </el-dialog>
 </template>
 

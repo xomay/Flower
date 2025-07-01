@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('flower_app', '0004_cc_prospect'),
+        ('flower_app', '0005_remove_mission_phases_phaseetude_phasemission'),
     ]
 
     operations = [

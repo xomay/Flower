@@ -2,7 +2,7 @@
   <el-row>
     <el-steps
       :active="getCurrentEtudeStep()"
-      style="margin-bottom: 30px; margin-top: 30px;"
+      style="margin-bottom: 30px; margin-top: 30px; width: 100%;"
       process-status="finish"
       finish-status="success"
       align-center
@@ -42,8 +42,8 @@
         :description="descriptions ? 'Facture de solde payée' : ''"
       />
       <el-step
-        title="Péda"
-        :description="descriptions ? 'Rapports péda rendu par les réas' : ''"
+        title="REX"
+        :description="descriptions ? 'Commentaires sur les réas complétés' : ''"
       />
       <el-step
         title="BV"

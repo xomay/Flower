@@ -75,9 +75,11 @@
             trigger="hover"
             :content="participantsToContent(row.participants)"
           >
-            <p slot="reference">
+          <template #reference>
+            <p>
               {{ participantsToTitle(row.participants.length) }}
             </p>
+          </template>
           </el-popover>
         </template>
       </el-table-column>

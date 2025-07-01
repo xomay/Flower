@@ -12,29 +12,29 @@
       fixed="left"
       sortable
     >
-      <template v-slot="scope">
+      <template #default="{row}">
         <el-button
-          :style="scope.row.isAborted ? 'color: red;' : (scope.row.isFinished ? 'color: green;' : '')"
+          :style="row.isAborted ? 'color: red;' : (row.isFinished ? 'color: green;' : '')"
           type="text"
-          @click="clicked(scope.row.id)"
+          @click="clicked(row.id)"
         >
-          {{ scope.row.name }}
+          {{ row.name }}
         </el-button>
         <span
-          v-if="scope.row.confidential && !scope.row.isAborted"
+          v-if="row.confidential && !row.isAborted"
           class="bigGray"
           style="margin-right: 12px;"
         >
           [Confidentielle]
         </span>
         <span
-          v-if="scope.row.isAborted"
+          v-if="row.isAborted"
           class="bigRed"
         >
           [Étude avortée]
         </span>
         <span
-          v-if="scope.row.isFinished"
+          v-if="row.isFinished"
           class="bigGreen"
         >
           [Étude terminée]
@@ -63,8 +63,8 @@
       fixed="right"
       align="center"
     >
-      <template v-slot="scope">
-        <div v-if="scope.row.isAborted">
+      <template #default="{row}">
+        <div v-if="row.isAborted">
           <p style="color: rgb(97, 4, 4); font-size:120%;">
             <b>Étude avortée.</b>
           </p>
@@ -74,14 +74,14 @@
             <div class="progress">
               <div
                 class="progress-value"
-                :style="getPercentage(scope.row.state)"
+                :style="getPercentage(row.state)"
               />
             </div>
           </el-col>
           <el-col
             style="text-align: left !important;"
           >
-            {{ getState(scope.row.state, scope.row.cc) }}
+            {{ getState(row.state, row.cc) }}
           </el-col>
         </div>
       </template>
@@ -128,7 +128,7 @@ export default {
       case 5: return "La FI (optionnelle) soit être payée."
       case 6: return "Le PVRF doit être envoyé et accepté."
       case 7: return "La FS doit être envoyée et payée."
-      case 8: return "Les rapports pédas doit être remplis."
+      case 8: return "Les commentaires des réas doivent être complétés."
       case 9: return "Le BV doit être payé."
       case 10: return "Étude terminée."
       }

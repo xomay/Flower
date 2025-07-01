@@ -119,15 +119,15 @@
               :data="etude.missions"
             >
               <el-table-column
-                label="Consultant"
+                label="Réalisateur"
               >
-                <template #default="scope">
+                <template #default="{row}">
                   <el-link
                     type="primary"
                     :style="'margin-left: 6px'"
-                    @click="pushToConsultant(scope.row)"
+                    @click="pushToConsultant(row)"
                   >
-                    {{ getConsultantName(scope.row) }}
+                    {{ getConsultantName(row) }}
                   </el-link>
                 </template>
               </el-table-column>
@@ -142,8 +142,8 @@
               <el-table-column
                 label="Nombre de phases"
               >
-                <template #default="scope">
-                  <span>{{ scope.row.phases.length }}</span>
+                <template #default="{row}">
+                  <span>{{ row.phasesMission.length }}</span>
                 </template>
               </el-table-column>
               <el-table-column
@@ -153,18 +153,18 @@
               <el-table-column
                 label="Montant brut"
               >
-                <template #default="scope">
-                  <span>{{ scope.row.JEHNumber * scope.row.JEHPrice }}€</span>
+                <template #default="{row}">
+                  <span>{{ row.JEHNumber * row.JEH_price }}€</span>
                 </template>
               </el-table-column>
               <el-table-column label="Opérations">
-                <template #default="scope">
+                <template #default="{row}">
                   <el-button
                     type="text"
                     icon="Download"
                     plain
                     :loading="loading"
-                    @click="downloadRDM(scope.row.id)"
+                    @click="downloadRDM(row.id)"
                   >
                     Générer
                   </el-button>
@@ -223,14 +223,15 @@
                 cancel-button-text="NON"
                 @onConfirm="levelupTo(4)"
               >
+              <template #reference>
                 <el-button
                   v-show="btn_fa_alert"
-                  slot="reference"
                   type="danger"
                   icon="Check"
                 >
                   Pas de FA pour cette étude
                 </el-button>
+              </template>
               </el-popconfirm>
             </el-row>
           </el-card>
@@ -277,14 +278,15 @@
                 cancel-button-text="NON"
                 @onConfirm="levelupTo(5)"
               >
+              <template #reference>
                 <el-button
                   v-show="btn_pvri_bypass && !btn_pvri_levelup"
-                  slot="reference"
                   type="danger"
                   icon="Check"
                 >
                   Pas de PVRI pour cette étude
                 </el-button>
+              </template>
               </el-popconfirm>
             </el-row>
           </el-card>
@@ -323,14 +325,15 @@
                 cancel-button-text="NON"
                 @onConfirm="levelupTo(6)"
               >
+              <template #reference>
                 <el-button
                   v-show="btn_fi_alert"
-                  slot="reference"
                   type="danger"
                   icon="CircleCheck"
                 >
                   Pas de FI pour cette étude
                 </el-button>
+              </template>
               </el-popconfirm>
             </el-row>
           </el-card>
@@ -397,12 +400,11 @@
           </el-card>
         </template>
       </el-step>
-      <!-- Rapport péda (8) -->
-      <el-step title="Rapport péda">
+      <!-- REX (8) -->
+      <el-step title="Retour d'expérience">
         <template #description>
           <el-card>
             <div>
-              Le <b>Rapport pédagogique</b> doit être renseigné par le réa.<br>
               Le travail de chaque réalisateur doit être commenté de manière interne.
             </div>
             <el-row class="stCardRw">
@@ -411,21 +413,21 @@
                 :data="reas"
               >
                 <el-table-column label="Consultant">
-                  <template #default="scope">
+                  <template #default="{row}">
                     <el-link
                       type="primary"
                       :style="'margin-left: 6px'"
-                      @click="$router.push(`/realisateurs/${scope.row.id}/voir`)"
+                      @click="$router.push(`/realisateurs/${row.id}/voir`)"
                     >
-                      {{ scope.row.firstname + " " + scope.row.lastname }}
+                      {{ row.firstname + " " + row.lastname }}
                     </el-link>
                   </template>
                 </el-table-column>
                 <el-table-column label="Commentaire">
-                  <template #default="scope">
-                    <el-row v-show="getComment(scope.row.comments).date">
+                  <template #default="{row}">
+                    <el-row v-show="getComment(row.comments).date">
                       <el-rate
-                        :value="getComment(scope.row.comments).rating"
+                        :value="getComment(row.comments).rating"
                         :max="10"
                         :disabled="true"
                         :allow-half="true"
@@ -434,12 +436,12 @@
                         :colors="['#ff1111', '#ffa200', '#62da05']"
                       />
                     </el-row>
-                    <el-row v-show="getComment(scope.row.comments).date">
-                      {{ getComment(scope.row.comments).content }}
+                    <el-row v-show="getComment(row.comments).date">
+                      {{ getComment(row.comments).content }}
                     </el-row>
-                    <el-row v-show="!getComment(scope.row.comments).date">
+                    <el-row v-show="!getComment(row.comments).date">
                       <el-row>
-                        <router-link :to="`/etudes/${$route.params.id}/commentaires/${scope.row.id}/ajouter`">
+                        <router-link :to="`/etudes/${$route.params.id}/commentaires/${row.id}/ajouter`">
                           <el-button
                             type="success"
                             icon="Edit"
@@ -465,7 +467,7 @@
               class="stCardRw"
               style="color: red; font-size: 120%"
             >
-              <b>ATTENTION : </b>La quali n'a pas validé le rapport pédagogique.
+              <b>ATTENTION : </b>Les commentaires des réalisateurs ne sont pas finalisés.
             </el-row>
             <el-row class="stCardRw">
               <el-button
@@ -475,7 +477,7 @@
                 icon="Check"
                 @click="levelupTo(9)"
               >
-                Les rapports péda ont été complétés
+                Les commentaires ont été complétés
               </el-button>
               <el-button
                 v-show="btn_peda_help"
@@ -604,7 +606,7 @@ export default {
     // Devis
     btn_devis_generate () { 
       if (this.etude.docEtude){
-        return this.etude.docEtude.deliverable && this.etude.docEtude.signDate      
+        return this.etude.phases != []      
       }
       return false 
     },
@@ -633,7 +635,7 @@ export default {
     btn_pvrf_help () { return this.etude.state == 6 && ! this.btn_pvrf_levelup },
     // FS
     btn_fs_alert () { return this.etude.state == 7 },
-    // Péda
+    // REX
     btn_peda_rediger () { return this.etude.state == 8 },
     btn_peda_levelup () { return this.etude.state == 8 && this.notAllCommented() },
     btn_peda_help () { return this.etude.state == 8 && ! this.btn_peda_levelup },
@@ -681,6 +683,7 @@ export default {
           qualityManager: this.etude.qualityManager.id,
           projectManager: this.etude.projectManager.id,
           clientContact: this.etude.clientContact.id,
+          docEtude: this.etude.docEtude.id,
           linkedFiles: this.etude.linkedFiles.map(lf => lf.id)
         },
         { withCredentials: true }

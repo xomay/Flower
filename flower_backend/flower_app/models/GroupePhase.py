@@ -4,55 +4,6 @@ from rest_framework import serializers
 from ..serializers import CustomListSerializer
 from datetime import date, timedelta
 
-POSSIBILITIES_ATTR = ['etude_set', 'avenant_set']
-class GroupesSet(models.Model):
-
-    # depuis étude / avenant, on récupère l'owner
-    @property
-    def owner(self):
-        for attr in POSSIBILITIES_ATTR:
-            if hasattr(self, attr):
-                coll = getattr(self, attr)
-                if coll.count() > 0:
-                    return coll.first()
-        return None
-        
-    def __str__(self):
-        if self.owner != None:
-            return "GS("+str(self.owner)+")"
-        return "GS_(UNDEFINED)"
-
-class Groupe(models.Model):
-    title = models.CharField(max_length=60)
-    index = models.IntegerField()
-    description = models.TextField()
-
-    owner = models.ForeignKey(GroupesSet, on_delete=models.RESTRICT, null=True)
-
-    def __str__(self):
-        return self.owner.__str__() + " > " + self.title
-
-    @property
-    def nbJEH(self):
-        total = 0
-        for phase in self.phase_set.iterator():
-            total += phase.nbJEH
-        return total
-        
-    @property
-    def nbPhases(self):
-        total = 0
-        for phase in self.phase_set.iterator():
-            total += 1
-        return total
-
-    @property
-    def totalPrice(self):
-        total = 0
-        for phase in self.phase_set.iterator():
-            total += phase.totalPrice
-        return total
-
 class Phase(models.Model):
     title = models.CharField(max_length=200, default='Titre')
     index = models.IntegerField()
@@ -65,10 +16,11 @@ class Phase(models.Model):
     nbJEH = models.IntegerField(default=1)
     priceJEH = models.DecimalField(default=450, max_digits=10, decimal_places=2)
 
-    groupe = models.ForeignKey(Groupe, on_delete=models.CASCADE)
+    # spec = cdc
+    spec = models.TextField(default='', blank=True)
 
     def __str__(self):
-        return self.groupe.__str__() + " > " + self.title
+        return self.title
 
     @property
     def totalPrice(self):
@@ -78,9 +30,14 @@ class Phase(models.Model):
     def finishDate(self):
         return (self.beginDate + timedelta(days=self.period)).isoformat()
 
-    @property
-    def hasRDM(self):
-        return self.mission_set.count() > 0
+class PhaseEtude(Phase):
+    from .Etude import Etude
+    etude = models.ForeignKey(Etude, on_delete=models.RESTRICT, related_name='phasesEtude')
+
+class PhaseMission(Phase):
+    from .Mission import Mission
+    mission = models.ForeignKey(Mission, on_delete=models.CASCADE, related_name='phasesMission')
+    phaseEtude = models.ForeignKey(PhaseEtude, on_delete=models.CASCADE, related_name='phasesEtudeAssociate', null=True)
 
 class US(models.Model):
     name = models.CharField(max_length=200, null=False)
@@ -110,10 +67,9 @@ class USSerializer(serializers.ModelSerializer):
 
 class PhaseSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False, write_only=False)
-    uss = USSerializer(source='us_set', many=True)
+    uss = USSerializer(source='us_set' ,many=True)
     finishDate = serializers.SerializerMethodField()
     totalPrice = serializers.SerializerMethodField()
-    hasRDM = serializers.SerializerMethodField()
     class Meta:
         model = Phase
         fields = '__all__'
@@ -122,79 +78,96 @@ class PhaseSerializer(serializers.ModelSerializer):
         return obj.finishDate
     def get_totalPrice(self, obj):
         return obj.totalPrice
-    def get_hasRDM(self, obj):
-        return obj.hasRDM
 
     def create(self, validated_data):
-        if 'us_set' in validated_data:
-            del validated_data['us_set']
-        return Phase.objects.create(**validated_data)
+        uss_data = validated_data.pop('us_set', [])
+        phase = Phase.objects.create(**validated_data)
 
+        for us_data in uss_data:
+            us_data.pop('phase', None)
+            US.objects.create(phase=phase, **us_data)
 
-class GroupeSerializerBasic(serializers.ModelSerializer):
-    class Meta:
-        fields = '__all__'
-        model = Groupe
-
-class GroupeSerializer(serializers.ModelSerializer):
-    id = serializers.IntegerField(required=False, write_only=False)
-    phases = PhaseSerializer(source='phase_set', many=True)
-
-    def create(self, validated_data):
-        if 'phase_set' in validated_data:
-            del validated_data['phase_set']
-        return Groupe.objects.create(**validated_data)
+        return phase
 
     def update(self, instance, validated_data):
-        instance.title = validated_data.get('title', instance.title)
-        instance.index = validated_data.get('index', instance.index)
-        instance.description = validated_data.get('description', instance.description)
-        instance.owner = validated_data.get('owner', instance.owner)
+        uss_data = validated_data.pop('us_set', None)
+
+        # Update base fields
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
         instance.save()
 
-        phases = validated_data.get('phase_set')
-        for phase in phases:
-            phase_id = phase.get('id', None)
-            if phase_id:
-                phase_instance = Phase.objects.get(id=phase_id, groupe=instance)
-                phase_instance.title = phase.get('title', phase_instance.title)
-                phase_instance.index = phase.get('index', phase_instance.index)
-                phase_instance.description = phase.get('description', phase_instance.description)
-                phase_instance.methodologie = phase.get('methodologie', phase_instance.methodologie)
-
-                phase_instance.beginDate = phase.get('beginDate', phase_instance.beginDate)
-                phase_instance.period = phase.get('period', phase_instance.period)
-
-                phase_instance.nbJEH = phase.get('nbJEH', phase_instance.nbJEH)
-                phase_instance.priceJEH = phase.get('priceJEH', phase_instance.priceJEH)
-
-                phase_instance.groupe = phase.get('groupe', phase_instance.groupe)
-                phase_instance.save()
-
-                uss = phase.get('us_set')
-                for us in uss:
-                    us_id = us.get('id', None)
-                    us_instance = US.objects.get(id=us_id, phase=phase_instance)
-                    us_instance.name = us.get('name', us_instance.name)
-                    us_instance.state = us.get('state', us_instance.name)
-                    us_instance.save()
+        # Optionnel : gérer mise à jour des US
+        if uss_data is not None:
+            instance.us_set.all().delete()
+            for us_data in uss_data:
+                us_data.pop('phase', None)
+                US.objects.create(phase=instance, **us_data)
 
         return instance
 
-    class Meta:
-        model = Groupe
-        fields = '__all__'
-        list_serializer_class = CustomListSerializer
+class PhaseEtudeSerializer(PhaseSerializer):
+    class Meta(PhaseSerializer.Meta):
+        model = PhaseEtude
+        fields = PhaseSerializer.Meta.fields
 
-class GroupeDetailSerializer(serializers.ModelSerializer):
-    phases = PhaseSerializer(source='phase_set', many=True)
+    def create(self, validated_data):
+        uss_data = validated_data.pop('us_set', [])
+        etude = validated_data.pop('etude')
+
+        phase = PhaseEtude.objects.create(etude=etude, **validated_data)
+
+        for us_data in uss_data:
+            us_data.pop('phase', None)
+            US.objects.create(phase=phase, **us_data)
+
+        return phase
+
+    def update(self, instance, validated_data):
+        uss_data = validated_data.pop('us_set', None)
+
+        # Mise à jour de l'`etude` si présente dans la requête
+        if 'etude' in validated_data:
+            instance.etude = validated_data.pop('etude')
+
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+
+        # Synchroniser avec la PhaseMission associée (si elle existe)
+        try:
+            phase_mission = PhaseMission.objects.get(phaseEtude=instance.id)
+            # Champs à synchroniser
+            for field in ['description', 'title', 'methodologie', 'priceJEH', 'beginDate', 'spec', 'period']:
+                setattr(phase_mission, field, getattr(instance, field))
+            phase_mission.save()
+        except PhaseMission.DoesNotExist:
+            pass  # Pas de mission liée, on ne fait rien
+
+        # Gérer les US (on les remplace tous ici, comportement simple)
+        if uss_data is not None:
+            instance.us_set.all().delete()
+            for us_data in uss_data:
+                us_data.pop('phase', None)
+                US.objects.create(phase=instance, **us_data)
+
+        return instance
+
+class PhaseMissionSerializer(PhaseSerializer):
+    phaseEtude = serializers.PrimaryKeyRelatedField(queryset=PhaseEtude.objects.all(), required=False, allow_null=True)
+
     class Meta:
-        model = Groupe
+        model = PhaseMission
         fields = '__all__'
 
-class GroupesSetSerializer(serializers.ModelSerializer):
-    id = serializers.IntegerField(required=False, write_only=False)
-    groupes = GroupeDetailSerializer(source='groupe_set', many=True, read_only=True)
-    class Meta:
-        model = GroupesSet
-        fields = '__all__'
+    def create(self, validated_data):
+        uss_data = validated_data.pop('us_set', [])
+        mission = validated_data.pop('mission')
+
+        phase = PhaseMission.objects.create(mission=mission, **validated_data)
+
+        for us_data in uss_data:
+            us_data.pop('phase', None)
+            US.objects.create(phase=phase, **us_data)
+
+        return phase

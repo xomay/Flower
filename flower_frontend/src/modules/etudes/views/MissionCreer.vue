@@ -37,6 +37,10 @@
 import MissionForm from "../components/forms/MissionForm"
 
 const axios = require("axios")
+// Configuration d'axios pour CSRF
+axios.defaults.xsrfCookieName = "csrftoken";
+axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
+axios.defaults.withCredentials = true;
 
 export default {
   name: "MissionCreer",
@@ -78,12 +82,24 @@ export default {
       `/api/etudes/${this.$route.params.id}/`,
       {withCredentials: true}
     ).then((res) => {
-      this.phases = res.data.currentGroupes.groupes.map((groupe) => groupe.phases).flat()
+      this.phases = res.data.phases
       res.data.missions.forEach((mission) => {
         mission.consultant = mission.consultant.id
       })
-      this.missions = res.data.missions.filter(mission => mission.isCurrent).slice()
+      //this.missions = res.data.missions.filter(mission => mission.isCurrent).slice()
+      this.missions = res.data.missions
       this.originalIDs = this.missions.map(m => m.id)
+      this.missions.forEach((mission) => {
+        mission.originalPMs = mission.phasesMission.slice()
+        mission.phases = this.phases.filter(phase => mission.originalPMs.some(pm => pm.phaseEtude === phase.id))
+        mission.phases = mission.phases.map(phase => phase.id)
+        this.phases = this.phases.map(ph => {
+        return {
+          ...ph,
+          hasRDM: mission.phases.includes(ph.id)
+        }
+      })
+      })
       this.breadcrumb[1].name = res.data.name
     }).catch((err) => {
       this.$message({message: "Impossible de récupérer l'étude : "+err, type: "error", offset: 40})
@@ -95,15 +111,15 @@ export default {
       res.data.forEach((realisateur) => realisateur.value = `${realisateur.firstname} ${realisateur.lastname}`)
       this.consultants = res.data
     }).catch((err) => {
-      this.$message({message: "Impossible de récupérer les membres : "+err, type: "error", offset: 40})
+      this.$message({message: "Impossible de récupérer les réalisateurs : "+err, type: "error", offset: 40})
     })
   },
   methods: {
-    pickedPhasesUpdated (rmds_ids) {
+    pickedPhasesUpdated (rdms_ids) {
       this.phases = this.phases.map(ph => {
         return {
           ...ph,
-          hasRDM: rmds_ids.includes(ph.id)
+          hasRDM: rdms_ids.includes(ph.id)
         }
       })
     },
@@ -112,13 +128,15 @@ export default {
         consultant: "",
         missionBegin: "",
         missionEnd: "",
-        percentageJunior: "0.55",
+        percentageJunior: "0.51",
         JEHNumber: 1,
-        JEHPrice: 400,
-        phases: []
+        JEH_price: 220,
+        phasesMission: [],
+        originalPMs: [],
+        phases: [],
       })
     },
-    saveMissions (deletedIDS) {
+    saveMissions (deletedIDS, deletedPhases) {
       this.loading = true
       var promesses = [] // promesses à réaliser sur les objets de missions avant de changer l'étude
       var newMissions = []
@@ -128,10 +146,19 @@ export default {
           promesses.push(this.saveMissionObject(mission))
         } else {
           // La mission est normale : on la met à jour
+          const phasesASupprimer = mission.originalPMs.filter(
+            originalPhase => !mission.phasesMission.some(
+              currentPhase => currentPhase.id === originalPhase.id
+            )
+          )
+          phasesASupprimer.forEach(phase => {
+            // On supprime les phases de mission qui ne sont plus dans la mission
+            promesses.push(this.deletePhaseID(phase.id))
+          })
           newMissions.push(mission)
         }
       }
-      // On émet un DELETE sur les étues à supprimer.
+      // On émet un DELETE sur les missions à supprimer.
       deletedIDS.forEach(id => {
         promesses.push(this.deleteMissionID(id))
       })
@@ -146,8 +173,43 @@ export default {
           newMissions,
           {withCredentials: true}
         ).then(() => {
-          this.$message({message: "Les missions ont bien été enregistrées", type: "success", offset: 40})
-          this.$router.push(`/etudes/${this.$route.params.id}/voir?active=Rédaction`)
+          //crée les phasesMissions par requetes
+          promesses = []
+          this.missions.forEach((mission) => {
+            for (const phaseMission of mission.phasesMission) {
+              if (phaseMission.id === undefined) {
+                // Nouvelle phase de mission, on la crée
+                //phaseMission.uss = phaseMission.uss.map(us => us.id)
+                phaseMission.uss = []
+                const {id ,...newPhase} = phaseMission;
+                const phase = {
+                  ...newPhase,
+                  mission: mission.id
+                }
+                axios.post(
+                  `/api/etudes/phases/missions/`,
+                  phase,
+                  {withCredentials: true}
+                ).then((res) => {
+                }).catch((err) => {
+                  this.$message({message: "Impossible de créer la phase de mission : "+err, type: "error", offset: 40})
+                })
+              } else {
+                // Phase de mission existante, on la met à jour
+                promesses.push(axios.put(
+                  `/api/etudes/phases/missions/${phaseMission.id}/`,
+                  phaseMission,
+                  {withCredentials: true}
+                ))
+              }
+            }
+          })
+          Promise.all(promesses).then(() => {
+            this.$message({message: "Les missions ont bien été enregistrées", type: "success", offset: 40})
+            this.$router.push(`/etudes/${this.$route.params.id}/voir?active=Rédaction`)
+          }).catch((err) => {
+            this.$message({message: "Impossible de mettre à jour les phases de mission : "+err, type: "error", offset: 40})
+          })
         }).catch((err) => {
           this.$message({message: "Impossible de mettre à jour les missions : "+err, type: "error", offset: 40})
         }).finally(() => {
@@ -184,6 +246,21 @@ export default {
           resolve()
         }).catch((err) => {
           this.$message({message: "Impossible de supprimer la mission : "+err,
+            type: "error",
+            offset: 40})
+          fail(err)
+        })
+      })
+    },
+    deletePhaseID (phase_id) {
+      return new Promise((resolve, fail) => {
+        axios.delete(
+          `/api/etudes/phases/missions/${phase_id}/`,
+          {withCredentials: true}
+        ).then(() => {
+          resolve()
+        }).catch((err) => {
+          this.$message({message: "Impossible de supprimer la phase : "+err,
             type: "error",
             offset: 40})
           fail(err)

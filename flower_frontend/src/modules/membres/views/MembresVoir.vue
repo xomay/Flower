@@ -86,13 +86,13 @@
         label="Membre"
         sortable
       >
-        <template v-slot="scope">
-          <router-link :to="`/membres/${scope.row.id}/voir`">
+        <template #default="{row}">
+          <router-link :to="`/membres/${row.id}/voir`">
             <el-button
               type="text"
               size="small"
             >
-              {{ scope.row.fullname }}
+              {{ row.fullname }}
             </el-button>
           </router-link>
         </template>
@@ -123,18 +123,18 @@
         label="Créer un compte"
       >
         <template
-          v-slot="scope"
+          #default="{row}"
         >
           <el-button
-            v-show="isButtonOn(scope.row.id)"
-            ref="btn_{{scope.row.id}}"
+            v-show="isButtonOn(row.id)"
+            ref="btn_{{row.id}}"
             size="default"
             type="warning"
-            @click="openAccount(scope.row.id)"
+            @click="openAccount(row.id)"
           >
             Ouvrir un compte utilisateur
           </el-button>
-          <el-col v-show="!isButtonOn(scope.row.id)">
+          <el-col v-show="!isButtonOn(row.id)">
             <div class="grid-content bg-purple-light" />
           </el-col>
         </template>

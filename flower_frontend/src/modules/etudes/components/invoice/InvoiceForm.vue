@@ -1,7 +1,7 @@
 <template>
   <el-form
     ref="refFacture"
-    :model="value"
+    :model="modelValue"
     label-position="left"
     label-width="30%"
     :rules="formRules"
@@ -13,7 +13,7 @@
           prop="accountingPeriod"
         >
           <el-input-number
-            v-model="value.accountingPeriod"
+            v-model="modelValue.accountingPeriod"
             controls-position="right"
           />
         </el-form-item>
@@ -24,7 +24,7 @@
           prop="invoiceNumber"
         >
           <el-input-number
-            v-model="value.invoiceNumber"
+            v-model="modelValue.invoiceNumber"
             controls-position="right"
             style="width:200px;"
             :min="1"
@@ -57,7 +57,7 @@
       <el-col :span="12">
         <!--  Alerte si le numéro du mois entré localement diffère de la version du serveur. On laisse exprès la possibilité de prendre une décision manuelle. -->
         <el-alert
-          v-if="originalMonthNum != value.invoiceNumber"
+          v-if="originalMonthNum != modelValue.invoiceNumber"
           title="Attention"
           :description="alertDescription"
           type="warning"
@@ -73,7 +73,7 @@
           prop="autocompletePayee"
         >
           <el-autocomplete
-            v-model="value.autocompletePayee"
+            v-model="modelValue.autocompletePayee"
             class="inline-input"
             :fetch-suggestions="querySearchProspects"
             placeholder="Entrez le nom du prospect"
@@ -87,7 +87,7 @@
           prop="issueDate"
         >
           <el-date-picker
-            v-model="value.issueDate"
+            v-model="modelValue.issueDate"
             format="DD-MM-YYYY"
             value-format="YYYY-MM-DD"
             placeholder="Date d'émission"
@@ -102,7 +102,7 @@
           prop="paymentDate"
         >
           <el-date-picker
-            v-model="value.paymentDate"
+            v-model="modelValue.paymentDate"
             format="DD-MM-YYYY"
             value-format="YYYY-MM-DD"
             placeholder="Date de paiement"
@@ -115,7 +115,7 @@
           label="Type de la facture"
           prop="invoiceType"
         >
-          <el-select v-model="value.invoiceType">
+          <el-select v-model="modelValue.invoiceType">
             <el-option
               value="FA"
               label="Facture d'Achat"
@@ -141,7 +141,7 @@
           label-width="15%"
           prop="description"
         >
-          <el-input v-model="value.description" />
+          <el-input v-model="modelValue.description" />
         </el-form-item>
       </el-col>
     </el-row>
@@ -157,7 +157,7 @@
       </el-col>
     </el-row>
     <el-row
-      v-for="(detail, index) in value.details"
+      v-for="(detail, index) in modelValue.details"
       :key="index"
       :gutter="20"
     >
@@ -221,7 +221,7 @@
       </el-col>
     </el-row>
     <el-alert
-      v-if="value.details.length == 0"
+      v-if="modelValue.details.length == 0"
       title="Attention"
       description="Aucun détail n'a été ajouté à la facture"
       type="warning"
@@ -247,10 +247,11 @@ export default {
   name: "InvoiceForm",
   mixins: [Utils],
   props: {
-    value: { type: Object, required: true },
+    modelValue: { type: Object, required: true },
     loading: { type: Boolean, required: true },
     prospects: { type: Array, required: true }
   },
+  emits: ["update:modelValue", "save"],
   data () {
     return {
       loading_local: false,
@@ -313,7 +314,7 @@ export default {
         { withCredentials: true }
       ).then((res) => {
         this.originalMonthNum = res.data + 1
-        this.value.invoiceNumber = this.originalMonthNum
+        this.modelValue.invoiceNumber = this.originalMonthNum
         this.originalInvoiceBase = "FA" + this.generateYearDigits() + this.generateMonthDigits()
         this.updateFANumber()
       }).catch((err) => {
@@ -321,23 +322,23 @@ export default {
       })
     },
     addDetail () {
-      this.value.details.push({
-        invoice: this.value.id,
+      this.modelValue.details.push({
+        invoice: this.modelValue.id,
         taxes: 0.2
       })
     },
     updateFANumber () {
-      this.value.invoiceNumber = (this.value.invoiceNumber > 9 ? "" : "0") + String(this.value.invoiceNumber)
-      this.invoiceNumberDisplay = this.originalInvoiceBase + this.value.invoiceNumber
+      this.modelValue.invoiceNumber = (this.modelValue.invoiceNumber > 9 ? "" : "0") + String(this.modelValue.invoiceNumber)
+      this.invoiceNumberDisplay = this.originalInvoiceBase + this.modelValue.invoiceNumber
       this.updateAlert()
     },
     updateAlert () {
       this.alertDescription =
-      `Le numéro de facture de ce mois (${this.value.invoiceNumber}) ne correspond pas avec la valeur du serveur (${(this.originalMonthNum < 9 ? "0":"")+this.originalMonthNum}).`
+      `Le numéro de facture de ce mois (${this.modelValue.invoiceNumber}) ne correspond pas avec la valeur du serveur (${(this.originalMonthNum < 9 ? "0":"")+this.originalMonthNum}).`
     },
     removeDetail (index, detailId) {
       if (!detailId) {
-        this.value.details.splice(
+        this.modelValue.details.splice(
           index,
           1
         )
@@ -349,7 +350,7 @@ export default {
           this.$message({message: "Ligne supprimée de la facture.",
             type: "success",
             offset: 40})
-          this.value.details.splice(
+          this.modelValue.details.splice(
             index,
             1
           )
@@ -366,7 +367,7 @@ export default {
       cb(results)
     },
     handleSelectPayee (prospect) {
-      this.value.payee = prospect.id
+      this.modelValue.payee = prospect.id
     }
   }
 }

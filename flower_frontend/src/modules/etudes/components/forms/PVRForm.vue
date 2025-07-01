@@ -1,7 +1,7 @@
 <template>
   <el-form
     ref="PVRFormRef"
-    :model="value"
+    :model="modelValue"
     :rules="formRules"
     label-width="30%"
     label-position="left"
@@ -12,7 +12,7 @@
           label="Type de PVR"
           prop="documentType"
         >
-          <el-select v-model="value.documentType">
+          <el-select v-model="modelValue.documentType">
             <el-option
               value="I"
               label="PVRI"
@@ -30,7 +30,7 @@
           prop="signingDate"
         >
           <el-date-picker
-            v-model="value.signingDate"
+            v-model="modelValue.signingDate"
             format="DD-MM-YYYY"
             value-format="YYYY-MM-DD"
             type="date"
@@ -54,7 +54,7 @@
           prop="signer1"
         >
           <MemberPicker
-            v-model="value.signer1"
+            v-model="modelValue.signer1"
             :item-list="members"
             placeholder="Signataire Junior"
           />
@@ -66,7 +66,7 @@
           prop="signer2"
         >
           <MemberPicker
-            v-model="value.signer2"
+            v-model="modelValue.signer2"
             :item-list="employees"
             placeholder="Signataire Prospect"
           />
@@ -78,7 +78,7 @@
           prop="deliverable"
         >
           <el-input
-            v-model="value.deliverable"
+            v-model="modelValue.deliverable"
             type="textarea"
             placeholder="Décrire les livrables."
           />
@@ -107,10 +107,11 @@ export default {
   name: "PVRForm",
   components: {MemberPicker},
   props: {
-    value: { type: Object, required: true },
+    modelValue: { type: Object, required: true },
     etude: { type: Object, required: true },
     loading: { type: Boolean, required: true }
   },
+  emits: ["save"],
   data () {
     return {
       members: [],
@@ -163,7 +164,7 @@ export default {
       })
     },
     validateForm () {
-      this.value.guaranteeDuration = this.guaranteeDuration
+      this.modelValue.guaranteeDuration = this.guaranteeDuration
       this.$refs.PVRFormRef.validate((r) => {
         if(r) {
           this.$emit("save")

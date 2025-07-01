@@ -3,30 +3,21 @@
     title="Modifier les Phases"
     :breadcrumb="breadcrumb"
   >
-    <el-alert
-      v-if="!isOriginalGroupes"
-      type="info"
-      show-icon
-      :closable="false"
-      style="margin: 10px;"
-    >
-      <template slot="title">
+
+      <template #title>
         <b><u>Note :</u> Il ne s'agit pas des phases originales de l'étude, mais celles d'un avenant.</b>
       </template>
-    </el-alert>
     <PhasesForm
-      v-model="groupes"
+      v-model="phases"
       :small="false"
       @add-us="addUS"
-      @add-groupe="addGroupe"
       @add-phase="addPhase"
-      @delete-groupe="deleteGroupe"
       @delete-phase="deletePhase"
       @delete-us="deleteUS"
     />
     <el-button
       type="primary"
-      @click="submitGroupesAndPhases"
+      @click="submitPhases"
     >
       Enregistrer
     </el-button>
@@ -35,6 +26,7 @@
 
 <script>
 import PhasesForm from "../components/forms/PhasesForm"
+import phases from "@/modules/etudes/components/Phases.vue";
 const axios = require("axios")
 // Configuration d'axios pour CSRF
 axios.defaults.xsrfCookieName = "csrftoken";
@@ -47,9 +39,7 @@ export default {
   data () {
     return {
       loading: true,
-      groupes: [],
-      isOriginalGroupes: true,
-      originalGroupOwner: -1,
+      phases: [],
       breadcrumb: [
         {
           name: "Suivi d'Etude",
@@ -72,13 +62,9 @@ export default {
       `/api/etudes/${this.$route.params.id}/`,
       {withCredentials: true}
     ).then((res) => {
-      this.isOriginalGroupes = res.data.isOriginalGroupes
-      this.originalGroupOwner = res.data.currentGroupes.id
-      res.data.groupes = res.data.currentGroupes.groupes.sort((a, b) => a.index - b.index)
-      res.data.groupes.forEach((groupe) => {
-        groupe.phases = groupe.phases.sort((a, b) => a.index - b.index)
-      })
-      this.groupes = res.data.groupes
+      //res.data.phases = res.data.phases.sort((a, b) => a.index - b.index)
+      this.etude = res.data
+      this.phases = res.data.phases
       this.breadcrumb[1].name = res.data.name
     }).catch(() => {
       this.$message({message: "Impossible de récupérer les groupes pour le moment", type: "error"})
@@ -87,66 +73,27 @@ export default {
     })
   },
   methods: {
-    addGroupe () {
-      this.loading = true
-      const newGroup = {
-        title: "Titre",
-        description: "Description",
-        project: this.$route.params.id,
-        index: this.groupes.length + 1,
-        owner: this.originalGroupOwner,
-        phases: []
-      }
-      axios.post(
-        "/api/etudes/groupes/",
-        newGroup,
-        {withCredentials: true}
-      ).then((res) => {
-        this.$message({message: "Le groupe a bien été créé", type: "success"})
-        this.groupes.push(res.data)
-      }).catch(() => {
-        this.$message({message: "Impossible de créer un groupe pour le moment", type: "error"})
-      }).finally(() => {
-        this.loading = false
-      })
-    },
-    lastPhaseEnd (groupe) {
+    lastPhaseEnd (phases) {
       let date = new Date()
-      if(groupe.phases.length == 0){ //if no other phase in the group, last phase of the full etude
-        for(let i in this.groupes){
-          let currentGroupe = this.groupes[i]
-          for(let j in currentGroupe.phases){
-            let phase = currentGroupe.phases[j]
-            let end = new Date(phase.beginDate)
-            end.setDate(end.getDate() + phase.period)
-            if(date.getTime()<end.getTime()){
-              date = end
-            }
-          }
-        }
-      }else{
-        for(let i in groupe.phases){
-          let phase = groupe.phases[i]
-          let end = new Date(phase.beginDate)
-          end.setDate(end.getDate() + phase.period)
-          if(date.getTime()<end.getTime()){
-            date = end
-          }
-        }
+      if (this.phases.length !== 0) {
+        let date = new Date(this.phases[this.phases.length - 1].beginDate)
+        date.setDate(date.getDate() + this.phases[this.phases.length - 1].period)
+        return date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate()
+      } else {
+        return date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
       }
-      return date.getFullYear()+"-"+(date.getMonth()+1)+"-"+date.getDate()
     },
-    addPhase (groupe) {
+    addPhase () {
       this.loading = true
       const newIndex = (Math.max.apply(
           Math,
-          groupe.phases.map((phase) => phase.index)
+          this.phases.map((phase) => phase.index)
         ) | 0) + 1,
         newPhase = {
           index: newIndex,
           uss: [],
-          groupe: groupe.id,
-          beginDate: this.lastPhaseEnd(groupe)
+          etude: this.etude.id,
+          beginDate: this.lastPhaseEnd()
         }
       axios.post(
         "/api/etudes/phases/",
@@ -154,7 +101,12 @@ export default {
         {withCredentials: true}
       ).then((res) => {
         this.$message({message: "La phase a bien été ajoutée.", type: "success"})
-        groupe.phases.push(res.data)
+        const phase = {
+          ...res.data,
+          etude: this.etude.id,
+          uss: []
+        }
+        this.phases.push(phase)
       }).catch(() => {
         this.$message({message: "Impossible de créer une phase pour le moment", type: "error"})
       }).finally(() => {
@@ -169,50 +121,20 @@ export default {
         ) | 0) + 1,
         newUS = {
           index: newIndex,
-          uss: [],
           name: "US",
           phase: phase.id
         }
-      axios.post(
-        "/api/etudes/uss/",
-        newUS,
-        {withCredentials: true}
-      ).then((res) => {
-        this.$message({message: "L'US a bien été ajouté.", type: "success"})
-        phase.uss.push(res.data)
-      }).catch(() => {
-        this.$message({message: "Impossible de créer une US pour le moment", type: "error"})
-      }).finally(() => {
-        this.loading = false
-      })
+        phase.uss.push(newUS)
     },
-    deleteGroupe ({groupeId, groupeIndex}) {
-      this.loading = true
-      axios.delete(
-        `/api/etudes/groupes/${groupeId}/`,
-        {withCredentials: true}
-      ).then(() => {
-        this.groupes.splice(
-          groupeIndex,
-          1
-        )
-        this.$message({message: "Le groupe a bien été supprimé",
-          type: "success"})
-      }).catch((err) => {
-        this.$message({message: "Impossible de supprimer ce groupe pour le moment :"+err, type: "error"})
-      }).finally(() => {
-        this.loading = false
-      })
-    },
-    deletePhase ({phase, groupe}) {
+    deletePhase ({phase}) {
       this.loading = true
       axios.delete(
         `/api/etudes/phases/${phase.id}/`,
         {withCredentials: true}
       ).then(() => {
-        const index = groupe.phases.indexOf(phase)
+        const index = this.phases.indexOf(phase)
         if (index > -1) {
-          groupe.phases.splice(
+          this.phases.splice(
             index,
             1
           )
@@ -244,29 +166,30 @@ export default {
         this.loading = false
       })
     },
-    submitGroupesAndPhases () {
+    submitPhases () {
       this.loading = true
       axios.put(
-        "/api/etudes/groupes/",
-        this.groupes,
+        "/api/etudes/phases/",
+        this.phases,
         {withCredentials: true}
       ).then(() => {
-        this.$message({message: "Les Groupes et Phases ont bien été enregistrés", type: "success"})
+        this.$message({message: "Les Phases ont bien été enregistrés", type: "success"})
         this.$router.push(`/etudes/${this.$route.params.id}/voir?active=Phases`)
       }).catch((err) => {
-        this.$message({message: "Erreur lors de l'enregistrement : " + err, type: "error"})
+        //this.$message({message: "Erreur lors de l'enregistrement : " + err, type: "error"})
         if (err.response && err.response.status === 400) {
           this.$message({message: "Le formulaire comporte des erreurs. Vérifiez les descriptions et les objectifs des phases (menu déroulant)",
             type: "error",
             offset: 40})
         } else {
-          this.$message({message: "Impossible d'enregistrer les Groupes et Phases pour le moment",
+          this.$message({message: "Impossible d'enregistrer les Phases pour le moment",
             type: "error",
             offset: 40})
         }
         this.loading = false
       })
     }
+
   }
 }
 </script>

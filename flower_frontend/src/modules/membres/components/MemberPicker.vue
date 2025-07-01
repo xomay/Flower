@@ -29,6 +29,14 @@ export default {
       forcedSync: null
     }
   },
+  created () {
+    if (this.modelValue){
+      const found = this.itemList.find((item) => item.id === this.modelValue)
+      this.autocompleteValue = found ? found.value : ""
+    }else {
+      this.autocompleteValue = ""
+    }
+  },
   watch: {
     itemList () {
       const found = this.itemList.find((item) => item.id === this.modelValue)

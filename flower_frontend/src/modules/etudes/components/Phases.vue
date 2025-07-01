@@ -1,16 +1,8 @@
 <template>
   <div>
-    <el-alert
-      v-if="!areGroupesOriginals"
-      type="info"
-      show-icon
-      :closable="false"
-      style="margin: 10px;"
-    >
       <template slot="title">
         <b><u>Note :</u> Il ne s'agit pas des phases originales de l'étude, mais celles d'un avenant.</b>
       </template>
-    </el-alert>
     <router-link :to="{ name: 'etudes-phases', params: { id: this.$route.params.id } }">
       <el-button
         v-if="editable"
@@ -19,17 +11,12 @@
         :loading="loading"
         :disabled="etude.isAborted"
       >
-        {{ this.etude.currentGroupes.groupes.length > 0 && this.etude.currentGroupes.groupes.length > 0 ? "Modifier les phases" : "Créer les phases" }}
+        {{ this.phases.length > 0 ? "Modifier les phases" : "Créer les phases" }}
       </el-button>
     </router-link>
-    <div
-      v-for="(groupe, index) in groupes"
-      :key="index"
-      class="my-4"
-    >
       <el-table
         class="grid"
-        :data="groupe.phases"
+        :data="phases.sort((a, b) => a.index - b.index)"
         style="color: black; width: 100%;"
         :header-row-style="{color: 'black'}"
         :row-key="row => row.id"
@@ -101,7 +88,6 @@
         />
       </el-table>
     </div>
-  </div>
 </template>
 
 <script>
@@ -113,10 +99,9 @@ export default {
   mixins: [UtilsMixin],
   props: {
     etude: { type: Object, required: true },
-    groupes: { type: Array, required: true },
+    phases: { type: Array, required: true },
     loading: { type: Boolean, required: true },
     editable: { type: Boolean, required: true },
-    areGroupesOriginals: { type: Boolean, required: true },
     reaVue: { type: Boolean, default: false }
   },
   methods: {

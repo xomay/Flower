@@ -22,6 +22,8 @@ from flower_app.controllers.gantt.gantt import computeGanttFromEtudeRaw
 
 import tempfile
 
+from ...models.CC import CC
+
 
 class DevisView(generics.RetrieveAPIView):
     permission_classes = [IsAuthenticated, HasGroupPermission]
@@ -62,25 +64,22 @@ class CEViewDocx(generics.RetrieveAPIView):
         svgData.write_image(tmp_img_file)
         images = {'gantt': tmp_img_file.name}
 
-        groupes = []
         total_nbJEH = 0
         total_HT = 0
         duree = 0
 
-        for groupe in etude.currentGroupes.groupe_set.all():
-            phases = []
-            for phase in groupe.phase_set.all():
-                total = phase.nbJEH * phase.priceJEH
-                phases.append({
-                    "title": phase.title,
-                    "nbJEH": phase.nbJEH,
-                    "priceJEH": phase.priceJEH,
-                    "totalHT": total
-                })
-                duree += phase.period
-                total_nbJEH += phase.nbJEH
-                total_HT += total
-            groupes.append({"index": groupe.index, "phases": phases})
+        phases = []
+        for phase in etude.phasesEtude.all():
+            total = phase.nbJEH * phase.priceJEH
+            phases.append({
+                "title": phase.title,
+                "nbJEH": phase.nbJEH,
+                "priceJEH": phase.priceJEH,
+                "totalHT": total
+            })
+            duree += phase.period
+            total_nbJEH += phase.nbJEH
+            total_HT += total
 
         application_fees = etude.application_fees
         if (etude.docEtude.hasMaterialFees):
@@ -92,7 +91,7 @@ class CEViewDocx(generics.RetrieveAPIView):
 
         context = {
             "etude": etude,
-            "groupes": groupes,
+            "phases": phases,
             "total_nbJEH": total_nbJEH,
             "total_HT": total_HT,
             "total_with_fees": total_with_fees,
@@ -102,7 +101,7 @@ class CEViewDocx(generics.RetrieveAPIView):
         }
 
         if etude.cc is None or etude.cc == '':
-            return computeDocx(context, 'CETUDE.docx', 'CE-' + etude.name, images=images)
+            return computeDocx(context, 'CE.docx', 'CE-' + etude.name, images=images)
         else:
             return computeDocx(context, 'BC.docx', 'BC-' + etude.name, images=images)
 
@@ -120,39 +119,40 @@ class CEViewPdf(generics.RetrieveAPIView):
         svgData.write_image(tmp_img_file)
         images = {'gantt': tmp_img_file.name}
 
-        groupes = []
         total_nbJEH = 0
         total_HT = 0
         duree = 0
 
-        for groupe in etude.currentGroupes.groupe_set.all():
-            phases = []
-            for phase in groupe.phase_set.all():
-                total = phase.nbJEH * phase.priceJEH
-                phases.append({
-                    "title": phase.title,
-                    "nbJEH": phase.nbJEH,
-                    "priceJEH": phase.priceJEH,
-                    "totalHT": total
-                })
-                duree += phase.period
-                total_nbJEH += phase.nbJEH
-                total_HT += total
-            groupes.append({"index": groupe.index, "phases": phases})
+        phases = []
+        nbPhases = etude.phasesEtude.all().count()
+        for phase in etude.phasesEtude.all():
+            total = phase.nbJEH * phase.priceJEH
+            phases.append({
+                "title": phase.title,
+                "nbJEH": phase.nbJEH,
+                "priceJEH": phase.priceJEH,
+                "totalHT": total
+            })
+            duree += phase.period
+            total_nbJEH += phase.nbJEH
+            total_HT += total
 
         application_fees = etude.application_fees
+        material_fees = 0
         if (etude.docEtude.hasMaterialFees):
             material_fees = etude.docEtude.materialFees
-        total_with_fees = total_HT + application_fees
+        total_with_fees = total_HT + application_fees + material_fees
         tva = total_with_fees * Decimal(str(0.2))
         total_ttc = total_with_fees + tva
         semaines = duree/7
 
         context = {
             "etude": etude,
-            "groupes": groupes,
+            "nbPhases": nbPhases,
+            "phases": phases,
             "total_nbJEH": total_nbJEH,
             "total_HT": total_HT,
+            "material_fees": material_fees,
             "total_with_fees": total_with_fees,
             "tva": tva,
             "total_ttc": total_ttc,
@@ -160,9 +160,43 @@ class CEViewPdf(generics.RetrieveAPIView):
         }
 
         if etude.cc is None or etude.cc == '':
-            return computePdf(context, 'CETUDE.docx', 'CE-' + etude.name, images=images)
+            print("Génération d'une CE")
+            return computePdf(context, 'CE.docx', 'CE-' + etude.name, images=images)
         else:
             return computePdf(context, 'BC.docx', 'BC-' + etude.name, images=images)
+
+class CCViewDocx(generics.RetrieveAPIView):
+    permission_classes = [IsAuthenticated, HasGroupPermission]
+    required_groups = {
+        # from modules/etudes/components/Generation.vue in modules/etudes/views/EtudeDetails.vue
+        'GET': ['ROLE_CA']
+    }
+
+    def retrieve(request, self, cc_id):
+        cc = CC.objects.get(pk=cc_id)
+
+        context = {
+            "cc": cc,
+        }
+
+        return computeDocx(context, 'CCA.docx', 'CC-' + cc.name)
+
+class CCViewPdf(generics.RetrieveAPIView):
+    permission_classes = [IsAuthenticated, HasGroupPermission]
+    required_groups = {
+        # from modules/etudes/components/Generation.vue in modules/etudes/views/EtudeDetails.vue
+        'GET': ['ROLE_CA']
+    }
+
+    def retrieve(request, self, cc_id):
+        cc = CC.objects.get(pk=cc_id)
+        print("CC ", cc.number)
+
+        context = {
+            "cc": cc,
+        }
+
+        return computePdf(context, 'CCA.docx', 'CC-' + cc.name)
 
 
 class RDMView(generics.RetrieveAPIView):
@@ -174,10 +208,34 @@ class RDMView(generics.RetrieveAPIView):
 
     def retrieve(request, self, rdm_id):
         mission = Mission.objects.get(pk=rdm_id)
-        rea =mission.consultant
+        rea = mission.consultant
+
+        total_nbJEH = 0
+        total_retrib = 0
+        duree = 0
+
+        nbPhases = mission.phasesMission.all().count()
+        for phase in mission.phasesMission.all():
+            total = phase.nbJEH * phase.priceJEH
+            duree += phase.period
+            total_nbJEH += phase.nbJEH
+            total_retrib += total
+
+        semaines = duree / 7
+
         if rea.ba != None:
-            ref = 'RM_'+str(rea.ba.year % 100)+'C' + '%03d' % rea.ba_id+'_'+str(mission.project.number)
-            return computeDocx({'rdm':{'mission': mission,'ref':ref}}, 'RDM.docx', 'RDM-' + mission.project.name)
+            if rea.isMember:
+                ref = 'RM_'+str(rea.ba.year % 100)+'C' + '%03d' % rea.ba_id+'_'+str(mission.project.number)
+            else:
+                ref = 'RM_' + str(rea.ba.year % 100) + 'R' + '%03d' % rea.ba_id + '_' + str(mission.project.number)
+            context = {
+                "rdm": {'mission': mission, 'ref': ref},
+                "nbPhases": nbPhases,
+                "total_nbJEH": total_nbJEH,
+                "total_retrib": total_retrib,
+                "semaines": semaines,
+            }
+            return computeDocx(context, 'RDM.docx', 'RDM-' + mission.project.name)
         else:
             return HttpResponse("Réalisateur sans BA généré", status=HTTPStatus.FORBIDDEN)
 
@@ -228,6 +286,15 @@ class BAView(generics.RetrieveAPIView):
                 rea.ba_id = ba_iterator.iterator
                 ba_iterator.save()
         rea.save()
+        try:
+            realisateur = Realisateur.objects.get(member=rea.id)
+            # Champs à synchroniser
+            for field in ['ba', 'ba_id']:
+                setattr(realisateur, field, getattr(rea, field))
+            realisateur.save()
+        except Realisateur.DoesNotExist:
+            pass  # Pas de mission liée, on ne fait rien
+
         monsieurmadame = 'Monsieur' if rea.gender == 'M.' else 'Madame'
         ref = 'BA_'+str(rea.ba.year % 100)+'_C' + '%03d' % rea.ba_id
         return computeDocx({'ba': {'etudiant': rea, 'ref': ref.upper(), 'monsieurmadame': monsieurmadame}}, 'BA.docx', 'BA-' + ref)

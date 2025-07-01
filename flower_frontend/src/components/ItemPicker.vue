@@ -24,14 +24,15 @@
 export default {
   name: "ItemPicker",
   props: {
-    value: { type: Number, required: true },
+    modelValue: { type: Number, required: true },
     itemList: { type: Array, required: true },
     placeholder: { type: String, required: true },
     loading: { type: Boolean, default: false }
   },
+  emits: ["input"],
   data () {
     return {
-      originalValue: this.value
+      originalValue: this.modelValue
     }
   },
   methods: {

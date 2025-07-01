@@ -1,13 +1,8 @@
 <template>
   <div>
-    <div
-      v-for="(groupe, index) in modelValue"
-      :key="index"
-      class="my-4"
-    >
       <el-table
         class="grid"
-        :data="groupe.phases"
+        :data="modelValue.sort((a, b) => a.index - b.index)"
         :row-key="row => row.id"
       >
         <el-table-column type="expand">
@@ -105,7 +100,6 @@
               :min="1"
               :max="99"
               style="width: 90%"
-              size="small"
               :disabled="disabled"
             />
           </template>
@@ -132,10 +126,10 @@
               type="date"
               placeholder="Choisissez un jour"
               width="200"
-              size="small"
               format="DD-MM-YYYY"
               value-format="YYYY-MM-DD"
-              :disabled="disabled"
+              :disabled="disabled || row.index !== 1"
+              @change="calculateDates"
             />
           </template>
         </el-table-column>
@@ -151,26 +145,26 @@
               :min="1"
               :max="99"
               style="width: 90%"
-              size="small"
               :disabled="disabled"
+              @change="calculateDates"
             />
           </template>
         </el-table-column>
         <el-table-column
           width="50"
         >
-          <template v-slot="props">
+          <template #default="{ row, $index }">
             <el-button
               type="text"
               icon="Top"
               :disabled="disabled"
-              @click="exchangeItems(index, props.$index, props.$index - 1)"
+              @click="exchangePhases($index, $index - 1)"
             /><br>
             <el-button
               type="text"
               icon="Bottom"
               :disabled="disabled"
-              @click="exchangeItems(index, props.$index, props.$index + 1)"
+              @click="exchangePhases($index, $index + 1)"
             />
           </template>
         </el-table-column>
@@ -192,18 +186,24 @@
           type="text"
           icon="Plus"
           :disabled="disabled"
-          @click="addPhase(groupe)"
+          @click="addPhase()"
         >
           Ajouter une phase
         </el-button>
       </div>
     </div>
-  </div>
 </template>
 
 <script>
+import phases from "@/modules/etudes/components/Phases.vue";
+
 export default {
   name: "PhasesForm",
+  computed: {
+    phases() {
+      return phases
+    }
+  },
   props: {
     modelValue: { type: Array, required: true },
     small: { type: Boolean, required: true },
@@ -211,16 +211,14 @@ export default {
   },
   emits: ["update:modelValue","add-groupe", "add-phase", "add-us", "delete-phase", "delete-group", "delete-us"],
   methods: {
-    addGroupe () {
-      this.$emit("add-groupe")
-    },
-    addPhase (groupe) {
-      this.$emit("add-phase", groupe)
+    addPhase () {
+      this.$emit("add-phase")
     },
     addUS (phase) {
       this.$emit("add-us", phase)
     },
-    exchangeGroupes (index1, index2) {
+    exchangePhases (index1, index2) {
+      console.log("exchangePhases", index1, index2)
       if (index1 < 0 || index1 >= this.modelValue.length || index2 < 0 || index2 >= this.modelValue.length) {
         return
       }
@@ -231,29 +229,49 @@ export default {
         this.modelValue[index2].index,
         this.modelValue[index1].index
       ]
-      this.modelValue = this.modelValue.sort((a, b) => a.index - b.index)
+      // Crée une nouvelle copie triée
+      const sorted = [...this.modelValue].sort((a, b) => a.index - b.index)
+      // Émet la mise à jour vers le parent
+      this.$emit('update:modelValue', sorted)
     },
-    exchangeItems (groupe_index, index1, index2) {
-      if (index1 < 0 || index1 >= this.modelValue[groupe_index].phases.length || index2 < 0 || index2 >= this.modelValue[groupe_index].phases.length) {
-        return
-      }
-      [
-        this.modelValue[groupe_index].phases[index1].index,
-        this.modelValue[groupe_index].phases[index2].index
-      ] = [
-        this.modelValue[groupe_index].phases[index2].index,
-        this.modelValue[groupe_index].phases[index1].index
-      ]
-      this.modelValue[groupe_index].phases = this.modelValue[groupe_index].phases.sort((a, b) => a.index - b.index)
-    },
-    deleteGroupe (groupeId, groupeIndex) {
-      this.$emit("delete-groupe", {groupeId, groupeIndex})
-    },
-    deletePhase (phase, groupe) {
-      this.$emit("delete-phase", {phase, groupe})
+    deletePhase (phase) {
+      this.$emit("delete-phase", {phase})
     },
     deleteUS (us, phase) {
       this.$emit("delete-us", {us, phase})
+    },
+    calculateDates () {
+      const formatDate = (date) => {
+        if (!(date instanceof Date)) date = new Date(date)
+        const year = date.getFullYear()
+        const month = String(date.getMonth() + 1).padStart(2, '0')
+        const day = String(date.getDate()).padStart(2, '0')
+        return `${year}-${month}-${day}`
+      }
+      const sortedPhases = [...this.modelValue].sort((a, b) => a.index - b.index)
+      
+      for (let i = 0; i < sortedPhases.length; i++) {
+        const phase = sortedPhases[i]
+        if (i === 0) {
+          if (!phase.beginDate || isNaN(new Date(phase.beginDate))) continue
+          const begin = new Date(phase.beginDate)
+          const finish = new Date(begin)
+          finish.setDate(begin.getDate() + (phase.period || 0) - 1)
+          phase.beginDate = formatDate(begin)
+          phase.finishDate = formatDate(finish)
+        } else {
+          const previous = sortedPhases[i - 1]
+          if (!previous.finishDate || isNaN(new Date(previous.finishDate))) continue
+          const begin = new Date(previous.finishDate)
+          begin.setDate(begin.getDate() + 1)
+          const finish = new Date(begin)
+          finish.setDate(begin.getDate() + (phase.period || 0) - 1)
+          phase.beginDate = formatDate(begin)
+          phase.finishDate = formatDate(finish)
+        }
+      }
+
+      this.$emit('update:modelValue', sortedPhases)
     }
   }
 }

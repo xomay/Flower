@@ -6,8 +6,6 @@ router = routers.DefaultRouter()
 
 urlpatterns = [
     path('etudes/', include('flower_app.controllers.etudes.urls')),
-    path('etudes/groupes/', include('flower_app.controllers.groupes.urls')),
-    path('etudes/groupessets/', include('flower_app.controllers.groupessets.urls')),
     path('etudes/phases/', include('flower_app.controllers.phases.urls')),
     path('etudes/uss/', include('flower_app.controllers.uss.urls')),
     path('tresorerie/factures/', include('flower_app.controllers.factures.urls')),
@@ -27,7 +25,6 @@ urlpatterns = [
     path('upload/', include('flower_app.controllers.upload.urls')),
     path('signature/', include('flower_app.controllers.signature.urls')),
     path('bv/', include('flower_app.controllers.bv.urls')),
-    path('avenants/', include('flower_app.controllers.avenants.urls')),
     path('test/', include('flower_app.controllers.test.urls')),
     # path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 ]
