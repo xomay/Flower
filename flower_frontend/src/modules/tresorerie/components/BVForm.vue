@@ -278,7 +278,7 @@
       class="mt-2"
     >
       <el-collapse-item name="0">
-        <template slot="title">
+        <template #title>
           <span class="mr-2 text-lg">Données additionelles</span>
         </template>
         <el-alert

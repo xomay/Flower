@@ -5,7 +5,8 @@
     :loading="loading"
   >
     <RealisateurForm
-      :value="realisateur"
+      :model-value="realisateur"
+      :members="members"
       :deletable="true"
       :loading="loading"
       :ecole-suffix="mailSuffix"
@@ -19,6 +20,10 @@
 import RealisateurForm from "../components/RealisateurForm.vue"
 import GlobalData from "@/mixins/GlobalData"
 const axios = require("axios")
+// Configuration d'axios pour CSRF
+axios.defaults.xsrfCookieName = "csrftoken";
+axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
+axios.defaults.withCredentials = true;
 
 export default {
   name: "RealisateurModifier",
@@ -28,6 +33,7 @@ export default {
     return {
       mailSuffix: "",
       realisateur: {},
+      members: [],
       loading: true,
       breadcrumb: [
         {
@@ -52,6 +58,7 @@ export default {
       {withCredentials: true}
     ).then((res) => {
       this.realisateur = res.data
+      this.members = [{id: res.data.member, value: res.data.firstname + " " + res.data.lastname}]
       this.breadcrumb[1].name = `${this.realisateur.firstname} ${this.realisateur.lastname}`
     }).catch((err) => {
       this.$message({message: "Impossible de récupérer le réalisateur pour le moment : " + err,

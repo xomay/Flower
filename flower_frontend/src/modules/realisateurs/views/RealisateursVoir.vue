@@ -17,13 +17,13 @@
         fixed="left"
         sortable
       >
-        <template slot-scope="scope">
-          <router-link :to="`/realisateurs/${scope.row.id}/voir`">
+        <template #default="{ row }">
+          <router-link :to="`/realisateurs/${row.id}/voir`">
             <el-button
               type="text"
               size="small"
             >
-              {{ scope.row.firstname + " " + scope.row.lastname }}
+              {{ row.firstname + " " + row.lastname }}
             </el-button>
           </router-link>
         </template>
@@ -50,8 +50,8 @@
         label="Compétences"
         sortable
       >
-        <template slot-scope="scope">
-          {{ niceArray(scope.row.skillsArray) }}
+        <template #default="{ row }">
+          {{ niceArray(row.skillsArray) }}
         </template>
       </el-table-column>
       <el-table-column
@@ -70,18 +70,18 @@
         fixed="right"
         sortable
       >
-        <template slot-scope="scope">
+        <template #default="{ row }">
           <p
-            v-if="scope.row.rating == -1"
+            v-if="row.rating == -1"
             color="gray"
           >
             <i>néant</i>
           </p>
           <p
             v-else
-            :color="getRatingColor(scope.row.rating)"
+            :color="getRatingColor(row.rating)"
           >
-            {{ scope.row.rating }} / 10
+            {{ row.rating }} / 10
           </p>
         </template>
       </el-table-column>
@@ -92,21 +92,21 @@
         fixed="right"
         align="center"
       >
-        <template slot-scope="scope">
+        <template #default="{ row }">
           <el-button
-            v-show="scope.row.user == null"
+            v-show="row.user == null"
             type="warning"
             icon="Plus"
             :loading="loading"
-            @click="createReaAcccount(scope.row)"
+            @click="createReaAcccount(row)"
           />
           <!-- Utilisation de v-show car ça peut changer (genre une fois qu'on a appuyé sur le bouton quoi) -->
           <el-button
-            v-show="scope.row.user != null"
+            v-show="row.user != null"
             type="danger"
             icon="Minus"
             :loading="loading"
-            @click="deleteReaAcccount(scope.row)"
+            @click="deleteReaAcccount(row)"
           />
         </template>
       </el-table-column>

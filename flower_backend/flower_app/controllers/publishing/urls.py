@@ -7,6 +7,8 @@ urlpatterns = [
     path('etude/<int:etude_id>/devis/', views.DevisView.as_view()),
     path('etude/<int:etude_id>/ce/', views.CEViewDocx.as_view()),
     path('etude/<int:etude_id>/ce/pdf/', views.CEViewPdf.as_view()),
+    path('etude/<int:cc_id>/cc/', views.CCViewDocx.as_view()),
+    path('etude/<int:cc_id>/cc/pdf/', views.CCViewPdf.as_view()),
     path('facture/<int:facture_id>/', views.FactureView.as_view()),
     path('facture/<int:facture_id>/shared/<str:key>', views.SharedFactureView.as_view()),
     path('pvr/<int:pvr_id>/', views.PVRView.as_view()),

@@ -1,7 +1,6 @@
 import datetime
 import django.core.validators
 import django.db.models.deletion
-import flower_app.models.Avenant
 import flower_app.models.Etude
 import flower_app.models.Mission
 from django.conf import settings
@@ -94,12 +93,6 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
-            name='GroupesSet',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-            ],
-        ),
-        migrations.CreateModel(
             name='ParamsJE',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
@@ -185,7 +178,6 @@ class Migration(migrations.Migration):
                 ('cc', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.RESTRICT, to='flower_app.cc')),
                 ('clientContact', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.RESTRICT, to='flower_app.employe')),
                 ('docEtude', models.OneToOneField(default=flower_app.models.Etude.create_doc, on_delete=django.db.models.deletion.CASCADE, to='flower_app.docetude')),
-                ('originalGroupes', models.ForeignKey(default=flower_app.models.Etude.create_groupesset, on_delete=django.db.models.deletion.RESTRICT, to='flower_app.groupesset')),
             ],
         ),
         migrations.CreateModel(
@@ -209,16 +201,6 @@ class Migration(migrations.Migration):
                 ('taxFreeAmount', models.DecimalField(decimal_places=2, max_digits=10)),
                 ('taxes', models.DecimalField(decimal_places=2, default=0.2, max_digits=10)),
                 ('invoice', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='flower_app.facture')),
-            ],
-        ),
-        migrations.CreateModel(
-            name='Groupe',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=60)),
-                ('index', models.IntegerField()),
-                ('description', models.TextField()),
-                ('owner', models.ForeignKey(null=True, on_delete=django.db.models.deletion.RESTRICT, to='flower_app.groupesset')),
             ],
         ),
         migrations.CreateModel(
@@ -266,25 +248,6 @@ class Migration(migrations.Migration):
             model_name='cc',
             name='signer1',
             field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.RESTRICT, to='flower_app.membre'),
-        ),
-        migrations.CreateModel(
-            name='Avenant',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('number', models.PositiveSmallIntegerField(blank=True, default=0, null=True)),
-                ('comment', models.TextField(blank=True, null=True)),
-                ('is_delais', models.BooleanField(default=False)),
-                ('is_methodo', models.BooleanField(default=False)),
-                ('is_cdc', models.BooleanField(default=False)),
-                ('is_budget', models.BooleanField(default=False)),
-                ('signature_date', models.DateField()),
-                ('new_dates', models.DateField(blank=True, null=True)),
-                ('signataire_prospect', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='flower_app.employe')),
-                ('project', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='flower_app.etude')),
-                ('groupes', models.ForeignKey(default=flower_app.models.Avenant.createNewGS, on_delete=django.db.models.deletion.RESTRICT, to='flower_app.groupesset')),
-                ('author', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='avenants_made', to='flower_app.membre')),
-                ('signataire_junior', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='flower_app.membre')),
-            ],
         ),
         migrations.CreateModel(
             name='Action',
@@ -389,7 +352,6 @@ class Migration(migrations.Migration):
                 ('period', models.IntegerField(default=14)),
                 ('nbJEH', models.IntegerField(default=1)),
                 ('priceJEH', models.DecimalField(decimal_places=2, default=450, max_digits=10)),
-                ('groupe', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='flower_app.groupe')),
             ],
         ),
         migrations.AddField(

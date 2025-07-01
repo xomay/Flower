@@ -1,7 +1,7 @@
 <template>
   <div>
     <div
-      v-for="(detail, index) in value"
+      v-for="(detail, index) in modelValue"
       :key="index"
       class="my-4"
     >
@@ -23,7 +23,7 @@
               :loading="loading"
               type="text"
               icon="CaretBottom"
-              :disabled="index === (value.length - 1)"
+              :disabled="index === (modelValue.length - 1)"
               @click="exchangeBlocs(index, index+1)"
             />
             <el-button
@@ -83,7 +83,7 @@
                     placeholder="Prix HT"
                     style="width: 250px;"
                   >
-                    <template slot="append">
+                    <template #append>
                       €
                     </template>
                   </el-input>
@@ -123,7 +123,7 @@
                     controls-position="right"
                     style="width: 250px;"
                   >
-                    <template slot="append">
+                    <template #append>
                       km
                     </template>
                   </el-input-number>
@@ -142,7 +142,7 @@
                     { required: true, message: 'Obligtoire.', trigger: 'change' }
                   ]"
                 >
-                  <template slot="append">
+                  <template #append>
                     centimes
                   </template>
                 </el-input-number>
@@ -168,25 +168,26 @@
 export default {
   name: "NFsDetailForm",
   props: {
-    value: { type: Array, required: true },
+    modelValue: { type: Array, required: true },
     loading: { type: Boolean, required: true }
   },
+  emits: ["add-bloc", "delete-bloc"],
   methods: {
     addBloc () {
       this.$emit("add-bloc")
     },
     exchangeBlocs (index1, index2) {
-      if (index1 < 0 || index1 >= this.value.length || index2 < 0 || index2 >= this.value.length) {
+      if (index1 < 0 || index1 >= this.modelValue.length || index2 < 0 || index2 >= this.modelValue.length) {
         return
       }
       [
-        this.value[index1].index,
-        this.value[index2].index
+        this.modelValue[index1].index,
+        this.modelValue[index2].index
       ] = [
-        this.value[index2].index,
-        this.value[index1].index
+        this.modelValue[index2].index,
+        this.modelValue[index1].index
       ]
-      this.value = this.value.sort((a, b) => a.index - b.index)
+      this.modelValue = this.modelValue.sort((a, b) => a.index - b.index)
     },
     deleteBloc (blocId, blocIndex) {
       this.$emit("delete-bloc", blocId, blocIndex)

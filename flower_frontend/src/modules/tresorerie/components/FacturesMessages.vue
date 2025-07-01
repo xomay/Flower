@@ -11,7 +11,7 @@
         effect="dark"
         show-icon
       />
-      <el-col v-show="fas.length == 0">
+      <el-col v-show="fas.length == 0" align="center">
         <el-alert
           title="Il n'existe aucune Facture d'Accompte."
           type="error"
@@ -26,17 +26,17 @@
           <el-button
             icon="Edit"
             type="primary"
-            style="margin: 10px 40%; width: 20%;"
+            style="margin: 10px auto;"
           >
             Ajouter une facture
           </el-button>
         </router-link>
       </el-col>
-      <el-col v-show="fas.length > 0">
+      <el-col v-show="fas.length > 0" align="center">
         <el-button
           type="success"
           icon="Check"
-          style="margin: 10px 40%; width: 20%;"
+          style="margin: 10px auto;"
           @click="levelupTo(4)"
         >
           La FA a été signée
@@ -54,7 +54,7 @@
         effect="dark"
         show-icon
       />
-      <el-col v-show="fis.length == 0">
+      <el-col v-show="fis.length == 0" align="center">
         <el-alert
           title="Il n'existe aucune Facture Intermédiaire."
           type="error"
@@ -69,17 +69,17 @@
           <el-button
             icon="Edit"
             type="primary"
-            style="margin: 10px 40%; width: 20%;"
+            style="margin: 10px auto;"
           >
             Ajouter une facture
           </el-button>
         </router-link>
       </el-col>
-      <el-col v-show="fis.length > 0">
+      <el-col v-show="fis.length > 0" align="center">
         <el-button
           type="success"
           icon="Check"
-          style="margin: 10px 40%; width: 20%;"
+          style="margin: 10px auto;"
           @click="levelupTo(6)"
         >
           La FI a été signée
@@ -97,7 +97,7 @@
         effect="dark"
         show-icon
       />
-      <el-col v-show="fss.length == 0">
+      <el-col v-show="fss.length == 0" align="center">
         <el-alert
           title="Il n'existe aucune Facture de Solde."
           type="error"
@@ -112,17 +112,17 @@
           <el-button
             icon="Edit"
             type="primary"
-            style="margin: 10px 40%; width: 20%;"
+            style="margin: 10px auto;"
           >
             Ajouter une facture
           </el-button>
         </router-link>
       </el-col>
-      <el-col v-show="fss.length > 0">
+      <el-col v-show="fss.length > 0" align="center">
         <el-button
           type="success"
           icon="Check"
-          style="margin: 10px 40%; width: 20%;"
+          style="margin: 10px auto;"
           @click="levelupTo(8)"
         >
           La FS a été signée

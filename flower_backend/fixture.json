@@ -940,6 +940,31 @@
 },
 {
     "model": "auth.user",
+    "pk": 5,
+    "fields": {
+        "password": "pbkdf2_sha256$216000$JsDppuPNCAug$nGC7UqDA+OzRpEwJTlNh1D0yRzy0zNqjpKlN4NFzE6U=",
+        "last_login": "2020-12-13T17:37:45.526Z",
+        "is_superuser": true,
+        "username": "arthur",
+        "first_name": "Arthur",
+        "last_name": "Mauger",
+        "email": "arthur.mauger@ouest-insa.fr",
+        "is_staff": true,
+        "is_active": true,
+        "date_joined": "2020-12-12T09:55:16.662Z",
+        "groups": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+        ],
+        "user_permissions": []
+    }
+},
+{
+    "model": "auth.user",
     "pk": 4,
     "fields": {
         "password": "pbkdf2_sha256$216000$nolmWBIRb00V$wpAqqkFy1L+hqJNSpiZqaaQydTqNz6481DAByBdbAfU=",
@@ -1179,193 +1204,77 @@
         "position": "Présidente"
     }
 },
-{
-    "model": "flower_app.docetude",
-    "pk": 1,
-    "fields": {
-        "signer1": null,
-        "signer2": null,
-        "signDate": null,
-        "deposit": true,
-        "depositAmount": "30.00",
-        "consultantNumber": 1,
-        "description": ""
+    {
+        "model": "sites.site",
+        "pk": 3,
+        "fields": {
+            "domain": "127.0.0.1:8080",
+            "name": "127.0.0.1 front"
+        }
+    },
+    {
+        "model": "socialaccount.socialapp",
+        "pk": 1,
+        "fields": {
+            "provider": "google",
+            "name": "Google",
+            "client_id": "GOOGLE_CLIENT_ID",
+            "secret": "GOOGLE_CLIENT_SECRET",
+            "key": "",
+            "sites": [3]
+        }
+    },
+    {
+        "model": "flower_app.paramsje",
+        "pk": 1,
+        "fields": {
+            "je_name": "Ouest INSA",
+            "je_abbrevation": "OI",
+            "je_address": "20 Avenue des Buttes de Coësmes",
+            "je_url": "ouest-insa.fr",
+            "je_contact": "contact@ouest-insa.fr",
+            "je_slogan": "Vos projets d'aujourd'hui par les ingénieurs de demain",
+            "je_phone": "02 23 23 85 72",
+            "mail_suffix": "ouest-insa.fr",
+            "president_firstname": "Mathys",
+            "president_lastname": "DUBOIS",
+            "president_text": "Son président,",
+            "treso_firstname": "Erwan",
+            "treso_lastname": "JAMET",
+            "treso_text": "Son trésorier,",
+            "global_tva": 0.2,
+            "global_frais": 90.00,
+            "global_accompte": 0.3,
+            "je_startFlower": 2025
+        }
+    },
+    {
+        "model": "flower_app.baseursaff",
+        "pk": 1,
+        "fields": {
+            "mandat" : 2021,
+            "smic_horaire" : 10.00,
+            "taux_junior_sante" : 0.130000,
+            "taux_junior_accidents" : 0.010000,
+            "taux_junior_retraite_1" : 0.085500,
+            "taux_junior_retraite_2" : 0.019000,
+            "taux_junior_famille" : 0.052500,
+            "taux_junior_chomage" : 0.042000,
+            "taux_junior_autres" : 0.004160,
+            "taux_junior_csg" : 0.000000,
+            "taux_junior_csgcrds" : 0.000000,
+            "taux_junior_exonerations" : 0.000000,
+            "taux_realisateur_sante" : 0.000000,
+            "taux_realisateur_accidents" : 0.000000,
+            "taux_realisateur_retraite_1" : 0.069000,
+            "taux_realisateur_retraite_2" : 0.004000,
+            "taux_realisateur_famille" : 0.000000,
+            "taux_realisateur_chomage" : 0.000000,
+            "taux_realisateur_autres" : 0.000000,
+            "taux_realisateur_csg" : 0.068000,
+            "taux_realisateur_csgcrds" : 0.029000,
+            "taux_realisateur_exonerations" : 0.000000
+        }
     }
-},
-{
-    "model": "flower_app.etude",
-    "pk": 1,
-    "fields": {
-        "mandat": 2020,
-        "number": 1,
-        "name": "Flower",
-        "description": "Developpement d'un nouvel ERP",
-        "creation_date": "2020-12-12T12:17:06.682Z",
-        "modification_date": "2020-12-12T12:17:06.682Z",
-        "state": 0,
-        "confidential": false,
-        "audit_date": null,
-        "prospect": 2,
-        "qualityManager": 3,
-        "projectManager": 2,
-        "clientContact": null,
-        "docEtude": 1,
-        "deposit_percentage": "30.00",
-        "deposit_sum": "0.00",
-        "application_fees": "0.00"
-    }
-},
-{
-    "model": "flower_app.groupe",
-    "pk": 1,
-    "fields": {
-        "title": "Version 0",
-        "index": 1,
-        "description": "Travail du resp SI du mandat 2020"
-    }
-},
-{
-    "model": "flower_app.groupe",
-    "pk": 2,
-    "fields": {
-        "title": "Arrivée du pole SI",
-        "index": 2,
-        "description": "Amélioration et complétion du travail déjà réalisé"
-    }
-},
-{
-    "model": "flower_app.groupe",
-    "pk": 3,
-    "fields": {
-        "title": "Déploiement V1",
-        "index": 3,
-        "description": "Déploiement interne pour tester le logiciel dans la structure"
-    }
-},
-{
-    "model": "flower_app.phase",
-    "pk": 1,
-    "fields": {
-        "title": "Backend",
-        "index": 1,
-        "description": "Dev de la première version du backend",
-        "methodologie": "avoir une version basic permettant des actions de base, et pouvant être liée au front-end",
-        "beginDate": "2020-07-30",
-        "period": 90,
-        "nbJEH": 10,
-        "priceJEH": "400.00",
-        "groupe": 1
-    }
-},
-{
-    "model": "flower_app.phase",
-    "pk": 2,
-    "fields": {
-        "title": "Front-end",
-        "index": 2,
-        "description": "Dev de la première version du front-end",
-        "methodologie": "Lier le front au back et avoir une première interface, avec des formulaires, une interface de connexion, et une jolie navbar",
-        "beginDate": "2020-08-03",
-        "period": 90,
-        "nbJEH": 9,
-        "priceJEH": "400.00",
-        "groupe": 1
-    }
-},
-{
-    "model": "flower_app.phase",
-    "pk": 3,
-    "fields": {
-        "title": "Définition des besoins",
-        "index": 1,
-        "description": "Organiser des réunions avec chaque pole de la structure",
-        "methodologie": "Définir les besoins et voir comment améliorer l'erp",
-        "beginDate": "2020-10-27",
-        "period": 90,
-        "nbJEH": 3,
-        "priceJEH": "400.00",
-        "groupe": 2
-    }
-},
-{
-    "model": "flower_app.phase",
-    "pk": 4,
-    "fields": {
-        "title": "Améliorations du logiciel",
-        "index": 2,
-        "description": "Application des objectifs trouvés dans la phase précédente",
-        "methodologie": "Avoir le Meilleur ERP possible",
-        "beginDate": "2020-11-24",
-        "period": 90,
-        "nbJEH": 8,
-        "priceJEH": "400.00",
-        "groupe": 2
-    }
-},
-{
-    "model": "flower_app.phase",
-    "pk": 6,
-    "fields": {
-        "title": "Déploiement et mise en ligne",
-        "index": 1,
-        "description": "Déploiement sur le serveur, création des comptes, formation",
-        "methodologie": "Proposer une version béta aux administrateurs de Ouest-insa",
-        "beginDate": "2021-02-01",
-        "period": 60,
-        "nbJEH": 2,
-        "priceJEH": "400.00",
-        "groupe": 3
-    }
-},
-{
-    "model": "flower_app.phase",
-    "pk": 7,
-    "fields": {
-        "title": "Résolution des bugs et améliorations",
-        "index": 2,
-        "description": "Report les bug et les résoudre",
-        "methodologie": "Rendre l'ERP commercialisable",
-        "beginDate": "2021-02-01",
-        "period": 60,
-        "nbJEH": 4,
-        "priceJEH": "400.00",
-        "groupe": 3
-    }
-},
-{
-    "model": "flower_app.mission",
-    "pk": 1,
-    "fields": {
-        "project": 1,
-        "consultant": null,
-        "missionBegin": null,
-        "missionEnd": null,
-        "percentageJunior": 0.55,
-        "phases": []
-    }
-},
-{
-    "model": "flower_app.mission",
-    "pk": 2,
-    "fields": {
-        "project": 1,
-        "consultant": null,
-        "missionBegin": "2020-07-01",
-        "missionEnd": "2020-12-31",
-        "percentageJunior": 0.55,
-        "phases": []
-    }
-},
-{
-    "model": "flower_app.mission",
-    "pk": 3,
-    "fields": {
-        "project": 1,
-        "consultant": null,
-        "missionBegin": "2020-11-01",
-        "missionEnd": "2021-03-31",
-        "percentageJunior": 0.55,
-        "phases": []
-    }
-}
+
 ]

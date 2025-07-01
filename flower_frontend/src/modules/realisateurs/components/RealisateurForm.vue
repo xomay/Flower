@@ -1,21 +1,53 @@
 <template>
   <el-form
     ref="reaForm"
-    :model="value"
+    :model="modelValue"
     label-position="left"
     size="default"
     :rules="formRules"
     :style="'margin: 15px'"
   >
+  <el-form-item
+      label="Réalisateur"
+      prop="isMember"
+      label-width="140px">
+      <el-radio-group 
+      v-model="modelValue.isMember" 
+      size="large" 
+      :max="1">
+      <el-radio-button label="Nouveau réalisateur" :value="false" border>
+        <el-icon><Plus /></el-icon>
+        Nouveau Réalisateur
+      </el-radio-button>
+      <el-radio-button label="Membre existant" :value="true" border>
+        <el-icon><User /></el-icon>
+        Membre existant
+      </el-radio-button>
+    </el-radio-group>
+  </el-form-item>
+    <el-form-item
+      label="Membre"
+      v-if="modelValue.isMember === true"
+      prop="member"
+      label-width="140px"
+    >
+      <MemberPicker
+        v-model="modelValue.member"
+        :item-list="members"
+        placeholder="Membre de la JE"
+        @update:modelValue="updateReal"
+        @clear="clearMember"/>
+    </el-form-item>
     <el-row :gutter="5">
       <el-col :span="12">
         <el-form-item
           label="Prénom"
           prop="firstname"
           label-width="26%"
+          v-if="modelValue.isMember === false"
         >
           <el-input
-            v-model="value.firstname"
+            v-model="modelValue.firstname"
             placeholder="Prénom du réalisateur"
             @input="autoFillEmails"
           />
@@ -26,9 +58,10 @@
           label="Nom"
           prop="lastname"
           label-width="26%"
+          v-if="modelValue.isMember === false"
         >
           <el-input
-            v-model="value.lastname"
+            v-model="modelValue.lastname"
             placeholder="Nom du réalisateur"
             @input="autoFillEmails"
           />
@@ -39,8 +72,9 @@
           label="Genre"
           prop="gender"
           label-width="26%"
+          v-if="modelValue.isMember === false"
         >
-          <el-select v-model="value.gender">
+          <el-select v-model="modelValue.gender">
             <el-option value="M.">
               M.
             </el-option>
@@ -58,9 +92,10 @@
           label="Promotion"
           prop="promotion"
           label-width="26%"
+          v-if="modelValue.isMember === false"
         >
           <el-input-number
-            v-model="value.promotion"
+            v-model="modelValue.promotion"
             controls-position="right"
             :min="2020"
             :max="2050"
@@ -73,7 +108,7 @@
           prop="filiere"
           label-width="26%"
         >
-          <el-select v-model="value.filiere">
+          <el-select v-model="modelValue.filiere">
             <el-option
               label="INFO"
               value="INFO"
@@ -83,16 +118,12 @@
               value="EII"
             />
             <el-option
-              label="E-CDTI"
-              value="ECDTI"
+              label="E&T"
+              value="E&T"
             />
             <el-option
-              label="SRC"
-              value="SRC"
-            />
-            <el-option
-              label="GM"
-              value="GM"
+              label="MA"
+              value="MA"
             />
             <el-option
               label="GCU"
@@ -103,8 +134,12 @@
               value="GMA"
             />
             <el-option
-              label="SGM"
-              value="SGM"
+              label="GPM"
+              value="GPM"
+            />
+            <el-option
+              label="STPI"
+              value="STPI"
             />
           </el-select>
         </el-form-item>
@@ -116,7 +151,7 @@
           label-width="30%"
         >
           <el-input
-            v-model="value.security_social_number"
+            v-model="modelValue.security_social_number"
             :maxlength="15"
             :minlength="15"
             show-word-limit
@@ -129,9 +164,10 @@
           label="Email INSA"
           prop="email_insa"
           label-width="13%"
+          v-if="modelValue.isMember === false"
         >
           <el-input
-            v-model="value.email_insa"
+            v-model="modelValue.email_insa"
             placeholder="Cet email sera utilisé officiellement"
           />
         </el-form-item>
@@ -143,7 +179,7 @@
           label-width="13%"
         >
           <el-input
-            v-model="value.email"
+            v-model="modelValue.email"
             placeholder="E-mail officieux"
           />
         </el-form-item>
@@ -153,9 +189,10 @@
           label="Mobile"
           prop="mobile"
           label-width="13%"
+          v-if="modelValue.isMember === false"
         >
           <el-input
-            v-model="value.mobile"
+            v-model="modelValue.mobile"
             placeholder="N° de portable personnel"
           />
         </el-form-item>
@@ -165,9 +202,10 @@
           label="Adresse"
           prop="address"
           label-width="13%"
+          v-if="modelValue.isMember === false"
         >
           <el-input
-            v-model="value.address"
+            v-model="modelValue.address"
             placeholder="Numéro et nom de rue"
           />
         </el-form-item>
@@ -177,9 +215,10 @@
           label="Code postal"
           prop="postcode"
           label-width="39%"
+          v-if="modelValue.isMember === false"
         >
           <el-input
-            v-model="value.postcode"
+            v-model="modelValue.postcode"
             placeholder="Code postal"
           />
         </el-form-item>
@@ -189,9 +228,10 @@
           label="Ville"
           prop="town"
           label-width="39%"
+          v-if="modelValue.isMember === false"
         >
           <el-input
-            v-model="value.town"
+            v-model="modelValue.town"
             placeholder="Ville de résidence"
           />
         </el-form-item>
@@ -201,9 +241,10 @@
           label="Pays"
           prop="country"
           label-width="39%"
+          v-if="modelValue.isMember === false"
         >
           <el-input
-            v-model="value.country"
+            v-model="modelValue.country"
             placeholder="Pays de résidence"
           />
         </el-form-item>
@@ -213,8 +254,9 @@
           label="Nationalité"
           prop="nationality"
           label-width="13%"
+          v-if="modelValue.isMember === false"
         >
-          <el-input v-model="value.nationality" />
+          <el-input v-model="modelValue.nationality" />
         </el-form-item>
       </el-col>
       <el-col :span="12">
@@ -222,9 +264,10 @@
           label="Date de naissance"
           prop="birth_date"
           label-width="26%"
+          v-if="modelValue.isMember === false"
         >
           <el-date-picker
-            v-model="value.birth_date"
+            v-model="modelValue.birth_date"
             format="DD-MM-YYYY"
             value-format="YYYY-MM-DD"
             type="date"
@@ -238,9 +281,10 @@
           label="Lieu de naissance"
           prop="birth_place"
           label-width="26%"
+          v-if="modelValue.isMember === false"
         >
           <el-input
-            v-model="value.birth_place"
+            v-model="modelValue.birth_place"
             placeholder="Ville de naissance"
           />
         </el-form-item>
@@ -250,7 +294,7 @@
         style="display: inline-flex;"
       >
         <el-transfer
-          v-model="value.skills"
+          v-model="modelValue.skills"
           :data="competences_objs"
           filterable
           :filter-method="filterSkill"
@@ -285,18 +329,29 @@
 
 <script>
 const axios = require("axios")
+import MemberPicker from "@/modules/membres/components/MemberPicker"
+
 export default {
   name: "RealisateurForm",
+  components: {MemberPicker},
   props: {
-    value: { type: Object, required: true },
+    modelValue: { type: Object, required: true },
+    members: { type: Array, required: true },
     deletable: { type: Boolean, default: false },
     loading: { type: Boolean, default: false },
     ecoleSuffix: { type: String, default () { return "@" } }
   },
+  emits: ["update:modelValue", "edited", "deleted"],
   data () {
     return {
       competences_objs: [],
       formRules: {
+        isMember : [
+          {required: true, message: "Obligatoire", trigger: "change"}
+        ],
+        member: [
+          {required: true, message: "Obligatoire", trigger: "change"}
+        ],
         firstname: [
           {required: true, message: "Obligatoire", trigger: "blur"}
         ],
@@ -410,18 +465,18 @@ export default {
           this.$message({message: "Erreur : Ce formulaire présente des erreurs.", type: "error"})
           valid = false
         }
+        if(valid) {
+          this.$emit("edited")
+        }
       })
-      if(valid) {
-        this.$emit("edited")
-      }
     },
     filterSkill (query, item) {
       return item.label.toLowerCase().indexOf(query.toLowerCase()) > -1
     },
     autoFillEmails () {
-      if(this.value.firstname != "" && this.value.lastname != "") {
-        const prefix = this.handleToEmail(this.value.firstname + "." + this.value.lastname)
-        this.value.email_insa = prefix + this.ecoleSuffix
+      if(this.modelValue.firstname != "" && this.modelValue.lastname != "") {
+        const prefix = this.handleToEmail(this.modelValue.firstname + "." + this.modelValue.lastname)
+        this.modelValue.email_insa = prefix + this.ecoleSuffix
       }
     },
     handleToEmail (text) {
@@ -429,6 +484,47 @@ export default {
         .replaceAll("é", "e").replaceAll("è", "e").replaceAll("ê", "e").replaceAll("ë", "e")
         .replaceAll("à", "a").replaceAll("â", "a").replaceAll("ô", "o").replaceAll("ï", "i").replaceAll("î", "i")
         .replaceAll(" ", "-")
+    },
+    updateReal (id) {
+      if (id) {
+        const member = this.members.find(m => m.id === id)
+        if (!member) {
+          return
+        }
+        this.modelValue.firstname = member.firstname
+        this.modelValue.lastname = member.lastname
+        this.modelValue.gender = member.gender
+        this.modelValue.promotion = member.promotion
+        this.modelValue.mobile = member.mobile
+        this.modelValue.email_insa = member.email
+        this.modelValue.address = member.address
+        this.modelValue.postcode = member.postcode
+        this.modelValue.town = member.town
+        this.modelValue.country = member.country
+        this.modelValue.nationality = member.nationality
+        this.modelValue.birth_date = member.birth_date
+        this.modelValue.birth_place = member.birth_place
+        this.modelValue.ba = member.ba
+        this.modelValue.ba_id = member.ba_id
+      }
+    },
+    clearMember () {
+      this.modelValue.member = ""
+      this.modelValue.firstname = ""
+      this.modelValue.lastname = ""
+      this.modelValue.gender = "M."
+      this.modelValue.promotion = 2025
+      this.modelValue.mobile = ""
+      this.modelValue.email_insa = "@insa-rennes.fr"
+      this.modelValue.address = ""
+      this.modelValue.postcode = ""
+      this.modelValue.town = "Rennes"
+      this.modelValue.country = "France"
+      this.modelValue.nationality = "Française"
+      this.modelValue.birth_date = ""
+      this.modelValue.birth_place = ""
+      this.modelValue.ba = null
+      this.modelValue.ba_id = null
     }
   }
 }

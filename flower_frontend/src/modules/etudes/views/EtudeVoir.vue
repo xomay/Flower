@@ -36,13 +36,27 @@
         :lazy="true"
       />
     </el-tabs>
+    <el-switch
+      v-model="viewType"
+      class="mb-2"
+      style="--el-switch-off-color: #13ce66; --el-switch-on-color: #ff4949"
+      active-text="Dashboard"
+      inactive-text="Liste"
+      v-show="currentTab === 'current'"
+    />
     <!-- filters will modify this.etudes directly -->
     <EtudesList
       :etudes="etudes"
       :loading="loading"
       @select="goToEtude"
-      v-show="currentTab !== 'ccs' && currentTab !== 'dashboard'"
+      v-show="currentTab !== 'ccs' && currentTab !== 'dashboard' && viewType !== true"
     />
+      <EtudesDahsboard
+      :etudes="originalEtudes"
+      :loading="loading"
+      @select="goToEtude"
+      v-show="viewType === true"
+      />
     <CCList
       :ccs="ccs"
       :loading="loading"
@@ -55,14 +69,16 @@
 <script>
 import EtudesList from "../components/EtudesList.vue"
 import CCList from "../components/CCList.vue"
+import EtudesDahsboard from "../components/EtudesDahsboard.vue"
 const axios = require("axios")
 
 export default {
   name: "EtudeVoir",
-  components: { EtudesList, CCList },
+  components: { EtudesList, CCList, EtudesDahsboard },
   data () {
     return {
       currentTab: "current",
+      viewType: false,
       originalEtudes: [],
       etudes: [],
       ccs: [],

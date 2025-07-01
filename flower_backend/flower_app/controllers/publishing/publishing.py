@@ -57,7 +57,6 @@ def param(value):
         return "(!! ERROR : bad field name: '"+value+"' !!)"
 
 def computeDocx(context, doctypeFilename, name='undef', images=dict()):
-    print("Chemin :", "/home/mathys/Ouest_INSA/" + settings.DOCTYPES_LOCATION + doctypeFilename)
     doc = DocxTemplate("/home/mathys/Ouest_INSA/" + settings.DOCTYPES_LOCATION + doctypeFilename)
     docBytes = io.BytesIO()
     for key, value in images.items():
@@ -88,7 +87,6 @@ def computeDocx(context, doctypeFilename, name='undef', images=dict()):
         docBytes.getvalue(), 
         content_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
     )
-    print("Name : ", name)
     response["Content-Disposition"] = 'attachment; filename = "{}.docx"'.format(name)
     response["Content-Encoding"] = "UTF-8"
     return response

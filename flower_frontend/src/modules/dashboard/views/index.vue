@@ -3,12 +3,7 @@
     <el-divider />
     <el-row justify="center">
       <h1 style="text-align: center;">
-        Bienvenue
-        <p
-          color="blue"
-        >
-          {{ getUsername() }}
-        </p>
+        Bienvenue {{ getUsername() }}
       </h1>
     </el-row>
     <el-divider />
@@ -41,7 +36,7 @@ export default {
   mixins: [Permissions],
   methods: {
     getUsername () {
-      return this.$store.currentUser.username
+      return this.$store.currentUser.user.name
     },
     getData () {
       return [

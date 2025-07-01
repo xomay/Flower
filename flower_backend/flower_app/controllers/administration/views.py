@@ -111,6 +111,13 @@ class DoctypeImportView(APIView):
             if not os.path.exists(save_path):
                 os.makedirs(save_path)
 
+            # Chemin complet vers le fichier à enregistrer
+            full_file_path = os.path.join(save_path, title)
+
+            # Supprimer l'ancien fichier s'il existe
+            if os.path.exists(full_file_path):
+                os.remove(full_file_path)
+
             # Enregistrer le fichier
             file_storage = FileSystemStorage(location=save_path)
             print(file_storage)

@@ -56,20 +56,20 @@
               align="center"
               width="180px"
             >
-              <template slot-scope="scope">
+              <template #default="{ row, $index }">
                 <el-button
                   type="text"
                   icon="Link"
                   :loading="loading"
-                  @click="getLink(scope.row.id)"
+                  @click="getLink(row.id)"
                 />
                 <el-button
                   type="text"
                   icon="Download"
                   :loading="loading"
-                  @click="downloadInvoice(scope.row.id)"
+                  @click="downloadInvoice(row.id)"
                 />
-                <router-link :to="`/etudes/${$route.params.id}/factures/modifier/${scope.row.id}`">
+                <router-link :to="`/etudes/${$route.params.id}/factures/modifier/${row.id}`">
                   <el-button
                     type="text"
                     icon="Edit"
@@ -84,15 +84,16 @@
                   icon="Delete"
                   icon-color="red"
                   title="Voulez-vous vraiment supprimer cette facture ?"
-                  @onConfirm="deleteInvoice(scope.row.id)"
+                  @onConfirm="deleteInvoice(row.id)"
                 >
+                <template #reference>
                   <el-button
-                    slot="reference"
                     type="text"
                     icon="Delete"
                     :loading="loading"
                     :disabled="etude.isAborted"
                   />
+                </template>
                 </el-popconfirm>
               </template>
             </el-table-column>
@@ -102,7 +103,6 @@
           <router-link :to="`/etudes/${$route.params.id}/factures/ajouter`">
             <el-button
               type="success"
-              class="factButton"
               icon="Plus"
               :disabled="etude.isAborted"
               :loading="loading"
@@ -143,13 +143,13 @@
               align="center"
               fixed="left"
             >
-              <template slot-scope="scope">
+              <template #default="{ row, $index }">
                 <el-button
                   type="text"
                   size="small"
-                  @click="pushToRealisateur(scope.row.realisateur.id)"
+                  @click="pushToRealisateur(row.realisateur.id)"
                 >
-                  {{ nicePeople(scope.row.realisateur) }}
+                  {{ nicePeople(row.realisateur) }}
                 </el-button>
               </template>
             </el-table-column>
@@ -167,14 +167,14 @@
               align="center"
               width="118px"
             >
-              <template slot-scope="scope">
+              <template #default="{ row, $index }">
                 <el-button
                   type="text"
                   icon="Download"
                   :loading="loading"
-                  @click="downloadBV(scope.row)"
+                  @click="downloadBV(row)"
                 />
-                <router-link :to="`/tresorerie/etudes/${$route.params.id}/bvs/modifier/${scope.row.id}/`">
+                <router-link :to="`/tresorerie/etudes/${$route.params.id}/bvs/modifier/${row.id}/`">
                   <el-button
                     type="text"
                     icon="Edit"
@@ -189,7 +189,6 @@
           <el-button
             v-show="can_add_bv"
             type="success"
-            class="factButton"
             icon="Plus"
             @click="pushToAddBV()"
           >
@@ -208,7 +207,6 @@
         <el-row class="factRow">
           <el-button
             type="info"
-            class="factButton"
             plain
             disabled
           >
@@ -219,7 +217,6 @@
         <el-row class="factRow">
           <el-button
             type="warning"
-            class="factButton"
             plain
           >
             Facture d'achat liée à une étude
@@ -389,12 +386,10 @@ export default {
 </script>
 
 <style scoped>
-  .factButton {
-    margin-left: 30%;
-    width: 40%;
-  }
   .factRow {
     margin-bottom: 20px;
+    justify-content: center;
+    align-items: center;
   }
   .factBr {
     width: 10%;

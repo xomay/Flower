@@ -139,8 +139,8 @@
         width="90px"
         align="center"
       >
-        <template slot-scope="scope">
-          {{ scope.row.tva * 100 }} %
+        <template #default="{ row }">
+          {{ row.tva * 100 }} %
         </template>
       </el-table-column>
       <el-table-column
@@ -190,8 +190,8 @@
         width="140px"
         align="center"
       >
-        <template slot-scope="scope">
-          {{ scope.row.prixCentimesKilometres }} cts
+        <template #default="{ row, $index }">
+          {{ row.prixCentimesKilometres }} cts
         </template>
       </el-table-column>
       <el-table-column

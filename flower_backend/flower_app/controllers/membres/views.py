@@ -10,6 +10,7 @@ import random, string
 
 from flower_app.controllers.permissions import HasGroupPermission
 from flower_app.models.People.Membre import Membre, MembreSerializer
+from flower_app.models.People.Realisateur import Realisateur
 from flower_app.models.Poste import Poste
 from flower_app.email.mail_user_accounts import send_mail_user_account_creation
 
@@ -47,6 +48,31 @@ class MembreDetailView(generics.RetrieveUpdateAPIView):
         membre = Membre.objects.get(pk=kwargs['pk'])
         membre.poste = Poste.objects.get(pk=data['poste'])
         membre.save()
+        # Synchroniser avec le réalisateur associé (si il existe)
+        try:
+            realisateur = Realisateur.objects.get(member=membre.id)
+            field_mapping = {
+                'firstname': 'firstname',
+                'lastname': 'lastname',
+                'gender': 'gender',
+                'promotion': 'promotion',
+                'mobile': 'mobile',
+                'email_insa': 'email',  # obligé de faire ca car le champ n'a pas le même nom
+                'address': 'address',
+                'postcode': 'postcode',
+                'town': 'town',
+                'country': 'country',
+                'nationality': 'nationality',
+                'birth_date': 'birth_date',
+                'birth_place': 'birth_place',
+                'ba': 'ba',
+                'ba_id': 'ba_id',
+            }
+            for real_field, membre_field in field_mapping.items():
+                setattr(realisateur, real_field, getattr(membre, membre_field))
+            realisateur.save()
+        except Realisateur.DoesNotExist:
+            pass  # Pas de mission liée, on ne fait rien
         serializer = MembreSerializer(membre)
         return Response(serializer.data, status=HTTPStatus.OK)
 

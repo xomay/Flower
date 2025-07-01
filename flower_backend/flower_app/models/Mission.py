@@ -1,9 +1,8 @@
 from django.db import models
 from rest_framework import serializers
 
-from .People.Realisateur import Realisateur, RealisateurSerializer
 from .Etude import Etude
-from .GroupePhase import GroupesSetSerializer, Phase
+from .People.Realisateur import Realisateur, RealisateurSerializer
 from ..serializers import CustomListSerializer
 from .BaseUrsaff import getLastBase
 
@@ -20,24 +19,22 @@ def emptyList():
 #    return number
 
 class Mission(models.Model):
-    project = models.ForeignKey(Etude, on_delete=models.RESTRICT)
     consultant = models.ForeignKey(Realisateur, on_delete=models.RESTRICT, blank=True, null=True)
     missionBegin = models.DateField(blank=True, null=True)
     missionEnd = models.DateField(blank=True, null=True)
-    percentageJunior = models.FloatField(default=0.55)
-    phases = models.ManyToManyField(Phase, default=emptyList, blank=True)
+    percentageJunior = models.FloatField(default=0.51)
+    JEH_price = models.IntegerField(default=220)
+    project = models.ForeignKey(Etude, on_delete=models.RESTRICT)
 #    number_this_year = models.IntegerField(default=generateNumberYear)
-
-    @property
-    def groupeSet(self):
-        return self.phases.first().groupe.owner
 
     def __str__(self):
         prefix = ""
-        if not self.isCurrent:
-            prefix = "[OUTDATED]"
         return prefix + "[RDM]" + str(self.project) + ", réa=" + str(self.consultant) + ", (" + str(self.JEHNumber) + "JEH,  " + str(self.remunerationRaw) + "€)"
-    
+
+    @property
+    def phases(self):
+        return self.phasesMission.all()
+
     @property
     def JEHNumber(self):
         amount = 0
@@ -54,11 +51,9 @@ class Mission(models.Model):
 
     @property
     def remunerationRaw(self):
-        return round((1 - float(self.percentageJunior)) * float(self.totalPrice), 2)
-    
-    @property
-    def isCurrent(self):
-        return self.groupeSet.id == self.project.currentGroupes.id
+        #return round((1 - float(self.percentageJunior)) * float(self.totalPrice), 2)
+        return self.totalPrice
+
 
 #    @property
 #    def reference(self):
@@ -71,25 +66,24 @@ class Mission(models.Model):
 
 class MissionSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False, write_only=False)
-    groupeSetId = serializers.SerializerMethodField()
     isCurrent = serializers.ReadOnlyField()
     remunerationRaw = serializers.ReadOnlyField()
     JEHNumber = serializers.ReadOnlyField()
-    def get_groupeSetId(self, obj):
-        return obj.groupeSet.id
     class Meta:
         model = Mission
         fields = '__all__'
         list_serializer_class = CustomListSerializer
 
+
 class MissionDetailSerializer(serializers.ModelSerializer):
+    from .GroupePhase import PhaseMissionSerializer
     consultant = RealisateurSerializer(read_only=True)
     remunerationRaw = serializers.ReadOnlyField()
     JEHNumber = serializers.ReadOnlyField()
     assietteCotisation = serializers.SerializerMethodField()
-    groupeSet = GroupesSetSerializer(read_only=True)
     bv_id = serializers.SerializerMethodField()
     isCurrent = serializers.ReadOnlyField()
+    phasesMission = PhaseMissionSerializer(many=True, read_only=True)
     class Meta:
         model = Mission
         fields = '__all__'

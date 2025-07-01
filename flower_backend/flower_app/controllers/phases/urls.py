@@ -4,6 +4,8 @@ from . import views
 #Base url for here is '/etudes/phases/'
 
 urlpatterns = [
-    path('', views.PhaseView.as_view()),
-    path('<int:pk>/', views.PhaseDetailView.as_view())
+    path('', views.PhaseEtudeView.as_view()),
+    path('<int:pk>/', views.PhaseEtudeDetailView.as_view()),
+    path('missions/', views.PhaseMissionView.as_view()),
+    path('missions/<int:pk>/', views.PhaseMissionDetailView.as_view())
 ]

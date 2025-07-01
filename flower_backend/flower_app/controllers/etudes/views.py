@@ -11,7 +11,7 @@ from flower_app.models.CC import CCSerializer, CC, CCDetailSerializer
 from flower_app.models.DocEtude import DocEtude, CESerializer, CEDetailSerializer
 from flower_app.models.Etude import Etude, EtudeSerializer, EtudeDetailSerializer
 from flower_app.models.UploadedFile import UploadedFile, UploadedFileSerializer
-from flower_app.models.GroupePhase import Groupe, Phase, GroupeSerializer, PhaseSerializer
+from flower_app.models.GroupePhase import Phase, PhaseSerializer
 from flower_app.models.Mission import Mission, MissionSerializer, MissionDetailSerializer
 from flower_app.models.People.Realisateur import Realisateur
 from flower_app.models.BV import BV, BVSerializer
@@ -27,6 +27,11 @@ class EtudeListCreateView(generics.ListCreateAPIView):
     }
     serializer_class = EtudeSerializer
     queryset = Etude.objects.all()
+
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return EtudeSerializer
+        return EtudeDetailSerializer
 
 class CCListCreateView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated, HasGroupPermission]
@@ -141,7 +146,6 @@ class ReaEtudesDetailView(generics.RetrieveAPIView):
                 'beginDate': phase.beginDate,
                 'nbJEH': phase.nbJEH,
                 'finishDate': phase.finishDate,
-                'groupe': phase.groupe.id,
                 'uss': uss
             })
 

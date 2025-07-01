@@ -6,6 +6,7 @@ from django.core.exceptions import ValidationError
 
 from rest_framework import serializers
 
+from flower_app.models.People.Membre import Membre
 from flower_app.models.People.Personne import Personne
 from flower_app.models.Competence import Competence
 from flower_app.models.Etude import Etude
@@ -49,13 +50,15 @@ class Realisateur(Personne):
     CHOICES_FILIERES = [
         ('INFO','INFO'),
         ('EII', 'EII'),
-        ('ECDTI', 'ECDTI'),
-        ('SRC', 'SRC'),
-        ('GM', 'GM'),
+        ('E&T', 'E&T'),
+        ('MA', 'MA'),
         ('GCU', 'GCU'),
         ('GMA', 'GMA'),
-        ('SGM', 'SGM')
+        ('GPM', 'GPM'),
+        ('STPI', 'STPI')
     ]
+    isMember = models.BooleanField(default=False)
+    member = models.ForeignKey(Membre, on_delete=models.CASCADE, null=True, blank=True)
 
     skills = models.ManyToManyField(Competence, blank=True)
     comments = models.ManyToManyField(RealisateurComment, blank=True)

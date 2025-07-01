@@ -85,14 +85,15 @@
         cancel-button-text="Non"
         @onConfirm="deleteNF()"
       >
+      <template #reference>
         <el-button
-          slot="reference"
           :loading="loading"
           type="danger"
           icon="Cross"
         >
           Supprimer la NF
         </el-button>
+      </template>
       </el-popconfirm>
     </el-row>
   </div>

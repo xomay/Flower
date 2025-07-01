@@ -7,8 +7,8 @@
       prop="documentType"
       label="Type de PVR"
     >
-      <template slot-scope="scope">
-        <span v-if="scope.row.documentType === 'I'">PVRI</span>
+      <template #default="{ row }">
+        <span v-if="row.documentType === 'I'">PVRI</span>
         <span v-else>PVRF</span>
       </template>
     </el-table-column>
@@ -23,14 +23,14 @@
     <el-table-column
       label="Opérations"
     >
-      <template slot-scope="scope">
+      <template #default="{ row, $index }">
         <el-button
           type="text"
           icon="Download"
           :loading="loading"
-          @click="$emit('download', scope.row.id)"
+          @click="$emit('download', row.id)"
         />
-        <router-link :to="`/etudes/${$route.params.id}/pvr/modifier/${scope.row.id}`">
+        <router-link :to="`/etudes/${$route.params.id}/pvr/modifier/${row.id}`">
           <el-button
             type="text"
             icon="Edit"
@@ -40,7 +40,7 @@
           type="text"
           icon="Delete"
           :loading="loading"
-          @click="$emit('delete', scope.row.id, scope.$index)"
+          @click="$emit('delete', row.id, $index)"
         />
       </template>
     </el-table-column>

@@ -130,7 +130,7 @@
             align="center"
           >
             <template #default="{row}">
-              <span>{{ row.phases.length }}</span>
+              <span>{{ row.phasesMission.length }}</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -214,7 +214,7 @@
                 :loading="loading"
                 @click="downloadPVR(row.id)"
               />
-              <router-link :to="`/etudes/${$route.params.id}/pvr/modifier/${scope.row.id}`">
+              <router-link :to="`/etudes/${$route.params.id}/pvr/modifier/${row.id}`">
                 <el-button
                   type="text"
                   icon="Edit"

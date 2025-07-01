@@ -17,13 +17,13 @@
         fixed="left"
         sortable
       >
-        <template v-slot="scope">
-          <router-link :to="`/realisateurs/${scope.row.author.id}/voir`">
+        <template #default="{row}">
+          <router-link :to="`/realisateurs/${row.author.id}/voir`">
             <el-button
               type="text"
               size="small"
             >
-              {{ scope.row.author.firstname + " " + scope.row.author.lastname }}
+              {{ row.author.firstname + " " + row.author.lastname }}
             </el-button>
           </router-link>
         </template>
@@ -42,8 +42,8 @@
         fixed="right"
         sortable
       >
-        <template v-slot="scope">
-          {{ niceSize(scope.row.size) }}
+        <template #default="{row}">
+          {{ niceSize(row.size) }}
         </template>
       </el-table-column>
       <el-table-column
@@ -62,27 +62,27 @@
         fixed="right"
         sortable
       >
-        <template v-slot="scope">
+        <template #default="{row, $index}">
           <el-button
             type="text"
             icon="Link"
             :loading="loading"
-            @click="getLink(scope.row.id)"
+            @click="getLink(row.id)"
           />
           <el-button
             type="text"
-            :icon="scope.row.got ? 'el-icon-check' : 'el-icon-download'"
-            :disabled="scope.row.got"
+            :icon="row.got ? 'el-icon-check' : 'el-icon-download'"
+            :disabled="row.got"
             :loading="loading"
             style="color: #54b20b;"
-            @click="downloadUpload(scope.row)"
+            @click="downloadUpload(row)"
           />
           <el-button
             type="text"
             icon="Delete"
             :loading="loading"
             style="color: red;"
-            @click="deleteUpload(scope.row.id, scope.$index)"
+            @click="deleteUpload(row.id, $index)"
           />
         </template>
       </el-table-column>
@@ -163,7 +163,6 @@ export default {
     getLink (uploadId) {
       this.loadingInvoice = true
       axios.get(`/api/upload/sharedurl/${uploadId}`, { withCredentials: true }).then((response) => {
-        console.log(response)
         let url = location.protocol + "//" + location.host + response.data
         navigator.clipboard.writeText(url)
         this.$message({ message: "Lien copié", type: "succes" })
