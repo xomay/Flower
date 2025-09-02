@@ -1,3 +1,4 @@
+from django.contrib.auth.models import Group
 from django.http import JsonResponse
 from django.contrib.auth import login, logout
 from django.views import View
@@ -16,6 +17,8 @@ class LoginView(APIView):
 
         print("Request" + str(request))
         print("UID" + str(request.data.get('uid')))
+
+        poste = ""
 
         if not request.user.is_authenticated:
             try:
@@ -43,21 +46,28 @@ class LoginView(APIView):
             user = request.user
             google_data = social_account.extra_data
 
-
             try: 
                 membre = Membre.objects.get(user=user)
                 poste = Poste.objects.get(membre=membre)
-                print(get_groups(poste))
+                poste_groups = Group.objects.filter(poste=poste)
+                user.groups.set(poste_groups)
             except Membre.DoesNotExist:  # Si aucun Membre associé à l'utilisateur
-                print("Cet utilisateur est connecté pour la première fois")
                 try:
+                    if user.id == '' or not user.id:  # Important : forcer la sauvegarde du User avant de l'associer
+                        user.save()
+
                     membre = Membre.objects.get(email_junior=google_data.get('email'))
                     membre.user = user
                     membre.save()
+                    poste = Poste.objects.get(membre=membre)
+                    poste_groups = Group.objects.filter(poste=poste)
+                    user.groups.set(poste_groups)
                 except Membre.DoesNotExist:
                     print("Aucun membre trouvé avec cet email")
                     membre = None  # Assigner une valeur par défaut pour éviter les erreurs
-
+                except Poste.DoesNotExist:
+                    print("Ce poste n'existe pas")
+                    poste = None
 
             return Response({
                 'user': {
@@ -74,7 +84,6 @@ class LoginView(APIView):
                     'last_login': social_account.last_login
                 },
                 'extra_data': google_data,
-                'roles': get_groups(poste),
                 'roles': get_groups(poste),
             })
         

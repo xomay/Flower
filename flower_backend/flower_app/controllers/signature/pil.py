@@ -36,7 +36,8 @@ def createSignature(membre):
 
     posteName = (membre.poste.name_feminine, membre.poste.name)[membre.gender == 'M.']
     if posteName != '':
-        sizeNomPrenom = image_editable.textsize(nomPrenom, font=text_font_bold)[0]
+        bbox_nom = image_editable.textbbox((0, 0), nomPrenom, font=text_font_bold)
+        sizeNomPrenom = bbox_nom[2] - bbox_nom[0]
         image_editable.text((hrz_offset + 10 + sizeNomPrenom,vrt_offset + post_bold_offset), '• ' + posteName, (85, 85, 85), font=text_font)
     # ☎ <Téléphone JE> • 📞 <numéro de téléphone>
     vrt_offset += 3
@@ -47,10 +48,12 @@ def createSignature(membre):
     # 💼 <nom je> • <slogan>
     jeEmote = '💼 '
     image_editable.text((hrz_offset,vrt_offset+line_offset*2), jeEmote, (85, 85, 85), font=text_emote)
-    sizeJeEmote = image_editable.textsize(jeEmote, font=text_emote)[0]
+    bbox_emote = image_editable.textbbox((0, 0), jeEmote, font=text_emote)
+    sizeJeEmote = bbox_emote[2] - bbox_emote[0]
     jeName = params.je_name
     image_editable.text((hrz_offset+sizeJeEmote,vrt_offset+line_offset*2), jeName, (50, 48, 68), font=text_font_bold)
-    sizeJeName = image_editable.textsize(jeName, font=text_font_bold)[0] + sizeJeEmote
+    bbox_jeName = image_editable.textbbox((0, 0), jeName, font=text_font_bold)
+    sizeJeName = (bbox_jeName[2] - bbox_jeName[0]) + sizeJeEmote
     image_editable.text((hrz_offset + 5 + sizeJeName,vrt_offset+line_offset*2+3), '• ' + params.je_slogan, (85, 85, 85), font=text_emote)
     # 🌎 <url> • ✉ <addresse mail>
     vrt_offset += 3

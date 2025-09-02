@@ -45,10 +45,13 @@ export default {
         responseType: "arraybuffer"
       }
     ).then((res) => {
-      this.signatureJPG = Buffer.from(
-        res.data,
-        "binary"
-      ).toString("base64")
+      // Conversion d'arraybuffer en base64 pour le navigateur
+      const bytes = new Uint8Array(res.data)
+      let binary = ''
+      for (let i = 0; i < bytes.byteLength; i++) {
+        binary += String.fromCharCode(bytes[i])
+      }
+      this.signatureJPG = btoa(binary)
     }).catch((err) => {
       if(err.message == "Request failed with status code 401")
         this.$message({message: "Votre compte n'est pas relié à un utilisateur (compte admin ?)", type: "error"})
