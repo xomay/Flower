@@ -12,6 +12,9 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 
 from pathlib import Path
 import os
+from dotenv import load_dotenv
+
+load_dotenv()  # take environment variables from .env.
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
@@ -24,7 +27,7 @@ BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 SECRET_KEY = '*fdkcuwkd+s6#_dsz_-kz@x5k=n60c8ogme9kz!uj26#dqf8*('
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG', False)
 
 ALLOWED_HOSTS = []
 
@@ -85,10 +88,10 @@ SOCIALACCOUNT_PROVIDERS = {
 SOCIALACCOUNT_LOGIN_ON_GET = True
 SOCIALACCOUNT_AUTO_SIGNUP = True
 ACCOUNT_DEFAULT_HTTP_PROTOCOL = "http"
-LOGIN_REDIRECT_URL = "http://127.0.0.1:8080/"
+LOGIN_REDIRECT_URL = os.getenv('LOGIN_REDIRECT_URL', '/')
 
 # Django allauth config
-SITE_ID = 3
+SITE_ID = int(os.getenv('SITE_ID', 1))
 ACCOUNT_EMAIL_VERIFICATION = "none"
 ACCOUNT_SIGNUP_FIELDS = ['email*', 'username*', 'password1*', 'password2*']
 ACCOUNT_LOGIN_METHODS = {'email'}
@@ -111,15 +114,8 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 CORS_ORIGIN_WHITELIST = ['http://localhost:8080']
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_ALL_ORIGINS = True
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:8080",
-    "http://127.0.0.1:8080"  # Adresse du frontend Vue.js
-]
-CSRF_TRUSTED_ORIGINS = [
-    'http://localhost:8080',
-    'http://127.0.0.1:8080',
-    'http://127.0.0.1:8000',
-]
+CORS_ALLOWED_ORIGINS = os.getenv("CORS_ALLOWED_ORIGINS", "").split(",")
+CSRF_TRUSTED_ORIGINS = os.getenv("CSRF_TRUSTED_ORIGINS", "").split(",")
 CSRF_COOKIE_NAME = 'csrftoken'
 
 # Configurer correctement les cookies
@@ -132,6 +128,10 @@ SESSION_SAVE_EVERY_REQUEST = True
 CSRF_COOKIE_SAMESITE = "Lax"
 CSRF_COOKIE_SECURE = False
 CSRF_COOKIE_HTTPONLY = False
+
+USE_X_FORWARDED_HOST = os.getenv('USE_X_FORWARDED_HOST', False)
+SECURE_PROXY_SSL_HEADER = os.getenv('SECURE_PROXY_SSL_HEADER', None)
+
 
 
 ROOT_URLCONF = 'flower_backend.urls'
@@ -163,9 +163,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'flower',
-        'USER': 'django',
-        'PASSWORD': 'coucou',
+        'NAME': os.getenv('DATABASE_NAME', 'flower'),
+        'USER': os.getenv('DATABASE_USER', 'django'),
+        'PASSWORD': os.getenv('DATABASE_PASSWORD', 'password')
     }
 }
 if (os.environ.get('DB_HOST', False)):
@@ -209,11 +209,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
-STATIC_URL = '/static/'
-DOCTYPES_LOCATION = 'flower/flower_backend/doctypes/' # I changed it to 'doctypes/' in production
+STATIC_URL = os.getenv('STATIC_URL', '/static/')
+DOCTYPES_LOCATION = os.getenv('DOCTYPES_LOCATION')
 OTHERS_LOCATION = 'flower/flower_backend/miscellaneous/'
 
-FRONT_END = 'http://localhost:8080'
+FRONT_END = os.getenv('FRONTEND_URL', 'http://localhost:8080')
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = '?????@gmail.com' # To change

@@ -72,7 +72,7 @@ export default {
   methods: {
     async redirectToGoogleAuthSimple(){
     try {
-      window.location.href = 'http://127.0.0.1:8000/accounts/google/login/';
+      window.location.href = process.env.VUE_APP_WINDOW_LOCATION_HREF;
     } catch (error) {
       console.error('Erreur de connexion Google', error);
     }
