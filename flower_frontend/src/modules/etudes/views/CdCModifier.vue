@@ -4,7 +4,13 @@
     :breadcrumb="breadcrumb"
   >
     <div v-for="(phase, idx) in phases" :key="phase.id" style="margin-top: 20px;">
-      <span>Cahier des Charges lié à la phase {{ phase.index }}</span>
+      <el-col>
+      <span>Cahier des Charges lié à la phase {{ phase.index }} : {{ phase.title }}</span>
+      </el-col>
+      <span style="margin-top: 10px;"><b>Description :</b> {{ phase.description }}</span>
+      <el-col>
+      <span style="margin-top: 10px;"><b>Méthodologie :</b> {{ phase.methodologie }}</span>
+      </el-col>
       <el-input
         v-model="phase.spec"
         type="textarea"

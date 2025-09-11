@@ -86,12 +86,12 @@ export default {
         }
       axios.post(
         "/api/etudes/phases/",
-        newPhase,
+        [newPhase],
         {withCredentials: true}
       ).then((res) => {
         this.$message({message: "La phase a bien été ajoutée.", type: "success"})
         const phase = {
-          ...res.data,
+          ...res.data[0],
           etude: this.etude.id,
           uss: []
         }
@@ -117,10 +117,26 @@ export default {
     },
     deletePhase ({phase}) {
       this.loading = true
-      axios.delete(
-        `/api/etudes/phases/${phase.id}/`,
-        {withCredentials: true}
-      ).then(() => {
+      if (phase.id){
+
+        axios.delete(
+          `/api/etudes/phases/${phase.id}/`,
+          {withCredentials: true}
+        ).then(() => {
+          const index = this.phases.indexOf(phase)
+          if (index > -1) {
+            this.phases.splice(
+              index,
+              1
+            )
+          }
+          this.$message({message: "La phase a bien été supprimée.", type: "success"})
+        }).catch(() => {
+          this.$message({message: "Impossible de supprimer cette phase pour le moment", type: "error"})
+        }).finally(() => {
+          this.loading = false
+        })
+      } else {
         const index = this.phases.indexOf(phase)
         if (index > -1) {
           this.phases.splice(
@@ -128,12 +144,8 @@ export default {
             1
           )
         }
-        this.$message({message: "La phase a bien été supprimée.", type: "success"})
-      }).catch(() => {
-        this.$message({message: "Impossible de supprimer cette phase pour le moment", type: "error"})
-      }).finally(() => {
         this.loading = false
-      })
+      }
     },
     deleteUS ({us, phase}) {
       this.loading = true

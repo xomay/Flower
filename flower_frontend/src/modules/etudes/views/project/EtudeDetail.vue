@@ -70,11 +70,12 @@
         :reaVue="false"
       />
       <EtudesDahsboard
+      v-if="!no_phases"
       :etudes="[etude]"
       :loading="loading"
       />
       <hr style="margin: 12px; margin-bottom: 25px">
-      <div>
+      <div v-show="false">
         <b>Fichiers associés :</b>
         <UploaderLocal
           :inital-list="etude.linkedFiles"
@@ -112,7 +113,7 @@
     <Avenants
       v-show="currentTab === 'Avenants'"
       :etude="etude"
-      :avenants="etude.avenants"
+      :avenants="etude.avenants.map(a => ({...a, doc: a.doc_etude})).concat(etude.missions.map(m => m.avenants.map(a => ({...a, doc: a.doc_mission}))).flat())"
       :canAddAvenant="!etude.isAborted && etude.state < 8"
       @delete-avenant="deleteAvenant($event)"
       @sign-avenant="signAvenant"
@@ -184,6 +185,7 @@ export default {
       this.breadcrumb[1].name = this.etude.name
       this.etude.hasCC = this.etude.cc > 0
       this.etude.spec = this.etude.docEtude.spec
+      this.no_phases = this.etude.phases.length === 0
     }).catch(() => {
       this.$message({ message: "Impossible de récupérer l'étude pour le moment", type: "error" })
     }).finally(() => {
@@ -217,31 +219,37 @@ export default {
         })
       }
     },
-    deleteAvenant (id) {
+    deleteAvenant (avenant) {
       this.loading = true
       axios.delete(
-        `/api/etudes/avenants/${id}/`,
+        avenant.etude ? `/api/etudes/avenants/${avenant.id}/` :  `/api/etudes/avenants/missions/${avenant.id}/`,
         { withCredentials: true }
       ).then(() => {
         this.$message({message: "Avenant supprimé", type: "success"})
-        this.etude.avenants = this.etude.avenants.filter(a => a.id !== id)
+        this.etude.avenants = this.etude.avenants.filter(a => a.id !== avenant.id)
+        this.etude.missions = this.etude.missions.map((m) => {
+          m.avenants = m.avenants.filter(a => a.id !== avenant.id)
+          return m
+        })
       }).catch((err) => {
         this.$message({message: "Impossible de supprimer l'avenant : " + err, type: "error"})
       }).finally(() => {
         this.loading = false
       })
     },
-    signAvenant (id, signDate) {
+    signAvenant (id, signDate, is_client) {
       //Ne fonctionne pas, faut modifier le docEtude pas l'avenant
       this.loading = true
       axios.put(
-        `/api/etudes/ce/${id}/`,
+        is_client ? `/api/etudes/ce/${id}/` : `/api/etudes/mission/doc/${id}/`,
         { signDate: signDate,
          },
         { withCredentials: true }
       ).then(() => {
         this.$message({message: "Avenant signé", type: "success"})
-        this.$router.go(0)
+        this.$router.go(0).then(() => {
+          this.$router.push(`/etudes/${this.etude.id}/voir?active=Avenants`)
+        })
       }).catch((err) => {
         this.$message({message: "Impossible de signer l'avenant : " + err, type: "error"})
       }).finally(() => {
