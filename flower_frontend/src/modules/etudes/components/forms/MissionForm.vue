@@ -80,23 +80,6 @@
               label="%"
             />
           </el-form-item>
-          <el-form-item
-            label="Prix du JEH"
-            prop="JEH_price"
-            label-width="50%"
-            :rows="1"
-            :rules="[
-              {required: true, message: 'Prix du JEH obligatoire', trigger: 'blur'},
-            ]"
-          >
-            <el-input-number
-              v-model="mission.JEH_price"
-              controls-position="right"
-              :min="80"
-              :max="300"
-              @change="applyJEHPrice(mission)"
-            />
-          </el-form-item>
         </el-col>
         <el-col :span="24">
           <el-form-item
@@ -126,17 +109,45 @@
       <el-table
         class="grid"
         :data="mission.phasesMission"
-        :row-key="row => row.id"
+        :row-key="row => row.index"
       >
-        <el-table-column
-          label="Phases"
-        >
-          <template #default="{row}">
-            <span><b>Titre de la phase : </b>{{ row.title }}</span>
+        <el-table-column type="expand">
+          <template #default="{ row }">
+            <el-row>
+                <el-col :span="24">
+                  <el-row>
+                    Description :
+                    <el-input
+                      v-model="row.description"
+                      type="textarea"
+                      :autosize="{ minRows: 5, maxRows: 7}"
+                      placeholder="Description de la phase"
+                    />
+                  </el-row>
+                  <el-row>
+                    Méthodologie :
+                    <el-input
+                      v-model="row.methodologie"
+                      type="textarea"
+                      :autosize="{ minRows: 5, maxRows: 7}"
+                      placeholder="Méthodologie de la phase"
+                    />
+                  </el-row>
+                </el-col>
+            </el-row>
           </template>
         </el-table-column>
         <el-table-column
-          width="140"
+          label="Titre"
+        >
+          <template #default="{row}">
+            <el-input
+              v-model="row.title"
+            />
+          </template>
+        </el-table-column>
+        <el-table-column
+          width="110"
           label="Nb JEH"
         >
           <template #default="{row}">
@@ -147,6 +158,18 @@
               :max="getRemainingJEH(row.phaseEtude, mission)"
               style="width: 90%"
               size="small"
+            />
+          </template>
+        </el-table-column>
+        <el-table-column
+          width="100"
+          label="Prix JEH"
+        >
+          <template #default="{row}">
+            <el-input
+              v-model="row.priceJEH"
+              :min="80"
+              :max="300"
             />
           </template>
         </el-table-column>
@@ -185,6 +208,7 @@ export default {
     phases: { type: Array, required: true },
     consultants: { type: Array, required: true }
   },
+  emits: ["save", "phases-selection"],
   data () {
     return {
       deletedMissions: []
@@ -196,11 +220,6 @@ export default {
         this.deletedMissions.push(mission.id)
       }
       this.modelValue.splice(index, 1)
-    },
-    applyJEHPrice (mission) {
-      mission.phasesMission.map(phase => {
-        phase.priceJEH = mission.JEH_price
-      })
     },
     getTotalJEHAllocated(phaseId) {
       return this.modelValue.reduce((total, mission) => {
@@ -270,12 +289,11 @@ export default {
           if (mission.originalPMs.some(pm => pm.phaseEtude === id)) {
             // Si la phase était déjà présente, on la réutilise
             const originalPhase = mission.originalPMs.find(pm => pm.phaseEtude === id)
-            originalPhase.priceJEH = mission.JEH_price
             mission.phasesMission.push(originalPhase)
           } else {
             const phase = this.phases.find(phase => phase.id === id)
+            phase.priceJEH = 220; // Valeur par défaut
             if (phase) {
-              phase.priceJEH = mission.JEH_price
               mission.phasesMission.push({
                 ...phase,
                 phaseEtude: phase.id,

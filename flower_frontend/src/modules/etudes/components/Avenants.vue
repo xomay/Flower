@@ -9,42 +9,53 @@
       :closable="false"
       style="margin-bottom: 20px;"
     />
+    <el-row>
+      <el-button
+      :disabled="!canAddAvenant"
+      @click="requestNewAvenant()"
+      style="margin-bottom: 20px;"
+      type="warning"
+      icon="Plus"
+      >Ajouter un avenant</el-button>
+    </el-row>
     <el-timeline>
-      <el-timeline-item
-        v-show="avenants.length > 0"
-        placement="top"
-        type="primary"
-        :hide-timestamp="true"
+      <div
+        v-for="(avenant, index) in avenants.slice().sort((a, b) => {
+          // Les avenants sans date de signature sont considérés comme les plus récents
+          if (!a.doc?.signDate && !b.doc?.signDate) return 0;
+          if (!a.doc?.signDate) return -1;
+          if (!b.doc?.signDate) return 1;
+          return new Date(b.doc.signDate) - new Date(a.doc.signDate);
+        })"
+        :key="index"
+        class="timeline-row"
+        :class="{ right: avenant?.mission, left: avenant?.etude }"
       >
-        <el-card>
-          Étude originelle
-        </el-card>
-      </el-timeline-item>
       <el-timeline-item
-        v-for="avenant in avenants"
         :key="avenant.id"
-        :timestamp="sqlToDisplayDate(avenant.signature_date)"
+        :timestamp="avenant?.doc?.signDate ? 'Signé le ' + sqlToDisplayDate(avenant.doc.signDate) : 'En cours d\'édition'"
         placement="top"
-        type="success"
-        size="large"
+        :type="avenant?.doc?.signDate ? 'success' : 'primary'"
+        style="width: 50%;"
       >
-        <el-card>
+        <el-card class="timeline-card">
+          <el-col>
           <!-- TITRE -->
           <el-row>
             <p class="cardTitle">
-              {{ avenant.reference }}
+              {{ avenant.ref }}
             </p>
           </el-row>
           <!-- TAGS -->
-          <el-row>
+          <el-row style="margin-bottom: 10px;">
             <el-tag
-              v-show="avenant.is_delais"
+              v-show="avenant.is_delai"
               :hit="true"
               class="tagAv"
               color="#459ff477"
               effect="plain"
             >
-              Avenant délais
+              Avenant délai
             </el-tag>
             <el-tag
               v-show="avenant.is_methodo"
@@ -74,38 +85,86 @@
               Avenant budget
             </el-tag>
           </el-row>
-          <!-- Commentaire -->
-          <el-row>
-            <div class="leftCol">
-              <b>Commentaire :</b>
-            </div>
-            <div class="rightCol">
-              {{ avenant.comment }}
-            </div>
+          <span><b>Description : </b>{{ avenant.description }}</span>
+          <el-row style="margin-top: 10px;">
+            <el-button
+            v-show="!avenant?.doc?.signDate"
+            icon="Edit"
+            type="primary"
+            plain
+            @click="avenant.etude ? this.$router.push(`/etudes/${this.$route.params.id}/avenants/client/modifier/${avenant.id}`) : this.$router.push(`/etudes/${this.$route.params.id}/avenants/mission/modifier/${avenant.id}`)"
+            />
+            <el-button
+            icon="Download"
+            type="primary"
+            plain
+            @click="infoPopup = true"
+            />
+            <el-button
+            icon="DocumentChecked"
+            type="success"
+            plain
+            @click="signDateForm = true; form.docId = avenant.doc?.id; avenant.etude ? form.is_client = true : form.is_client = false"
+            />
+            <el-popconfirm 
+            title="Etes-vous sûr de vouloir supprimer cet avenant ?"
+            confirm-button-text="Oui"
+            cancel-button-text="Non"
+            confirm-button-type="success"
+            cancel-button-type="warning"
+            hide-icon
+            @confirm="deleteAvenant(avenant)"
+            >
+              <template #reference>
+                <el-button
+                icon="Delete"
+                type="danger"
+                plain
+                v-show="!avenant?.doc?.signDate"
+                />
+              </template>
+            </el-popconfirm>
+            
           </el-row>
-          <el-row v-show="avenant.is_delais">
-            <div class="leftCol">
-              <b>Nouveau délai :</b>
-            </div>
-            <div class="rightCol">
-              {{ sqlToDisplayDate(avenant.new_dates) }}
-            </div>
-          </el-row>
+          </el-col>
         </el-card>
+
+        <el-dialog v-model="signDateForm" title="Date de signature du document" width="500">
+              <el-form :model="form">
+                <el-form-item
+                  label="Référence :"
+                  prop="ref"
+                  label-width="140px"
+                >
+                  <el-date-picker
+                    v-model="form.signDate"
+                    format="DD/MM/YYYY"
+                    value-format="YYYY-MM-DD"
+                    type="date"
+                    placeholder="Sélectionnez une date"
+                  />
+                </el-form-item>
+              </el-form>
+              <template #footer>
+                <div class="dialog-footer">
+                  <el-button @click="signDateForm = false">Annuler</el-button>
+                  <el-button type="primary" @click="signAvenant(form.docId); signDateForm = false;">
+                    Confirmer
+                  </el-button>
+                </div>
+              </template>
+            </el-dialog>
+
+            <el-dialog v-model="infoPopup" title="Pas disponible" width="500">
+              <span>Le téléchargement n'est pas encore disponible</span>
+              <template #footer>
+                <div class="dialog-footer">
+                  <el-button @click="infoPopup = false">Ok</el-button>
+                </div>
+              </template>
+            </el-dialog>
       </el-timeline-item>
-      <el-timeline-item
-        placement="top"
-        type="info"
-        :hide-timestamp="true"
-      >
-        <el-button
-          :disabled="!canAddAvenant"
-          type="warning"
-          @click="requestNewAvenant()"
-        >
-          Ajouter un avenant
-        </el-button>
-      </el-timeline-item>
+      </div>
     </el-timeline>
   </div>
 </template>
@@ -119,20 +178,41 @@ export default {
     avenants: { type: Array, required: true },
     canAddAvenant: { type: Boolean, default: true }
   },
+  data() {
+    return {
+      signDateForm: false,
+      infoPopup: false,
+      form: {
+        signDate: null,
+        docId: null,
+        is_client: true
+      },
+    }
+  },
   methods: {
     requestNewAvenant () {
-      this.$router.push(`/etudes/${this.$route.params.id}/avenants/ajouter`)
+      this.$router.push(`/etudes/${this.$route.params.id}/avenants/client/ajouter`)
+    },
+    deleteAvenant (avenant) {
+      this.$emit('delete-avenant', avenant)
+    },
+    signAvenant (id) {
+      this.$emit('sign-avenant', id, this.form.signDate, this.form.is_client)
     }
   }
 }
 </script>
 
-<style>
+<style scoped>
   .cardTitle {
     font-size: 120%;
     font-weight: bold;
     color: black;
     margin-bottom: 10px;
+  }
+  .avenantCard {
+    display: flex;
+    flex-direction: row-reverse;
   }
   .tagAv {
     margin-right: 5px;
@@ -154,5 +234,19 @@ export default {
     float:left;
     margin-left: 20px;
     margin-bottom: 20px;
+  }
+  .left {
+    justify-content: flex-start;
+  }
+  .right {
+    justify-content: flex-end;
+  }
+  .timeline-row {
+    display: flex;
+    align-items: center;
+    position: relative;
+  }
+  .timeline-card {
+    max-width: 800px;
   }
 </style>

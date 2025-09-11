@@ -55,8 +55,8 @@
           class="dark"
           @click="collapse = ! collapse"
         >
-            <el-icon v-if="collapse"><Expand /></el-icon>
-            <el-icon v-else><Fold /></el-icon>
+            <el-icon v-if="collapse"><DArrowRight /></el-icon>
+            <el-icon v-else><DArrowLeft /></el-icon>
         </el-button>
         <el-dropdown
           trigger="click"
@@ -68,14 +68,16 @@
           >
             <el-icon><Tools /></el-icon>
           </el-button>
-          <el-dropdown-menu #dropdown>
-            <el-dropdown-item command="profile">
-              <el-icon><User /></el-icon>{{ this.$store.currentUser.username }}
-            </el-dropdown-item>
-            <el-dropdown-item command="logout">
-              <el-icon><Close /></el-icon>Se déconnecter
-            </el-dropdown-item>
-          </el-dropdown-menu>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item command="profile">
+                <el-icon><User /></el-icon>{{ this.$store.currentUser.user.name }}
+              </el-dropdown-item>
+              <el-dropdown-item command="logout">
+                <el-icon><Close /></el-icon>Se déconnecter
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
         </el-dropdown>
       </div>
       <router-view />
@@ -205,7 +207,7 @@ export default {
           ]
         },
         {
-          icon: "Management",
+          icon: "Files",
           title: "Suivi d'Etude",
           children: [
             {name: "Voir les études",
@@ -225,7 +227,7 @@ export default {
           ]
         },
         {
-          icon: "Avatar",
+          icon: "Phone",
           title: "Prospection",
           children: [
             {

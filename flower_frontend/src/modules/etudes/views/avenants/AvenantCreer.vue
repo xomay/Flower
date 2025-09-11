@@ -3,268 +3,78 @@
     title="Ajouter un avenant"
     :breadcrumb="breadcrumb"
   >
-    <el-form
-      ref="formAvenant"
-      :model="avenant"
-      :rules="formRules"
-      label-position="left"
-    >
-      <el-row>
-        <el-col :span="12">
-          <el-form-item
-            label="Référence :"
-            prop="displayRef"
-            label-width="100px"
-          >
-            <el-input
-              v-model="avenant.displayRef"
-              :disabled="true"
-            />
-          </el-form-item>
-        </el-col>
-        <el-col
-          :offset="2"
-          :span="10"
-          style="margin-top: 5px;"
-        >
-          Il s'agit du <b>{{ avenant.number + (avenant.number == 1 ? "er" : "ème" ) }}</b> avenant pour cette étude.
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="12">
-          <el-form-item
-            label="Signataire JE"
-            prop="signataire_junior"
-            label-width="140px"
-          >
-            <MemberPicker
-              v-model="avenant.signataire_junior"
-              :item-list="membres"
-              placeholder="Signataire JE"
-              :disabled="!before_phases"
-            />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item
-            label="Date de la signature"
-            prop="signature_date"
-          >
-            <el-date-picker
-              v-model="avenant.signature_date"
-              type="date"
-              placeholder="Choisissez un jour"
-              width="200"
-              size="medium"
-              format="DD-MM-YYYY"
-              value-format="YYYY-MM-DD"
-              :disabled="!before_phases"
-            />
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="24">
-          <el-form-item
-            label="Signataire Prospect"
-            prop="signataire_prospect"
-            label-width="140px"
-          >
-            <MemberPicker
-              v-model="avenant.signataire_prospect"
-              :item-list="employes"
-              placeholder="Signataire Prospect"
-              :disabled="!before_phases"
-            />
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-form-item
-          label="Commentaire"
-          prop="comment"
-          label-width="140px"
-        >
-          <el-input
-            v-model="avenant.comment"
-            type="textarea"
-            :rows="2"
-            placeholder="Expliquez les raisons de cet avenant."
-            :disabled="!before_phases"
-          />
-        </el-form-item>
-      </el-row>
-      <el-row>
-        <el-checkbox
-          v-model="avenant.is_delais"
-          :disabled="!before_phases"
-          @change="updateReference"
-        >
-          Avenant délai
-        </el-checkbox>
-      </el-row>
-      <el-row v-show="avenant.is_delais">
-        <el-form-item
-          label="Nouvelle date :"
-          prop="new_dates"
-          style="margin-top: 10px; margin-bottom: -15px;"
-          :rules="avenant.is_delais ? [{required: true, message: 'Obligatoire', trigger: 'change' }] : []"
-        >
-          <el-date-picker
-            v-model="avenant.new_dates"
-            type="date"
-            placeholder="Fin de l'étude"
-            width="200"
-            size="small"
-            format="DD-MM-YYYY"
-            value-format="YYYY-MM-DD"
-            :disabled="!before_phases"
-          />
-        </el-form-item>
-      </el-row>
-      <el-row>
-        <el-checkbox
-          v-model="avenant.is_methodo"
-          :disabled="!before_phases"
-          @change="updateReference"
-        >
-          Avenant méthodologique
-        </el-checkbox>
-      </el-row>
-      <el-row>
-        <el-checkbox
-          v-model="avenant.is_cdc"
-          :disabled="!before_phases"
-          @change="updateReference"
-        >
-          Avenant du cahier des charges
-        </el-checkbox>
-      </el-row>
-      <el-row>
-        <el-checkbox
-          v-model="avenant.is_budget"
-          :disabled="!before_phases"
-          @change="updateReference"
-        >
-          Avenant budget
-        </el-checkbox>
-      </el-row>
-    </el-form>
-    <el-row v-show="before_phases">
-      <el-button
-        :disabled="!(avenant.is_delais || avenant.is_methodo || avenant.is_cdc || avenant.is_budget)"
-        type="success"
-        style="margin-top: 20px;"
-        @click="startModifPhases()"
-      >
-        Modifier les phases
-      </el-button>
-      <el-alert
-        v-show="!(avenant.is_delais || avenant.is_methodo || avenant.is_cdc || avenant.is_budget)"
-        type="warning"
-        title="Il faut sélectionner au moins un type d'avenant."
-        show-icon
-        :closable="false"
-      />
-    </el-row>
-    <PhasesForm
-      v-show="!before_phases"
-      v-model="avenant.groupes.groupes"
-      :small="false"
-      :disabled="edit_rdms"
-      @add-us="addUS"
-      @add-groupe="addGroupe"
-      @add-phase="addPhase"
-      @delete-groupe="deleteGroupe"
-      @delete-phase="deletePhase"
-      @delete-us="deleteUS"
-    />
-    <el-button
-      v-show="(!before_phases) && !(edit_rdms)"
-      type="success"
-      :disabled="loading"
-      style="margin-top: 20px;"
-      @click="validatePhases()"
-    >
-      Valider les phases
-    </el-button>
-    <el-button
-      v-show="edit_rdms"
-      :disabled="loading"
-      type="text"
-      icon="Plus"
-      @click="addMission"
-    >
-      Ajouter une mission
-    </el-button>
-    <MissionForm
-      v-show="edit_rdms"
-      :value="missions"
+    <AvenantForm
+      :create="true"
+      :avenant="avenant"
+      :etude="etude"
+      :avenantsRM="avenantsRM"
       :loading="loading"
-      :phases="phases"
-      :consultants="realisateurs"
-      @save="validateRDMs"
+      :membres="membres"
+      :intervenants="intervenants"
+      :employes="employes"
+      :isClient="false"
+      :isInter="false"
+      @update-reference="updateReference"
+      @update-rm-reference="updateRMReference($event)"
+      @validate-avenant="saveAvenant"
     />
-    <el-row style="position: relative;">
-      <el-button
-        v-show="!before_phases"
-        :disabled="loading"
-        type="danger"
-        icon="DeleteFilled"
-        style="margin-top: -30px; position: absolute; right: 20px;"
-        @click="deleteAvenant()"
-      >
-        Arrêter et supprimer cet avenant
-      </el-button>
-    </el-row>
+    
   </BaseComponent>
 </template>
 
 <script>
-import MemberPicker from "@/modules/membres/components/MemberPicker"
-import PhasesForm from "@/modules/etudes/components/forms/PhasesForm"
-import MissionForm from "@/modules/etudes/components/forms/MissionForm"
+import AvenantForm from "@/modules/etudes/components/forms/AvenantForm"
 import Utils from "@/mixins/Utils"
 const axios = require("axios")
+// Configuration d'axios pour CSRF
+axios.defaults.xsrfCookieName = "csrftoken";
+axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
+axios.defaults.withCredentials = true;
 export default {
   name: "AvenantCreer",
-  components: {MemberPicker, PhasesForm, MissionForm},
+  components: {AvenantForm},
   mixins: [Utils],
   data () {
     return {
       membres: [],
       employes: [],
       loading: true,
-      before_phases: true,
-      edit_rdms: false,
-      // Missions
-      missions: [],
-      realisateurs: [],
-      phases: [],
-      //
-      amountOfAvenants: 0,
-      etude_num: "",
-      sourceGroupes: [],
       avenant: {
-        displayRef: "AVx",
-        project: this.$route.params.id,
-        number: 1,
+        ref: "AVx",
+        etude: this.$route.params.id,
+        doc_etude: {
+          application_fees: 0,
+          hasMaterialFees: false,
+          materialFees: 0,
+          materialDesc: "",
+          signer1: 0,
+          signer2: 0,
+        },
+        index: 1,
         comment: "",
+        description: "",
         signataire_junior: null,
         signataire_prospect: null,
-        is_delais: false,
+        is_delai: false,
         is_methodo: false,
         is_cdc: false,
         is_budget: false,
-        signature_date: null,
         new_dates: null,
-        groupes: {id: -1, groupes: []}
+        phases: [],
+        originalPhases: [],
+        signDate: null,
+        type: "av",
+        application_fees: 0,
+        hasMaterialFees: false,
+        materialFees: 0,
+        materialDesc: "",
       },
-      formRules: {
-        signataire_junior: [{required: true, message: "Obligatoire", trigger: "change"}],
-        signataire_prospect: [{required: true, message: "Obligatoire", trigger: "change"}],
-        signature_date: [{required: true, message: "Obligatoire", trigger: "change"}]
+      etude: {
+        number: 0,
+        phases: [],
       },
+      intervenants: [],
+      avenantsRM: [],
       breadcrumb: [
         {
           name: "Suivi d'étude",
@@ -276,7 +86,7 @@ export default {
         },
         {
           name: "Ajouter un avenant",
-          link: `/etudes/${this.$route.params.id}/avenants/ajouter`
+          link: `/etudes/${this.$route.params.id}/avenants/client/ajouter`
         },
       ]
     }
@@ -286,9 +96,37 @@ export default {
       `/api/etudes/${this.$route.params.id}/`,
       {withCredentials: true}
     ).then((res) => {
-      this.etude_num = res.data.number
-      this.avenant.number = res.data.avenants.length + 1
-      this.sourceGroupes = res.data.currentGroupes.groupes
+      this.etude = res.data
+      this.avenant.doc_etude.signer1 = res.data.docEtude.signer1.id
+      this.avenant.doc_etude.signer2 = res.data.docEtude.signer2.id
+      this.avenant.doc_etude.application_fees = res.data.docEtude.application_fees
+      this.avenant.doc_etude.hasMaterialFees = res.data.docEtude.hasMaterialFees
+      this.avenant.doc_etude.materialFees = res.data.docEtude.materialFees
+      this.avenant.doc_etude.materialDesc = res.data.docEtude.materialDesc
+      this.avenant.etude = res.data.id
+      this.avenant.index = res.data.avenants.length + 1
+      res.data.cc ? this.avenant.type = "bc" : this.avenant.type = "av"
+      res.data.missions.forEach((mission) => {
+        this.avenantsRM.push({
+          id: mission.id,
+          index: mission.avenants.length + 1,
+          ref: "AVRM" + 1 +"-_" + mission.consultant.ref_ba + "_" + this.etude.number,
+          inter: mission.consultant,
+          consultant: mission.consultant.id,
+          phases: [],
+          originalPhases: [],
+          phases_idx: [],
+          mission: mission,
+          is_delai: false,
+          is_methodo: false,
+          is_cdc: false,
+          is_budget: false,
+          description: "",
+          doc_mission: {
+            signDate: null,
+          }
+        })
+      })
       this.breadcrumb[1].name = res.data.name
       this.updateReference()
       // get employés :
@@ -316,270 +154,181 @@ export default {
     }).catch((err) => {
       this.$message({ message: "Impossible de récupérer les membres de la JE : " + err, type: "error" })
     })
+    axios.get(
+      "/api/realisateurs",
+      {withCredentials: true}
+    ).then((res) => {
+      res.data.forEach((realisateur) => realisateur.value = `${realisateur.firstname} ${realisateur.lastname}`)
+      this.intervenants = res.data
+    }).catch((err) => {
+      this.$message({message: "Impossible de récupérer les réalisateurs : "+err, type: "error", offset: 40})
+    })
   },
   methods: {
-    validateRDMs () {
-      this.loading = true
-      var promesses = [] // promesses à réaliser sur les objets de missions avant de changer l'étude
-      var newMissions = []
-      for(const mission of this.missions) {
-        promesses.push(this.saveMissionObject(mission))
+    updateReference () {
+      if (this.etude.cc){
+        this.avenant.ref = "BCR" // 'AV'
+        + this.avenant.index + "-" // numéro de l'avenant pour cette étude
+        + ((this.avenant.is_delai ? "D," : "")
+          + (this.avenant.is_methodo ? "M," : "")
+          + (this.avenant.is_cdc ? "C," : "")
+          + (this.avenant.is_budget ? "B," : "")).slice(0, -1) // bloc pour afficher les lettres du type (multiple) d'avenant
+        + "_" + this.etude.number // numéro de l'étude
+      }else {
+        this.avenant.ref = "AV" // 'AV'
+        + this.avenant.index + "-" // numéro de l'avenant pour cette étude
+        + ((this.avenant.is_delai ? "D," : "")
+          + (this.avenant.is_methodo ? "M," : "")
+          + (this.avenant.is_cdc ? "C," : "")
+          + (this.avenant.is_budget ? "B," : "")).slice(0, -1) // bloc pour afficher les lettres du type (multiple) d'avenant
+        + "_" + this.etude.number // numéro de l'étude
       }
-      // Attendre l'éxécution des promesses précédentes, et ensuite exécuter la mise à jour.
-      Promise.all(promesses).then((result) => {
-        result.forEach(r => {
-          if(r != null)
-            newMissions.push(r)
+      //On reset les propriétées des phases de l'avenant quand le type d'avenant est annulé
+      if (!this.avenant.is_delai){
+        this.avenant.phases.forEach((phase) => {
+          phase.period = this.etude.phases.find(p => p.index === phase.index).period
         })
-        axios.put(
-          `/api/etudes/${this.$route.params.id}/missions/`,
-          newMissions,
-          {withCredentials: true}
-        ).then(() => {
-          this.$message({message: "Les missions ont bien été enregistrées", type: "success", offset: 40})
-          this.$router.push(`/etudes/${this.$route.params.id}/voir?active=Rédaction`)
-        }).catch((err) => {
-          this.$message({message: "Impossible de mettre à jour les missions : "+err, type: "error", offset: 40})
-        }).finally(() => {
-          this.loading = false
+      }
+      if (!this.avenant.is_cdc){
+        this.avenant.phases.forEach((phase) => {
+          phase.spec = this.etude.phases.find(p => p.index === phase.index).spec
         })
-      }).catch(() => {
-        this.$message({message: "Annulation de la mise à jour de RM.", type: "error"})
-        this.loading = false
-      })
+      }
+      if (!this.avenant.is_budget){
+        this.avenant.phases.forEach((phase) => {
+          phase.nbJEH = this.etude.phases.find(p => p.index === phase.index).nbJEH
+        })
+      }
+      if (!this.avenant.is_methodo){
+        this.avenant.phases.forEach((phase) => {
+          const phaseRef = this.etude.phases.find(p => p.index === phase.index)
+          phase.title = phaseRef.title
+          phase.description = phaseRef.description
+          phase.methodologie = phaseRef.methodologie
+        })
+      }
     },
-    addMission () {
-      this.missions.push({
-        consultant: "",
-        missionBegin: "",
-        missionEnd: "",
-        percentageJunior: "0.55",
-        JEHNumber: 1,
-        JEHPrice: 400,
-        phases: []
-      })
+    updateRMReference (avenant) {
+        avenant.ref = "AVRM" // 'AV'
+        + avenant.index + "-" // numéro de l'avenant pour cette étude
+        + ((avenant.is_delai ? "D," : "")
+          + (avenant.is_methodo ? "M," : "")
+          + (avenant.is_cdc ? "C," : "")
+          + (avenant.is_budget ? "B," : "")).slice(0, -1) // bloc pour afficher les lettres du type (multiple) d'avenant
+        + "_" + avenant.inter.ref_ba + "_" + this.etude.number // numéro de l'étude
     },
-    deleteAvenant () {
+    saveAvenant (filteredAvenantsRM, globalForm) {
       this.loading = true
-      axios.delete(
-        `/api/avenants/${this.avenant.id}/`,
-        {withCredentials: true}
-      ).then(() => {
-        this.$message({message: "Action annulée avec succès.", type: "success"})
+      let promesses = []
+      if (globalForm.is_client){
+        const docEtude = {
+          application_fees: this.avenant.doc_etude.application_fees,
+          hasMaterialFees: this.avenant.doc_etude.hasMaterialFees,
+          materialFees: this.avenant.doc_etude.materialFees,
+          materialDesc: this.avenant.doc_etude.materialDesc,
+          signer1: this.avenant.doc_etude.signer1,
+          signer2: this.avenant.doc_etude.signer2,
+        }
+        const avenantEtude = {
+          description: this.avenant.description,
+          is_delai: this.avenant.is_delai,
+          is_methodo: this.avenant.is_methodo,
+          is_cdc: this.avenant.is_cdc,
+          is_budget: this.avenant.is_budget,
+          doc_etude: null,
+          etude: this.$route.params.id,
+          index: this.avenant.index,
+        }
+        promesses.push(this.saveDocs(docEtude, avenantEtude, true).then((resAvenant) => {
+          const av = { ...resAvenant, phases: this.avenant.phases }
+          this.savePhases(av, this.etude, true)
+        }))
+      }
+      if (globalForm.is_inter){
+        this.avenantsRM = filteredAvenantsRM
+        this.avenantsRM.forEach((avRM) => {
+          const doc_mission = avRM.doc_mission
+          const avenantRM = {
+            description: avRM.description,
+            is_delai: avRM.is_delai,
+            is_methodo: avRM.is_methodo,
+            is_cdc: avRM.is_cdc,
+            is_budget: avRM.is_budget,
+            doc_etude: null,
+            mission: avRM.mission.id,
+            index: avRM.index,
+          }
+          const mission = { ...avRM.mission, phases: [...avRM.mission.phasesMission] }
+          promesses.push(this.saveDocs(doc_mission, avenantRM, false).then((resAvenant) => {
+            const av = { ...resAvenant, phases: avRM.phases }
+            this.savePhases(av, mission, false)
+          }))
+        })
+      }
+      Promise.all(promesses).then(() => {
+        this.$message({message: "Avenant créé avec succès", type: "success"})
         this.$router.push(`/etudes/${this.$route.params.id}/voir?active=Avenants`)
-      }).catch((err) => {
-        this.$message({message: "Impossible de supprimer l'avenant : " + err, type: "error"})
+      }).catch((error) => {
+        console.error("Erreur lors de la création de l'avenant", error)
+        this.$message({message: "Erreur lors de la création de l'avenant : " + error, type: "error"})
         this.loading = false
       })
     },
-    validatePhases () {
-      this.loading = true
-      axios.put(
-        "/api/etudes/groupes/",
-        this.avenant.groupes.groupes,
-        {withCredentials: true}
-      ).then(() => {
-        this.$message({message: "Les Groupes et Phases ont bien été enregistrés", type: "success"})
-        this.edit_rdms = true
-        axios.get(
-          "/api/realisateurs/",
-          {withCredentials: true}
-        ).then((resRea) => {
-          resRea.data.forEach((elt) => elt.value = this.nicePeople(elt))
-          this.realisateurs = resRea.data
-        }).catch((err) => {
-          this.$message({ message: "Impossible de récupérer les membres de la JE : " + err, type: "error" })
-        }).finally(() => this.loading = false)
-        this.avenant.groupes.groupes.forEach(g => this.phases.push(...g.phases))
-      }).catch((err) => {
-        this.$message({message: "Erreur lors de l'enregistrement : " + err, type: "error"})
-        if (err.response && err.response.status === 400) {
-          this.$message({message: "Le formulaire comporte des erreurs. Vérifiez les descriptions et les objectifs des phases (menu déroulant)",
-            type: "error",
-            offset: 40})
-        } else {
-          this.$message({message: "Impossible d'enregistrer les Groupes et Phases pour le moment",
-            type: "error",
-            offset: 40})
-        }
-      }).finally(() => this.loading = false)
-    },
-    startModifPhases () {
-      this.$refs.formAvenant.validate((valid) => {
-        if(valid) {
-          this.loading = true
-          axios.post(
-            "/api/avenants/",
-            this.avenant,
-            {withCredentials:true}
-          ).then(res => {
-            // L'intéret de la manipulation est de créer l'avenant, et puis d'ensuite seulement ajouter les US et faire les manip dasn le GroupesSet
-            this.before_phases = false // on passe en mode 'modif de phase'
-            this.avenant.id = res.data.id
-            this.avenant.groupes = res.data.groupes
-            this.$message({ message: "L'avenant a été créé. Merci de paramétrer les nouvelles phases." , type: "success" })
-            this.updateReference()
-          }).catch(err => {
-            this.$message({ message: "Impossible de créer l'avenant : " + err , type: "error" })
-          }).finally(this.loading = false)
-        } else {
-          this.$message({ message: "Précisez les signataires de l'avenant." , type: "error" })
-        }
-      })
-    },
-    saveMissionObject (mission_obj) {
-      mission_obj.project = this.$route.params.id
-      return new Promise((resolve, fail) => {
+    saveDocs(doc, avenant, client) {
+      return new Promise((resolve, reject) => {
         axios.post(
-          `/api/etudes/${this.$route.params.id}/missions/`,
-          mission_obj,
+          client ? `/api/etudes/ce/` : `/api/etudes/mission/doc/`,
+          doc,
           {withCredentials: true}
         ).then((res) => {
-          resolve(res.data)
-        }).catch((err) => {
-          this.$message({message: "Impossible de register une nouvelle mission : "+err,
-            type: "error",
-            offset: 40})
-          fail(err)
+          client ? avenant.doc_etude = res.data.id : avenant.doc_mission = res.data.id
+          axios.post(
+            client ? `/api/etudes/avenants/` : `/api/etudes/avenants/missions/`,
+            avenant,
+            {withCredentials: true}
+          ).then((resAvenant) => {
+            resolve(resAvenant.data)
+          }).catch((error) => {
+            console.error("Erreur lors de la création de l'avenant", error)
+            reject(error)
+          })
+        }).catch((error) => {
+          console.error("Erreur lors de la création du doc", error)
+          reject(error)
         })
       })
     },
-    updateReference () {
-      this.avenant.displayRef = "AV" // 'AV'
-      + this.avenant.number // numéro de l'avenant pour cette étude
-      + ((this.avenant.is_delais ? "D," : "")
-        + (this.avenant.is_methodo ? "M," : "")
-        + (this.avenant.is_cdc ? "C," : "")
-        + (this.avenant.is_budget ? "B," : "")).slice(0, -1) // bloc pour afficher les lettres du type (multiple) d'avenant
-      + "_" + this.etude_num // numéro de l'étude
-    },
-    addGroupe () {
+    savePhases(avenant, related, client) {
       this.loading = true
-      const newGroup = {
-        title: "Titre",
-        description: "Description",
-        project: this.$route.params.id,
-        index: this.avenant.groupes.groupes.length + 1,
-        owner: this.avenant.groupes.id,
-        phases: []
-      }
-      axios.post(
-        "/api/etudes/groupes/",
-        newGroup,
-        {withCredentials: true}
-      ).then((res) => {
-        this.$message({message: "Le groupe a bien été créé", type: "success"})
-        this.avenant.groupes.groupes.push(res.data)
-      }).catch(() => {
-        this.$message({message: "Impossible de créer un groupe pour le moment", type: "error"})
-      }).finally(() => {
-        this.loading = false
+      avenant.phases.forEach((phase) => {
+        phase.avenant_creer = avenant.id
       })
-    },
-    addPhase (groupe) {
-      this.loading = true
-      const newIndex = (Math.max.apply(
-          Math,
-          groupe.phases.map((phase) => phase.index)
-        ) | 0) + 1,
-        newPhase = {
-          index: newIndex,
-          uss: [],
-          groupe: groupe.id
-        }
-      axios.post(
-        "/api/etudes/phases/",
-        newPhase,
-        {withCredentials: true}
-      ).then((res) => {
-        this.$message({message: "La phase a bien été ajoutée.", type: "success"})
-        groupe.phases.push(res.data)
-      }).catch(() => {
-        this.$message({message: "Impossible de créer une phase pour le moment", type: "error"})
-      }).finally(() => {
-        this.loading = false
+      related.phases.forEach((phase) => {
+        phase.avenant_edit = avenant.id
       })
-    },
-    addUS (phase) {
-      this.loading = true
-      const newIndex = (Math.max.apply(
-          Math,
-          phase.uss.map((us) => us.index)
-        ) | 0) + 1,
-        newUS = {
-          index: newIndex,
-          uss: [],
-          name: "US",
-          phase: phase.id
-        }
-      axios.post(
-        "/api/etudes/uss/",
-        newUS,
-        {withCredentials: true}
-      ).then((res) => {
-        this.$message({message: "L'US a bien été ajouté.", type: "success"})
-        phase.uss.push(res.data)
-      }).catch(() => {
-        this.$message({message: "Impossible de créer une US pour le moment", type: "error"})
-      }).finally(() => {
-        this.loading = false
-      })
-    },
-    deleteGroupe ({groupeId, groupeIndex}) {
-      this.loading = true
-      axios.delete(
-        `/api/etudes/groupes/${groupeId}/`,
-        {withCredentials: true}
-      ).then(() => {
-        this.avenant.groupes.groupes.splice(
-          groupeIndex,
-          1
-        )
-        this.$message({message: "Le groupe a bien été supprimé", type: "success"})
-      }).catch((err) => {
-        this.$message({message: "Impossible de supprimer ce groupe pour le moment :"+err, type: "error"})
-      }).finally(() => {
-        this.loading = false
-      })
-    },
-    deletePhase ({phase, groupe}) {
-      this.loading = true
-      axios.delete(
-        `/api/etudes/phases/${phase.id}/`,
-        {withCredentials: true}
-      ).then(() => {
-        const index = groupe.phases.indexOf(phase)
-        if (index > -1) {
-          groupe.phases.splice(
-            index,
-            1
-          )
-        }
-        this.$message({message: "La phase a bien été supprimée.", type: "success"})
-      }).catch(() => {
-        this.$message({message: "Impossible de supprimer cette phase pour le moment", type: "error"})
-      }).finally(() => {
-        this.loading = false
-      })
-    },
-    deleteUS ({us, phase}) {
-      this.loading = true
-      axios.delete(
-        `/api/etudes/uss/${us.id}/`,
-        {withCredentials: true}
-      ).then(() => {
-        const index = phase.uss.indexOf(us)
-        if (index > -1) {
-          phase.uss.splice(
-            index,
-            1
-          )
-        }
-        this.$message({message: "L'US a bien été supprimée.", type: "success"})
-      }).catch(() => {
-        this.$message({message: "Impossible de supprimer cette US pour le moment", type: "error"})
-      }).finally(() => {
-        this.loading = false
+      const newPhases = avenant.phases.filter(p => p.id === undefined || p.id === null)
+      //const phasesToSave = [...this.etude.phases.filter(p => this.avenant.phases.some(av_phase => av_phase.index === p.index)), ...this.avenant.phases.filter(p => p.id !== undefined && p.id !== null)]
+      const phasesToSave = related.phases.filter(p => avenant.phases.some(av_phase => av_phase.index === p.index)).concat(avenant.phases.filter(p => p.id !== undefined && p.id !== null))
+      return new Promise((resolve, reject) => {
+        axios.post(
+          client ? "/api/etudes/phases/" : "/api/etudes/phases/missions/",
+          newPhases,
+          {withCredentials: true}
+        ).then(() => {
+          axios.put(
+            client ? "/api/etudes/phases/" : "/api/etudes/phases/missions/",
+            phasesToSave,
+            {withCredentials: true}
+          ).then((res) => {
+            resolve(res.data)
+          }).catch((err) => {
+            console.error("Erreur lors de la mise à jour des phases", err)
+            reject(err)
+          })
+        }).catch((err) => {
+          console.error("Erreur lors de l'enregistrement des phases", err)
+          reject(err)
+        })
       })
     },
   }

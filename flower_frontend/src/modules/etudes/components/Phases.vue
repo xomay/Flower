@@ -1,8 +1,14 @@
 <template>
   <div>
-      <template slot="title">
-        <b><u>Note :</u> Il ne s'agit pas des phases originales de l'étude, mais celles d'un avenant.</b>
-      </template>
+      <el-alert
+        v-if="etude.avenants.filter(avenant => avenant.doc_etude?.signDate).length > 0"
+        title="Note"
+        description="Il ne s'agit pas des phases originales de l'étude, mais celles d'un avenant."
+        type="info"
+        show-icon
+        :closable="false"
+        style="margin-bottom: 20px;"
+      />
     <router-link :to="{ name: 'etudes-phases', params: { id: this.$route.params.id } }">
       <el-button
         v-if="editable"
@@ -55,18 +61,6 @@
             {{ row.title }} : <i><p color="gray">{{ row.description }}</p></i>
           </template>
         </el-table-column>
-        <el-table-column
-          width="120"
-          label="Date de début"
-          prop="beginDate"
-          :formatter="niceDateFormatter"
-        />
-        <el-table-column
-          width="120"
-          label="Date de fin"
-          prop="finishDate"
-          :formatter="niceDateFormatter"
-        />
         <el-table-column
           width="70"
           label="Nb JEH"

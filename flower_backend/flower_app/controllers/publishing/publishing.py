@@ -57,7 +57,7 @@ def param(value):
         return "(!! ERROR : bad field name: '"+value+"' !!)"
 
 def computeDocx(context, doctypeFilename, name='undef', images=dict()):
-    doc = DocxTemplate("/home/mathys/Ouest_INSA/" + settings.DOCTYPES_LOCATION + doctypeFilename)
+    doc = DocxTemplate(settings.DOCTYPES_LOCATION + doctypeFilename)
     docBytes = io.BytesIO()
     for key, value in images.items():
         context[key] = InlineImage(doc, value, width=Mm(180))
@@ -105,8 +105,7 @@ def docx_to_pdf(input_path, output_dir="/tmp"):
 
 def computePdf(context, doctypeFilename, name='undef', images=dict()):
     with tempfile.NamedTemporaryFile(delete=False, suffix=".docx") as tmp_docx:
-        print("Chemin :", "/home/mathys/Ouest_INSA/" + settings.DOCTYPES_LOCATION + doctypeFilename)
-        doc = DocxTemplate("/home/mathys/Ouest_INSA/" + settings.DOCTYPES_LOCATION + doctypeFilename)
+        doc = DocxTemplate(settings.DOCTYPES_LOCATION + doctypeFilename)
         docBytes = io.BytesIO()
         for key, value in images.items():
             context[key] = InlineImage(doc, value, width=Mm(180))

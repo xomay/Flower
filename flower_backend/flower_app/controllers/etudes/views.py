@@ -8,7 +8,7 @@ from datetime import datetime
 
 from flower_app.controllers.permissions import HasGroupPermission, HasReaPermissionToSeeEtude
 from flower_app.models.CC import CCSerializer, CC, CCDetailSerializer
-from flower_app.models.DocEtude import DocEtude, CESerializer, CEDetailSerializer
+from flower_app.models.DocEtude import DocEtude, CESerializer, CEDetailSerializer, DocMissionSerializer, DocMission
 from flower_app.models.Etude import Etude, EtudeSerializer, EtudeDetailSerializer
 from flower_app.models.UploadedFile import UploadedFile, UploadedFileSerializer
 from flower_app.models.GroupePhase import Phase, PhaseSerializer
@@ -41,6 +41,52 @@ class CCListCreateView(generics.ListCreateAPIView):
     }
     serializer_class = CCSerializer
     queryset = CC.objects.all()
+
+class CEListCreateView(generics.ListCreateAPIView):
+    permission_classes = [IsAuthenticated, HasGroupPermission]
+    required_groups = {
+        'GET': ['ROLE_CA'],
+        'POST': ['ROLE_CA']
+    }
+    serializer_class = CESerializer
+    queryset = DocEtude.objects.all()
+
+class DocMissionListCreateView(generics.ListCreateAPIView):
+    permission_classes = [IsAuthenticated, HasGroupPermission]
+    required_groups = {
+        'GET': ['ROLE_CA'],
+        'POST': ['ROLE_CA']
+    }
+    serializer_class = DocMissionSerializer
+    queryset = DocMission.objects.all()
+
+class CEUpdateView(generics.RetrieveUpdateAPIView):
+    permission_classes = [IsAuthenticated, HasGroupPermission]
+    required_groups = {
+        'GET': ['ROLE_CA'],
+        'PUT': ['ROLE_CA'],
+        'PATCH': ['ROLE_CA'],
+    }
+    queryset = DocEtude.objects.all()
+
+    def get_serializer_class(self):
+        if self.request.method in ['PUT', 'PATCH']:
+            return CESerializer
+        return CEDetailSerializer
+
+class DocMissionUpdateView(generics.RetrieveUpdateAPIView):
+    permission_classes = [IsAuthenticated, HasGroupPermission]
+    required_groups = {
+        'GET': ['ROLE_CA'],
+        'PUT': ['ROLE_CA'],
+        'PATCH': ['ROLE_CA'],
+    }
+    queryset = DocMission.objects.all()
+
+    def get_serializer_class(self):
+        if self.request.method in ['PUT', 'PATCH']:
+            return DocMissionSerializer
+        return DocMissionSerializer
 
 class EtudeRetrieveUpdateView(generics.RetrieveUpdateAPIView):
     permission_classes = [IsAuthenticated, HasGroupPermission]
@@ -143,7 +189,6 @@ class ReaEtudesDetailView(generics.RetrieveAPIView):
                 'title': phase.title,
                 'index': phase.index,
                 'description': phase.description,
-                'beginDate': phase.beginDate,
                 'nbJEH': phase.nbJEH,
                 'finishDate': phase.finishDate,
                 'uss': uss

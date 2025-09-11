@@ -97,21 +97,6 @@ export default {
       dayWidth: 20,
       baseDate: new Date(new Date().setDate(new Date().getDate() - 7)),
       timelineMarkers: [],
-      studies: [
-        {
-          name: 'Étude A',
-          phases: [
-            { name: 'Phase 1', start: '2025-05-01', end: '2025-06-05', color: '#67C23A' },
-            { name: 'Phase 2', start: '2025-06-06', end: '2025-06-10', color: '#E6A23C' }
-          ]
-        },
-        {
-          name: 'Étude B',
-          phases: [
-            { name: 'Phase 1', start: '2025-06-03', end: '2025-06-08', color: '#409EFF' }
-          ]
-        }
-      ]
     }
   },
   created() {
@@ -132,6 +117,16 @@ export default {
   },
    watch: {
     etudes () {
+      this.etudes.forEach(etude => {
+        var beginDate = etude.docEtude?.signDate || new Date();
+        etude.phases.forEach(phase => {
+          phase.beginDate = this.truncateStart(beginDate);
+          phase.finishDate = new Date(phase.beginDate);
+          phase.finishDate.setDate(phase.finishDate.getDate() + phase.period);
+          phase.totalPrice = phase.nbJEH * phase.priceJEH;
+          beginDate = new Date(phase.finishDate);
+        });
+      });
       const bounds = this.getTimelineBounds(this.etudes);
       const start = new Date(this.baseDate);
       const end = new Date(bounds.end);

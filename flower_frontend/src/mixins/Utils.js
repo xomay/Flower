@@ -43,7 +43,7 @@ export default {
       if(date == null)
         return "[ERREUR: date non défine.]"
       const tokens = date.split("-")
-      return tokens[2] + "/" + tokens[1] + "/" + tokens[0]
+      return tokens[2].slice(0, 2) + "/" + tokens[1] + "/" + tokens[0]
     },
     niceFileSize (size) {
       if(size < 1000)

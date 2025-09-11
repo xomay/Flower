@@ -4,15 +4,19 @@ import plotly.express as px
 from plotly.io import to_image
 import pandas as pd
 import textwrap
-from datetime import datetime
+from datetime import timedelta
 
 import locale
 locale.setlocale(locale.LC_TIME, "fr_FR.utf8")
 
 def computeGanttFromEtudeRaw(etude):
     data = []
+    beginDate = etude.docEtude.signDate
     for phase in etude.phases.order_by('index').iterator():
-        data.append(dict(Phase="<br>".join(textwrap.wrap(phase.title, width=(datetime.fromisoformat(phase.finishDate).date()-phase.beginDate).days)), Début=phase.beginDate, Fin=phase.finishDate))
+        finishDate = beginDate + timedelta(days=phase.period)
+        data.append(dict(Phase="<br>".join(textwrap.wrap(phase.title, width=(finishDate-beginDate).days)), Début=beginDate, Fin=finishDate))
+        beginDate = finishDate
+
     if len(data) > 0 :
         df = pd.DataFrame(data)
         fig = px.timeline(df, x_start="Début", x_end="Fin", y="Phase", color="Phase", text="Phase")

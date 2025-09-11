@@ -34,12 +34,9 @@ class Etude(models.Model):
     projectManager = models.ForeignKey(Membre, on_delete=models.RESTRICT, related_name="projectManager", blank=True, null=True)
     clientContact = models.ForeignKey(Employe, on_delete=models.RESTRICT, blank=True, null=True)
     
-    docEtude = models.OneToOneField(DocEtude, default=create_doc, on_delete=models.CASCADE)
+    docEtude = models.OneToOneField(DocEtude, on_delete=models.CASCADE, blank=True, null=True, default=create_doc)
     cc = models.ForeignKey(CC, on_delete=models.RESTRICT, blank=True, null=True)
 
-    deposit_percentage = models.DecimalField(default=30, max_digits=10, decimal_places=2)
-    deposit_sum = models.DecimalField(default=0, max_digits=10, decimal_places=2)
-    application_fees = models.DecimalField(default=0, max_digits=10, decimal_places=2)
     
     linkedFiles = models.ManyToManyField(UploadedFile, blank=True)
 
@@ -54,7 +51,8 @@ class Etude(models.Model):
 
     @property
     def phases(self):
-        return self.phasesEtude.all()
+        #return self.phasesEtude.all()
+        return self.phaseEtude.filter(state='ACTIVE')
 
     @property
     def isAborted(self):
@@ -128,6 +126,7 @@ class EtudeDetailSerializer(serializers.ModelSerializer):
     invoices = serializers.SerializerMethodField()
     pvr = serializers.SerializerMethodField()
     phases = serializers.SerializerMethodField()
+    avenants = serializers.SerializerMethodField()
 
     def get_isAborted(self, instance):
         return instance.isAborted
@@ -161,7 +160,11 @@ class EtudeDetailSerializer(serializers.ModelSerializer):
 
     def get_phases(self, instance):
         from .GroupePhase import PhaseEtudeSerializer
-        return PhaseEtudeSerializer(instance.phasesEtude.all(), many=True).data
+        return PhaseEtudeSerializer(instance.phaseEtude.filter(state='ACTIVE'), many=True).data
+
+    def get_avenants(self, instance):
+        from .Avenant import AvenantEtudeDetailSerializer
+        return AvenantEtudeDetailSerializer(instance.avenantsEtude.all(), many=True).data
 
     class Meta:
         model = Etude

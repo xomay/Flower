@@ -154,7 +154,13 @@
                 label="Montant brut"
               >
                 <template #default="{row}">
-                  <span>{{ row.JEHNumber * row.JEH_price }}€</span>
+                  <span>
+                    {{ 
+                      row.phasesMission
+                      ? row.phasesMission.reduce((sum, phase) => sum + (phase.nbJEH * phase.priceJEH), 0)
+                      : 0
+                    }}€
+                  </span>
                 </template>
               </el-table-column>
               <el-table-column label="Opérations">

@@ -89,7 +89,7 @@ export default {
   components: { EtudeSteps },
   props: {
     etude: { type: Object, required: true },
-    getgantt: { type: Boolean, default: true },
+    getgantt: { type: Boolean, default: false },
     reaVue: { type: Boolean, default: false }
   },
   data () {

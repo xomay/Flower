@@ -106,6 +106,15 @@ class Realisateur(Personne):
         for skill in self.skills.all():
             skillsArr.append(str(skill))
         return skillsArr
+
+    @property
+    def ref_ba(self):
+        if self.isMember:
+            ref_ba = str(self.ba.year % 100) + 'C' + '%03d' % self.ba_id
+            return ref_ba
+        else:
+            ref_ba = str(self.ba.year % 100) + 'R' + '%03d' % self.ba_id
+            return ref_ba
     
     #TODO ajouter un moyen de calculer le nombre d'études.
 
@@ -113,6 +122,7 @@ class RealisateurSerializer(serializers.ModelSerializer):
     rating = serializers.ReadOnlyField()
     etudesAmount = serializers.ReadOnlyField()
     skillsArray = serializers.ReadOnlyField()
+    ref_ba = serializers.ReadOnlyField()
 
     # On ne veut pas plusieurs comments pour même réa et même étude.
     def update(self, instance, validated_data):

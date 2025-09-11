@@ -69,7 +69,7 @@ class CEViewDocx(generics.RetrieveAPIView):
         duree = 0
 
         phases = []
-        for phase in etude.phasesEtude.all():
+        for phase in etude.phaseEtude.all():
             total = phase.nbJEH * phase.priceJEH
             phases.append({
                 "title": phase.title,
@@ -81,7 +81,7 @@ class CEViewDocx(generics.RetrieveAPIView):
             total_nbJEH += phase.nbJEH
             total_HT += total
 
-        application_fees = etude.application_fees
+        application_fees = etude.docEtude.application_fees
         if (etude.docEtude.hasMaterialFees):
             material_fees = etude.docEtude.materialFees
         total_with_fees = total_HT + application_fees
@@ -124,8 +124,8 @@ class CEViewPdf(generics.RetrieveAPIView):
         duree = 0
 
         phases = []
-        nbPhases = etude.phasesEtude.all().count()
-        for phase in etude.phasesEtude.all():
+        nbPhases = etude.phaseEtude.all().count()
+        for phase in etude.phaseEtude.all():
             total = phase.nbJEH * phase.priceJEH
             phases.append({
                 "title": phase.title,
@@ -137,7 +137,7 @@ class CEViewPdf(generics.RetrieveAPIView):
             total_nbJEH += phase.nbJEH
             total_HT += total
 
-        application_fees = etude.application_fees
+        application_fees = etude.docEtude.application_fees
         material_fees = 0
         if (etude.docEtude.hasMaterialFees):
             material_fees = etude.docEtude.materialFees

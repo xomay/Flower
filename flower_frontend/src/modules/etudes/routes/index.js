@@ -80,9 +80,21 @@ const routes = [
     component: () => import("../views/comments/NewComment")
   },
   {
-    path: "etudes/:id/avenants/ajouter",
-    name: "etudes-avenants-ajouter",
+    path: "etudes/:id/avenants/client/ajouter",
+    name: "etudes-avenants-client-ajouter",
     component: () => import("../views/avenants/AvenantCreer")
+  },
+  {
+    path: "etudes/:id/avenants/client/modifier/:avenant_id",
+    name: "etudes-avenants-client-modifier",
+    component: () => import("../views/avenants/AvenantModifier"),
+    meta: { type: "client" }
+  },
+  {
+    path: "etudes/:id/avenants/mission/modifier/:avenant_id",
+    name: "etudes-avenants-mission-modifier",
+    component: () => import("../views/avenants/AvenantModifier"),
+    meta: { type: "mission" }
   },
   // Accès réalisateur
   {

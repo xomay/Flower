@@ -130,7 +130,6 @@ export default {
         missionEnd: "",
         percentageJunior: "0.51",
         JEHNumber: 1,
-        JEH_price: 220,
         phasesMission: [],
         originalPMs: [],
         phases: [],

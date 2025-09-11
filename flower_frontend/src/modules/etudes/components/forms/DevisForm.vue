@@ -160,13 +160,13 @@ export default {
       this.etude.prospect.address = this.pc.address
       this.etude.prospect.postcode = this.pc.postcode
       this.etude.prospect.town = this.pc.town
-      this.etude.application_fees = this.pc.application_fees
       axios.put(
         `/api/etudes/${this.$route.params.id}/ce/`,
         {
           signDate: this.pc.signDate,
           deposit: this.pc.deposit,
           depositAmount: this.pc.depositAmount,
+          application_fees: this.pc.application_fees,
           deliverable: this.pc.deliverable,
           description: this.pc.description,
           signer1: this.etude.docEtude.signer1 ? this.etude.docEtude.signer1.id : null,
@@ -191,7 +191,6 @@ export default {
             `/api/etudes/${this.$route.params.id}/`,
             {
               prospect: this.etude.prospect.id,
-              application_fees: this.etude.application_fees,
               confidential: this.etude.confidential,
               name: this.etude.name,
               description: this.etude.description,

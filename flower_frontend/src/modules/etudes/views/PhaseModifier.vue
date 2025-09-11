@@ -73,16 +73,6 @@ export default {
     })
   },
   methods: {
-    lastPhaseEnd (phases) {
-      let date = new Date()
-      if (this.phases.length !== 0) {
-        let date = new Date(this.phases[this.phases.length - 1].beginDate)
-        date.setDate(date.getDate() + this.phases[this.phases.length - 1].period)
-        return date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate()
-      } else {
-        return date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
-      }
-    },
     addPhase () {
       this.loading = true
       const newIndex = (Math.max.apply(
@@ -93,7 +83,6 @@ export default {
           index: newIndex,
           uss: [],
           etude: this.etude.id,
-          beginDate: this.lastPhaseEnd()
         }
       axios.post(
         "/api/etudes/phases/",

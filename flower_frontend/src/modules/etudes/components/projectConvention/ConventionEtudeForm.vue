@@ -273,7 +273,6 @@ export default {
     },
     saveCE () {
       this.ce.signDate = new Date()
-      this.etude.application_fees = this.ce.application_fees
       axios.put(
         `/api/etudes/${this.$route.params.id}/ce/`,
         this.ce,
@@ -283,7 +282,6 @@ export default {
             `/api/etudes/${this.$route.params.id}/`,
             {
               prospect: this.etude.prospect.id,
-              application_fees: this.etude.application_fees,
               confidential: this.etude.confidential,
               name: this.etude.name,
               description: this.etude.description,
@@ -343,7 +341,6 @@ export default {
           signer2: this.personFullname(this.ce.signer2)}
         this.ce.signer1 = this.ce.signer1 ? this.ce.signer1.id : null
         this.ce.signer2 = this.ce.signer2 ? this.ce.signer2.id : null
-        this.ce.application_fees = Number(this.etude.application_fees)
       }).catch((err) => {
         this.$message({message: err, type: "error"})
       })

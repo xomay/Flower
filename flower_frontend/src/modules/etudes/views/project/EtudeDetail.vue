@@ -53,7 +53,7 @@
         name="Rédaction"
       />
       <el-tab-pane
-        v-if="!no_phases"
+        v-if="!no_phases && etude.state > 2"
         label="Avenants"
         name="Avenants"
       />
@@ -66,7 +66,7 @@
     <div v-show="currentTab === 'Récapitulatif'">
       <Summary
         :etude="etude"
-        :getgantt="true"
+        :getgantt="false"
         :reaVue="false"
       />
       <EtudesDahsboard
@@ -109,6 +109,14 @@
       v-show="currentTab === 'Avancement'"
       :etude="etude"
     />
+    <Avenants
+      v-show="currentTab === 'Avenants'"
+      :etude="etude"
+      :avenants="etude.avenants"
+      :canAddAvenant="!etude.isAborted && etude.state < 8"
+      @delete-avenant="deleteAvenant($event)"
+      @sign-avenant="signAvenant"
+    />
   </BaseComponent>
 </template>
 
@@ -149,6 +157,8 @@ export default {
         missions: [],
         hasCC: false,
         spec: "test",
+        avenants: [],
+        state: 0,
       },
       no_phases: false,
       breadcrumb: [
@@ -206,6 +216,37 @@ export default {
           this.loading = false
         })
       }
+    },
+    deleteAvenant (id) {
+      this.loading = true
+      axios.delete(
+        `/api/etudes/avenants/${id}/`,
+        { withCredentials: true }
+      ).then(() => {
+        this.$message({message: "Avenant supprimé", type: "success"})
+        this.etude.avenants = this.etude.avenants.filter(a => a.id !== id)
+      }).catch((err) => {
+        this.$message({message: "Impossible de supprimer l'avenant : " + err, type: "error"})
+      }).finally(() => {
+        this.loading = false
+      })
+    },
+    signAvenant (id, signDate) {
+      //Ne fonctionne pas, faut modifier le docEtude pas l'avenant
+      this.loading = true
+      axios.put(
+        `/api/etudes/ce/${id}/`,
+        { signDate: signDate,
+         },
+        { withCredentials: true }
+      ).then(() => {
+        this.$message({message: "Avenant signé", type: "success"})
+        this.$router.go(0)
+      }).catch((err) => {
+        this.$message({message: "Impossible de signer l'avenant : " + err, type: "error"})
+      }).finally(() => {
+        this.loading = false
+      })
     }
   }
 }

@@ -17,11 +17,17 @@ class PhaseEtudeView(generics.ListCreateAPIView, generics.UpdateAPIView, generic
         'PATCH': ['ROLE_CA'],
         'DELETE': ['ROLE_CA']
     }
-    serializer_class = PhaseSerializer
-    queryset = Phase.objects.all()
+    serializer_class = PhaseEtudeSerializer
+    queryset = PhaseEtude.objects.all()
 
     def update(self, request):
         serializer = PhaseEtudeSerializer(PhaseEtude.objects.all(), data=request.data, many=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+
+    def post(self, request):
+        serializer = PhaseEtudeSerializer(data=request.data, many=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
@@ -36,7 +42,7 @@ class PhaseMissionView(generics.ListCreateAPIView, generics.UpdateAPIView, gener
         'DELETE': ['ROLE_CA']
     }
     serializer_class = PhaseMissionSerializer
-    queryset = Phase.objects.all()
+    queryset = PhaseMission.objects.all()
 
     def update(self, request):
         serializer = PhaseMissionSerializer(PhaseMission.objects.all(), data=request.data, many=True)
@@ -44,13 +50,21 @@ class PhaseMissionView(generics.ListCreateAPIView, generics.UpdateAPIView, gener
         serializer.save()
         return Response(serializer.data)
 
-class PhaseEtudeDetailView(generics.DestroyAPIView):
+    def post(self, request):
+        serializer = PhaseMissionSerializer(data=request.data, many=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+
+class PhaseEtudeDetailView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated, HasGroupPermission]
     required_groups = {
-        'DELETE': ['ROLE_CA']                                       #from modules/etudes/views/PhaseModifier.vue to delete a phase
+        'PUT': ['ROLE_CA'],
+        'PATCH': ['ROLE_CA'],
+        'DELETE': ['ROLE_CA']                                    #from modules/etudes/views/PhaseModifier.vue to delete a phase
     }
     serializer_class = PhaseEtudeSerializer
-    queryset = Phase.objects.all()
+    queryset = PhaseEtude.objects.all()
 
 class PhaseMissionDetailView(generics.DestroyAPIView, generics.UpdateAPIView):
     permission_classes = [IsAuthenticated, HasGroupPermission]
