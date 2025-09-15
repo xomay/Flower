@@ -123,14 +123,14 @@
       <el-checkbox v-model="modelValue.confidential" />
     </el-form-item>
     <el-form-item
-      label="Suiveur de projet"
+      label="Chef de projet"
       prop="projectManager"
       label-width="140px"
     >
       <MemberPicker
         v-model="modelValue.projectManager"
         :item-list="members"
-        placeholder="Suiveur de projet"/>
+        placeholder="Chef de projet"/>
     </el-form-item>
     <el-form-item
       label="Suiveur qualité"
@@ -261,7 +261,7 @@ export default {
     querySearchCC (queryString, cb) {
       const results = queryString ? this.ccs.filter((cc) => String(this.ccNumber(cc)).
         includes(queryString)) : this.ccs
-      results.forEach((result) => result.value = this.ccNumber(result))
+      results.forEach((result) => result.value = this.ccNumber(result) + " " + result.name)
       cb(results)
     },
     handleSelectCC (cc) {

@@ -88,6 +88,7 @@
 <script>
 const axios = require("axios")
 import { Permissions } from "@/mixins/Permissions"
+import Ticket from "../../performances/views/Ticket.vue"
 export default {
   name: "Navigation",
   mixins: [Permissions],
@@ -247,14 +248,20 @@ export default {
                 {name: "Créer une action commerciale",
                   url: "/prospects/actionCommerciale/ajouter"}
               ]
-            }/*,
+            }
+          ]
+        },
+        {
+          icon: "ChatDotSquare",
+          title: "Signalement",
+          children: [
             {
-              title: "Génération",
+              title: "Ticket",
               children: [
-                {name: "Devis",
-                  url: "/generation/devis"}
+                {name: "Envoyer un ticket",
+                url: "/performance/ticket"}
               ]
-            }*/
+            }
           ]
         })
       }

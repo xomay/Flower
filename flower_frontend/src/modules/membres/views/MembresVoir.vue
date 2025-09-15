@@ -28,30 +28,10 @@
           @change="updateFilters"
         />
       </el-col>
-      <el-col
-        v-if="isAdmin()"
-      >
-        <el-checkbox
-          v-model="doesFilterUser"
-          class="marginL"
-          @change="updateFilters"
-        />
-        <span class="marginL">
-          Filtrer par compte :
-        </span>
-        <el-switch
-          v-model="userFilterValue"
-          style="margin-left: 10px; margin-top: -2px;"
-          active-text="Avec compte"
-          inactive-text="Sans compte"
-          :disabled="!doesFilterUser"
-          @change="updateFilters"
-        />
-      </el-col>
       <el-col>
         <el-input
           v-model="nameFilterValue"
-          style="width: 40%; height: 80%; margin-top: 10px;"
+          style="width: 70%; height: 80%; margin-top: 10px;"
           size="large"
           placeholder="Entrez un nom"
           prefix-icon="Search"
@@ -103,42 +83,17 @@
         sortable
       />
       <el-table-column
-        prop="promotion"
-        label="Promotion"
-        sortable
+        prop="mobile"
+        label="Mobile"
       />
       <el-table-column
         prop="email"
         label="Email"
-        sortable
       />
       <el-table-column
         prop="email_junior"
         label="Email Junior"
-        sortable
       />
-      <el-table-column
-        v-if="isAdmin()"
-        style="width: 80%"
-        label="Créer un compte"
-      >
-        <template
-          #default="{row}"
-        >
-          <el-button
-            v-show="isButtonOn(row.id)"
-            ref="btn_{{row.id}}"
-            size="default"
-            type="warning"
-            @click="openAccount(row.id)"
-          >
-            Ouvrir un compte utilisateur
-          </el-button>
-          <el-col v-show="!isButtonOn(row.id)">
-            <div class="grid-content bg-purple-light" />
-          </el-col>
-        </template>
-      </el-table-column>
     </el-table>
   </BaseComponent>
 </template>
@@ -196,36 +151,6 @@ export default {
     },
   },
   methods: {
-    openAccount (memberID) {
-      if(this.isAdmin()) {
-        let t=0
-        for (let i = 0; i < 200; i++) {
-          if (this.membres[i].id == memberID) {
-            t=1
-            if( ! this.membres[i].user ) {
-              this.mixinRegisterMember(axios, this.membres[i])
-            } else {
-              this.$message({ message: "Une erreur est survenue : le compte était déjà présent.", type: "error" })
-            }
-          }
-        }
-        if ( t==0)
-          this.$message({ message: "Une erreur est survenue : Utilisateur introuvable.", type: "error" })
-      } else {
-        this.$message({ message: "Il faut être administrateur pour faire cette action !", type: "error" })
-      }
-    },
-    isButtonOn (ID) {
-      let t=0
-      for (let i = 0; i < 200; i++) {
-        if (this.membres[i].id == ID) {
-          t=1
-          return ! this.membres[i].user
-        }
-      }
-      if ( t==0)
-        this.$message({ message: "Une erreur est survenue : Utilisateur introuvable.", type: "error" })
-    },
     refilterUser (displayWithUser) {
       if(displayWithUser)
         this.currentSelected = this.currentSelected.filter(m => m.user != undefined)
@@ -261,13 +186,6 @@ export default {
 <style scoped>
   .el-col {
     border-radius: 4px;
-  }
-  .bg-purple-light {
-    background: #e5e9f2;
-  }
-  .grid-content {
-    border-radius: 4px;
-    min-height: 36px;
   }
   .row-bg {
     padding: 10px 0;

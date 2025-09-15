@@ -46,7 +46,7 @@ class MembreDetailView(generics.RetrieveUpdateAPIView):
         data = args[0].data
         response = super().update(*args, **kwargs)
         membre = Membre.objects.get(pk=kwargs['pk'])
-        membre.poste = Poste.objects.get(pk=data['poste'])
+        #membre.poste = Poste.objects.get(pk=data['poste'])
         membre.save()
         # Synchroniser avec le réalisateur associé (si il existe)
         try:

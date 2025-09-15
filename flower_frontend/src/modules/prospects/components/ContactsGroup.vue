@@ -12,14 +12,14 @@
         <el-button
           v-if="index == modelValue.length - 1"
           type="primary"
-          size="mini"
+          size="small"
           icon="Plus"
           @click="addLocalField()"
         />
         <el-button
           v-else
           type="info"
-          size="mini"
+          size="small"
           icon="Minus"
           @click="removeLocalField(index)"
         />

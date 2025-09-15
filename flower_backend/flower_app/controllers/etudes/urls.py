@@ -9,6 +9,7 @@ urlpatterns = [
     path('ce/', views.CEListCreateView.as_view()),
     path('mission/doc/', views.DocMissionListCreateView.as_view()),
     path('ce/<int:pk>/', views.CEUpdateView.as_view()),
+    path('cc/<int:pk>/', views.CCUpdateView.as_view()),
     path('mission/doc/<int:pk>/', views.DocMissionUpdateView.as_view()),
     path('<int:pk>/', views.EtudeRetrieveUpdateView.as_view()),
     path('<int:id>/files/', views.EtudeEditFiles.as_view()),

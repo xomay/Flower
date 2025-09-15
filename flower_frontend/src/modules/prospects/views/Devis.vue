@@ -110,7 +110,7 @@
         <el-input v-model="etude.name" />
       </el-form-item>
       <el-form-item
-        label="Suiveur de projet"
+        label="Chef de projet"
         prop="projectManager"
         label-width="140px"
         :rules="[{ required: true, message: 'Obligatoire' , trigger: 'change' }]"

@@ -74,6 +74,20 @@ class CEUpdateView(generics.RetrieveUpdateAPIView):
             return CESerializer
         return CEDetailSerializer
 
+class CCUpdateView(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAuthenticated, HasGroupPermission]
+    required_groups = {
+        'PUT': ['ROLE_CA'],
+        'PATCH': ['ROLE_CA'],
+        'DELETE': ['ROLE_CA']
+    }
+    queryset = CC.objects.all()
+
+    def get_serializer_class(self):
+        if self.request.method in ['PUT', 'PATCH', 'DELETE']:
+            return CCSerializer
+        return CCDetailSerializer
+
 class DocMissionUpdateView(generics.RetrieveUpdateAPIView):
     permission_classes = [IsAuthenticated, HasGroupPermission]
     required_groups = {

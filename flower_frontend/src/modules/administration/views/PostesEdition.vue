@@ -3,90 +3,129 @@
     title="Édition des postes"
     :breadcrumb="breadcrumb"
   >
-    <el-col
-      v-for="(poste, index) in postes"
-      :key="index"
-      style="margin-bottom: 20px"
+    <template #action>
+      <el-button
+        icon="Plus"
+        type="success"
+        :loading="loading"
+        @click="addPoste()"
       >
-    <el-row>
-        <el-col :span="1">
-          Nom :
-        </el-col>
-        <el-col :span="5">
+        Ajouter un poste
+      </el-button>
+    </template>
+    
+    <el-table
+      :data="postes"
+      :loading="loading"
+      class="grid"
+      :stripe="true"
+    >
+      <el-table-column
+        label="Nom du poste"
+        prop="name"
+        width="200"
+      >
+        <template #default="{row}">
           <el-input
-            v-model="poste.name"
-            type="text"
-            style="margin-top: -6px"
-            @input="poste.isModified = true"
+            v-model="row.name"
+            placeholder="Nom du poste"
+            @input="row.isModified = true"
           />
-        </el-col>
-        <el-col
-          :span="2"
-          style="margin-left: 12px"
-        >
-          , au féminin :
-        </el-col>
-        <el-col :span="5">
+        </template>
+      </el-table-column>
+      
+      <el-table-column
+        label="Nom au féminin"
+        prop="name_feminine"
+        width="200"
+      >
+        <template #default="{row}">
           <el-input
-            v-model="poste.name_feminine"
-            type="text"
+            v-model="row.name_feminine"
             placeholder="Identique au nom masculin"
-            style="margin-top: -6px"
-            @input="poste.isModified = true"
+            @input="row.isModified = true"
           />
-        </el-col>
-        <el-col
-          :span="1"
-          style="padding-left: 12px; margin-right: -8px;"
-        >
-          =>
-        </el-col>
-        <el-col :span="7">
+        </template>
+      </el-table-column>
+      
+      <el-table-column
+        label="Subordonnés"
+        prop="subordinates"
+        min-width="150"
+      >
+        <template #default="{row}">
           <el-select
-            v-model="poste.subordinates"
+            v-model="row.subordinates"
             class="w-full"
             multiple
-            placeholder="Subordonnés"
-            style="margin-top: -6px"
-            @change="poste.isModified = true"
+            placeholder="Sélectionner les subordonnés"
+            @change="row.isModified = true"
           >
             <el-option
-              v-for="(subordinate, index_s) in postes"
-              :key="index_s"
+              v-for="subordinate in postes"
+              :key="subordinate.id"
               :label="subordinate.name"
               :value="subordinate.id"
+              :disabled="subordinate.id === row.id"
             />
           </el-select>
-        </el-col>
-        <el-col :span="1">
+        </template>
+      </el-table-column>
+
+      <el-table-column
+        label="Rôles"
+        prop="roles"
+        min-width="150"
+      >
+        <template #default="{row}">
+          <el-select
+            v-model="row.role"
+            class="w-full"
+            multiple
+            placeholder="Sélectionner les rôles"
+            @change="row.isModified = true"
+            >
+            <el-option
+              v-for="role in roles"
+              :key="role.id"
+              :label="role.name"
+              :value="role.name"
+            />
+          </el-select>
+        </template>
+      </el-table-column>
+      
+      <el-table-column
+        label=""
+        width="60"
+        align="center"
+      >
+        <template #default="{row, $index}">
           <el-button
             icon="Check"
-            style="margin-left: 8px; margin-top: -6px"
             :loading="loading"
-            :disabled="poste.isModified == false"
-            :plain="poste.isModified == false"
-            type="success"
-            @click="savePoste(poste)"
+            :disabled="!row.isModified"
+            :type="row.isModified ? 'success' : 'info'"
+            :plain="!row.isModified"
+            @click="savePoste(row)"
           />
-        </el-col>
-        <el-col :span="1">
+        </template>
+      </el-table-column>
+      <el-table-column
+        label=""
+        width="60"
+        align="center"
+      >
+        <template #default="{row, $index}">
           <el-button
             icon="Delete"
-            style="color: red; margin-top: -6px"
+            type="danger"
             :loading="loading"
-            @click="removePoste(poste, index)"
+            @click="removePoste(row, $index)"
           />
-        </el-col>
-      </el-row>
-    </el-col>
-    <el-button
-      icon="Plus"
-      type="success"
-      :loading="loading"
-      @click="addPoste()"
-    >
-      Ajouter un poste
-    </el-button>
+        </template>
+      </el-table-column>
+    </el-table>
   </BaseComponent>
 </template>
 
@@ -103,7 +142,8 @@ export default {
         }
       ],
       loading: true,
-      postes: []
+      postes: [],
+      roles: [{id:1, name:"ROLE_ADMIN"}, {id:2, name:"ROLE_BUREAU"}, {id:3, name:"ROLE_CA"}, {id:4, name:"ROLE_QUALI"}, {id:5, name:"ROLE_SUIVEUR"}, {id:6, name:"ROLE_TRESO"}]
     }
   },
   beforeCreate () {
@@ -152,6 +192,7 @@ export default {
       this.loading = true
       const newPoste = {
         name: "<poste>",
+          role: [],
       }
       axios.post(
         "/api/administration/postes/",
