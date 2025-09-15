@@ -34,6 +34,18 @@
         >
           [CC périmée]
         </span>
+        <span
+          v-if="row.signDate && !row.isFinished"
+          class="bigGreen"
+        >
+          [CC en cours]
+        </span>
+        <span
+          v-if="!row.signDate && !row.isFinished"
+          class="bigOrange"
+        >
+          [CC à signer]
+        </span>
       </template>
     </el-table-column>
     <el-table-column
@@ -41,7 +53,7 @@
       label="Numéro de la CC"
       align="center"
       fixed="left"
-      width="180px"
+      width="100px"
       sortable
     />
     <el-table-column
@@ -55,12 +67,12 @@
       label="Modifier"
       align="center"
       fixed="right"
-      width="120px"
+      width="100px"
     >
     <template #default="{row}">
         <router-link :to="`/cc/${row.id}/modifier`">
         <el-button
-          :disabled="row.isFinished"
+          :disabled="row.isFinished || row.signDate==null"
           type="text"
           icon="Edit"
         >
@@ -72,40 +84,115 @@
       label="Docx"
       align="center"
       fixed="right"
-      width="120px"
+      width="100px"
     >
     <template #default="{row}">
-        <el-button
-          :disabled="row.isFinished"
-          type="text"
-          icon="Download"
-          @click="downloadCC(row)"
-        >
-        </el-button>
-      </template>
+      <el-button
+        :disabled="row.isFinished"
+        type="text"
+        icon="Download"
+        @click="downloadCC(row)"
+      >
+      </el-button>
+    </template>
     </el-table-column>
     <el-table-column
       label="PDF"
       align="center"
       fixed="right"
-      width="120px"
+      width="100px"
     >
     <template #default="{row}">
-        <el-button
-          :disabled="row.isFinished"
-          type="text"
-          icon="Download"
-          @click="downloadCCPdf(row)"
-        >
-        </el-button>
-      </template>
+      <el-button
+        :disabled="row.isFinished"
+        type="text"
+        icon="Download"
+        @click="downloadCCPdf(row)"
+      >
+      </el-button>
+    </template>
     </el-table-column>
+    <el-table-column
+      align="center"
+      fixed="right"
+      width="80px"
+    >
+    <template #default="{row}">
+      <el-button
+        icon="DocumentChecked"
+        type="success"
+        plain
+        @click="signDateForm = true; form.cc = row;"
+        />
+    </template>
+    </el-table-column>
+    <el-table-column
+      align="center"
+      fixed="right"
+      width="80px"
+    >
+    <template #default="{row}">
+
+      <el-popconfirm 
+      title="Etes-vous sûr de vouloir supprimer cette CC ?"
+      confirm-button-text="Oui"
+      cancel-button-text="Non"
+      confirm-button-type="success"
+      cancel-button-type="warning"
+      hide-icon
+      @confirm="deleteCC(row.id)"
+      >
+        <template #reference>
+          <el-button
+          :disabled="row.isFinished || (row.signDate!=null && !row.isFinished)"
+          icon="Delete"
+          type="danger"
+          plain
+          />
+        </template>
+    </el-popconfirm>
+    </template>
+    </el-table-column>
+
+
   </el-table>
+  <el-dialog v-model="signDateForm" title="Date de signature du document" width="500">
+    <el-form :model="form">
+      <el-form-item
+      label="Référence :"
+        prop="ref"
+        label-width="140px"
+      >
+        <el-date-picker
+          v-model="form.cc.signDate"
+          format="DD/MM/YYYY"
+          value-format="YYYY-MM-DD"
+          type="date"
+          placeholder="Sélectionnez une date"
+        />
+      </el-form-item>
+    </el-form>
+    <template #footer>
+      <div class="dialog-footer">
+        <el-button @click="signDateForm = false">Annuler</el-button>
+        <el-button type="primary" @click="signCC(form.cc.id); signDateForm = false;">
+          Confirmer
+        </el-button>
+      </div>
+    </template>
+  </el-dialog>
 </template>
 
 <script>
 import Utils from "@/mixins/Utils"
 import Publishing from "@/mixins/Publishing"
+
+
+const axios = require("axios")
+// Configuration d'axios pour CSRF
+axios.defaults.xsrfCookieName = "csrftoken";
+axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
+axios.defaults.withCredentials = true;
 
 export default {
   name: "CCList",
@@ -115,12 +202,42 @@ export default {
     loading: {type : Boolean, required: true },
     discret: {type : Boolean, default () { return false } }
   },
+  emits: ["select"],
+  data () {
+    return {
+      signDateForm: false,
+      form: {
+        cc: {
+          id: null,
+          name: null,
+          confidential: null,
+          signDate: null,
+        }
+      }
+    }
+  },
+  created() {
+    const today = new Date();
+
+    this.ccs.forEach(cc => {
+      const signDate = cc.signDate ? new Date(cc.signDate) : today;
+      const endDate = new Date(signDate);
+      endDate.setFullYear(signDate.getFullYear() + cc.period);
+
+      cc.endDate = endDate.toLocaleDateString("fr-FR", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit"
+      });
+      cc.isFinished = endDate < today;
+    });
+  },
   watch: {
     ccs () {
       const today = new Date();
 
       this.ccs.forEach(cc => {
-        const signDate = new Date(cc.signDate);
+        const signDate = cc.signDate ? new Date(cc.signDate) : today;
         const endDate = new Date(signDate);
         endDate.setFullYear(signDate.getFullYear() + cc.period);
 
@@ -134,14 +251,40 @@ export default {
     }
   },
   methods: {
-    clicked (id) {
-      this.$emit("select", id)
-    },
     getPercentage (state) {
       if(state == undefined)
         return "width: 0%"
       return "width: "+(state*10)+"%"
     },
+    signCC (id) {
+      axios.put(
+        `/api/etudes/cc/${id}/`,
+        this.form.cc,
+        { withCredentials: true }
+      ).then(() => {
+        this.$message({message: "CC signé", type: "success"})
+        this.$router.go(0)
+      }).catch((err) => {
+        this.$message({message: "Impossible de signer la CC : " + err, type: "error"})
+      })
+    },
+    deleteCC (id) {
+      axios.delete(
+        `/api/etudes/cc/${id}/`,
+        { withCredentials: true }
+      ).then(() => {
+        this.$message({message: "CC supprimé", type: "success"})
+        this.$router.go(0)
+      }).catch((err) => {
+        if (err.response && err.response.status === 500) {
+          this.$message({message: "La CC ne peut pas être supprimé car elle est liée à une étude !",
+            type: "error",
+            offset: 40})
+        } else {
+          this.$message({message: "Impossible de surrpimer la CC : " + err, type: "error"})
+        }
+      })
+    }
   }
 }
 </script>
@@ -183,6 +326,10 @@ export default {
   }
   .bigGreen {
     color: rgb(23, 197, 38);
+    font-weight: bold;
+  }
+  .bigOrange {
+    color: rgb(255, 165, 0);
     font-weight: bold;
   }
   .bigGray {

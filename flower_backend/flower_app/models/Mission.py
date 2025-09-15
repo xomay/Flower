@@ -29,7 +29,7 @@ class Mission(models.Model):
     percentageJunior = models.FloatField(default=0.51)
     JEH_price = models.IntegerField(default=220)
     project = models.ForeignKey(Etude, on_delete=models.RESTRICT)
-    doc_mission = models.OneToOneField(DocMission, on_delete=models.CASCADE, blank=True, null=True, default=create_doc)
+    doc_mission = models.OneToOneField(DocMission, on_delete=models.CASCADE, blank=True, null=True)
 #    number_this_year = models.IntegerField(default=generateNumberYear)
 
     def __str__(self):
@@ -58,6 +58,11 @@ class Mission(models.Model):
     def remunerationRaw(self):
         #return round((1 - float(self.percentageJunior)) * float(self.totalPrice), 2)
         return self.totalPrice
+
+    def save(self, *args, **kwargs):
+        if not self.doc_mission:
+            self.doc_mission = DocMission.objects.create().id
+        super().save(*args, **kwargs)
 
 
 #    @property

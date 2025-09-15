@@ -130,7 +130,7 @@ import ManageStep from "../../components/ManageStep"
 import UploaderLocal from "@/components/UploaderLocal"
 import Avenants from "../../components/Avenants"
 import phases from "@/modules/etudes/components/Phases.vue";
-import EtudesDahsboard from "../../components/EtudesDahsboard.vue"
+import EtudesDahsboard from "../../components/EtudesDashboard.vue"
 
 const axios = require("axios")
 // Configuration d'axios pour CSRF

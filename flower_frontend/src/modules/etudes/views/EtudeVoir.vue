@@ -42,26 +42,27 @@
       style="--el-switch-off-color: #13ce66; --el-switch-on-color: #ff4949"
       active-text="Dashboard"
       inactive-text="Liste"
-      v-show="currentTab === 'current'"
+      v-if="currentTab === 'current'"
     />
     <!-- filters will modify this.etudes directly -->
     <EtudesList
       :etudes="etudes"
       :loading="loading"
       @select="goToEtude"
-      v-show="currentTab !== 'ccs' && currentTab !== 'dashboard' && viewType !== true"
+      v-if="currentTab !== 'ccs' && currentTab !== 'dashboard' && viewType !== true"
     />
-      <EtudesDahsboard
+    <EtudesDashboard
       :etudes="originalEtudes"
       :loading="loading"
       @select="goToEtude"
-      v-show="viewType === true"
+      v-if="viewType === true"
       />
     <CCList
       :ccs="ccs"
       :loading="loading"
       @select="goToEtude"
-      v-show="currentTab === 'ccs'"
+      v-if="currentTab === 'ccs'"
+      :key="ccs.length"
     />
   </BaseComponent>
 </template>
@@ -69,12 +70,12 @@
 <script>
 import EtudesList from "../components/EtudesList.vue"
 import CCList from "../components/CCList.vue"
-import EtudesDahsboard from "../components/EtudesDahsboard.vue"
+import EtudesDashboard from "../components/EtudesDashboard.vue"
 const axios = require("axios")
 
 export default {
   name: "EtudeVoir",
-  components: { EtudesList, CCList, EtudesDahsboard },
+  components: { EtudesList, CCList, EtudesDashboard },
   data () {
     return {
       currentTab: "current",

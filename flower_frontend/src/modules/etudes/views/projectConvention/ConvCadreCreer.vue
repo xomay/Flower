@@ -51,7 +51,7 @@ export default {
         signer1: "",
         signer2: "",
         projectManager: "",
-        signDate: "",
+        signDate: null,
       },
       members: [],
       prospects: [],

@@ -15,6 +15,9 @@ class Doc(models.Model):
     def __str__(self):
         return 'CE'
 
+    class Meta:
+        abstract = True
+
 class DocEtude(Doc):
     signer1 = models.ForeignKey(Membre, on_delete=models.RESTRICT, blank=True, null=True)
     signer2 = models.ForeignKey(Employe, on_delete=models.RESTRICT, blank=True, null=True)

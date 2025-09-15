@@ -124,7 +124,7 @@
         Moyens de contact :
       </span>
       <ContactsGroup
-        :value="modelValue.contactWay"
+        :model-value="modelValue.contactWay"
         @add-field="contactsAddField"
         @delete-field="contactsRemoveField"
       />
@@ -173,7 +173,7 @@
         </el-table-column>
         <el-table-column
           label="Genre"
-          prop="genre"
+          prop="gender"
         >
           <template #default="{row}">
             <el-select v-model="row.gender" placeholder="Entrez le genre">
@@ -293,6 +293,8 @@ export default {
     return {
       breadcrumb: [],
       firstWatch: true,
+      valid: true,
+      disabled: false,
       formRules: {
         name: [
           {required: true, message: "Obligatoire", trigger: "blur"}
@@ -305,9 +307,28 @@ export default {
   },
   methods: {
     validateForm () {
+      this.valid = true
       this.$refs.prosFormRef.validate((r) => {
         if(r) {
-          this.saveProspect()
+          this.employes.map(e => {
+            if (!(e.gender!="" && e.firstname!="" && e.lastname!="" && e.position!="" && e.email!="")) {
+              this.valid = false
+              this.$message({ message: "Certains champs des employés ne sont pas complétés !", type:"error", offset: 40 })
+            }
+            //vérifie que le mail est bien à un format de mail
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+            if (!emailPattern.test(e.email)) {
+              this.valid = false
+              this.$message({ message: "L'email de l'employé n'est pas au bon format !", type:"error", offset: 40 })
+            }
+            //Vérifie que le numéro de téléphone est bien à un format de téléphone (10 chiffres, peut contenir des espaces, des tirets ou des parenthèses)
+            const phonePattern = /^\+?[0-9\s\-()]{10,}$/
+            if (e.mobile!="" && !phonePattern.test(e.mobile)) {
+              this.valid = false
+              this.$message({ message: "Le numéro de téléphone de l'employé n'est pas au bon format !", type:"error", offset: 40 })
+            }
+          })
+          this.valid ? this.saveProspect() : this.$message({ message: "Certains champs ne sont pas valides !", type:"error", offset: 40 })
         } else {
           this.$message({ message: "Certains champs ne sont pas valides !", type:"error", offset: 40 })
         }
@@ -328,8 +349,7 @@ export default {
     },
     addEmploye () {
       this.employes.push({
-        id: this.employes.length + 1,
-        genre: null,
+        gender: "",
         firstname: "",
         lastname: "",
         position: "",

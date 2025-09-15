@@ -38,14 +38,14 @@
         placeholder="Entrez le nom du signataire de la junior"/>
     </el-form-item>
     <el-form-item
-      label="Suiveur de projet"
+      label="Chef de projet"
       prop="projectManager"
       label-width="150px"
     >
       <MemberPicker
         v-model="modelValue.projectManager"
         :item-list="members"
-        placeholder="Suiveur de projet"/>
+        placeholder="Chef de projet"/>
     </el-form-item>
     <el-form-item
       label="Nom de l'étude"
@@ -100,17 +100,6 @@
       </el-form-item>
     </el-col>
     </el-row>
-    <el-form-item
-      label="Date de signature"
-      prop="signDate"
-      label-width="150px"
-    >
-      <el-date-picker
-        v-model="modelValue.signDate"
-        type="date"
-        placeholder="Choisissez un jour"
-      />
-    </el-form-item>
     <el-form-item
       label="Confidentialité"
       prop="confidential"
@@ -177,9 +166,6 @@ export default {
         period: [
           {required: true, message: "Obligatoire", trigger: "blur"},
           {required: true, validator: this.checkNumber, trigger: "change"}
-        ],
-        signDate: [
-          {required: true, message: "Obligatoire", trigger: "blur"}
         ],
         confidential: [
           {required: true, message: "Obligatoire", trigger: "blur"}

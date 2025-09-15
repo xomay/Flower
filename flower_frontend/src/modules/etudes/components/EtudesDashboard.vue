@@ -88,7 +88,7 @@
 
 <script>
 export default {
-  name: "EtudesDahsboard",
+  name: "EtudesDashboard",
   props: {
     etudes: { type: Array, required: true }
   },

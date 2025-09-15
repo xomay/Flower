@@ -12,6 +12,7 @@ urlpatterns = [
     path('tresorerie/factures/', include('flower_app.controllers.factures.urls')),
     path('membres/', include('flower_app.controllers.membres.urls')),
     path('accounts/', include('flower_app.controllers.accounts.urls')),
+    path('issues/', include('flower_app.controllers.issues.urls')),
     path('prospects/', include('flower_app.controllers.prospects.urls')),
     path('publish/', include('flower_app.controllers.publishing.urls')),
     path('gantt/', include('flower_app.controllers.gantt.urls')),
