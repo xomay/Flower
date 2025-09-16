@@ -12,21 +12,22 @@
         label-position="left"
         :hide-required-asterisk="true"
       >
-        <el-col :span="5">
+        <el-col>
           <el-form-item
             prop="mandat"
             label="Mandat :"
+            width="100px"
           >
             <el-input-number
               v-model="currentBase.mandat"
-              :disabled="true"
+              :disabled="!currentBaseEditable"
               controls-position="right"
               :min="2021"
               :max="2100"
             />
           </el-form-item>
         </el-col>
-        <el-col :span="9">
+        <el-col>
           <el-form-item
             ref="currentSH"
             prop="smic_horaire"
@@ -34,8 +35,8 @@
           >
             <el-input
               v-model="currentBase.smic_horaire"
-              :disabled=" ! currentBaseEditable"
-              style="width: 80%; margin-left: 10px;"
+              :disabled="!currentBaseEditable"
+              style="width: 40%; margin-left: 10px;"
               @input="smicHoraireChanged"
             >
               <template #append>
@@ -44,15 +45,15 @@
             </el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="9">
+        <el-col>
           <el-form-item
             prop="baseValue"
             label="Base URSAFF :"
           >
             <el-input
               v-model="currentBase.baseValue"
-              :disabled="true"
-              style="width: 80%; margin-left: 10px;"
+              :disabled="!currentBaseEditable"
+              style="width: 40%; margin-left: 10px;"
             >
               <template #append>
                 €
@@ -106,6 +107,32 @@
           align="center"
           :formatter="euroFormatter"
         />
+        <el-table-column
+          align="center"
+          fixed="right"
+          width="80px"
+        >
+        <template #default="{row}">
+
+          <el-popconfirm 
+          title="Etes-vous sûr de vouloir supprimer cette enregistrement ?"
+          confirm-button-text="Oui"
+          cancel-button-text="Non"
+          confirm-button-type="success"
+          cancel-button-type="warning"
+          hide-icon
+          @confirm="deleteBase(row.mandat)"
+          >
+            <template #reference>
+              <el-button
+              icon="Delete"
+              type="danger"
+              plain
+              />
+            </template>
+        </el-popconfirm>
+        </template>
+        </el-table-column>
       </el-table>
     </el-row>
   </BaseComponent>
@@ -140,6 +167,7 @@ export default {
       { withCredentials: true }
     ).then((res) => {
       this.basesUrsaff = res.data
+      console.log(this.basesUrsaff)
       const currentBaseTemp = this.basesUrsaff.find(b => b.mandat === this.currentMandat)
       if(currentBaseTemp != undefined) {
         this.currentBase = currentBaseTemp
@@ -177,8 +205,21 @@ export default {
       ).then(() => {
         this.$message({message: "Base URSAFF mise à jour avec succès pour ce mandat.", type: "success"})
         this.currentBaseEditable = false
+        this.$router.go()
       }).catch((err) => {
         this.$message({message: "Impossible de sauvegarder la base URSAFF : " + err, type: "error"})
+      }).finally(() => this.loading = false)
+    },
+    deleteBase (mandat) {
+      this.loading = true
+      axios.delete(
+        `/api/administration/base-ursaff/${mandat}/`,
+        { withCredentials: true }
+      ).then(() => {
+        this.$router.go()
+        this.$message({message: "Base URSAFF supprimée avec succès.", type: "success"})
+      }).catch((err) => {
+        this.$message({message: "Impossible de supprimer la base URSAFF : " + err, type: "error"})
       }).finally(() => this.loading = false)
     }
   }
