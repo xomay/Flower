@@ -99,7 +99,6 @@ export default {
       return yyyy + "-" + mm + "-" + dd
     },
     opened () {
-      console.log("DatePopup opened, setting dateModel.date to placeholder:", this.placeholder)
       this.dateModel.date = this.placeholder
     }
   }

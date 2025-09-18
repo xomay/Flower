@@ -167,7 +167,6 @@ export default {
       { withCredentials: true }
     ).then((res) => {
       this.basesUrsaff = res.data
-      console.log(this.basesUrsaff)
       const currentBaseTemp = this.basesUrsaff.find(b => b.mandat === this.currentMandat)
       if(currentBaseTemp != undefined) {
         this.currentBase = currentBaseTemp

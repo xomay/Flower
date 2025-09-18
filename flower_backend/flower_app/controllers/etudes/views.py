@@ -288,7 +288,7 @@ class MissionsView(generics.ListCreateAPIView, generics.UpdateAPIView):
     def get_queryset(self):
         return Etude.objects.get(id=self.kwargs.get('pk')).mission_set
 
-    def update(self, request, pk):
+    def update(self, request):
         serializer = MissionSerializer(Mission.objects.all(), data=request.data, many=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()

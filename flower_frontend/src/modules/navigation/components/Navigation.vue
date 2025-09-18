@@ -1,30 +1,56 @@
 <template>
   <div class="flex min-h-screen">
     <el-menu
+      ref="menu"
       class="menuNavBar flex-shrink-0 min-h-screen"
-      background-color="#34495e"
-      text-color="#fff"
+      background-color="#EBEBEB"
+      text-color="#000"
+      active-text-color="#1351aa"
       :unique-opened="true"
       :collapse="collapse"
+      :default-active="$route.path"
+      router
     >
+    <el-row class="menuItem" :style="collapse ? 'justify-content: center;' : 'justify-content: space-between;'">
       <router-link to="/">
-        <el-menu-item index="dashboard">
+        <el-menu-item v-if="!collapse" index="/" class="logo-menu-item" style="display: flex; justify-content: flex-start;">
           <img
-            class="inline-block"
-            src="@/assets/logo_longueur_crop.png"
-            style="max-width: 100%"
+          src="@/assets/logo_bold.png"
+          class="logoImg"
           >
         </el-menu-item>
       </router-link>
-      <template v-for="(item, index) in menu">
+        <el-button
+        type="default"
+        @click="collapse = !collapse;"
+        size="large"
+        style="height: 56px; width: 56px; border: 0;"
+        class="logo-menu-item"
+        >
+          <el-icon color="#000"><component :is="collapse ? 'DArrowRight' : 'DArrowLeft'" /></el-icon>
+        </el-button>
+    </el-row>
+      <template v-for="(item, index) in menu" :key="index">
+        
+          <router-link
+            v-if="!item.children || item.children.length === 0"
+            :key="index"
+            :index="index.toString()"
+            :to="item.url"
+          >
+            <el-menu-item :index="item.url">
+              <el-icon><component :is="item.icon" /></el-icon>
+              <template #title><b>{{ item.title }}</b></template>
+            </el-menu-item>
+          </router-link>
         <el-sub-menu
-          v-if="item.children.length > 0"
+          v-if="item.children ? item.children.length > 0 : false"
           :key="index"
           :index="index.toString()"
         >
           <template #title>
             <el-icon><component :is="item.icon" /></el-icon>
-            <span>{{ item.title }}</span>
+            <span><b>{{ item.title }}</b></span>
           </template>
           <span
             v-for="(subItem, subIndex) in item.children"
@@ -47,26 +73,21 @@
           </span>
         </el-sub-menu>
       </template>
-    </el-menu>
-    <div class="flex-grow">
-      <div class="topbar flex justify-between bg-blue-100">
-        <el-button
-          type="default"
-          class="dark"
-          @click="collapse = ! collapse"
-        >
-            <el-icon v-if="collapse"><DArrowRight /></el-icon>
-            <el-icon v-else><DArrowLeft /></el-icon>
-        </el-button>
+      
+      <!-- Dropdown utilisateur en bas du menu -->
+      <div class="user-dropdown-container">
         <el-dropdown
           trigger="click"
           @command="handleCommand"
+          placement="top-start"
         >
           <el-button
-            type="default"
-            class="dark"
+            type="info"
+            plain
+            class="user-dropdown-btn"
           >
-            <el-icon><Tools /></el-icon>
+            <el-icon><UserFilled /></el-icon>
+            <span v-if="!collapse" class="user-name">{{ this.$store.currentUser.user.name }}</span>
           </el-button>
           <template #dropdown>
             <el-dropdown-menu>
@@ -79,6 +100,10 @@
             </el-dropdown-menu>
           </template>
         </el-dropdown>
+      </div>
+    </el-menu>
+    <div class="flex-grow">
+      <div class="topbar flex justify-between bg-blue-100">
       </div>
       <router-view />
     </div>
@@ -95,7 +120,7 @@ export default {
   data () {
     return {
       menu: [],
-      collapse: true
+      collapse: false
     }
   },
   created () {
@@ -105,6 +130,21 @@ export default {
     this.addAdminStuff()
     // Accès réa :
     this.addReaStuff()
+    // Si écran pas assez large, on replie le menu
+    if (window.innerWidth < 1405) {
+      this.collapse = true
+    }
+  },
+  watch: {
+    $route(to) {
+      // Force la mise à jour de l'état actif quand la route change
+      this.$nextTick(() => {
+        const menu = this.$refs.menu
+        if (menu) {
+          menu.activeIndex = to.path
+        }
+      })
+    }
   },
   methods: {
     // Correspond aux inputs du dropdown (l'écrou en haut à droite)
@@ -186,7 +226,8 @@ export default {
         this.menu.push({
           icon: "UserFilled",
           title: "Gestion Associative",
-          children: [
+          url: "/membres"
+          /*children: [
             {
               title: "Membres",
               children: [
@@ -205,32 +246,35 @@ export default {
                   url: "/realisateurs/ajouter"}
               ]
             }
-          ]
+          ]*/
         },
         {
           icon: "Files",
           title: "Suivi d'Etude",
-          children: [
+          url: "/etudes"
+          /*children: [
             {name: "Voir les études",
               url: "/etudes"},
             {name: "Créer une étude",
               url: "/etudes/ajouter"},
             {name: "Créer une Convention Cadre",
               url: "/etudes/ajoutercc"}
-          ]
+          ]*/
         },
         {
           icon: "DataLine",
           title: "Performance",
-          children: [
+          url: "/performance/devco"
+          /*children: [
             {name: "Suivi Dev'co",
               url: "/performance/devco"}
-          ]
+          ]*/ 
         },
         {
           icon: "Phone",
           title: "Prospection",
-          children: [
+          url: "/prospects"
+          /*children: [
             {
               title: "Prospects",
               children: [
@@ -249,12 +293,13 @@ export default {
                   url: "/prospects/actionCommerciale/ajouter"}
               ]
             }
-          ]
+          ]*/
         },
         {
           icon: "ChatDotSquare",
           title: "Signalement",
-          children: [
+          url: "/performance/ticket",
+          /*children: [
             {
               title: "Ticket",
               children: [
@@ -262,7 +307,7 @@ export default {
                 url: "/performance/ticket"}
               ]
             }
-          ]
+          ]*/
         })
       }
     },
@@ -288,22 +333,79 @@ export default {
 </script>
 
 <style scoped>
+.logoImg {
+  max-height: 100%; 
+  max-width: 60%;
+  margin: 0;
+}
+.menuItem {
+  display: flex; 
+  flex-wrap: nowrap; 
+  align-items: center; 
+  margin-bottom: 20px;
+  margin-top: 5px;
+}
 .menuNavBar:not(.el-menu--collapse) {
   width: 16rem;
+  border-right: 1.5px solid #D7D7D7;
+}
+
+.menuNavBar {
+  position: relative;
 }
 div.topbar {
-  background-color: #2c3e50;
+  background-color: #ffffff;
+  display: flex;
+  justify-content: flex-end;
+
 }
 div.topbar button {
   height: 40px;
   font-size: 20px;
-  @apply py-0 px-4 !important;
-}
-.el-menu-item, .el-sub-menu__title {
-  height: 40px !important;
-  line-height: 40px !important;
+  padding: 0 16px !important;
 }
 ul {
-  @apply border-0;
+  border: 0;
+}
+
+.user-dropdown-container {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 10px;
+  background-color: #EBEBEB;
+  border-top: 1px solid #D7D7D7;
+}
+
+.user-dropdown-btn {
+  width: 100%;
+  justify-content: flex-start !important;
+  background-color: transparent !important;
+  border: none !important;
+  color: #000 !important;
+  padding: 8px 12px !important;
+}
+
+.user-dropdown-btn:hover {
+  background-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+.user-name {
+  margin-left: 8px;
+  font-size: 14px;
+}
+
+/* Enlever l'effet hover du logo */
+.logo-menu-item:hover {
+  background-color: transparent !important;
+}
+
+.logo-menu-item.is-active {
+  background-color: transparent !important;
+}
+
+.logo-menu-item {
+  background-color: transparent !important;
 }
 </style>

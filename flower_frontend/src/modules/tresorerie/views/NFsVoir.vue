@@ -10,7 +10,7 @@
       >
         <router-link :to="'/tresorerie/nfs/ajouter'">
           <el-button
-            type="success"
+            type="primary"
             icon="Plus"
             plain
           >

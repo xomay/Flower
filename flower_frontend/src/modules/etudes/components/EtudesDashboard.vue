@@ -1,24 +1,29 @@
 <template>
-  <el-table :data="etudes" style="width: 80vw;">
-    <el-table-column
-      prop="name"
-      label="Étude"
-      width="150"
-      fixed
-    >
-      <template #default="{ row }">
-        <el-button
-          type="text"
-          @click="clicked(row.id)"
-        >
-          {{ row.name }}
-        </el-button>
-      </template>
-    </el-table-column>
+  <div class="timeline-wrapper">
+    <el-table :data="etudes" class="timeline-table">
+      <el-table-column
+        prop="name"
+        label="Étude"
+        width="150"
+        fixed="left"
+      >
+        <template #default="{ row }">
+          <el-button
+            type="text"
+            @click="clicked(row.id)"
+          >
+            {{ row.name }}
+          </el-button>
+        </template>
+      </el-table-column>
 
-    <el-table-column label="Phases" :width="calculateTimelineWidth()">
-      <template #default="{ row }">
-        <div style="position: relative; min-height: 140px; border-bottom: 1px solid #ccc;">
+      <el-table-column label="Phases">
+        <template #default="{ row }">
+          <div class="timeline-scroll-container">
+            <div 
+              class="timeline-content" 
+              :style="{ width: calculateTimelineWidth() + 'px', minHeight: '140px', position: 'relative', borderBottom: '1px solid #ccc' }"
+            >
           <!-- Repères de dates -->
           <div
             v-for="(date, i) in timelineMarkers"
@@ -56,7 +61,7 @@
               position: 'absolute',
               left: isPhaseOngoing(phase) ? '0px' : calculateLeft(phase.beginDate) + 'px',
               width: calculateWidth(phase.beginDate, phase.finishDate) - 25 + 'px',
-              backgroundColor: '#3CACB6',
+              backgroundColor: '#a0cfff',
               height: '100px',
               top: '20px',
               margin: '10px 100px 10px 0',
@@ -68,22 +73,24 @@
             }"
             :title="phase.title"
           >
-            <span style="color: white; font-size: medium;">
+            <span style="color: #1351aa; font-size: medium;">
               Phase {{ index + 1 }} - {{ formatDate(phase.beginDate) }} au {{ formatDate(phase.finishDate) }}
             </span>
             <br />
-            <span style="color: white; font-size: medium; white-space: nowrap;">
+            <span style="color: #1351aa; font-size: medium; white-space: nowrap;">
               <b>{{ phase.title }}</b>
             </span>
             <br />
-            <span style="color: white; font-size: medium;">
+            <span style="color: #1351aa; font-size: medium;">
               {{ Math.ceil(phase.period / 7) }} semaines - {{ phase.nbJEH }} JEH - {{ phase.totalPrice }} HT
             </span>
+          </div>
           </div>
         </div>
       </template>
     </el-table-column>
   </el-table>
+  </div>
 </template>
 
 <script>
@@ -120,7 +127,7 @@ export default {
       this.etudes.forEach(etude => {
         var beginDate = etude.docEtude?.signDate || new Date();
         etude.phases.forEach(phase => {
-          phase.beginDate = this.truncateStart(beginDate);
+          phase.beginDate = beginDate;
           phase.finishDate = new Date(phase.beginDate);
           phase.finishDate.setDate(phase.finishDate.getDate() + phase.period);
           phase.totalPrice = phase.nbJEH * phase.priceJEH;
@@ -218,9 +225,30 @@ export default {
 </script>
 
 <style scoped>
-body {
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
+.timeline-wrapper {
+  width: 100%;
+  max-width: 100%;
+}
+
+.timeline-table {
+  width: 100%;
+}
+
+.timeline-scroll-container {
+  width: 100%;
+  /*max-width: 800px;*/
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+/* Timeline content styling */
+
+/* Assurer que la table ne déborde pas */
+.timeline-table :deep(.el-table__body-wrapper) {
+  overflow: visible;
+}
+
+.timeline-table :deep(.el-table__header-wrapper) {
+  overflow: visible;
 }
 </style>

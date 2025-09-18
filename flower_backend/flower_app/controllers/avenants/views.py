@@ -4,6 +4,8 @@ from rest_framework import generics
 from flower_app.controllers.permissions import HasGroupPermission
 from flower_app.models.Avenant import AvenantEtude, AvenantMissionSerializer, AvenantMission, AvenantEtudeSerializer, \
     AvenantEtudeDetailSerializer, AvenantMissionDetailSerializer
+from flower_app.models.DocEtude import DocEtude, CESerializer, CEDetailSerializer, DocMission, DocMissionSerializer, \
+    AvenantEtudeDocSerializer, AvenantDocMissionSerializer
 
 
 class AvenantEtudeView(generics.CreateAPIView):
@@ -56,6 +58,20 @@ class AvenantEtudeDetailView(generics.RetrieveUpdateDestroyAPIView):
 
         return self.destroy(request, *args, **kwargs)
 
+class AvenantEtudeDocDetailView(generics.RetrieveUpdateAPIView):
+    permission_classes = [IsAuthenticated, HasGroupPermission]
+    required_groups = {
+        'GET': ['ROLE_CA'],
+        'PUT': ['ROLE_CA'],
+        'PATCH': ['ROLE_CA'],
+    }
+    queryset = DocEtude.objects.all()
+
+    def get_serializer_class(self):
+        if self.request.method in ['PUT', 'PATCH']:
+            return AvenantEtudeDocSerializer
+        return CEDetailSerializer
+
 
 class AvenantMissionDetailView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated, HasGroupPermission]
@@ -77,3 +93,17 @@ class AvenantMissionDetailView(generics.RetrieveUpdateDestroyAPIView):
         PhaseMission.objects.filter(avenant_edit=instance).update(state='ACTIVE')
 
         return self.destroy(request, *args, **kwargs)
+
+class AvenantDocMissionDetailView(generics.RetrieveUpdateAPIView):
+    permission_classes = [IsAuthenticated, HasGroupPermission]
+    required_groups = {
+        'GET': ['ROLE_CA'],
+        'PUT': ['ROLE_CA'],
+        'PATCH': ['ROLE_CA'],
+    }
+    queryset = DocMission.objects.all()
+
+    def get_serializer_class(self):
+        if self.request.method in ['PUT', 'PATCH']:
+            return AvenantDocMissionSerializer
+        return DocMissionSerializer

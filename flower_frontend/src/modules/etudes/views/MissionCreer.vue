@@ -190,8 +190,9 @@ export default {
           if(r != null)
             newMissions.push(r)
         })
+        newMissions.map(m => m.doc_mission = m.doc_mission.id)
         axios.put(
-          `/api/etudes/${this.$route.params.id}/missions/`,
+          `/api/etudes/missions/`,
           newMissions,
           {withCredentials: true}
         ).then(() => {
@@ -244,6 +245,7 @@ export default {
     },
     saveMissionObject (mission_obj) {
       mission_obj.project = this.$route.params.id
+      // Modifier pour split mission et doc_mission
       return new Promise((resolve, fail) => {
         axios.post(
           `/api/etudes/${this.$route.params.id}/missions/`,

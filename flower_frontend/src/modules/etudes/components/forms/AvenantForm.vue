@@ -253,9 +253,9 @@
     >
       <el-option
         v-for="item in avenantsRM"
-        :key="item.index"
+        :key="item.id"
         :label="`${item.inter.firstname} ${item.inter.lastname}`"
-        :value="item.index"
+        :value="item.id"
       />
     </el-select>
     <div v-for="avenantRM in filteredAvenantsRM" v-if="globalForm.is_inter">
@@ -458,7 +458,7 @@ export default {
       }).concat(this.avenant.originalPhases.filter(p => this.idx.includes(p.index)))
     },
     RMidx () {
-      this.filteredAvenantsRM = this.avenantsRM.filter(avenantRM => this.RMidx.includes(avenantRM.index))
+      this.filteredAvenantsRM = this.avenantsRM.filter(avenantRM => this.RMidx.includes(avenantRM.id))
     },
     avenant () {
       if (!this.initialized && this.avenant.phases && this.avenant.phases.length > 0) {

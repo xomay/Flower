@@ -79,10 +79,19 @@ class MissionSerializer(serializers.ModelSerializer):
     isCurrent = serializers.ReadOnlyField()
     remunerationRaw = serializers.ReadOnlyField()
     JEHNumber = serializers.ReadOnlyField()
+    doc_mission = serializers.PrimaryKeyRelatedField(read_only=True)
+
     class Meta:
         model = Mission
         fields = '__all__'
         list_serializer_class = CustomListSerializer
+
+    def update(self, instance, validated_data):
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+
+        return instance
 
 
 class MissionDetailSerializer(serializers.ModelSerializer):

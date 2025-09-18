@@ -3,6 +3,18 @@
     title="Liste des membres"
     :breadcrumb="breadcrumb"
   >
+    <template #action>
+      <router-link to="/membres/ajouter">
+        <el-button
+          type="primary"
+          icon="Plus"
+          plain
+          style="margin: 0 10px;"
+        >
+          Ajouter un membre
+        </el-button>
+      </router-link>
+    </template>
     <el-row
       style="margin-left: 4%; margin-right: 4%"
     >
@@ -21,7 +33,7 @@
           v-model="promotionFilterValue"
           class="marginL"
           controls-position="right"
-          size="mini"
+          size="small"
           :disabled="!doesFilterPromo"
           @change="updateFilters"
         />

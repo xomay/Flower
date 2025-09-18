@@ -14,7 +14,7 @@
       :disabled="!canAddAvenant"
       @click="requestNewAvenant()"
       style="margin-bottom: 20px;"
-      type="warning"
+      type="primary"
       icon="Plus"
       >Ajouter un avenant</el-button>
     </el-row>

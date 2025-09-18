@@ -88,7 +88,7 @@
                 :loading="loading"
                 type="success"
                 icon="Check"
-                @click="levelupTo(2)"
+                @click="signDateForm = true; form.docId = etude.docEtude.id"
               >
                 {{ etude.hasCC ? 'Le BC' : "La CE" }} a été signé
               </el-button>
@@ -566,6 +566,31 @@
       </el-step>
       <!-- x -->
     </el-steps>
+    <el-dialog v-model="signDateForm" title="Date de signature du document" width="500">
+      <el-form :model="form">
+        <el-form-item
+          label="Référence :"
+          prop="ref"
+          label-width="140px"
+        >
+          <el-date-picker
+            v-model="form.signDate"
+            format="DD/MM/YYYY"
+            value-format="YYYY-MM-DD"
+            type="date"
+            placeholder="Sélectionnez une date"
+          />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button @click="signDateForm = false">Annuler</el-button>
+          <el-button type="primary" @click="signDoc(form.docId, form.signDate); signDateForm = false;">
+            Confirmer
+          </el-button>
+        </div>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
@@ -584,7 +609,13 @@ export default {
     return {
       loading: false,
       btn_ce_generate: false,
-      comments: []
+      comments: [],
+      signDateForm: false,
+      form: {
+        signDate: null,
+        docId: null,
+        is_client: true
+      },
     }
   },
   beforeCreate () {
@@ -738,6 +769,23 @@ export default {
     getEnding () {
       return this.is_over ? "success" : "primary"
     },
+    signDoc (id, signDate) {
+      this.loading = true
+      axios.put(
+        `/api/etudes/ce/${id}/`,
+        { signDate: signDate,
+         },
+        { withCredentials: true }
+      ).then(() => {
+        this.$message({message: "Document signé", type: "success"})
+        this.levelupTo(2)
+        this.$router.go(0)
+      }).catch((err) => {
+        this.$message({message: "Impossible de signer le document : " + err, type: "error"})
+      }).finally(() => {
+        this.loading = false
+      })
+    }
   }
 }
 </script>

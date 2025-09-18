@@ -2,7 +2,7 @@ const routes = [
   {
     path: "membres",
     name: "membres",
-    component: () => import("../views/MembresVoir")
+    component: () => import("../views/AssoVoir")
   },
   {
     path: "membres/ajouter",

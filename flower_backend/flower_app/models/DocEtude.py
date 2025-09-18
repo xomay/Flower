@@ -9,7 +9,7 @@ class Doc(models.Model):
     signDate = models.DateTimeField(blank=True, null=True)
     description = models.TextField(default='')
     controls = models.JSONField(default=list, blank=True)
-    deliverable = models.TextField(default='')
+    deliverable = models.TextField(default='', blank=True)
     materialDesc = models.TextField(default='', blank=True)
 
     def __str__(self):
@@ -33,6 +33,18 @@ class DocEtude(Doc):
         return 'CE'
 
 class CESerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DocEtude
+        fields = '__all__'
+
+    def update(self, instance, validated_data):
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+
+        return instance
+
+class AvenantEtudeDocSerializer(serializers.ModelSerializer):
     class Meta:
         model = DocEtude
         fields = '__all__'
@@ -71,6 +83,18 @@ class DocMission(Doc):
         return 'Doc Mission'
 
 class DocMissionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DocMission
+        fields = '__all__'
+
+    def update(self, instance, validated_data):
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+
+        return instance
+
+class AvenantDocMissionSerializer(serializers.ModelSerializer):
     class Meta:
         model = DocMission
         fields = '__all__'

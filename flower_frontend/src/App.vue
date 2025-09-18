@@ -49,6 +49,11 @@ export default {
 
 :root {
   --main-bg-color: #545c64;
+  --el-color-primary: #1351aa;
+  --el-color-success: #67c23a;
+  --el-color-warning: #e6a23c;
+  --el-color-danger:  #f56c6c;
+  --el-color-info:    #909399;
 }
 
 .el-loading-spinner>.circular {

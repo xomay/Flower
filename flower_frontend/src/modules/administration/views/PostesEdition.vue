@@ -6,7 +6,8 @@
     <template #action>
       <el-button
         icon="Plus"
-        type="success"
+        type="primary"
+        plain
         :loading="loading"
         @click="addPoste()"
       >
