@@ -61,7 +61,7 @@ class Mission(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.doc_mission:
-            self.doc_mission = DocMission.objects.create().id
+            self.doc_mission = DocMission.objects.create()
         super().save(*args, **kwargs)
 
 

@@ -53,6 +53,7 @@ export default {
   created () {
     this.getProspect()
     this.getEmployes()
+    this.getMembers()
   },
   methods: {
     getProspect () {
@@ -114,9 +115,6 @@ export default {
       ).then((res) => {
         res.data.forEach((mem) => mem.value = `${mem.firstname} ${mem.lastname}`)
         this.members = res.data
-        this.members.push({
-          value: "Non assigné"
-        })
       }).catch((err) => {
         this.$message({message: "Impossible de récupérer les membres : "+err, type: "error"})
       })

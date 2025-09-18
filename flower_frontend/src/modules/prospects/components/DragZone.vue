@@ -5,74 +5,82 @@
     @dragover.prevent
     @dragenter.prevent
   >
-    <h1
-      class="titleStyle"
-    >
-      {{ title }}
-    </h1>
+      <h1
+        class="titleStyle"
+      >
+        {{ title }}
+      </h1>
+    <el-progress 
+      :percentage="animatedPercentage"
+      style="margin: 0 0 10px 5px;"
+      />
     <div
       v-for="item in content"
-      :key="item.title"
+      :key="item.id"
       class="drag-el"
-      draggable
+      :draggable="true"
       @dragstart="startDrag($event, item)"
     >
-      <el-card>
-        <el-row>
-          <div
-            :style="'width: 100%;'"
-          >
-            <u>Prospect :</u>
+    <el-popover
+       content="Prospect à relancer"
+       placement="top"
+       :auto-close="1500"
+       :disabled="!shouldShowAlert(item.prospect.nextDate)"
+     >
+      <template #reference>
+      <el-card :style="(item.list === 'AR' || item.list === 'PC') && item.prospect.nextDate && shouldShowAlert(item.prospect.nextDate) ? 'border: 1px solid #f56c6c;' : ''">
+        <el-row style="align-items: center;">
+          <router-link :to="'/prospects/' + item.id + '/voir'">
+            <el-link
+            type="primary"
+            style="margin: 0 20px 5px 0; font-size: 1em;"
+            >
+              {{ item.prospect.name }}
+            </el-link>
+          </router-link>
+        </el-row>
+        <el-col>
+          <el-row>
+            <el-text
+            size="default"
+            tag="b"
+            >
+              {{ item.prospect.type }}
+            </el-text>
+          </el-row>
+          <el-row style="margin: 5px 0;">
+            <el-tag effect="light" type="success" v-if="item.prospect.domain">
+              <b>{{ item.prospect.domain }}</b>
+            </el-tag>
+          </el-row>
+          <el-row style="margin: 10px 0;">
             <router-link :to="'/prospects/' + item.id + '/voir'">
               <el-button
-                type="text"
-                size="medium"
-              >
-                {{ item.prospect.name }}
-              </el-button>
-            </router-link>
-          </div>
-          <el-col
-            v-if="item.list === 'RDV' || item.list === 'DS'"
-            :span="13"
+              size="default"
+              :type="item.prospect.charge ? '' : 'warning'"
+              plain
+              icon="Avatar">
+              Chargé : {{ item.prospect.charge ? findMembre(item.prospect.charge) : "Aucun" }}
+            </el-button>
+          </router-link>
+          </el-row>
+          <el-button
+          icon="Calendar"
+          v-if="item.list !== 'NC'"
+          @click="changeDate(item.id)"
           >
-            <el-switch
-              v-model="item.devisOn"
-              active-color="#137566"
-              inactive-color="#494949"
-              active-text="Devis"
-              inactive-text="RdV"
-              @change="updateDevisRdv(item)"
-            />
-          </el-col>
-        </el-row>
-        <p><el-icon><OfficeBuilding/></el-icon> <u>Addresse :</u> {{ item.prospect.address }}, {{ item.prospect.town }} ({{ item.prospect.postcode }})</p>
-        <p v-if="item.list === 'NC'">
-          <el-icon><User/></el-icon> <u>Dev'co :</u>
-          <span v-if="item.prospect.charge == null"><i>  aucun</i></span>
-          <span v-else> {{ findMembre(item.prospect.charge) }}</span>
-        </p>
-        <p v-if="item.list === 'AR'">
-          <el-icon><View/></el-icon> <u>Dernier contact :</u> {{ niceDate (item.prospect.nextDate) }}
-        </p>
-        <p v-if="item.list === 'RDV'">
-          <el-icon><Date/></el-icon> <u>Date du rendez-vous :</u> {{ niceDate (item.prospect.nextDate) }}
-        </p>
-        <p v-if="item.list === 'DS'">
-          <el-icon><Date/></el-icon> <u>Deadline du devis :</u> {{ niceDate (item.prospect.nextDate) }}
-        </p>
-        <p
-          v-for="(contact,n) in item.prospect.contactWay"
-          :key="contact"
-        >
-          <el-icon><Message/></el-icon> <u>Contact {{ n+1 }} :</u> {{ getContact(contact) }}
-        </p>
+            Dernier contact : {{ item.prospect.nextDate ? niceDate(item.prospect.nextDate) : "non défini." }}
+          </el-button>
+        </el-col>
       </el-card>
+      </template>
+      </el-popover>
     </div>
   </div>
 </template>
 
 <script>
+
 export default {
   name: "DragZone",
   props: {
@@ -80,9 +88,42 @@ export default {
     title: { type: String, required: true },
     membresList: { type: Array, required: true },
     contactsList: { type: Array, required: true },
-    content: { type: Array, required: true }
+    content: { type: Array, required: true },
+    prospectsLength: { type: Number, required: false, default: 0 },
+  },
+  emits: ["dropped", "changedate"],
+  data() {
+    return {
+      animatedPercentage: 0
+    }
+  },
+  computed: {
+    progressPercentage() {
+      if (this.prospectsLength === 0) return 0
+      return Math.round((this.content.length / this.prospectsLength) * 100)
+    }
+  },
+  watch: {
+    progressPercentage(newVal) {
+      this.animateProgress(newVal)
+    }
   },
   methods: {
+    shouldShowAlert(nextDate) {
+      if (!nextDate) return false
+      const prospectDate = new Date(nextDate)
+      const today = new Date()
+      const diffInTime = today.getTime() - prospectDate.getTime()
+      const diffInDays = Math.ceil(diffInTime / (1000 * 3600 * 24))
+      return diffInDays >= 14
+    },
+    async animateProgress(targetPercentage) {
+      const step = targetPercentage > this.animatedPercentage ? 1 : -1
+      while (this.animatedPercentage !== targetPercentage) {
+        this.animatedPercentage += step
+        await new Promise(resolve => setTimeout(resolve, 20))
+      }
+    },
     startDrag (evt, item) {
       evt.dataTransfer.dropEffect = "move"
       evt.dataTransfer.effectAllowed = "move"
@@ -97,6 +138,14 @@ export default {
         false
       )
     },
+    changeDate (itemID, nextDate) {
+      this.$emit(
+        "changedate",
+        itemID,
+        this.listId,
+        false
+      )
+    },
     findMembre (membreID) {
       const membre = this.membresList.find(m => m.id === membreID)
       if(membre == undefined) {
@@ -105,8 +154,8 @@ export default {
         return membre.firstname + " " + membre.lastname
       }
     },
-    updateDevisRdv (item) {
-      const newAdv = (item.prospect.advancement === "DS") ? "RDV" : "DS"
+    updateWin (item) {
+      const newAdv = (item.prospect.advancement === "WIN") ? "LO" : "WIN"
       item.prospect.advancement = newAdv
       this.$emit(
         "dropped",
@@ -133,27 +182,25 @@ export default {
 
 <style>
   .titleStyle {
-    text-align: center;
+    text-align: left;
+    padding-left: 10px;
     font-size: 1.1em;
-    margin: 1vh auto 3vh auto;
     font-weight: bold;
-    background: #20507812;
+    margin-bottom: 5px;
   }
 
   .drop-zone {
-    background-color: #eee;
     margin-bottom: 10px;
-    margin-right: 0.5%;
-    padding: 10px;
+    padding: 5px;
     float: left;
-    width: 32%;
-    border: solid black;
+    width: 18vw;
+    min-width: 300px;
+    min-height: 60vh;
   }
 
   .drag-el {
-    background-color: #fff;
-    margin-bottom: 10px;
-    padding: 5px;
+    margin-bottom: 5px;
+    cursor: pointer;
   }
 
   /* Clear floats after the columns */

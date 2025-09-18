@@ -21,8 +21,6 @@
           v-model="promotionFilterValue"
           class="marginL"
           controls-position="right"
-          :min="2010"
-          :max="2100"
           size="mini"
           :disabled="!doesFilterPromo"
           @change="updateFilters"
