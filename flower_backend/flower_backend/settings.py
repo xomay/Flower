@@ -29,7 +29,8 @@ SECRET_KEY = '*fdkcuwkd+s6#_dsz_-kz@x5k=n60c8ogme9kz!uj26#dqf8*('
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', False)
 
-ALLOWED_HOSTS = []
+#ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -93,7 +94,8 @@ LOGIN_REDIRECT_URL = os.getenv('LOGIN_REDIRECT_URL', '/')
 # Django allauth config
 SITE_ID = int(os.getenv('SITE_ID', 1))
 ACCOUNT_EMAIL_VERIFICATION = "none"
-ACCOUNT_SIGNUP_FIELDS = ['email*', 'username*', 'password1*', 'password2*']
+ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*', 'password2*']
+#ACCOUNT_SIGNUP_FIELDS = ['email*', 'username*', 'password1*', 'password2*']
 ACCOUNT_LOGIN_METHODS = {'email'}
 
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = 'GOOGLE_CLIENT_ID'
@@ -130,7 +132,8 @@ CSRF_COOKIE_SECURE = False
 CSRF_COOKIE_HTTPONLY = False
 
 USE_X_FORWARDED_HOST = os.getenv('USE_X_FORWARDED_HOST', False)
-SECURE_PROXY_SSL_HEADER = os.getenv('SECURE_PROXY_SSL_HEADER', None)
+SECURE_PROXY_SSL_HEADER = tuple(os.getenv('SECURE_PROXY_SSL_HEADER',).split(','))
+#SECURE_PROXY_SSL_HEADER = os.getenv('SECURE_PROXY_SSL_HEADER', None)
 
 
 
