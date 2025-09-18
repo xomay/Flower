@@ -34,7 +34,6 @@
         v-model="pc.application_fees"
         controls-position="right"
         :min=0
-        :max=500
       />
     </el-form-item>
     <el-col :span="24" v-if="etude.prospect">
@@ -255,7 +254,6 @@ export default {
         this.pc.postcode = this.etude.prospect.postcode
         this.pc.town = this.etude.prospect.town
         this.pc.prospect = this.etude.prospect.id
-        this.pc.application_fees = Number(this.etude.application_fees)
         this.autocomplete = {signer1: this.personFullname(this.pc.signer1),
           signer2: this.personFullname(this.pc.signer2)}
         this.pc.signer1 = this.pc.signer1 ? this.pc.signer1.id : null

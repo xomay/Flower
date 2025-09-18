@@ -241,15 +241,13 @@ export default {
       //Ne fonctionne pas, faut modifier le docEtude pas l'avenant
       this.loading = true
       axios.put(
-        is_client ? `/api/etudes/ce/${id}/` : `/api/etudes/mission/doc/${id}/`,
+        is_client ? `/api/etudes/avenants/doc/${id}/` : `/api/etudes/avenants/missions/doc/${id}/`,
         { signDate: signDate,
          },
         { withCredentials: true }
       ).then(() => {
         this.$message({message: "Avenant signé", type: "success"})
-        this.$router.go(0).then(() => {
-          this.$router.push(`/etudes/${this.etude.id}/voir?active=Avenants`)
-        })
+        this.$router.go(0)
       }).catch((err) => {
         this.$message({message: "Impossible de signer l'avenant : " + err, type: "error"})
       }).finally(() => {

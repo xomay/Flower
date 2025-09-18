@@ -32,7 +32,10 @@ def rd(number, digits=2):
         return str(round(float(number), digits))
 
 def addMonths(isodate, numberOfMonths):
-    d = date.fromisoformat(str(isodate))
+    if isinstance(isodate, date):
+        d = isodate
+    else:
+        d = date.fromisoformat(str(isodate))
     return (d + timedelta(days=numberOfMonths * 30)).isoformat()
 
 

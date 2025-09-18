@@ -50,7 +50,6 @@ export default {
   methods: {
     registerProspect (employes) {
       this.loading = true
-      console.log(this.prospect)
       axios.post(
         "/api/prospects/",
         this.prospect,

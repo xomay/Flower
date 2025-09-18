@@ -1,6 +1,6 @@
 <template>
   <BaseComponent
-    :title="'Propostion Commerciale de l\'étude ' + etude.name"
+    :title="'Proposition Commerciale de l\'étude ' + etude.name"
     :breadcrumb="breadcrumb"
   >
     <DevisForm :etude="etude" />

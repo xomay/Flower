@@ -3,9 +3,32 @@
     title="Suivi d'études"
     :breadcrumb="breadcrumb"
   >
+    <template #action>
+      <router-link to="/etudes/ajouter">
+        <el-button
+          type="primary"
+          icon="Plus"
+          plain
+          style="margin: 0 10px;"
+        >
+          Créer une étude
+        </el-button>
+      </router-link>
+      <router-link to="/etudes/ajoutercc">
+        <el-button
+          type="primary"
+          icon="Plus"
+          plain
+          style="margin: 0 10px;"
+        >
+          Créer une Convention Cadre
+        </el-button>
+      </router-link>
+    </template>
     <el-tabs
       v-model="currentTab"
       type="card"
+      style="margin-top: 30px;"
     >
       <el-tab-pane
         label="Études en cours"
@@ -49,13 +72,13 @@
       :etudes="etudes"
       :loading="loading"
       @select="goToEtude"
-      v-if="currentTab !== 'ccs' && currentTab !== 'dashboard' && viewType !== true"
+      v-show="currentTab !== 'ccs' && currentTab !== 'dashboard' && viewType !== true"
     />
     <EtudesDashboard
-      :etudes="originalEtudes"
+      :etudes="etudes"
       :loading="loading"
       @select="goToEtude"
-      v-if="viewType === true"
+      v-show="viewType === true"
       />
     <CCList
       :ccs="ccs"

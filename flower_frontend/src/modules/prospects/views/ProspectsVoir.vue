@@ -7,7 +7,9 @@
     <template #action>
       <router-link to="/prospects/ajouter/">
         <el-button
-          type="success"
+          type="primary"
+          
+          plain
           icon="Plus"
           style="margin: 0 10px;"
         >
@@ -17,6 +19,7 @@
       <router-link to="/prospects/actionCommerciale/">
         <el-button
           type="primary"
+          effect="dark"
         >
           Voir les actions commerciales
         </el-button>
@@ -176,7 +179,6 @@ export default {
       {withCredentials: true}
     ).then((res) => {
       this.prospects = res.data
-      console.log(this.prospects)
       this.calculateItems()
     }).catch((err) => {
       this.$message({message: "Impossible de récupérer les prospects pour le moment: "+err, type: "error"})
@@ -229,7 +231,6 @@ export default {
       const item = this.items.find(item => item.id == itemID)
       const prospect = this.prospects.find(i => i.id == itemID)
       // Mise à jour du "tampon"
-      console.log("Changing date for", item)
       this.tampon = {
         item: item,
         listID: listID,
@@ -292,7 +293,6 @@ export default {
       return date.addDays(days)
     },
     updateFilters () {
-      console.log("Updating filters", this.originalItems)
       // Toujours partir des données originales
       let filteredItems = [...this.originalItems]
       

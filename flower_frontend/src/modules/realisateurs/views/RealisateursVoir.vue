@@ -3,6 +3,18 @@
     title="Liste des réalisateurs"
     :breadcrumb="breadcrumb"
   >
+    <template #action>
+      <router-link to="/realisateurs/ajouter">
+        <el-button
+          type="primary"
+          icon="Plus"
+          plain
+          style="margin: 0 10px;"
+        >
+          Ajouter un réalisateur
+        </el-button>
+      </router-link>
+    </template>
     <el-table
       class="grid"
       :data="reas"
@@ -91,6 +103,7 @@
         width="100px"
         fixed="right"
         align="center"
+        v-if="false"
       >
         <template #default="{ row }">
           <el-button
