@@ -50,6 +50,7 @@ export default {
   methods: {
     registerProspect (employes) {
       this.loading = true
+      console.log(this.prospect)
       axios.post(
         "/api/prospects/",
         this.prospect,
@@ -90,9 +91,6 @@ export default {
       ).then((res) => {
         res.data.forEach((mem) => mem.value = `${mem.firstname} ${mem.lastname}`)
         this.members = res.data
-        this.members.push({
-          value: "Non assigné"
-        })
       }).catch((err) => {
         this.$message({message: "Impossible de récupérer les membres : "+err, type: "error"})
       })

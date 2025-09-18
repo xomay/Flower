@@ -305,6 +305,14 @@ export default {
       }
     }
   },
+  watch: {
+    modelValue: {
+      handler (newVal) {
+        console.log(this.modelValue)
+      },
+      deep: true
+    }
+  },
   methods: {
     validateForm () {
       this.valid = true

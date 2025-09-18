@@ -1,7 +1,8 @@
 <template>
   <el-dialog
     :title="popupTitle"
-    :visible.sync="visibility"
+    :model-value="visibility"
+    @update:model-value="$emit('update:visibility', $event)"
     @opened="opened()"
   >
     <el-form
@@ -13,7 +14,7 @@
       <el-form-item
         :label="dateName"
         prop="date"
-        label-width="20%"
+        label-width="120px"
         :rules="[
           { required: true, message: 'Il faut préciser la date !' , trigger: 'blur' },
           { required: true, pattern: /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/, message: 'Entrez un format valide.', trigger: 'blur'}
@@ -62,6 +63,7 @@ export default {
     // valeur par défaut du field
     placeholder: { type: String, default: function () { return this.getToday() } }
   },
+  emits: ["finish", "update:visibility"],
   data () {
     return {
       dateModel: {
@@ -97,6 +99,7 @@ export default {
       return yyyy + "-" + mm + "-" + dd
     },
     opened () {
+      console.log("DatePopup opened, setting dateModel.date to placeholder:", this.placeholder)
       this.dateModel.date = this.placeholder
     }
   }

@@ -18,8 +18,9 @@ class Prospect(models.Model):
     AV_LEVELS = [
         ('NC','Nouveau Prospect'),
         ('AR', 'A relancer'),
-        ('RDV', 'Rendez-vous obtenu'),
-        ('DS', 'Devis Signé')
+        ('PC', 'Devis à envoyer'),
+        ('WIN', 'Prospect gagné'),
+        ('LO', 'Prospect perdu')
     ]
     advancement = models.CharField(max_length=3, choices=AV_LEVELS, default='NC')
     nextDate = models.DateField(blank=True, null = True)

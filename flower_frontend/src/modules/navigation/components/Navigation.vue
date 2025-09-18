@@ -95,7 +95,7 @@ export default {
   data () {
     return {
       menu: [],
-      collapse: false
+      collapse: true
     }
   },
   created () {

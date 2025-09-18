@@ -89,16 +89,24 @@ export default {
       //this.missions = res.data.missions.filter(mission => mission.isCurrent).slice()
       this.missions = res.data.missions
       this.originalIDs = this.missions.map(m => m.id)
+      // Collecter toutes les phases assignées à tous les RMs
+      const allAssignedPhases = new Set()
+      
       this.missions.forEach((mission) => {
         mission.originalPMs = mission.phasesMission.slice()
         mission.phases = this.phases.filter(phase => mission.originalPMs.some(pm => pm.phaseEtude === phase.id))
         mission.phases = mission.phases.map(phase => phase.id)
-        this.phases = this.phases.map(ph => {
+        
+        // Ajouter les phases de cette mission au set global
+        mission.phases.forEach(phaseId => allAssignedPhases.add(phaseId))
+      })
+      
+      // Mettre à jour hasRDM basé sur toutes les assignations
+      this.phases = this.phases.map(ph => {
         return {
           ...ph,
-          hasRDM: mission.phases.includes(ph.id)
+          hasRDM: allAssignedPhases.has(ph.id)
         }
-      })
       })
       this.breadcrumb[1].name = res.data.name
     }).catch((err) => {
@@ -115,13 +123,26 @@ export default {
     })
   },
   methods: {
-    pickedPhasesUpdated (rdms_ids) {
+    updateAllPhasesStatus() {
+      // Collecter toutes les phases assignées à tous les RMs
+      const allAssignedPhases = new Set()
+      this.missions.forEach(mission => {
+        if (mission.phases && Array.isArray(mission.phases)) {
+          mission.phases.forEach(phaseId => allAssignedPhases.add(phaseId))
+        }
+      })
+      
+      // Mettre à jour le status hasRDM basé sur toutes les assignations
       this.phases = this.phases.map(ph => {
         return {
           ...ph,
-          hasRDM: rdms_ids.includes(ph.id)
+          hasRDM: allAssignedPhases.has(ph.id)
         }
       })
+    },
+    pickedPhasesUpdated (rdms_ids) {
+      // Recalculer le statut de toutes les phases
+      this.updateAllPhasesStatus()
     },
     addMission () {
       this.missions.push({
@@ -134,6 +155,8 @@ export default {
         originalPMs: [],
         phases: [],
       })
+      // Recalculer le statut des phases après ajout
+      this.updateAllPhasesStatus()
     },
     saveMissions (deletedIDS, deletedPhases) {
       this.loading = true
