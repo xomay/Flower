@@ -7,7 +7,6 @@
       v-model="form"
       :value="form"
       :postes="postes"
-      :loadingopenaccount="loading"
       :loading="loading"
       @save="registerMember"
     />

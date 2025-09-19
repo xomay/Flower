@@ -206,20 +206,9 @@
             :loading="loading"
             type="success"
             style="margin-top: 40px"
-            @click="validateForm('save')"
+            @click="validateForm()"
           >
             Enregistrer
-          </el-button>
-        </el-form-item>
-      </el-col>
-      <el-col v-if="canOpenAccount" :span="24">
-        <el-form-item>
-          <el-button
-            :loading="loadingopenaccount"
-            type="warning"
-            @click="validateForm('openaccount')"
-          >
-            Ouvrir un compte utilisateur
           </el-button>
         </el-form-item>
       </el-col>
@@ -236,7 +225,6 @@ export default {
     modelValue: { type: Object, required: true },
     postes: { type: Array, required: true },
     loading: { type: Boolean, required: true },
-    loadingopenaccount: { type: Boolean, required: true },
     canOpenAccount: { type: Boolean, default: false }
   },
   emits: ["update:modelValue", "save", "openaccount"],
@@ -325,10 +313,10 @@ export default {
     }
   },
   methods: {
-    validateForm(mode) {
+    validateForm() {
       this.$refs.memFormRef.validate((valid) => {
         if (valid) {
-          this.$emit(mode === "save" ? "save" : "openaccount");
+          this.$emit("save");
         } else {
           this.$message({
             message: "Certains champs ne sont pas valides !",

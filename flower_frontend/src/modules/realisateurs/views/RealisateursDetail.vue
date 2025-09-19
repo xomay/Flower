@@ -34,7 +34,6 @@
             <td class="rowStyle noRight">
               <span><div v-if="realisateur.ba">BA: {{ realisateur.ba }}</div><div v-if="!realisateur.ba">Ba: Non généré</div></span>
               <el-button
-                :loading="loadingopenaccount"
                 type="warning"
                 @click="downloadBA()"
               >

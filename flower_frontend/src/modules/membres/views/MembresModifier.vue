@@ -7,10 +7,8 @@
       v-model="member"
       :postes="postes"
       :loading="loading"
-      :loadingopenaccount="loadingOpenAccount"
       :can-open-account="isAdmin()"
       @save="saveMember"
-      @openaccount="openAccount"
     />
   </BaseComponent>
 </template>
@@ -52,7 +50,6 @@ export default {
       },
       postes: [],
       loading: false,
-      loadingOpenAccount: false,
       breadcrumb: [
         {
           name: "Liste des membres",
@@ -110,11 +107,6 @@ export default {
         this.loading = false
       })
     },
-    openAccount () {
-      this.loadingOpenAccount = true
-      this.mixinRegisterMember(axios, this.member)
-      this.loadingOpenAccount = false
-    }
   }
 }
 </script>
