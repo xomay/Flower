@@ -18,7 +18,7 @@
           icon="CloseBold"
           @click="toggleActive()"
         >
-          N'est plus membre
+          Sortir du mandat en cours
       </el-button>
       <el-button
           v-if ="!member.is_active"
@@ -65,7 +65,6 @@
               <td class="rowStyle noRight">
                 <span><div v-if="member.ba">BA: {{ member.ba }}</div><div v-if="!member.ba">Ba: Non généré</div></span>
                 <el-button
-                  :loading="loadingopenaccount"
                   type="warning"
                   @click="downloadBA()"
                 >
