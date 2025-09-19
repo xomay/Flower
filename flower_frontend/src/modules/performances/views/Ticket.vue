@@ -2,6 +2,7 @@
   <BaseComponent
     title="Signalement - Ticket"
     :breadcrumb="breadcrumb"
+    :loading="loading"
   >
     <el-form
         ref="formTicket"
@@ -92,6 +93,7 @@
             icon="Plus"
             type="success"
             style="margin-top: 20px;"
+            :loading="loading"
             @click="validateForm"
         >
             Enregistrer le signalement
@@ -140,11 +142,13 @@ export default {
              message: "Obligatoire",
              trigger: "blur"}
         ]
-      }
+      },
+      loading: false
     }
   },
   methods: {
     validateForm () {
+      this.loading = true
       this.$refs.formTicket.validate((r) => {
         if(r) {
           axios.post(
@@ -166,9 +170,12 @@ export default {
               this.$router.push(`/`)
             }).catch((err) => {
             this.$message({ message: "Impossible de créer le ticket : " + err, type: "error" })
+            }).finally(() => {
+              this.loading = false
             })
         } else {
           this.$message({ message: "Le formulaire n'est pas valide.", type: "error" })
+          this.loading = false
         }
       })
     },
