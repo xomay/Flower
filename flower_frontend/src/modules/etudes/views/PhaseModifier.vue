@@ -65,6 +65,10 @@ export default {
       //res.data.phases = res.data.phases.sort((a, b) => a.index - b.index)
       this.etude = res.data
       this.phases = res.data.phases
+      this.phases.map(phase => {
+        phase.priceJEH = Number(phase.priceJEH)
+        return phase
+      })
       this.breadcrumb[1].name = res.data.name
     }).catch(() => {
       this.$message({message: "Impossible de récupérer les groupes pour le moment", type: "error"})
@@ -149,6 +153,17 @@ export default {
     },
     deleteUS ({us, phase}) {
       this.loading = true
+      if (!us.id) {
+        const index = phase.uss.indexOf(us)
+        if (index > -1) {
+          phase.uss.splice(
+            index,
+            1
+          )
+        }
+        this.loading = false
+        return
+      }
       axios.delete(
         `/api/etudes/uss/${us.id}/`,
         {withCredentials: true}

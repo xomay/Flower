@@ -70,13 +70,13 @@ export default {
         {withCredentials: true}
       ).then((res) => {
         this.invoice = res.data
-        this.getProspects().then((res) => {
+        axios.get(
+          "/api/prospects",
+          {withCredentials: true}
+        ).then((res) => {
           this.prospects = res.data
-          this.$set(
-            this.invoice,
-            "autocompletePayee",
-            this.prospects.find((prospect) => prospect.id === this.invoice.payee).name
-          )
+          const foundProspect = this.prospects.find((prospect) => prospect.id === this.invoice.payee)
+          this.invoice.autocompletePayee = foundProspect ? foundProspect.name : ""
         }).catch((err) => {
           this.$message({message: "Impossible de récupérer la liste des prospects : " + err, type: "error", offset: 40})
         })
@@ -97,7 +97,7 @@ export default {
       ).then((res) => {
         this.breadcrumb[1].name = res.data.name
       }).catch(() => {
-        this.$message({message: "Impossible de récupérer la liste des prospects", type: "error", offset: 40})
+        this.$message({message: "Impossible de récupérer les infos de l'étude", type: "error", offset: 40})
       })
     }
   }

@@ -100,7 +100,7 @@
           :data="etude.missions"
         >
           <el-table-column
-            label="Consultant"
+            label="Réalisateur"
             align="center"
           >
             <template #default="{row}">

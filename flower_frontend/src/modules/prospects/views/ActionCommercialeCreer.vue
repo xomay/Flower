@@ -59,14 +59,12 @@ export default {
         this.$message({message: "L'action commerciale a bien été ajouté",
           type: "success"})
         this.$router.push("/prospects/actionCommerciale/")
-      }).
-        catch((err) => {
-          this.$message({message: err,
-            type: "error"})
-        }).
-        finally(() => {
-          this.loading = false
-        })
+      }).catch((err) => {
+        this.$message({message: err,
+          type: "error"})
+      }).finally(() => {
+        this.loading = false
+      })
     }
   }
 }

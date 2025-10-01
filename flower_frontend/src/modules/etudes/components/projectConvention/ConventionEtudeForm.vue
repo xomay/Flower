@@ -77,6 +77,17 @@ Présentation de la solution livrée au client."
 Mettez en avant ses compétences, expériences… : tout élément valorisant. Vous pouvez aussi faire transparaître ses motivations'
       />
     </el-form-item>
+    <el-form-item 
+      label="Description du livrable" 
+      prop="deliverable"
+      label-width="140px">
+      <el-input
+        v-model="ce.deliverable"
+        type="textarea"
+        :rows="7"
+        placeholder="Description du livrable de l'étude"
+      />
+    </el-form-item>
     <el-form-item
       label="Frais matériels ou de déplacements"
       label-width="140px"
@@ -234,6 +245,9 @@ export default {
         ],
         description: [
           { required: true, message: "Le contexte et les objectifs de l'étude sont obligatoires", trigger: "blur" }
+        ],
+        deliverable: [
+          { required: true, message: "La description du livrable est obligatoire", trigger: "blur" }
         ],
         application_fees: [
           { required: true, message: "Le montant des frais est obligatoire", trigger: "blur" }

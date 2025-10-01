@@ -171,13 +171,14 @@ export default {
     etude: { type: Object, required: true },
   },
   computed: {
-    fas () { return this.etude.invoices.filter(i => i.invoiceType == "FVA") },
-    fis () { return this.etude.invoices.filter(i => i.invoiceType == "FVI") },
-    fss () { return this.etude.invoices.filter(i => i.invoiceType == "FVS") }
+    fas () { return this.etude.invoices.filter(i => i.invoiceType == "SU") },
+    fis () { return this.etude.invoices.filter(i => i.invoiceType == "I") },
+    fss () { return this.etude.invoices.filter(i => i.invoiceType == "S") }
   },
   methods: {
     levelupTo (new_state) {
       this.loading = true
+      this.etude.docEtude = this.etude.docEtude.id
       axios.put(
         `/api/etudes/${this.etude.id}/`,
         {

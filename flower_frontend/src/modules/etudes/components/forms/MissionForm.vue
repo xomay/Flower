@@ -3,7 +3,7 @@
     <el-form
       v-for="(mission, index) in modelValue"
       :key="index"
-      ref="refFormMission"
+      :ref="'refFormMission' + index"
       :model="mission"
       class="mb-4"
       label-position="left"
@@ -263,20 +263,31 @@ export default {
         }
       }
 
-      for (const form of this.$refs.refFormMission) {
-        form.validate((r) => {
-          if (!r) result = false
-        })
+      let validations = []
+      for (let i = 0; i < this.modelValue.length; i++) {
+        const form = this.$refs['refFormMission' + i][0];
+        if (form) {
+          validations.push(new Promise((resolve) => {
+            form.validate((valid) => {
+              if (!valid) {
+                result = false
+              }
+              resolve(valid)
+            })
+          }))
+        }
       }
 
-      if (result) {
-        this.$emit("save", this.deletedMissions, this.deletedPhases)
-      } else {
-        this.$message({
-          message: "Certains champs sont invalides ou les JEH ne sont pas bien répartis.",
-          type: "error"
-        })
-      }
+      Promise.all(validations).then(() => {
+        if (result) {
+          this.$emit("save", this.deletedMissions, this.deletedPhases)
+        } else {
+          this.$message({
+            message: "Certains champs sont invalides ou les JEH ne sont pas bien répartis.",
+            type: "error"
+          })
+        }
+      })
     },
     goBack () {
       this.$router.push(`/etudes/${this.$route.params.id}/voir?active=Rédaction`)

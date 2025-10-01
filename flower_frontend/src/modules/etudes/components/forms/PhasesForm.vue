@@ -97,10 +97,11 @@
             <el-input-number
               v-model="row.nbJEH"
               controls-position="right"
-              :min="1"
+              :min="0"
               :max="99"
               style="width: 90%"
               :disabled="disabled || !is_budget"
+              @change="onNbJEHChange(row)"
             />
           </template>
         </el-table-column>
@@ -109,9 +110,13 @@
           label="Prix JEH"
         >
           <template #default="{row}">
-            <el-input
+            <el-input-number
               v-model="row.priceJEH"
               :disabled="disabled || !is_budget"
+              style="width: 90%"
+              :controls="false"           
+              :min="row.nbJEH > 0 ? 80 : 0"
+              :max="row.nbJEH > 0 ? 450 : 0"
             />
           </template>
         </el-table-column>
@@ -182,6 +187,16 @@ export default {
     }
   },
   methods: {
+    onNbJEHChange(row) {
+      // Si nbJEH passe de 0 à une valeur positive et que priceJEH est 0, définir un prix par défaut
+      if (row.nbJEH > 0 && row.priceJEH === 0) {
+        row.priceJEH = 450 // Prix minimum par défaut
+      }
+      // Si nbJEH passe à 0, réinitialiser priceJEH à 0
+      if (row.nbJEH === 0) {
+        row.priceJEH = 0
+      }
+    },
     addPhase () {
       this.$emit("add-phase")
     },

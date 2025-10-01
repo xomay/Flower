@@ -78,13 +78,13 @@
                 </router-link>
                 <el-popconfirm
                   confirm-button-text="Oui"
-                  confirm-button-type="error"
+                  confirm-button-type="success"
                   cancel-button-text="Finalement non"
                   cancel-button-type="primary"
                   icon="Delete"
                   icon-color="red"
                   title="Voulez-vous vraiment supprimer cette facture ?"
-                  @onConfirm="deleteInvoice(row.id)"
+                  @confirm="deleteInvoice(row.id)"
                 >
                 <template #reference>
                   <el-button
@@ -321,7 +321,7 @@ export default {
         { withCredentials: true}
       ).then(() => {
         this.$message({message: "Facture supprimée avec succès.", type: "success"})
-        this.etude.invoices = this.invoices.filter(emlt => emlt.id !== invoiceId)
+        this.etude.invoices = this.etude.invoices.filter(emlt => emlt.id !== invoiceId)
       }).catch((err) => {
         this.$message({message: "Impossible de supprimer la facture : " + err, type: "error"})
       }).finally(() => {

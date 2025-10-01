@@ -67,9 +67,11 @@ export default {
     },
     downloadCE () {
       this.loading = true
-      this.etude.docEtude.signDate = new Date()
-      this.calculateDates()
-      axios.put(
+      if (!this.etude.docEtude.signDate){
+
+        this.etude.docEtude.signDate = new Date()
+        this.calculateDates()
+        axios.put(
         `/api/etudes/${this.etude.id}/ce/`,
         {
           ...this.etude.docEtude,
@@ -92,7 +94,7 @@ export default {
             this.$message({ message: "Une erreur est survenue lors de la génération du document : " + err, type: "error" })
             this.loading = false
           }).finally(() => {
-          this.loading = false
+            this.loading = false
           })   
         }).catch(err => {
           this.$message({ message: "Une erreur est survenue lors de la mise à jour des phases : " + err, type: "error" })
@@ -102,12 +104,27 @@ export default {
         this.$message({message: "Erreur d'enregistrement de la date : "+err, type: "error"})
         this.loading = false
       })
+      }else {
+        axios.get(`/api/publish/etude/${this.etude.id}/ce/`, { withCredentials: true, responseType: "blob" }).then((response) => {
+          if (this.etude.cc){
+            this.createDownloadElement(response.data, "BC-" + this.etude.name + ".docx")
+          }else {
+            this.createDownloadElement(response.data, "CE-" + this.etude.name + ".docx")
+          }
+        }).catch((err) => {
+          this.$message({ message: "Une erreur est survenue lors de la génération du document : " + err, type: "error" })
+          this.loading = false
+        }).finally(() => {
+          this.loading = false
+        })   
+      }
     },
     downloadCEPdf () {
       this.loading = true
-      this.etude.docEtude.signDate = new Date()
-      this.calculateDates()
-      axios.put(
+      if (!this.etude.docEtude.signDate) {
+        this.etude.docEtude.signDate = new Date()
+        this.calculateDates()
+        axios.put(
         `/api/etudes/${this.etude.id}/ce/`,
         {
           ...this.etude.docEtude,
@@ -140,6 +157,19 @@ export default {
       }).finally(() => {
         this.loading = false
       })
+      } else {
+        axios.get(`/api/publish/etude/${this.etude.id}/ce/pdf/`, { withCredentials: true, responseType: "blob" }).then((response) => {
+          if (this.etude.cc){
+            this.createDownloadElement(response.data, "BC-" + this.etude.name + ".pdf")
+          }else {
+            this.createDownloadElement(response.data, "CE-" + this.etude.name + ".pdf")
+          }  
+        }).catch(err => {
+          this.$message({ message: "Une erreur est survenue lors de la génération du document : " + err, type: "error" })
+        }).finally(() => {
+          this.loading = false
+        })   
+      }
     },
     downloadCC (cc) {
       this.$emit('update:loading', true)

@@ -9,6 +9,7 @@
       :members="membres"
       :prospects="prospects"
       :taken-ids="takenIds"
+      :create="false"
       @save="saveProject"
     />
     <el-popconfirm
@@ -19,7 +20,7 @@
       confirm-button-text="OUI"
       cancel-button-type="success"
       cancel-button-text="NON"
-      @onConfirm="abortEtude()"
+      @confirm="abortEtude()"
     >
     <template #reference>
       <el-button
@@ -69,14 +70,15 @@ export default {
         clientContact: 0,
         name: "",
         description: "",
-        mandat: "",
-        number: "",
+        mandat: 0,
+        number: 0,
         confidential: false,
         projectManager: 0,
         qualityManager: 0,
         linkedFiles: [],
         docType: "ce",
       },
+      data: {},
       membres: [],
       prospects: [],
       takenIds: []
@@ -92,15 +94,14 @@ export default {
       this.takenIds = res.data.filter(etu => etu.id != this.$route.params.id).filter(etu => etu.mandat == year).map(etu => etu.number)
       const amount = this.takenIds.length
       const result = amount + baseInt
-      this.etude.number = result
     }).catch((err) => {
       this.$message({message: "Impossible de récupérer la liste des études : " + err, type: "error", offset: 40})
     })
   },
   created () {
     axios.get(
-      `/api/etudes/${this.$route.params.id}/`,
-      {withCredentials: true}
+        `/api/etudes/${this.$route.params.id}/`,
+        {withCredentials: true}
     ).then((res) => {
       this.etude = res.data
       this.etude.projectManager = this.etude.projectManager.id
@@ -115,16 +116,16 @@ export default {
         this.etude.docType = "ce"
       }
       axios.get(
-        "/api/membres/",
-        {withCredentials: true}
+          "/api/membres/",
+          {withCredentials: true}
       ).then((res) => {
         this.membres = res.data.map(obj => ({...obj, value: obj.firstname+" "+obj.lastname}))
       }).catch((err) => {
         this.$message({message: "Impossible de récupérer les membres pour le moment : "+err, type: "error"})
       })
       axios.get(
-        "/api/prospects/",
-        {withCredentials: true}
+          "/api/prospects/",
+          {withCredentials: true}
       ).then((res) => {
         this.prospects = res.data.map(obj => ({...obj, value: obj.name}))
       }).catch((err) => {
@@ -155,8 +156,8 @@ export default {
     },
     saveProject () {
       this.loading = true
-      this.etude.docEtude.signer1 = this.etude.docEtude.signer1.id
-      this.etude.docEtude.signer2 = this.etude.docEtude.signer2.id
+      this.etude.docEtude.signer1 = this.etude.docEtude.signer1?.id
+      this.etude.docEtude.signer2 = this.etude.docEtude.signer2?.id
       axios.put(
         `/api/etudes/${this.etude.id}/ce/`,
         this.etude.docEtude,

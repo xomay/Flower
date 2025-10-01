@@ -211,7 +211,7 @@ export default {
                 }
                 axios.post(
                   `/api/etudes/phases/missions/`,
-                  phase,
+                  [phase],
                   {withCredentials: true}
                 ).then((res) => {
                 }).catch((err) => {
@@ -252,9 +252,10 @@ export default {
           mission_obj,
           {withCredentials: true}
         ).then((res) => {
+          mission_obj.id = res.data.id
           resolve(res.data)
         }).catch((err) => {
-          this.$message({message: "Impossible de register une nouvelle mission : "+err,
+          this.$message({message: "Impossible d'enregistrer' une nouvelle mission : "+err,
             type: "error",
             offset: 40})
           fail(err)
