@@ -83,7 +83,7 @@
         confirm-button-text="Oui"
         cancel-button-type="success"
         cancel-button-text="Non"
-        @onConfirm="deleteNF()"
+        @confirm="deleteNF()"
       >
       <template #reference>
         <el-button

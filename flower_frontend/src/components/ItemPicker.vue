@@ -35,6 +35,14 @@ export default {
       originalValue: this.modelValue
     }
   },
+  watch: {
+    modelValue () {
+      this.originalValue = this.modelValue
+    },
+    itemList () {
+      this.originalValue = this.modelValue
+    }
+  },
   methods: {
     updateChange (newValue) {
       this.$emit("input", newValue)

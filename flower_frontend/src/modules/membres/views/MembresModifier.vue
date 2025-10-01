@@ -36,7 +36,7 @@ export default {
         lastname: "",
         gender: "",
         poste: 0,
-        promotion: "2021",
+        promotion: 2025,
         email: "",
         email_junior: "",
         mobile: "",

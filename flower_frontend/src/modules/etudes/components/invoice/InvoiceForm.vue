@@ -117,19 +117,19 @@
         >
           <el-select v-model="modelValue.invoiceType">
             <el-option
-              value="FA"
+              value="A"
               label="Facture d'Achat"
             />
             <el-option
-              value="FVA"
+              value="SU"
               label="Facture d'Acompte"
             />
             <el-option
-              value="FVI"
+              value="I"
               label="Facture Intermédiaire"
             />
             <el-option
-              value="FVS"
+              value="S"
               label="Facture de Solde"
             />
           </el-select>
@@ -166,10 +166,11 @@
         ref="refFactureDetails"
         :model="detail"
       >
+      <el-row>
+
         <el-col :span="24">
           <el-form-item
             label="Description"
-            label-width="15%"
             prop="description"
             :rules="[{required: true, message: 'Obligatoire', trigger: 'blur'}]"
           >
@@ -193,9 +194,9 @@
         </el-col>
         <el-col :span="12">
           <el-form-item
-            label="TVA"
-            prop="taxes"
-            :rules="[
+          label="TVA"
+          prop="taxes"
+          :rules="[
               {required: true, pattern: /^0.[0-9]+$/, message: 'Entrez un pourcentage valide.', trigger: 'change'},
               {required: true, message: 'Obligatoire', trigger: 'change'}
             ]"
@@ -205,17 +206,18 @@
             />
           </el-form-item>
         </el-col>
+      </el-row>
       </el-form>
       <el-col :span="24">
         <el-form-item label-width="0">
           <el-button
-            type="danger"
-            @click="removeDetail(index, detail.id)"
+          type="danger"
+          @click="removeDetail(index, detail.id)"
           >
-            Supprimer
-          </el-button>
-        </el-form-item>
-      </el-col>
+          Supprimer
+        </el-button>
+      </el-form-item>
+    </el-col>
       <el-col>
         <el-divider />
       </el-col>

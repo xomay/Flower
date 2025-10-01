@@ -63,7 +63,7 @@
                 icon="Download"
                 :disabled="!btn_ce_generate"
                 plain
-                @click="downloadCE"
+                @click="etude.state > 1 ? downloadCE() : generateDateForm = true; genForm.docId = etude.docEtude.id"
               >
                 Générer {{ etude.hasCC ? 'le BC' : "la CE" }}
               </el-button>
@@ -78,9 +78,8 @@
                   icon="Download"
                   :disabled="!btn_ce_generate"
                   plain
-                  @click="downloadCE"
                 >
-                  Générer {{ etude.hasCC ? 'le BC' : "la CE" }}
+                  Rédiger {{ etude.hasCC ? 'le BC' : "la CE" }}
                 </el-button>
               </router-link>
               <el-button
@@ -227,7 +226,7 @@
                 confirm-button-text="OUI"
                 cancel-button-type="success"
                 cancel-button-text="NON"
-                @onConfirm="levelupTo(4)"
+                @confirm="levelupTo(4)"
               >
               <template #reference>
                 <el-button
@@ -282,7 +281,7 @@
                 confirm-button-text="OUI"
                 cancel-button-type="success"
                 cancel-button-text="NON"
-                @onConfirm="levelupTo(5)"
+                @confirm="levelupTo(5)"
               >
               <template #reference>
                 <el-button
@@ -329,7 +328,7 @@
                 confirm-button-text="OUI"
                 cancel-button-type="success"
                 cancel-button-text="NON"
-                @onConfirm="levelupTo(6)"
+                @confirm="levelupTo(6)"
               >
               <template #reference>
                 <el-button
@@ -591,6 +590,31 @@
         </div>
       </template>
     </el-dialog>
+    <el-dialog v-model="generateDateForm" title="Date de génération du document" width="500">
+      <el-form :model="form">
+        <el-form-item
+          label="Référence :"
+          prop="ref"
+          label-width="140px"
+        >
+          <el-date-picker
+            v-model="genForm.signDate"
+            format="DD/MM/YYYY"
+            value-format="YYYY-MM-DD"
+            type="date"
+            placeholder="Sélectionnez une date"
+          />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button @click="generateDateForm = false">Annuler</el-button>
+          <el-button type="primary" @click="genDoc(genForm.docId, genForm.signDate); generateDateForm = false;">
+            Confirmer
+          </el-button>
+        </div>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
@@ -611,11 +635,16 @@ export default {
       btn_ce_generate: false,
       comments: [],
       signDateForm: false,
+      generateDateForm: false,
       form: {
         signDate: null,
         docId: null,
         is_client: true
       },
+      genForm: {
+        signDate: null,
+        docId: null
+      }
     }
   },
   beforeCreate () {
@@ -785,7 +814,23 @@ export default {
       }).finally(() => {
         this.loading = false
       })
-    }
+    },
+    genDoc(id, genDate) {
+      this.loading = true
+      axios.put(
+        `/api/etudes/ce/${id}/`,
+        { genDate: genDate,
+         },
+        { withCredentials: true }
+      ).then(() => {
+        this.downloadCE()
+        this.$message({message: "Document généré", type: "success"})
+      }).catch((err) => {
+        this.$message({message: "Impossible de générer le document : " + err, type: "error"})
+      }).finally(() => {
+        this.loading = false
+      })
+    },
   }
 }
 </script>

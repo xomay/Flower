@@ -7,7 +7,7 @@ from .People.Membre import Membre, MembreSerializer
 
 class Doc(models.Model):
     signDate = models.DateTimeField(blank=True, null=True)
-    description = models.TextField(default='')
+    description = models.TextField(default='', blank=True)
     controls = models.JSONField(default=list, blank=True)
     deliverable = models.TextField(default='', blank=True)
     materialDesc = models.TextField(default='', blank=True)
@@ -24,7 +24,7 @@ class DocEtude(Doc):
     deposit = models.BooleanField(default=True)
     depositAmount = models.DecimalField(default=30, max_digits=10, decimal_places=2)
     consultantNumber = models.IntegerField(default=1)
-    real_desc = models.TextField(default='')
+    real_desc = models.TextField(default='', blank=True, null=True)
     hasMaterialFees = models.BooleanField(default=False)
     materialFees = models.DecimalField(default=0.0, max_digits=10, decimal_places=2)
     application_fees = models.DecimalField(default=0, max_digits=10, decimal_places=2)

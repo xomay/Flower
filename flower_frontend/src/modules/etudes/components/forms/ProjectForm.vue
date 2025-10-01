@@ -6,6 +6,7 @@
     label-position="left"
   >
     <el-form-item
+      v-if="create"
       label="Type d'étude"
       prop="docType"
       label-width="140px">
@@ -48,7 +49,7 @@
         v-model="modelValue.prospect"
         :item-list="prospects"
         placeholder="Prospect"
-        @update:modelValue="updateEmployes(true)"
+        @update:modelValue="updateEmployes(false)"
         @clear="clearEmploye"/>
     </el-form-item>
     <el-form-item
@@ -166,7 +167,8 @@ export default {
     loading: { type: Boolean, required: true },
     members: { type: Array, required: true },
     prospects: { type: Array, required: true },
-    takenIds: { type: Array, default () { return [] } }
+    takenIds: { type: Array, default () { return [] } },
+    create: { type: Boolean, default () { return true } }
   },
   emits: ["update:modelValue", "save"],
   data () {
@@ -289,7 +291,7 @@ export default {
     },
     updateEmployes (remove) {
       if(remove) {
-        this.modelValue.clientContact = ""
+        this.modelValue.clientContact = 10
       }
       if(this.modelValue.prospect !== undefined && this.modelValue.prospect > 0) {
         axios.get(
@@ -307,7 +309,7 @@ export default {
     },
     clearEmploye () {
       this.$refs.employesInput.clear()
-      this.modelValue.clientContact = ""
+      this.modelValue.clientContact = null
     },
     getCC (ccId) {
       if(ccId){

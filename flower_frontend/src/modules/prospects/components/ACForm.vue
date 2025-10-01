@@ -170,7 +170,7 @@ export default {
       var valid = true
       this.$refs.acForm.validate((r) => {
         if(!r) {
-          this.$message({message: "Erreur : Ce devis présente des erreurs.", type: "error", offset: 40})
+          this.$message({message: "Erreur : Cette action commerciale présente des erreurs.", type: "error", offset: 40})
           valid = false
         }
       })

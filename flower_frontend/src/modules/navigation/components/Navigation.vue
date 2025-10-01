@@ -352,6 +352,8 @@ export default {
 
 .menuNavBar {
   position: relative;
+  display: flex;
+  flex-direction: column;
 }
 div.topbar {
   background-color: #ffffff;
@@ -369,13 +371,15 @@ ul {
 }
 
 .user-dropdown-container {
-  position: absolute;
+  position: sticky;
   bottom: 0;
   left: 0;
   width: 100%;
   padding: 10px;
   background-color: #EBEBEB;
   border-top: 1px solid #D7D7D7;
+  margin-top: auto;
+  z-index: 1000;
 }
 
 .user-dropdown-btn {

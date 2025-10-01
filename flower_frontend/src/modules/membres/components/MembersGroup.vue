@@ -94,7 +94,7 @@ export default {
         }
       }
       if(itemName == undefined) {
-        this.$message("erreur")
+        this.$message("Veuillez sélectionner un membre dans la liste.")
         return
       }
       this.modelValue[groupIndex] = listID

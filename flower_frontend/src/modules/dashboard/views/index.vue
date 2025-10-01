@@ -133,7 +133,7 @@
       <EtudesDashboard
         :etudes="recentEtudes"
         :loading="loading"
-        @select="this.$router.push(`/etudes/${id}/voir`)"
+        @select="goToEtude"
       />
 
       <div class="table-footer" v-if="etudes.length > 5">
@@ -188,6 +188,10 @@ export default {
   methods: {
     getUsername() {
       return this.$store.currentUser.user.name
+    },
+
+    goToEtude (id) {
+      this.$router.push(`/etudes/${id}/voir`)
     },
 
     async loadDashboardData() {
