@@ -7,21 +7,54 @@
           <el-icon class="info-icon"><Message /></el-icon>
           <div class="info-content">
             <span class="info-label">Email</span>
-            <span class="info-value">{{ realisateur.email || 'Non renseigné' }}</span>
+            <div class="info-value-with-copy">
+              <span class="info-value">{{ realisateur.email || 'Non renseigné' }}</span>
+              <el-button
+                v-if="realisateur.email"
+                type="text"
+                size="small"
+                @click="copyToClipboard(realisateur.email)"
+                class="copy-button"
+              >
+                <el-icon><CopyDocument /></el-icon>
+              </el-button>
+            </div>
           </div>
         </div>
         <div class="info-item">
           <el-icon class="info-icon"><Message /></el-icon>
           <div class="info-content">
             <span class="info-label">Email INSA</span>
-            <span class="info-value">{{ realisateur.email_insa || 'Non renseigné' }}</span>
+            <div class="info-value-with-copy">
+              <span class="info-value">{{ realisateur.email_insa || 'Non renseigné' }}</span>
+              <el-button
+                v-if="realisateur.email_insa"
+                type="text"
+                size="small"
+                @click="copyToClipboard(realisateur.email_insa)"
+                class="copy-button"
+              >
+                <el-icon><CopyDocument /></el-icon>
+              </el-button>
+            </div>
           </div>
         </div>
         <div class="info-item">
           <el-icon class="info-icon"><Phone /></el-icon>
           <div class="info-content">
             <span class="info-label">Mobile</span>
-            <span class="info-value">{{ realisateur.mobile || 'Non renseigné' }}</span>
+            <div class="info-value-with-copy">
+              <span class="info-value">{{ realisateur.mobile || 'Non renseigné' }}</span>
+              <el-button
+                v-if="realisateur.mobile"
+                type="text"
+                size="small"
+                @click="copyToClipboard(realisateur.mobile)"
+                class="copy-button"
+              >
+                <el-icon><CopyDocument /></el-icon>
+              </el-button>
+            </div>
           </div>
         </div>
       </div>
@@ -103,6 +136,29 @@ export default {
       ].filter(Boolean)
       
       return parts.length > 0 ? parts.join(', ') : 'Non renseigné'
+    },
+    async copyToClipboard(text) {
+      try {
+        await navigator.clipboard.writeText(text)
+        this.$message({
+          message: 'Copié dans le presse-papiers',
+          type: 'success',
+          duration: 2000
+        })
+      } catch (err) {
+        // Fallback pour les navigateurs plus anciens
+        const textArea = document.createElement('textarea')
+        textArea.value = text
+        document.body.appendChild(textArea)
+        textArea.select()
+        document.execCommand('copy')
+        document.body.removeChild(textArea)
+        this.$message({
+          message: 'Copié dans le presse-papiers',
+          type: 'success',
+          duration: 2000
+        })
+      }
     }
   }
 }
@@ -161,6 +217,28 @@ export default {
   font-size: 14px;
   color: #303133;
   word-break: break-word;
+}
+
+.info-value-with-copy {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.copy-button {
+  padding: 0;
+  min-height: auto;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+
+.copy-button:hover {
+  opacity: 1;
+}
+
+.info-item:hover .copy-button {
+  opacity: 1;
 }
 
 .skills-container {
