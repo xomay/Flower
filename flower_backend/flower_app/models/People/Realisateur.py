@@ -36,15 +36,15 @@ class RealisateurCommentSerializer(serializers.ModelSerializer):
 # Réalisateur
 class Realisateur(Personne):
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
-    promotion = models.IntegerField(default=2021)
+    promotion = models.IntegerField(default=2025)
     email_insa = models.EmailField(blank=True)
-    address = models.CharField(max_length=200)
-    postcode = models.CharField(max_length=20)
-    town = models.CharField(max_length=60)
-    country = models.CharField(max_length=60, default="France")
-    nationality = models.CharField(max_length=60, default="FR")
-    birth_date = models.DateField()
-    birth_place = models.CharField(max_length=60)
+    address = models.CharField(max_length=200, null=True, blank=True)
+    postcode = models.CharField(max_length=20, null=True, blank=True)
+    town = models.CharField(max_length=60, null=True, blank=True)
+    country = models.CharField(max_length=60, default="France", null=True, blank=True)
+    nationality = models.CharField(max_length=60, default="FR", null=True, blank=True)
+    birth_date = models.DateField(null=True, blank=True)
+    birth_place = models.CharField(max_length=60, null=True, blank=True)
     ba = models.DateField(null=True)
     ba_id = models.IntegerField(null=True)
     CHOICES_FILIERES = [
@@ -62,8 +62,9 @@ class Realisateur(Personne):
 
     skills = models.ManyToManyField(Competence, blank=True)
     comments = models.ManyToManyField(RealisateurComment, blank=True)
-    security_social_number = models.CharField(max_length=15)
+    security_social_number = models.CharField(max_length=15, null=True, blank=True)
     filiere = models.CharField(max_length=5, choices=CHOICES_FILIERES, default='INFO')
+    description = models.TextField(blank=True, default='')
     
     
     def __str__(self):

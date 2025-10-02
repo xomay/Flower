@@ -1,187 +1,192 @@
 <template>
-  <div>
-    <!--( Nom prénom )-->
-    <table class="styled-table">
-      <tbody>
-        <tr>
-          <td class="rowStyle noRight">
-            {{ realisateur.gender }} {{ realisateur.firstname }} {{ realisateur.lastname }}
-            <StarRate
-              v-show="realisateur.rating >= 0"
-              :value="realisateur.rating"
-            />
-            <p
-              v-show="realisateur.rating < 0"
-              style="color: gray; font-weight: 300; font-size: 80%; margin-top: 10px;"
-            >
-              <i>Pas encore de notation</i>
-            </p>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <!--( Infos importantes )-->
-    <table class="styled-table">
-      <tbody>
-        <tr>
-          <td>
-            <el-icon class="percent"><Notebook/></el-icon>
-          </td>
-          <td class="rowStyle">
-            Promotion
-          </td>
-          <td>{{ realisateur.promotion }}</td>
-        </tr>
-        <tr>
-          <td>
-            <el-icon class="percent"><FirstAidKit/></el-icon>
-          </td>
-          <td class="rowStyle">
-            N° de sécurité sociale
-          </td>
-          <td>{{ realisateur.security_social_number }}</td>
-        </tr>
-        <tr>
-          <td>
-            <el-icon class="percent"><FolderOpened/></el-icon>
-          </td>
-          <td
-            class="rowStyle"
-          >
-            Fillière
-          </td>
-          <td>
-            <p
-              class="fontStyled"
-            >
-              {{ realisateur.filiere }}
-            </p>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <!--( Contacts )-->
-    <table class="styled-table">
-      <tbody>
-        <tr>
-          <td>
-            <el-icon class="percent"><Message/></el-icon>
-          </td>
-          <td class="rowStyle">
-            Email
-          </td>
-          <td>{{ realisateur.email }}</td>
-        </tr>
-        <tr>
-          <td>
-            <el-icon class="percent"><Message/></el-icon>
-          </td>
-          <td class="rowStyle">
-            Email INSA
-          </td>
-          <td>{{ realisateur.email_insa }}</td>
-        </tr>
-        <tr>
-          <td>
-            <el-icon class="percent"><Phone/></el-icon>
-          </td>
-          <td class="rowStyle">
-            Mobile
-          </td>
-          <td>{{ realisateur.mobile }}</td>
-        </tr>
-      </tbody>
-    </table>
-    <!--( Infos osef )-->
-    <table class="styled-table">
-      <tbody>
-        <tr>
-          <td>
-            <el-icon class="percent"><MapLocation/></el-icon>
-          </td>
-          <td class="rowStyle">
-            Addresse
-          </td>
-          <td>{{ realisateur.address+", "+realisateur.town+" ("+realisateur.postcode+")" }}</td>
-        </tr>
-        <tr>
-          <td>
-            <el-icon class="percent"><Date/></el-icon>
-          </td>
-          <td class="rowStyle">
-            Date de naissance
-          </td>
-          <td>{{ realisateur.birth_date }}</td>
-        </tr>
-        <tr>
-          <td>
-            <el-icon class="percent"><Location/></el-icon>
-          </td>
-          <td class="rowStyle">
-            Lieu de naissance
-          </td>
-          <td>{{ realisateur.birth_place }}</td>
-        </tr>
-      </tbody>
-    </table>
+  <div class="realisateur-info">
+    <!-- Informations de contact -->
+    <el-card title="Contact" shadow="hover" class="info-card">
+      <div class="info-grid">
+        <div class="info-item">
+          <el-icon class="info-icon"><Message /></el-icon>
+          <div class="info-content">
+            <span class="info-label">Email</span>
+            <span class="info-value">{{ realisateur.email || 'Non renseigné' }}</span>
+          </div>
+        </div>
+        <div class="info-item">
+          <el-icon class="info-icon"><Message /></el-icon>
+          <div class="info-content">
+            <span class="info-label">Email INSA</span>
+            <span class="info-value">{{ realisateur.email_insa || 'Non renseigné' }}</span>
+          </div>
+        </div>
+        <div class="info-item">
+          <el-icon class="info-icon"><Phone /></el-icon>
+          <div class="info-content">
+            <span class="info-label">Mobile</span>
+            <span class="info-value">{{ realisateur.mobile || 'Non renseigné' }}</span>
+          </div>
+        </div>
+      </div>
+    </el-card>
+
+    <!-- Informations personnelles -->
+    <el-card title="Informations personnelles" shadow="hover" class="info-card">
+      <div class="info-grid">
+        <div class="info-item">
+          <el-icon class="info-icon"><Calendar /></el-icon>
+          <div class="info-content">
+            <span class="info-label">Date de naissance</span>
+            <span class="info-value">{{ realisateur.birth_date || 'Non renseigné' }}</span>
+          </div>
+        </div>
+        <div class="info-item">
+          <el-icon class="info-icon"><Location /></el-icon>
+          <div class="info-content">
+            <span class="info-label">Lieu de naissance</span>
+            <span class="info-value">{{ realisateur.birth_place || 'Non renseigné' }}</span>
+          </div>
+        </div>
+        <div class="info-item">
+          <el-icon class="info-icon"><MapLocation /></el-icon>
+          <div class="info-content">
+            <span class="info-label">Adresse</span>
+            <span class="info-value">
+              {{ formatAddress(realisateur) }}
+            </span>
+          </div>
+        </div>
+        <div 
+          v-if="$store.currentUser.roles.includes('ROLE_ADMIN')" 
+          class="info-item"
+        >
+          <el-icon class="info-icon"><FirstAidKit /></el-icon>
+          <div class="info-content">
+            <span class="info-label">N° de sécurité sociale</span>
+            <span class="info-value">{{ realisateur.security_social_number || 'Non renseigné' }}</span>
+          </div>
+        </div>
+      </div>
+    </el-card>
+
+    <!-- Compétences -->
+    <el-card title="Compétences" shadow="hover" class="info-card" v-if="realisateur.skillsArray?.length">
+      <div class="skills-container">
+        <el-tag 
+          v-for="skill in realisateur.skillsArray" 
+          :key="skill"
+          type="info"
+          class="skill-tag"
+        >
+          {{ skill }}
+        </el-tag>
+      </div>
+    </el-card>
+
+    <!-- Description -->
+    <el-card title="Présentation" shadow="hover" class="info-card" v-if="realisateur.description">
+      <p class="description-text">{{ realisateur.description }}</p>
+    </el-card>
   </div>
 </template>
 
 <script>
-import StarRate from "./StarRate.vue"
 export default {
   name: "RealisateurView",
-  components: {StarRate},
   props: {
     realisateur: { type: Object, required: true }
+  },
+  methods: {
+    formatAddress(realisateur) {
+      const parts = [
+        realisateur.address,
+        realisateur.town,
+        realisateur.postcode && `(${realisateur.postcode})`,
+        realisateur.country
+      ].filter(Boolean)
+      
+      return parts.length > 0 ? parts.join(', ') : 'Non renseigné'
+    }
   }
 }
 </script>
 
-<style>
-  .styled-table {
-    border-collapse: collapse;
-    margin: 25px 0;
-    font-size: 0.9em;
-    font-family: sans-serif;
-    min-width: 100%;
-    box-shadow: 10px 5px 20px rgba(0, 0, 0, 0.15);
-  }
-  .styled-table thead tr {
-    background-color: #009879;
-    color: #ffffff;
-    text-align: left;
-  }
-  .styled-table th,
-  .styled-table td {
-      padding: 12px 15px;
-  }
-  .styled-table tbody tr {
-    border-bottom: 1px solid #dddddd;
-  }
+<style scoped>
+.realisateur-info {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
 
-  .styled-table tbody tr:nth-of-type(even) {
-      background-color: #f3f3f3;
+.info-card {
+  width: 100%;
+}
+
+.info-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.info-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.info-item:last-child {
+  border-bottom: none;
+}
+
+.info-icon {
+  font-size: 18px;
+  color: #409eff;
+  margin-top: 2px;
+  min-width: 18px;
+}
+
+.info-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.info-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #606266;
+}
+
+.info-value {
+  font-size: 14px;
+  color: #303133;
+  word-break: break-word;
+}
+
+.skills-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.skill-tag {
+  margin: 0;
+}
+
+.description-text {
+  margin: 0;
+  line-height: 1.6;
+  color: #606266;
+}
+
+@media (max-width: 768px) {
+  .info-item {
+    flex-direction: column;
+    gap: 8px;
   }
-  .styled-table tbody tr.active-row {
-      font-weight: bold;
-      color: #009879;
+  
+  .info-icon {
+    align-self: flex-start;
   }
-  .styled-table tbody tr td.rowStyle {
-    border-right: solid 1px rgba(120, 120, 120, 0.8);
-    text-align: center;
-    font-weight: bold;
-    width: 30%;
-  }
-  .styled-table tbody tr td.noRight {
-    border-right: solid 0px;
-  }
-  .fontStyled {
-    font: 1em "Lucida Console";
-    background-color: lightgray;
-    border-radius: .25em;
-  }
-  .percent {
-    width: 5%;
-  }
+}
 </style>

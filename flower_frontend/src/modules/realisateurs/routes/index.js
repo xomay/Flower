@@ -2,7 +2,7 @@ const routes = [
   {
     path: "realisateurs",
     name: "realisateurs",
-    component: () => import("../views/RealisateursVoir")
+    component: () => import("../../membres/views/AssoVoir.vue")
   },
   {
     path: "realisateurs/:id/voir",

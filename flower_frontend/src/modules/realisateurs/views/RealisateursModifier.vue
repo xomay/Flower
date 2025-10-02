@@ -10,6 +10,7 @@
       :deletable="true"
       :loading="loading"
       :ecole-suffix="mailSuffix"
+      :create="false"
       @deleted="deleted"
       @edited="edit"
     />
@@ -58,7 +59,6 @@ export default {
       {withCredentials: true}
     ).then((res) => {
       this.realisateur = res.data
-      this.members = [{id: res.data.member, value: res.data.firstname + " " + res.data.lastname}]
       this.breadcrumb[1].name = `${this.realisateur.firstname} ${this.realisateur.lastname}`
     }).catch((err) => {
       this.$message({message: "Impossible de récupérer le réalisateur pour le moment : " + err,
@@ -66,6 +66,15 @@ export default {
         offset: 40})
     }).finally(() => {
       this.loading = false
+    })
+    axios.get(
+      "/api/membres",
+      {withCredentials: true}
+    ).then((res) => {
+      res.data.forEach((elt) => elt.value = elt.firstname + " " + elt.lastname)
+      this.members = res.data
+    }).catch((err) => {
+      this.$message({message: "Impossible de récupérer la liste des prospects : " + err, type: "error", offset: 40})
     })
   },
   created () {

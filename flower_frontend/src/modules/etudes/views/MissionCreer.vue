@@ -117,7 +117,7 @@ export default {
       {withCredentials: true}
     ).then((res) => {
       res.data.forEach((realisateur) => realisateur.value = `${realisateur.firstname} ${realisateur.lastname}`)
-      this.consultants = res.data
+      this.consultants = res.data.filter(r => r.security_social_number && r.birth_date && r.address && r.postcode && r.town && r.country)
     }).catch((err) => {
       this.$message({message: "Impossible de récupérer les réalisateurs : "+err, type: "error", offset: 40})
     })

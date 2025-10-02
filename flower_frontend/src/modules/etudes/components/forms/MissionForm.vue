@@ -11,15 +11,26 @@
       <el-row>
         <el-col :span="10">
           <el-form-item
-            label="Consultant"
+            label="Intervenant"
             prop="consultant"
             :rules="[{required: true, message: 'Champs obligatoire', trigger: 'change'}]"
           >
-            <MemberPicker
-              v-model="mission.consultant"
-              :item-list="consultants"
-              placeholder="Consultant"
-            />
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <el-tooltip
+                effect="dark"
+                placement="top"
+              >
+                <template #content>Veuillez compléter l'intégralité des informations du réalisateur<br/>
+                ainsi que générer son BA pour le voir apparaitre ici</template>
+                <el-icon><InfoFilled /></el-icon>
+              </el-tooltip>
+              <MemberPicker
+                v-model="mission.consultant"
+                :item-list="consultants"
+                placeholder="Intervenant"
+                style="flex: 1;"
+              />
+            </div>
           </el-form-item>
         </el-col>
         <el-col :span="12">

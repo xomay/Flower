@@ -43,7 +43,7 @@ export default {
         town: "Rennes",
         country: "France",
         nationality: "Française",
-        birth_date: "",
+        birth_date: null,
         birth_place: "",
         filiere: "INFO",
         security_social_number: "",
