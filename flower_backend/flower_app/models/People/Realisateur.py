@@ -99,7 +99,9 @@ class Realisateur(Personne):
     
     @property
     def etudesAmount(self):
-        return len(self.comments.all())
+        from flower_app.models.Mission import Mission
+        missions = Mission.objects.all().filter(consultant=self)
+        return len(missions)
         
     @property
     def skillsArray(self):
@@ -116,8 +118,6 @@ class Realisateur(Personne):
         else:
             ref_ba = str(self.ba.year % 100) + 'R' + '%03d' % self.ba_id
             return ref_ba
-    
-    #TODO ajouter un moyen de calculer le nombre d'études.
 
 class RealisateurSerializer(serializers.ModelSerializer):
     rating = serializers.ReadOnlyField()
