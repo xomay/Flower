@@ -211,6 +211,15 @@
             Enregistrer
           </el-button>
         </el-form-item>
+        <el-form-item v-if="deletable">
+          <el-button
+            :loading="loading"
+            type="danger"
+            @click="$emit('deleted')"
+          >
+            Supprimer
+          </el-button>
+        </el-form-item>
       </el-col>
     </el-row>
   </el-form>
@@ -225,9 +234,10 @@ export default {
     modelValue: { type: Object, required: true },
     postes: { type: Array, required: true },
     loading: { type: Boolean, required: true },
-    canOpenAccount: { type: Boolean, default: false }
+    canOpenAccount: { type: Boolean, default: false },
+    deletable: { type: Boolean, default: false }
   },
-  emits: ["update:modelValue", "save", "openaccount"],
+  emits: ["update:modelValue", "save", "openaccount", "deleted"],
   data () {
     return {
       formRules: {
@@ -276,11 +286,11 @@ export default {
           }
         ],
         address: [
-          { required: true, message: "Obligatoire", trigger: "blur" }
+          { required: false, message: "Obligatoire", trigger: "blur" }
         ],
         postcode: [
           {
-            required: true,
+            required: false,
             message: "Obligatoire",
             trigger: "blur"
           },
@@ -291,23 +301,23 @@ export default {
           }
         ],
         town: [
-          { required: true, message: "Obligatoire", trigger: "blur" }
+          { required: false, message: "Obligatoire", trigger: "blur" }
         ],
         poste: [
           { required: true, message: "Obligatoire", trigger: "blur" },
           { validator: this.validatePoste, trigger: "blur" }
         ],
         country: [
-          { required: true, message: "Obligatoire", trigger: "blur" }
+          { required: false, message: "Obligatoire", trigger: "blur" }
         ],
         nationality: [
-          { required: true, message: "Obligatoire", trigger: "blur" }
+          { required: false, message: "Obligatoire", trigger: "blur" }
         ],
         birth_date: [
-          { required: true, message: "Obligatoire", trigger: "blur" }
+          { required: false, message: "Obligatoire", trigger: "blur" }
         ],
         birth_place: [
-          { required: true, message: "Obligatoire", trigger: "blur" }
+          { required: false, message: "Obligatoire", trigger: "blur" }
         ]
       }
     }
