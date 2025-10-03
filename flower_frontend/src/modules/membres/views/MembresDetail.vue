@@ -352,7 +352,7 @@ export default {
 
 .subordinates-section,
 .ba-section {
-  margin-top: 20px;
+  margin: 20px 0;
 }
 
 .subordinates-list {

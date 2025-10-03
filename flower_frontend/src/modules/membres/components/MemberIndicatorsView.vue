@@ -1,6 +1,14 @@
 <template>
   <div class="indicators-section">
     <el-card title="Indicateurs de performance" shadow="hover">
+      <el-alert
+        title="Fonctionnalité à venir"
+        type="warning"
+        description="Informations factices pour le moment. Les indicateurs réels seront disponibles dans une future mise à jour."
+        show-icon
+        :closable="false"
+        style="margin-bottom: 20px;"
+      />
       <div v-if="loading" class="loading-state">
         <el-skeleton :rows="3" animated />
       </div>
