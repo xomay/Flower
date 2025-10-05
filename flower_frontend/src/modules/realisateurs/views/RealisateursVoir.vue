@@ -15,9 +15,47 @@
         </el-button>
       </router-link>
     </template>
+    <el-row style="margin: 20px 0;display: flex; justify-content: start;">
+      <el-input
+        v-model="nameFilterValue"
+        style="width: 70%; height: 80%; margin-top: 10px;"
+        size="large"
+        placeholder="Entrez un nom"
+        prefix-icon="Search"
+        @change="updateFilters"
+        @input="updateFilters"
+        />
+    </el-row>
+    <el-row style="margin: 20px 0; display: flex; justify-content: start;">
+      <el-checkbox
+        v-model="showRealisateurs"
+        size="large"
+        border
+        @change="updateFilters"
+      >
+        Réalisateurs
+      </el-checkbox>
+      <el-checkbox
+        v-model="showPool"
+        size="large"
+        border
+        @change="updateFilters"
+      >
+        Pool d'intervenants
+      </el-checkbox>
+      <el-select style="width: 20%; margin: 0 30px;" v-model="selectedDepart" multiple size="large" placeholder="Départements" @change="updateFilters">
+        <el-option
+          v-for="depart in departs"
+          :key="depart"
+          :label="depart"
+          :value="depart"
+          :style="{ 'color': departColors[depart], 'font-weight': 'bold' }"
+        />
+      </el-select>
+    </el-row>
     <el-table
       class="grid"
-      :data="reas"
+      :data="filteredReas"
       :stripe="true"
       :border="true"
     >
@@ -38,6 +76,10 @@
               {{ row.firstname + " " + row.lastname }}
             </el-button>
           </router-link>
+          <el-tag 
+          v-if="!(row.ba && row.security_social_number)"
+          type="warning"
+          >Pool d'intervenants</el-tag>
         </template>
       </el-table-column>
       <el-table-column
@@ -50,8 +92,23 @@
       />
       <el-table-column
         align="center"
-        prop="email_insa"
-        label="Mail INSA"
+        prop="filiere"
+        label="Département"
+        width="120px"
+        fixed="left"
+        sortable
+      >
+        <template #default="{ row }">
+          <el-tag 
+            effect="dark"
+            round
+            :color="departColors[row.filiere]">{{ row.filiere }}</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column
+        align="center"
+        prop="description"
+        label="Présentation"
         width="250px"
         fixed="left"
         sortable
@@ -70,7 +127,7 @@
         align="center"
         prop="etudesAmount"
         label="Nombre d'études"
-        width="165px"
+        width="100px"
         fixed="right"
         sortable
       />
@@ -78,7 +135,7 @@
         align="center"
         prop="rating"
         label="Note moyenne"
-        width="150px"
+        width="100px"
         fixed="right"
         sortable
       >
@@ -137,10 +194,26 @@ export default {
     return {
       reas: [],
       loading: true,
+      nameFilterValue: "",
+      filteredReas: [],
+      showRealisateurs: false,
+      showPool: false,
+      selectedDepart: [],
+      departs: ["INFO", "EII", "GMA", "E&T", "MA", "GCU", "GPM", "STPI"],
+      departColors: {
+        "INFO": "#409EFF",
+        "EII": "#67C23A",
+        "GMA": "#E6A23C",
+        "E&T": "#A45E8D",
+        "MA": "#F56C6C",
+        "GCU": "#00BFFF",
+        "GPM": "#20B2AA",
+        "STPI": "#8B4513"
+      },
       breadcrumb: [
         {
           name: "Liste des réalisateurs",
-          link: "/realisateurs"
+          link: "/membres"
         }
       ]
     }
@@ -152,6 +225,8 @@ export default {
       {withCredentials: true}
     ).then((res) => {
       this.reas = res.data
+      this.reas.forEach((rea) => rea.value = rea.firstname + " " + rea.lastname)
+      this.filteredReas = [...this.reas]
     }).catch((err) => {
       this.$message({message: "Impossible de récupérer les réalisateurs pour le moment : " +err, type: "error"})
     }).finally(() => {
@@ -210,7 +285,47 @@ export default {
       }).catch((err) => {
         this.$message({ message: "Impossible de supprimer le compte : " + err, type: "error" })
       }).finally(() => this.loading = false)
-    }
+    },
+    updateFilters () {
+      let filtered = [...this.reas]
+      
+      // Si aucune checkbox n'est sélectionnée, afficher tous
+      if (!this.showRealisateurs && !this.showPool) {
+        // Pas de filtre par type
+      } else {
+        // Filtrer selon les checkboxes sélectionnées
+        filtered = filtered.filter(rea => {
+          const isRealisateur = rea.ba && rea.security_social_number
+          const isPool = !(rea.ba && rea.security_social_number)
+          
+          return (this.showRealisateurs && isRealisateur) || (this.showPool && isPool)
+        })
+      }
+      
+      // Filtrer par nom
+      if (this.nameFilterValue) {
+        filtered = filtered.filter(rea => 
+          rea.value.toLowerCase().includes(this.nameFilterValue.toLowerCase())
+        )
+      }
+
+      if (this.selectedDepart.length > 0) {
+        filtered = filtered.filter(rea => 
+          this.selectedDepart.includes(rea.filiere)
+        )
+      }
+      
+      this.filteredReas = filtered
+    },
   }
 }
 </script>
+
+<style scoped>
+.filterRow {
+  margin-top: 30px;
+  margin-bottom: 20px; 
+  justify-content: center; 
+  align-items: center;
+}
+</style>

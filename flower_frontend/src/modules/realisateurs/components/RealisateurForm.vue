@@ -8,6 +8,7 @@
     :style="'margin: 15px'"
   >
   <el-form-item
+      v-if="create"
       label="Réalisateur"
       prop="isMember"
       label-width="140px">
@@ -94,12 +95,17 @@
           label-width="26%"
           v-if="modelValue.isMember === false"
         >
+        <el-tooltip
+          effect="dark"
+          content="Indiquez l'année de fin d'études à l'INSA (hors double diplôme)"
+          placement="top"
+        >
           <el-input-number
             v-model="modelValue.promotion"
             controls-position="right"
             :min="2020"
-            :max="2050"
           />
+        </el-tooltip>
         </el-form-item>
       </el-col>
       <el-col :span="12">
@@ -144,21 +150,6 @@
           </el-select>
         </el-form-item>
       </el-col>
-      <el-col :span="12">
-        <el-form-item
-          label="Numéro de sécurité sociale :"
-          prop="security_social_number"
-          label-width="30%"
-        >
-          <el-input
-            v-model="modelValue.security_social_number"
-            :maxlength="15"
-            :minlength="15"
-            show-word-limit
-            placeholder="N° de sécurité sociale"
-          />
-        </el-form-item>
-      </el-col>
       <el-col :span="24">
         <el-form-item
           label="Email INSA"
@@ -197,6 +188,30 @@
           />
         </el-form-item>
       </el-col>
+      <el-col :span="24">
+        <el-form-item
+          label="Présentation du réalisateur"
+          prop="description"
+          label-width="13%"
+          v-if="modelValue.isMember === false"
+        >
+          <el-input
+            v-model="modelValue.description"
+            row="4"
+            type="textarea"
+            placeholder="Présentation du réalisateur"
+          />
+        </el-form-item>
+      </el-col>
+      <el-checkbox
+        v-model="rea_form"
+        label="Compléter les informations pour une mission"
+        size="large"
+        style="margin-bottom: 10px;"
+        :disabled="!this.$store.currentUser.roles.includes('ROLE_ADMIN')"
+        border
+      />
+      <el-col v-if="rea_form">
       <el-col :span="24">
         <el-form-item
           label="Adresse"
@@ -259,35 +274,51 @@
           <el-input v-model="modelValue.nationality" />
         </el-form-item>
       </el-col>
-      <el-col :span="12">
-        <el-form-item
-          label="Date de naissance"
-          prop="birth_date"
-          label-width="26%"
-          v-if="modelValue.isMember === false"
-        >
-          <el-date-picker
-            v-model="modelValue.birth_date"
-            format="DD-MM-YYYY"
-            value-format="YYYY-MM-DD"
-            type="date"
-            placeholder="Date de naissance"
-            :first-day-of-week="1"
-          />
-        </el-form-item>
-      </el-col>
-      <el-col :span="12">
-        <el-form-item
-          label="Lieu de naissance"
-          prop="birth_place"
-          label-width="26%"
-          v-if="modelValue.isMember === false"
-        >
-          <el-input
-            v-model="modelValue.birth_place"
-            placeholder="Ville de naissance"
-          />
-        </el-form-item>
+        <el-col :span="12">
+          <el-form-item
+            label="Date de naissance"
+            prop="birth_date"
+            label-width="26%"
+            v-if="modelValue.isMember === false"
+          >
+            <el-date-picker
+              v-model="modelValue.birth_date"
+              format="DD-MM-YYYY"
+              value-format="YYYY-MM-DD"
+              type="date"
+              placeholder="Date de naissance"
+              :first-day-of-week="1"
+            />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item
+            label="Lieu de naissance"
+            prop="birth_place"
+            label-width="26%"
+            v-if="modelValue.isMember === false"
+          >
+            <el-input
+              v-model="modelValue.birth_place"
+              placeholder="Ville de naissance"
+            />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item
+            label="Numéro de sécurité sociale :"
+            prop="security_social_number"
+            label-width="26%"
+            >
+            <el-input
+            v-model="modelValue.security_social_number"
+            :maxlength="15"
+            :minlength="15"
+            show-word-limit
+            placeholder="N° de sécurité sociale"
+            />
+          </el-form-item>
+        </el-col>
       </el-col>
       <el-col
         :span="24"
@@ -339,12 +370,14 @@ export default {
     members: { type: Array, required: true },
     deletable: { type: Boolean, default: false },
     loading: { type: Boolean, default: false },
-    ecoleSuffix: { type: String, default () { return "@" } }
+    ecoleSuffix: { type: String, default () { return "@" } },
+    create: { type: Boolean, default: true }
   },
   emits: ["update:modelValue", "edited", "deleted"],
   data () {
     return {
       competences_objs: [],
+      rea_form: false,
       formRules: {
         isMember : [
           {required: true, message: "Obligatoire", trigger: "change"}
@@ -401,34 +434,34 @@ export default {
           }
         ],
         mobile: [
-          {required: true, message: "Obligatoire", trigger: "blur"},
+          {required: false, message: "Obligatoire", trigger: "blur"},
           {
-            required: true,
+            required: false,
             pattern: /^(?:(?:\+|00)33[\s.-]{0,3}(?:\(0\)[\s.-]{0,3})?|0)[1-9](?:(?:[\s.-]?\d{2}){4}|\d{2}(?:[\s.-]?\d{3}){2})$/,
             message: "Cette valeur doit être un numéro de téléphone valide.",
             trigger: "change"
           }
         ],
         address: [
-          {required: true, message: "Obligatoire", trigger: "blur"}
+          {required: false, message: "Obligatoire", trigger: "blur"}
         ],
         postcode: [
-          {required: true, message: "Obligatoire", trigger: "blur"},
+          {required: false, message: "Obligatoire", trigger: "blur"},
           {
-            required: true,
+            required: false,
             pattern: /^[ 0-9]+$/,
             message: "Cette valeur doit être un code postal valide",
             trigger: "change"
           }
         ],
         town: [
-          {required: true, message: "Obligatoire", trigger: "blur"}
+          {required: false, message: "Obligatoire", trigger: "blur"}
         ],
         country: [
-          {required: true, message: "Obligatoire", trigger: "blur"}
+          {required: false, message: "Obligatoire", trigger: "blur"}
         ],
         nationality: [
-          {required: true, message: "Obligatoire", trigger: "blur"}
+          {required: false, message: "Obligatoire", trigger: "blur"}
         ],
         birth_date: [
           {required: true, message: "Obligatoire", trigger: "blur"}

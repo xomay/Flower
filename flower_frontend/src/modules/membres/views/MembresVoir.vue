@@ -170,8 +170,8 @@ export default {
     filterWithPromotion (promotion) {
       this.currentSelected = this.currentSelected.filter(m => m.promotion === promotion)
     },
-    filterWithName (name) {
-      this.currentSelected = this.currentSelected.filter(m => m.fullname.toLowerCase().includes(name.toLowerCase()))
+    filterWithNameOrPoste (name) {
+      this.currentSelected = this.currentSelected.filter(m => m.fullname.toLowerCase().includes(name.toLowerCase()) || m.poste.toLowerCase().includes(name.toLowerCase()))
     },
     updateFilters () {
       if(this.currentTab === "mandat") {
@@ -180,7 +180,7 @@ export default {
         this.currentSelected = this.membres
       }
       if(this.doesFilterName) {
-        this.filterWithName(this.nameFilterValue)
+        this.filterWithNameOrPoste(this.nameFilterValue)
       }
       if(this.doesFilterPromo) {
         this.filterWithPromotion(this.promotionFilterValue)

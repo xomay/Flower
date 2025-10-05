@@ -8,6 +8,8 @@
       :postes="postes"
       :loading="loading"
       :can-open-account="isAdmin()"
+      :deletable="true"
+      @deleted="this.isAdmin()"
       @save="saveMember"
     />
   </BaseComponent>
@@ -92,6 +94,20 @@ export default {
     })
   },
   methods: {
+    deleted () {
+      this.loading = true
+      axios.delete(
+        `/api/membres/${this.$route.params.id}/`,
+        {withCredentials: true}
+      ).then(() => {
+        this.$message({message: "Le membre a bien été supprimé.", type: "success"})
+        this.$router.push("/membres")
+      }).catch((err) => {
+        this.$message({message: "Impossible de supprimer le membre : "+err, type: "error"})
+      }).finally(() => {
+        this.loading = false
+      })
+    },
     saveMember () {
       this.loading = true
       axios.put(

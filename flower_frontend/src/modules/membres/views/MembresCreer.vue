@@ -27,7 +27,7 @@ export default {
         firstname: "",
         lastname: "",
         gender: "M.",
-        promotion: "2021",
+        promotion: 2025,
         email: "@insa-rennes.fr",
         email_junior: "@ouest-insa.fr",
         poste: 0,
@@ -37,7 +37,7 @@ export default {
         town: "Rennes",
         country: "France",
         nationality: "Française",
-        birth_date: "",
+        birth_date: null,
         birth_place: ""
       },
       postes: [],

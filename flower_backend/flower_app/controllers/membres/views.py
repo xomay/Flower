@@ -31,12 +31,13 @@ class MembreView(generics.ListCreateAPIView):
         serializer = MembreSerializer(new_membre)
         return Response(serializer.data, status=HTTPStatus.CREATED)
 
-class MembreDetailView(generics.RetrieveUpdateAPIView):
+class MembreDetailView(generics.RetrieveUpdateAPIView, generics.DestroyAPIView):
     permission_classes = [IsAuthenticated, HasGroupPermission]
     required_groups = {
         'GET': ['ROLE_CA'],
         'PUT': ['ROLE_CA'],
-        'PATCH': ['ROLE_CA']
+        'PATCH': ['ROLE_CA'],
+        'DELETE': ['ROLE_ADMIN']
     }
     serializer_class = MembreSerializer
     queryset = Membre.objects.all()
