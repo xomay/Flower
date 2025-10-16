@@ -10,6 +10,7 @@
         :deletable="true"
         :members="members"
         :employes="employes"
+        :editable="false"
         @save="updateProspect"
         @delete="deleteProspect"
       />

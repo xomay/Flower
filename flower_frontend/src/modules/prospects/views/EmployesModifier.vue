@@ -66,6 +66,7 @@ export default {
       ).then(() => {
         this.$message({message: "L'employé(e) a bien été mis à jour",
           type: "success"})
+        this.$router.push(`/prospects/${this.$route.params.id}/employes/${this.$route.params.employe_id}/voir`)
       }).
         catch((err) => {
           this.$message({message: err,
