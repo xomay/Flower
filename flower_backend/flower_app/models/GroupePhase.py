@@ -77,12 +77,16 @@ class PhaseSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False, write_only=False)
     uss = USSerializer(source='us_set' ,many=True)
     totalPrice = serializers.SerializerMethodField()
+    weeks = serializers.SerializerMethodField()
     class Meta:
         model = Phase
         fields = '__all__'
         list_serializer_class = CustomListSerializer
     def get_totalPrice(self, obj):
         return obj.totalPrice
+
+    def get_weeks(self, obj):
+        return obj.period // 7 + (1 if obj.period % 7 > 0 else 0)
 
     def create(self, validated_data):
         uss_data = validated_data.pop('us_set', [])

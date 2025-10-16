@@ -65,6 +65,7 @@
           width="70"
           label="Nb JEH"
           prop="nbJEH"
+          align="center"
         />
         <el-table-column
           v-if="!reaVue"
@@ -79,6 +80,13 @@
           label="Prix total"
           prop="totalPrice"
           :formatter="euroFormatter"
+        />
+        <el-table-column
+          v-if="!reaVue"
+          width="100"
+          label="Durée (semaines)"
+          prop="weeks"
+          align="center"
         />
       </el-table>
     </div>

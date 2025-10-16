@@ -123,11 +123,11 @@
         <el-table-column
           v-if="!small"
           width="110"
-          label="Durée (jours)"
+          label="Durée (semaines)"
         >
           <template #default="{row}">
             <el-input-number
-              v-model="row.period"
+              v-model="row.weeks"
               controls-position="right"
               :min="1"
               :max="99"

@@ -184,6 +184,7 @@ export default {
     },
     submitPhases () {
       this.loading = true
+      this.phases.map(phase => phase.period = phase.weeks * 7)
       axios.put(
         "/api/etudes/phases/",
         this.phases,
