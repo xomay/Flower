@@ -52,6 +52,12 @@ def toPercent(number):
 def isNotEmpty(string):
     return len(string.replace(' ', '')) > 0
 
+def phasesReal(phases):
+    return [p for p in phases if p.index >= 0]
+
+def phasesTransverse(phases):
+    return [p for p in phases if p.index < 0]
+
 def param(value):
     try:
         return getattr(ParamsJE.objects.get(pk=1), value)
@@ -75,7 +81,10 @@ def computeDocx(context, doctypeFilename, name='undef', images=dict()):
     jinja_env.filters['shortDate'] = shortDate
     jinja_env.filters['addMonths'] = addMonths
     jinja_env.filters['addWeeks'] = addWeeks
-    
+    jinja_env.filters['phasesReal'] = phasesReal
+    jinja_env.filters['phasesTransverse'] = phasesTransverse
+    jinja_env.filters['abs'] = abs
+
     jinja_env.globals['param'] = param
     jinja_env.globals['shortDate'] = shortDate
     jinja_env.globals['toPercent'] = toPercent

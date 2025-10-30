@@ -4,14 +4,20 @@
     :breadcrumb="breadcrumb"
   >
 
-      <template #title>
-        <b><u>Note :</u> Il ne s'agit pas des phases originales de l'étude, mais celles d'un avenant.</b>
-      </template>
     <PhasesForm
-      v-model="phases"
+      v-model="phasesReal"
       :small="false"
       @add-us="addUS"
       @add-phase="addPhase"
+      @delete-phase="deletePhase"
+      @delete-us="deleteUS"
+    />
+    <el-divider content-position="left">Phases Transverses</el-divider>
+    <PhasesForm
+      v-model="phasesTransverses"
+      :small="false"
+      @add-us="addUS"
+      @add-phase="addPhaseTransverse"
       @delete-phase="deletePhase"
       @delete-us="deleteUS"
     />
@@ -56,6 +62,14 @@ export default {
       ]
     }
   },
+  computed: {
+    phasesReal() {
+      return this.phases.filter(phase => phase.index >= 0)
+    },
+    phasesTransverses() {
+      return this.phases.filter(phase => phase.index < 0)
+    }
+  },
   created () {
     this.loading = true
     axios.get(
@@ -85,6 +99,35 @@ export default {
         ) | 0) + 1,
         newPhase = {
           index: newIndex,
+          uss: [],
+          etude: this.etude.id,
+        }
+      axios.post(
+        "/api/etudes/phases/",
+        [newPhase],
+        {withCredentials: true}
+      ).then((res) => {
+        this.$message({message: "La phase a bien été ajoutée.", type: "success"})
+        const phase = {
+          ...res.data[0],
+          etude: this.etude.id,
+          uss: []
+        }
+        this.phases.push(phase)
+      }).catch(() => {
+        this.$message({message: "Impossible de créer une phase pour le moment", type: "error"})
+      }).finally(() => {
+        this.loading = false
+      })
+    },
+    addPhaseTransverse () {
+      this.loading = true
+      const newIndex = (Math.min.apply(
+          Math,
+          this.phases.map((phase) => phase.index)
+        ) | 0) - 1,
+        newPhase = {
+          index: newIndex == 0 ? -1 : newIndex,
           uss: [],
           etude: this.etude.id,
         }

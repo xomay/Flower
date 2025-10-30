@@ -213,7 +213,7 @@
       <el-option
         v-for="item in etude.phases"
         :key="item.id"
-        :label="`Phase ${item.index} : ${item.title}`"
+        :label="`Phase ${item.index < 0 ? 'transverse ' + Math.abs(item.index) : item.index} : ${item.title}`"
         :value="item.index"
       />
     </el-select>
@@ -360,7 +360,7 @@
         <el-option
           v-for="item in avenantRM.mission.phasesMission"
           :key="item.id"
-          :label="`Phase ${item.index} : ${item.title}`"
+          :label="`Phase ${item.index < 0 ? 'transverse ' + Math.abs(item.index) : item.index} : ${item.title}`"
           :value="item.index"
         />
       </el-select>
