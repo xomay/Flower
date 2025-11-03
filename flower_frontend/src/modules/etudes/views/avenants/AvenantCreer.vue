@@ -61,6 +61,9 @@ export default {
         is_budget: false,
         new_dates: null,
         phases: [],
+        phasesReal: [],
+        phasesTransverse: [],
+        requirements: [],
         originalPhases: [],
         signDate: null,
         type: "av",
@@ -99,12 +102,13 @@ export default {
       this.etude = res.data
       this.avenant.doc_etude.signer1 = res.data.docEtude.signer1.id
       this.avenant.doc_etude.signer2 = res.data.docEtude.signer2.id
-      this.avenant.doc_etude.application_fees = res.data.docEtude.application_fees
+      this.avenant.doc_etude.application_fees = Number(res.data.docEtude.application_fees)
       this.avenant.doc_etude.hasMaterialFees = res.data.docEtude.hasMaterialFees
-      this.avenant.doc_etude.materialFees = res.data.docEtude.materialFees
+      this.avenant.doc_etude.materialFees = Number(res.data.docEtude.materialFees)
       this.avenant.doc_etude.materialDesc = res.data.docEtude.materialDesc
       this.avenant.etude = res.data.id
       this.avenant.index = res.data.avenants.length + 1
+      this.avenant.requirements = res.data.requirements
       res.data.cc ? this.avenant.type = "bc" : this.avenant.type = "av"
       res.data.missions.forEach((mission) => {
         this.avenantsRM.push({

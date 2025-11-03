@@ -75,6 +75,28 @@
                   >
                     Ajouter une US
                   </el-button>
+                  <el-table :data=" [row] ">
+                    <el-table-column
+                      label="Cahier des charges liés"
+                      prop="requirements"
+                      align="center"
+                      >
+                      <template #default="{ row }">
+                        <el-select v-model="row.requirements"
+                          @change="onRequirementsChange(row)"
+                          multiple 
+                          placeholder="Sélectionner les références">
+                          <el-option
+                            v-for="req in requirements"
+                            :key="req.id"
+                            :label="`[${req.reference}]`"
+                            :value="req.id"
+                          />
+                        </el-select>
+                      </template>
+
+                    </el-table-column>
+                  </el-table>
                 </el-col>
             </el-row>
           </template>
@@ -121,7 +143,7 @@
           </template>
         </el-table-column>
         <el-table-column
-          v-if="!small"
+          v-if="!small && !is_transverse"
           width="110"
           label="Durée (semaines)"
         >
@@ -133,6 +155,7 @@
               :max="99"
               style="width: 90%"
               :disabled="disabled || !is_delai"
+              @change="onWeeksChange(row)"
             />
           </template>
         </el-table-column>
@@ -154,6 +177,7 @@
           type="text"
           icon="Plus"
           :disabled="disabled || !is_methodo || !is_budget || !is_delai"
+          v-show="!is_transverse || (is_transverse && modelValue.length == 0)"
           @click="addPhase()"
         >
           Ajouter une phase
@@ -174,19 +198,24 @@ export default {
   },
   props: {
     modelValue: { type: Array, required: true },
+    requirements: { type: Array, required: true },
     small: { type: Boolean, required: true },
     disabled: { type: Boolean, default: false },
     is_delai: { type: Boolean, default: true },
     is_methodo: { type: Boolean, default: true },
     is_budget: { type: Boolean, default: true },
+    is_transverse: { type: Boolean, default: false },
   },
-  emits: ["update:modelValue", "add-phase", "add-us", "delete-phase", "delete-group", "delete-us"],
+  emits: ["update:modelValue", "add-phase", "add-us", "delete-phase", "delete-group", "delete-us", "requirements-change"],
   computed: {
     sortedPhases() {
       return [...this.modelValue].sort((a, b) => a.index - b.index)
     }
   },
   methods: {
+    onRequirementsChange(row) {
+      this.$emit("requirements-change")
+    },
     onNbJEHChange(row) {
       // Si nbJEH passe de 0 à une valeur positive et que priceJEH est 0, définir un prix par défaut
       if (row.nbJEH > 0 && row.priceJEH === 0) {
@@ -196,6 +225,9 @@ export default {
       if (row.nbJEH === 0) {
         row.priceJEH = 0
       }
+    },
+    onWeeksChange(row) {
+      row.period = row.weeks * 7
     },
     addPhase () {
       this.$emit("add-phase")

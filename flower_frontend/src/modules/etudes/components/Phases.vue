@@ -90,7 +90,7 @@
         />
       </el-table>
       <el-divider v-if="phases.filter(phase => phase.index < 0).length > 0" content-position="left" style="margin-top: 40px;">
-        <span class="text-lg mr-2">Phases Transverses</span>
+        <span class="text-lg mr-2">Phase Transverse</span>
       </el-divider>
       <el-table
         v-if="phases.filter(phase => phase.index < 0).length > 0"
@@ -153,13 +153,6 @@
           label="Prix total"
           prop="totalPrice"
           :formatter="euroFormatter"
-        />
-        <el-table-column
-          v-if="!reaVue"
-          width="100"
-          label="Durée (semaines)"
-          prop="weeks"
-          align="center"
         />
       </el-table>
     </div>

@@ -3,27 +3,42 @@
     title="Modifier les Phases"
     :breadcrumb="breadcrumb"
   >
-
+    <el-alert
+      v-if="requirements.length != selectedRequirements.size"
+      title="Attention"
+      :description="'Tous les points du cahier des charges ne sont pas assignés à des phases. Pensez à vérifier qu\'aucun point n\'a été oublié.\nPoints non assignés : ' + missingRequirements.join(', ')"
+      type="warning"
+      show-icon
+      :closable="false"
+      style="margin-bottom: 20px; white-space: pre-line;"
+    />
     <PhasesForm
       v-model="phasesReal"
+      :requirements="requirements"
       :small="false"
+      :is_transverse="false"
       @add-us="addUS"
       @add-phase="addPhase"
       @delete-phase="deletePhase"
       @delete-us="deleteUS"
+      @requirements-change="onRequirementsChange"
     />
-    <el-divider content-position="left">Phases Transverses</el-divider>
+    <el-divider content-position="left">Phase Transverse</el-divider>
     <PhasesForm
       v-model="phasesTransverses"
+      :requirements="requirements"
       :small="false"
+      :is_transverse="true"
       @add-us="addUS"
       @add-phase="addPhaseTransverse"
       @delete-phase="deletePhase"
       @delete-us="deleteUS"
+      @requirements-change="onRequirementsChange"
     />
     <el-button
       type="primary"
       @click="submitPhases"
+      style="margin-top: 30px;"
     >
       Enregistrer
     </el-button>
@@ -46,6 +61,9 @@ export default {
     return {
       loading: true,
       phases: [],
+      requirements: [],
+      selectedRequirements: new Set(),
+      missingRequirements: [],
       breadcrumb: [
         {
           name: "Suivi d'Etude",
@@ -83,14 +101,20 @@ export default {
         phase.priceJEH = Number(phase.priceJEH)
         return phase
       })
+      this.requirements = res.data.requirements
+      this.onRequirementsChange()
       this.breadcrumb[1].name = res.data.name
     }).catch(() => {
-      this.$message({message: "Impossible de récupérer les groupes pour le moment", type: "error"})
+      this.$message({message: "Impossible de récupérer les phases pour le moment", type: "error"})
     }).finally(() => {
       this.loading = false
     })
   },
   methods: {
+    onRequirementsChange() {
+      this.selectedRequirements = new Set(this.phases.flatMap(phase => phase.requirements))
+      this.missingRequirements = this.requirements.filter(req => !this.selectedRequirements.has(req.id)).map(req => req.reference)
+    },
     addPhase () {
       this.loading = true
       const newIndex = (Math.max.apply(
@@ -113,6 +137,7 @@ export default {
           etude: this.etude.id,
           uss: []
         }
+        phase.priceJEH = Number(phase.priceJEH)
         this.phases.push(phase)
       }).catch(() => {
         this.$message({message: "Impossible de créer une phase pour le moment", type: "error"})
@@ -129,6 +154,7 @@ export default {
         newPhase = {
           index: newIndex == 0 ? -1 : newIndex,
           uss: [],
+          period: 0,
           etude: this.etude.id,
         }
       axios.post(
@@ -142,6 +168,7 @@ export default {
           etude: this.etude.id,
           uss: []
         }
+        phase.priceJEH = Number(phase.priceJEH)
         this.phases.push(phase)
       }).catch(() => {
         this.$message({message: "Impossible de créer une phase pour le moment", type: "error"})
@@ -227,7 +254,7 @@ export default {
     },
     submitPhases () {
       this.loading = true
-      this.phases.map(phase => phase.period = phase.weeks * 7)
+      //this.phases.map(phase => phase.period = phase.weeks * 7)
       axios.put(
         "/api/etudes/phases/",
         this.phases,

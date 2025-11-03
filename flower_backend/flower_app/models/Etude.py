@@ -127,6 +127,7 @@ class EtudeDetailSerializer(serializers.ModelSerializer):
     pvr = serializers.SerializerMethodField()
     phases = serializers.SerializerMethodField()
     avenants = serializers.SerializerMethodField()
+    requirements = serializers.SerializerMethodField()
 
     def get_isAborted(self, instance):
         return instance.isAborted
@@ -165,6 +166,10 @@ class EtudeDetailSerializer(serializers.ModelSerializer):
     def get_avenants(self, instance):
         from .Avenant import AvenantEtudeDetailSerializer
         return AvenantEtudeDetailSerializer(instance.avenantsEtude.all(), many=True).data
+
+    def get_requirements(self, instance):
+        from .Requirement import RequirementSerializer
+        return RequirementSerializer(instance.requirements.all(), many=True).data
 
     class Meta:
         model = Etude

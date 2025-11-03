@@ -3,21 +3,14 @@
     title="Modifier le Cahier des Charges"
     :breadcrumb="breadcrumb"
   >
-    <div v-for="(phase, idx) in phases" :key="phase.id" style="margin-top: 20px;">
-      <el-col>
-      <span>Cahier des Charges lié à la phase {{ phase.index }} : {{ phase.title }}</span>
-      </el-col>
-      <span style="margin-top: 10px;"><b>Description :</b> {{ phase.description }}</span>
-      <el-col>
-      <span style="margin-top: 10px;"><b>Méthodologie :</b> {{ phase.methodologie }}</span>
-      </el-col>
-      <el-input
-        v-model="phase.spec"
-        type="textarea"
-        :autosize="{ minRows: 10 }"
-        placeholder="Cahier des charges de la phase"
-      />
-    </div>
+    <CdCForm
+      v-model="requirements"
+      :phases="phases"
+      :disabled="disabled"
+      :loading="loading"
+      @add-requirement="addRequirement"
+      @delete-requirement="deleteRequirement"
+    />
     <el-button
       type="primary"
       style="margin-top: 20px;"
@@ -29,6 +22,7 @@
 </template>
 
 <script>
+import CdCForm from "../components/forms/CdCForm.vue";
 const axios = require("axios")
 // Configuration d'axios pour CSRF
 axios.defaults.xsrfCookieName = "csrftoken";
@@ -37,12 +31,13 @@ axios.defaults.withCredentials = true;
 
 export default {
   name: "CdCModifier",
-  components: {},
+  components: {CdCForm},
   data () {
     return {
       loading: true,
+      requirements: [],
       phases: [],
-      docEtude: {},
+      disabled: false,
       breadcrumb: [
         {
           name: "Suivi d'Etude",
@@ -65,9 +60,8 @@ export default {
       `/api/etudes/${this.$route.params.id}/`,
       {withCredentials: true}
     ).then((res) => {
-      res.data.phases.sort((a, b) => a.index - b.index)
+      this.requirements = res.data.requirements
       this.phases = res.data.phases
-      this.docEtude = res.data.docEtude
       this.breadcrumb[1].name = res.data.name
     }).catch(() => {
       this.$message({message: "Impossible de récupérer les groupes pour le moment", type: "error"})
@@ -76,18 +70,53 @@ export default {
     })
   },
   methods: {
+    addRequirement () {
+      this.loading = true
+      const requirement = {
+        reference: "<REFERENCE>",
+        description: "Description du point de cahier des charges.",
+        etude: this.$route.params.id,
+      }
+      axios.post(
+        "/api/requirements/",
+        [requirement],
+        {withCredentials: true}
+      ).then((res) => {
+        this.$message({message: "Le point de cahier des charges a bien été ajoutée.", type: "success"})
+        const requirement = res.data[0];
+        this.requirements.push(requirement)
+      }).catch(() => {
+        this.$message({message: "Impossible de créer un point de cahier des charges pour le moment", type: "error"})
+      }).finally(() => {
+        this.loading = false
+      })
+    },
+    deleteRequirement (requirement) {
+      this.loading = true
+      axios.delete(
+        `/api/requirements/${requirement.id}/`,
+        {withCredentials: true}
+      ).then(() => {
+        this.$message({message: "Le point de cahier des charges a bien été supprimé.", type: "success"})
+        this.requirements = this.requirements.filter(r => r.id !== requirement.id)
+      }).catch(() => {
+        this.$message({message: "Impossible de supprimer le point de cahier des charges pour le moment", type: "error"})
+      }).finally(() => {
+        this.loading = false
+      })
+    },
     submitCdC () {
       this.loading = true
       axios.put(
-        "/api/etudes/phases/",
-        this.phases,
+        "/api/requirements/",
+        this.requirements,
         {withCredentials: true}
       ).then(() => {
-        this.$message({message: "Les Cahier des Charges ont bien été enregistrés", type: "success"})
+        this.$message({message: "Le Cahier des Charges a bien été enregistré", type: "success"})
         this.$router.push(`/etudes/${this.$route.params.id}/voir?active=CdC`)
       }).catch((err) => {
         if (err.response && err.response.status === 400) {
-          this.$message({message: "Le formulaire comporte des erreurs. Vérifiez les descriptions et les objectifs des phases (menu déroulant)",
+          this.$message({message: "Le formulaire comporte des erreurs.",
             type: "error",
             offset: 40})
         } else {

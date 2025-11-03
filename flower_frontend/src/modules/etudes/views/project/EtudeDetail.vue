@@ -95,7 +95,7 @@
     <CdC
       v-show="currentTab === 'CdC'"
       :etude="etude"
-      :phases="etude.phases"
+      :requirements="etude.requirements"
       :editable="true"
       :loading="loading"
       @us-change="usChanged"
@@ -153,6 +153,7 @@ export default {
       etude: {
         name: "", // valeurs par défault afin d'éviter des warnings inutiles.
         phases: [],
+        requirements: [],
         linkedFiles: [],
         avenants: [],
         missions: [],
