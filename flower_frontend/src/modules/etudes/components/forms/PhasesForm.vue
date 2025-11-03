@@ -151,7 +151,7 @@
             <el-input-number
               v-model="row.weeks"
               controls-position="right"
-              :min="1"
+              :min="0"
               :max="99"
               style="width: 90%"
               :disabled="disabled || !is_delai"
