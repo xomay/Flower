@@ -57,11 +57,14 @@
       prop="clientContact"
       label-width="140px"
     >
-      <MemberPicker
-        ref="employesInput"
-        v-model="modelValue.clientContact"
-        :item-list="employes"
-        placeholder="Contact client"/>
+      <div style="display: flex; align-items: center; gap: 8px; width: 100%;">
+        <InfoTip :description="['Personne en charge du suivi chez le client']" />
+        <MemberPicker
+          ref="employesInput"
+          v-model="modelValue.clientContact"
+          :item-list="employes"
+          placeholder="Contact client"/>
+      </div>
     </el-form-item>
     <el-form-item
       label="Nom de l'étude"
@@ -78,12 +81,15 @@
       prop="description"
       label-width="140px"
     >
-      <el-input
+      <div style="display: flex; align-items: center; gap: 8px; width: 100%;">
+        <InfoTip :description="['Description apparaissant sur la page de l\'étude']" />
+        <el-input
         v-model="modelValue.description"
         type="textarea"
         placeholder="Description succincte de l'étude"
         :rows="5"
-      />
+        />
+      </div>
     </el-form-item>
     <el-row>
       <el-col :span="12">
@@ -158,10 +164,11 @@
 
 <script>
 import MemberPicker from "@/modules/membres/components/MemberPicker"
+import InfoTip from "../InfoTip.vue";
 const axios = require("axios")
 export default {
   name: "ProjectForm",
-  components: {MemberPicker},
+  components: {MemberPicker, InfoTip},
   props: {
     modelValue: { type: Object, required: true },
     loading: { type: Boolean, required: true },

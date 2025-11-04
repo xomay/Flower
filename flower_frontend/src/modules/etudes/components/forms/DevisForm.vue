@@ -71,14 +71,20 @@
       label="Contexte et objectifs de l'étude" 
       prop="description"
       label-width="140px">
-      <el-input
-        v-model="pc.description"
-        type="textarea"
-        :rows="7"
-        placeholder="Description concise de l’entreprise et de l’activité du client dans un premier paragraphe. (5-6 lignes)
+      <div style="display: flex; align-items: center; gap: 8px; width: 100%;">
+        <InfoTip :description="['Présenter l’entreprise, ce qu’elle fait et ce qu’elle souhaite.',
+          'Décrire de manière claire, précise et concise la prestation attendue (pas de phrases à rallonge avec des milliers de propositions).',
+          'Si la proposition répond à un appel d\'offre kiwi, le préciser.',
+          'Si la proposition est agencée sous forme de convention cadre agile, mettre le nombre de BC à prévoir et leur nom.']" />
+        <el-input
+          v-model="pc.description"
+          type="textarea"
+          :rows="7"
+          placeholder="Description concise de l’entreprise et de l’activité du client dans un premier paragraphe. (5-6 lignes)
 Description du contexte du client et des raisons qui l’amène à l’émission de cette CC en un ou deux paragraphes.
 Présentation de la solution livrée au client."
-      />
+        />
+      </div>
     </el-form-item>
     <el-form-item 
       label="Description du livrable" 
@@ -108,8 +114,10 @@ const axios = require("axios")
 axios.defaults.xsrfCookieName = "csrftoken";
 axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
 axios.defaults.withCredentials = true;
+import InfoTip from '@/modules/etudes/components/InfoTip.vue';
 export default {
   name: "DevisForm",
+  components: { InfoTip },
   props: {
     etude: { type: Object, required: true }
   },
