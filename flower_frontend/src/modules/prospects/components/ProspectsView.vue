@@ -67,6 +67,14 @@
         </el-card>
 
         <!-- Moyens de contact -->
+         <DatePopup
+          popup-title="Entrez la nouvelle date"
+          :date-name="tampon.dateTitle"
+          v-model:visibility="popupVisible"
+          :placeholder="tampon.nextDate"
+          @finish="popupClosed"
+          style="width: 25vw; min-width: 300px;"
+        />
         <el-card 
           v-if="prospect.contactWay && prospect.contactWay.length > 0"
           title="Moyens de contact" 
@@ -139,7 +147,13 @@
               </el-icon>
               <div>
                 <span class="tracking-label">Date de dernier contact</span>
-                <span class="tracking-value">{{ niceDate(prospect.nextDate) }}</span>
+                <span class="tracking-value">
+                  <el-button
+                  @click="changeDate(prospect)"
+                  >
+                    {{ prospect.nextDate ? niceDate(prospect.nextDate) : "non défini." }}
+                  </el-button>
+                </span>
               </div>
             </div>
           </div>
@@ -190,17 +204,28 @@
 
 <script>
 const axios = require("axios")
+import DatePopup from "../components/DatePopup"
+
 
 export default {
   name: "ProspectView",
   props: {
     prospect: { type: Object, required: true }
   },
+  emits: ['updated-prospect'],
+  components: {DatePopup},
   data () {
     return {
       chargeName: "",
       member: {},
       displayCharge: false,
+      popupVisible: false,
+      tampon: {
+        item: {},
+        listID: "",
+        dateTitle: "Dernier contact :",
+        nextDate: new Date().toISOString().split("T")[0]
+      },
       statusMap: {
         'NC': 'Nouveau contact',
         'AR': 'A relancer',
@@ -281,7 +306,45 @@ export default {
         })
       }
       document.body.removeChild(textArea)
-    }
+    },
+    changeDate (prospect, listID, forced) {
+      // Mise à jour du "tampon"
+      this.tampon = {
+        item: prospect,
+        dateTitle: "Dernier contact :",
+        nextDate: new Date().toISOString().split("T")[0]
+      }
+      this.startPopup()
+    },
+    // ouvre le popup
+    startPopup () {
+      this.popupVisible = true
+    },
+    // Referme le popup
+    popupClosed (success, out) {
+      const prospect = this.tampon.item
+      if(success) {
+        prospect.nextDate = out
+        this.updateProspect(prospect)
+      }
+      this.popupVisible = false
+    },
+    // Met à jour le prospect sur le back
+    updateProspect (prospect) {
+      this.loading = true
+      axios.put(
+        `/api/prospects/${prospect.id}/`,
+        prospect,
+        {withCredentials: true}
+      ).then((res) => {
+        this.$emit('updated-prospect', res.data)
+        this.$message({message: "Le prospect a bien été mis à jour", type: "success"})
+      }).catch((err) => {
+        this.$message({message: "Impossible d'update le prospect : "+err, type: "error"})
+      }).finally(() => {
+        this.loading = false
+      })
+    },
   }
 }
 </script>
