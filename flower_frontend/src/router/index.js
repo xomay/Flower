@@ -10,6 +10,7 @@ import performancesRoutes from '@/modules/performances/routes';
 import realisateursRoutes from '@/modules/realisateurs/routes';
 import administrationRoutes from '@/modules/administration/routes';
 import tresorerieRoutes from '@/modules/tresorerie/routes';
+import simulationRoutes from '@/modules/simulation/routes';
 import error404Routes from '@/modules/error404/routes';
 
 const routes = [
@@ -43,6 +44,7 @@ const routes = [
       ...performancesRoutes,
       ...realisateursRoutes,
       ...tresorerieRoutes,
+      ...simulationRoutes,
       ...error404Routes
     ]
   }

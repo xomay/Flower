@@ -128,6 +128,7 @@ export default {
     this.addCAStuff()
     this.addTresoStuff()
     this.addAdminStuff()
+    this.addPiousStuff()
     // Accès réa :
     this.addReaStuff()
     // Si écran pas assez large, on replie le menu
@@ -220,6 +221,38 @@ export default {
         })
       }
     },
+    // Si l'utilisateur a des droits de Pious, ajoute ses outils dans la navbar
+    addPiousStuff () {
+      if (this.isPious() ) {
+        this.menu.push({
+          icon: "Monitor",
+          title: "Simulation",
+          children: [
+            {
+              title: "Membres",
+              children: [
+                {name: "Gestion Associative",
+                  url: "/simulation/membres"}
+              ]
+            },
+            {
+              title: "Affaires",
+              children: [
+                {name: "Suivi d'Etude",
+                  url: "/simulation/etudes"}
+              ]
+            },
+            {
+              title: "Dev'Co",
+              children: [
+                {name: "Prospection",
+                  url: "/simulation/prospects"}
+              ]
+            }
+          ]
+        })
+      }
+    },
     // Si l'utilisateur a des droits de CA, ajoute ses outils dans la navbar
     addCAStuff () {
       if (this.isCA() ) {
@@ -227,87 +260,26 @@ export default {
           icon: "UserFilled",
           title: "Gestion Associative",
           url: "/membres"
-          /*children: [
-            {
-              title: "Membres",
-              children: [
-                {name: "Lister les membres",
-                  url: "/membres"},
-                {name: "Ajouter un membre",
-                  url: "/membres/ajouter"}
-              ]
-            },
-            {
-              title: "Intervenants",
-              children: [
-                {name: "Lister les réalisateurs",
-                  url: "/realisateurs"},
-                {name: "Ajouter un réalisateur",
-                  url: "/realisateurs/ajouter"}
-              ]
-            }
-          ]*/
         },
         {
           icon: "Files",
           title: "Suivi d'Etude",
           url: "/etudes"
-          /*children: [
-            {name: "Voir les études",
-              url: "/etudes"},
-            {name: "Créer une étude",
-              url: "/etudes/ajouter"},
-            {name: "Créer une Convention Cadre",
-              url: "/etudes/ajoutercc"}
-          ]*/
         },
         {
           icon: "DataLine",
           title: "Performance",
-          url: "/performance/devco"
-          /*children: [
-            {name: "Suivi Dev'co",
-              url: "/performance/devco"}
-          ]*/ 
+          url: "/performance/devco" 
         },
         {
           icon: "Phone",
           title: "Prospection",
           url: "/prospects"
-          /*children: [
-            {
-              title: "Prospects",
-              children: [
-                {name: "Voir les prospects",
-                  url: "/prospects"},
-                {name: "Ajouter un prospect",
-                  url: "/prospects/ajouter"}
-              ]
-            },
-            {
-              title: "Actions commerciales",
-              children: [
-                {name: "Voir les actions commerciales",
-                  url: "/prospects/actionCommerciale/"},
-                {name: "Créer une action commerciale",
-                  url: "/prospects/actionCommerciale/ajouter"}
-              ]
-            }
-          ]*/
         },
         {
           icon: "ChatDotSquare",
           title: "Signalement",
-          url: "/performance/ticket",
-          /*children: [
-            {
-              title: "Ticket",
-              children: [
-                {name: "Envoyer un ticket",
-                url: "/performance/ticket"}
-              ]
-            }
-          ]*/
+          url: "/performance/ticket"
         })
       }
     },

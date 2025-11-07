@@ -119,6 +119,11 @@ class Realisateur(Personne):
             ref_ba = str(self.ba.year % 100) + 'R' + '%03d' % self.ba_id
             return ref_ba
 
+class SimuRealisateur(Realisateur):
+    class Meta:
+        verbose_name = "SimuRéalisateur"
+        verbose_name_plural = "SimuRéalisateurs"
+
 class RealisateurSerializer(serializers.ModelSerializer):
     rating = serializers.ReadOnlyField()
     etudesAmount = serializers.ReadOnlyField()

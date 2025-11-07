@@ -99,6 +99,11 @@ class Etude(models.Model):
     def totalPriceTaxes(self):
         return round(self.totalPrice * Decimal('1.2'), 2)
 
+class SimuEtude(Etude):
+    class Meta:
+        verbose_name = "SimuÉtude"
+        verbose_name_plural = "SimuÉtudes"
+
 class EtudeSerializer(serializers.ModelSerializer):
     isAborted = serializers.SerializerMethodField()
     isFinished = serializers.SerializerMethodField()

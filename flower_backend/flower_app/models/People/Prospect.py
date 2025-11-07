@@ -48,6 +48,11 @@ class Prospect(models.Model):
             elt.anonymiser()
         self.save()
 
+class SimuProspect(Prospect):
+    class Meta:
+        verbose_name = "SimuProspect"
+        verbose_name_plural = "SimuProspects"
+
 class ProspectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Prospect

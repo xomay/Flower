@@ -31,6 +31,26 @@ class HasGroupPermission(permissions.BasePermission):
         # Return True if the user has all the required groups or is staff.
         return all([is_in_group(request.user, group_name) for group_name in required_groups])
 
+class HasAnyGroupPermission(permissions.BasePermission):
+    """
+    Autorise l’accès si l’utilisateur a au moins un des rôles requis.
+    """
+
+    def has_permission(self, request, view):
+        required_groups_mapping = getattr(view, "required_groups", {})
+        required_groups = required_groups_mapping.get(request.method, [])
+
+        # Si aucune restriction n’est définie pour cette méthode → accès autorisé
+        if not required_groups:
+            return True
+
+        # Si l’utilisateur est staff, il passe toujours
+        if request.user and request.user.is_staff:
+            return True
+
+        # Autoriser si l'utilisateur a AU MOINS un des groupes
+        return any(is_in_group(request.user, group_name) for group_name in required_groups)
+
 from flower_app.models.Etude import Etude
 from flower_app.models.People.Realisateur import Realisateur
 

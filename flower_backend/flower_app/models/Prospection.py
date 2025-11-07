@@ -50,6 +50,11 @@ class Action(models.Model):
         verbose_name = 'Action commerciale'
         verbose_name_plural = 'Actions commerciales'
 
+class SimuAction(Action):
+    class Meta:
+        verbose_name = "SimuAction"
+        verbose_name_plural = "SimuActions"
+
 class ActionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Action
