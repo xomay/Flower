@@ -16,6 +16,7 @@
       </template>
       <ProspectsView
         :prospect="prospect"
+        @updated-prospect="prospect = $event"
       />
     </BaseComponent>
     <BaseComponent

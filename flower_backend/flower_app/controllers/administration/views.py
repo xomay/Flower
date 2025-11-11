@@ -1,7 +1,7 @@
 import os
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from django.http import JsonResponse
+from django.http import JsonResponse, FileResponse
 from http import HTTPStatus
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import generics
@@ -96,7 +96,31 @@ class BaseUrsaffLastView(APIView):
         return Response(None, status=HTTPStatus.FORBIDDEN)
     
 
-class DoctypeImportView(APIView):
+class DoctypeRetrieveImportView(generics.RetrieveUpdateAPIView):
+    permission_classes = [IsAuthenticated, HasGroupPermission]
+    required_groups = {
+        'GET': ['ROLE_CA'],
+        'POST': ['ROLE_CA']
+    }
+
+    def get(self, request, title):
+        print("cwd : "+ os.getcwd())
+        save_path = os.path.abspath(os.path.join(os.getcwd(), "doctypes"))
+        print(save_path)
+
+        # Chemin complet vers le fichier à lire
+        full_file_path = os.path.join(save_path, title)
+
+        # Vérifier si le fichier existe
+        if not os.path.exists(full_file_path):
+            return Response({"error": "Fichier non trouvé"}, status=HTTPStatus.NOT_FOUND)
+
+        # Ouvrir le fichier en binaire et renvoyer une FileResponse pour éviter l'encodage JSON
+        file_handle = open(full_file_path, 'rb')
+        response = FileResponse(file_handle, content_type='application/octet-stream')
+        response['Content-Disposition'] = f'attachment; filename="{title}"'
+        return response
+
     def post(self, request, title):
         print(request.FILES)
         print(title)

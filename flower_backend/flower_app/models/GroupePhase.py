@@ -3,6 +3,7 @@ from django.db.models.deletion import RESTRICT
 from rest_framework import serializers
 
 from .Avenant import Avenant
+from .Requirement import Requirement
 from ..serializers import CustomListSerializer
 from datetime import date, timedelta
 
@@ -19,6 +20,7 @@ class Phase(models.Model):
 
     # spec = cdc
     spec = models.TextField(default='', blank=True)
+    requirements = models.ManyToManyField(Requirement, blank=True)
 
     avenant_creer = models.ForeignKey(Avenant, on_delete=models.CASCADE, blank=True, null=True, related_name='avenantCreator')
     avenant_edit = models.ForeignKey(Avenant, on_delete=models.SET_NULL, blank=True, null=True, related_name='avenantEdit')
@@ -77,12 +79,17 @@ class PhaseSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False, write_only=False)
     uss = USSerializer(source='us_set' ,many=True)
     totalPrice = serializers.SerializerMethodField()
+    weeks = serializers.SerializerMethodField()
+    #priceJEH = serializers.DecimalField(max_digits=10, decimal_places=2, coerce_to_string=False)
     class Meta:
         model = Phase
         fields = '__all__'
         list_serializer_class = CustomListSerializer
     def get_totalPrice(self, obj):
         return obj.totalPrice
+
+    def get_weeks(self, obj):
+        return obj.period // 7 + (1 if obj.period % 7 > 0 else 0)
 
     def create(self, validated_data):
         uss_data = validated_data.pop('us_set', [])
@@ -95,6 +102,7 @@ class PhaseSerializer(serializers.ModelSerializer):
         return phase
 
     def update(self, instance, validated_data):
+        print("Update Phase Serializer ", validated_data, instance)
         uss_data = validated_data.pop('us_set', None)
 
         # Update base fields
@@ -119,6 +127,7 @@ class PhaseEtudeSerializer(PhaseSerializer):
     def create(self, validated_data):
         uss_data = validated_data.pop('us_set', [])
         etude = validated_data.pop('etude')
+        requirements_data = validated_data.pop('requirements', None)
 
         phase = PhaseEtude.objects.create(etude=etude, **validated_data)
 
@@ -126,10 +135,14 @@ class PhaseEtudeSerializer(PhaseSerializer):
             us_data.pop('phase', None)
             US.objects.create(phase=phase, **us_data)
 
+        if requirements_data is not None:
+            phase.requirements.set(requirements_data)
+
         return phase
 
     def update(self, instance, validated_data):
         uss_data = validated_data.pop('us_set', None)
+        requirements_data = validated_data.pop('requirements', None)
 
         # Mise à jour de l'`etude` si présente dans la requête
         if 'etude' in validated_data:
@@ -156,6 +169,11 @@ class PhaseEtudeSerializer(PhaseSerializer):
                 us_data.pop('phase', None)
                 US.objects.create(phase=instance, **us_data)
 
+        if requirements_data is not None:
+            instance.requirements.clear()
+            for req in requirements_data:
+                instance.requirements.add(req)
+
         return instance
 
 class PhaseMissionSerializer(PhaseSerializer):
@@ -168,6 +186,7 @@ class PhaseMissionSerializer(PhaseSerializer):
     def create(self, validated_data):
         uss_data = validated_data.pop('us_set', [])
         mission = validated_data.pop('mission')
+        requirements_data = validated_data.pop('requirements', None)
 
         phase = PhaseMission.objects.create(mission=mission, **validated_data)
 
@@ -175,10 +194,14 @@ class PhaseMissionSerializer(PhaseSerializer):
             us_data.pop('phase', None)
             US.objects.create(phase=phase, **us_data)
 
+        if requirements_data is not None:
+            phase.requirements.set(requirements_data)
+
         return phase
 
     def update(self, instance, validated_data):
         uss_data = validated_data.pop('us_set', None)
+        requirements_data = validated_data.pop('requirements', None)
 
         # Mise à jour de la mission si présente dans la requête
         if 'mission' in validated_data:
@@ -194,5 +217,10 @@ class PhaseMissionSerializer(PhaseSerializer):
             for us_data in uss_data:
                 us_data.pop('phase', None)
                 US.objects.create(phase=instance, **us_data)
+
+        if requirements_data is not None:
+            instance.requirements.clear()
+            for req in requirements_data:
+                instance.requirements.add(req)
 
         return instance

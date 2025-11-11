@@ -22,7 +22,7 @@
     </router-link>
       <el-table
         class="grid"
-        :data="phases.sort((a, b) => a.index - b.index)"
+        :data="phases.filter(phase => phase.index > 0).sort((a, b) => a.index - b.index)"
         style="color: black; width: 100%;"
         :header-row-style="{color: 'black'}"
         :row-key="row => row.id"
@@ -65,6 +65,80 @@
           width="70"
           label="Nb JEH"
           prop="nbJEH"
+          align="center"
+        />
+        <el-table-column
+          v-if="!reaVue"
+          width="100"
+          label="Prix JEH"
+          prop="priceJEH"
+          :formatter="euroFormatter"
+        />
+        <el-table-column
+          v-if="!reaVue"
+          width="100"
+          label="Prix total"
+          prop="totalPrice"
+          :formatter="euroFormatter"
+        />
+        <el-table-column
+          v-if="!reaVue"
+          width="100"
+          label="Durée (semaines)"
+          prop="weeks"
+          align="center"
+        />
+      </el-table>
+      <el-divider v-if="phases.filter(phase => phase.index < 0).length > 0" content-position="left" style="margin-top: 40px;">
+        <span class="text-lg mr-2">Phase Transverse</span>
+      </el-divider>
+      <el-table
+        v-if="phases.filter(phase => phase.index < 0).length > 0"
+        class="grid"
+        :data="phases.filter(phase => phase.index < 0).sort((a, b) => a.index - b.index)"
+        style="color: black; width: 100%;"
+        :header-row-style="{color: 'black'}"
+        :row-key="row => row.id"
+      >
+        <el-table-column type="expand" >
+          <template #default="{ row }">
+            <div style="margin-left: 40px; margin-top: 10px;">
+              <el-row
+              v-if="!reaVue"
+              v-show="row.methodologie != ''"
+              style="margin-bottom: 20px;"
+              >
+              <b>Méthodologie :</b><br>
+              <div style="white-space: pre-wrap;">
+                {{ row.methodologie }}
+              </div>
+              <hr
+              style="border-width: 1px; border-color: #bfbfd7; width: 30%; margin: auto auto;"
+              >
+            </el-row>
+            <USManager
+            :uss="row.uss"
+            :loading="loading"
+            :rea-vue="reaVue"
+            :disabled="etude.isAborted"
+            @us-change="updateUS"
+            />
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="Titre"
+          prop="title"
+        >
+          <template #default="{row}">
+            {{ row.title }} : <i><p color="gray">{{ row.description }}</p></i>
+          </template>
+        </el-table-column>
+        <el-table-column
+          width="70"
+          label="Nb JEH"
+          prop="nbJEH"
+          align="center"
         />
         <el-table-column
           v-if="!reaVue"

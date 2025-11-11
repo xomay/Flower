@@ -31,6 +31,7 @@
         >
           <el-option label="Entreprise Privée" value="Entreprise Privée" />
           <el-option label="Administration Publique" value="Administration Publique" />
+          <el-option label="Particulier" value="Particulier" />
         </el-select>
       </el-form-item>
       </el-col>
@@ -132,6 +133,7 @@
     <BaseComponent
       title="Employés"
       :breadcrumb="[]"
+      v-if="editable"
     >
       <template v-slot:action>
           <el-button
@@ -286,7 +288,8 @@ export default {
     members: { type: Array, required: true },
     employes: { type: Array, required: true },
     loading: Boolean,
-    deletable: Boolean
+    deletable: Boolean,
+    editable: { type: Boolean, default: true },
   },
   emits: ["save", "delete"],
   data () {

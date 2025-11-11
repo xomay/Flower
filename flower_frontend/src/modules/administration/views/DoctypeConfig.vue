@@ -34,6 +34,15 @@
       >
         Uploader
       </el-button>
+
+      <el-button
+        type="success"
+        @click="downloadFile"
+        :disabled="!selectedType && !loading"
+        style="margin-top: 10px"
+      >
+        Télécharger
+      </el-button>
     </div>
   </el-card>
   </BaseComponent>
@@ -47,6 +56,7 @@ import { ElMessage } from 'element-plus'
 const documentTypes = ['CE', 'CCA', 'BC', 'PVR', 'RDM', 'BCR', 'BA', 'BV', 'NF', 'FA']
 const selectedType = ref('')
 const selectedFile = ref(null)
+const loading = ref(false)
 const breadcrumb = ref([
   { name: 'Administration', link: '/administration/doctypes' },
   { name: 'Gérer les doctypes', link: '/administration/doctypes' },
@@ -68,6 +78,7 @@ const getCSRFToken = () => {
 }
 
 const uploadFile = async () => {
+  loading.value = true
   try {
     const formData = new FormData()
     formData.append('file', selectedFile.value)
@@ -89,6 +100,40 @@ const uploadFile = async () => {
   } catch (err) {
     console.error('Erreur d\'upload :', err)
     ElMessage.error('Échec de l\'upload.')
+  } finally {
+    loading.value = false
+  }
+}
+
+const downloadFile = async () => {
+  loading.value = true
+  try {
+    const res = await axios.get(
+      `/api/administration/doctypes/${selectedType.value}.docx/`,
+      {
+        withCredentials: true,
+        responseType: 'blob',
+        headers: {
+          'X-CSRFToken': getCSRFToken(),
+        },
+      }
+    )
+
+    const url = window.URL.createObjectURL(new Blob([res.data]))
+    const link = document.createElement('a')
+    link.href = url
+    link.setAttribute('download', `${selectedType.value}.docx`)
+    document.body.appendChild(link)
+    link.click()
+    link.remove()
+    window.URL.revokeObjectURL(url)
+
+    ElMessage.success('Fichier téléchargé avec succès.')
+  } catch (err) {
+    console.error('Erreur de téléchargement :', err)
+    ElMessage.error('Échec du téléchargement.')
+  } finally {
+    loading.value = false
   }
 }
 </script>

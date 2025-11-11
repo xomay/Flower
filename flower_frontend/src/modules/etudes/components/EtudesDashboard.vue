@@ -126,7 +126,7 @@ export default {
     etudes () {
       this.etudes.forEach(etude => {
         var beginDate = etude.docEtude?.signDate || new Date();
-        etude.phases.forEach(phase => {
+        etude.phases.filter(p => p.index > 0).forEach(phase => {
           phase.beginDate = beginDate;
           phase.finishDate = new Date(phase.beginDate);
           phase.finishDate.setDate(phase.finishDate.getDate() + phase.period);

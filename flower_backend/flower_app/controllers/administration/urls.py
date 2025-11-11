@@ -18,6 +18,6 @@ urlpatterns = [
     path('base-ursaff/<int:pk>/', views.BaseUrsaffDetailView.as_view()),
 
     #Import de doctypes
-    #path('doctypes/', views.DoctypeImportView.as_view()),
-    path('doctypes/<str:title>/', views.DoctypeImportView.as_view()),
+    #path('doctypes/', views.DoctypeRetrieveImportView.as_view()),
+    path('doctypes/<str:title>/', views.DoctypeRetrieveImportView.as_view()),
 ]

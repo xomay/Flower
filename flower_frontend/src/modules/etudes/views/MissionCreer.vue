@@ -24,6 +24,7 @@
     />
     <MissionForm
       v-model="missions"
+      :requirements="requirements"
       :phases="phases"
       :loading="loading"
       :consultants="consultants"
@@ -67,6 +68,7 @@ export default {
       originalIDs: [],
       // Phases concernées par l'étude, read-only
       phases: [],
+      requirements: [],
       consultants: [],
       loading: false
     }
@@ -86,6 +88,7 @@ export default {
       res.data.missions.forEach((mission) => {
         mission.consultant = mission.consultant.id
       })
+      this.requirements = res.data.requirements
       //this.missions = res.data.missions.filter(mission => mission.isCurrent).slice()
       this.missions = res.data.missions
       this.originalIDs = this.missions.map(m => m.id)

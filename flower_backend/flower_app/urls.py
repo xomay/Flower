@@ -21,6 +21,7 @@ urlpatterns = [
     path('actioncom/', include('flower_app.controllers.actioncom.urls')),
     path('contactway/', include('flower_app.controllers.contactway.urls')),
     path('realisateurs/', include('flower_app.controllers.realisateurs.urls')),
+    path('requirements/', include('flower_app.controllers.requirements.urls')),
     path('administration/', include('flower_app.controllers.administration.urls')),
     path('ndfs/', include('flower_app.controllers.ndfs.urls')),
     path('ndfs/details/', include('flower_app.controllers.ndfsdetails.urls')),

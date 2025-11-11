@@ -125,7 +125,7 @@
         <el-table-column type="expand">
           <template #default="{ row }">
             <el-row>
-                <el-col :span="24">
+                <el-col :span="16">
                   <el-row>
                     Description :
                     <el-input
@@ -144,6 +144,27 @@
                       placeholder="Méthodologie de la phase"
                     />
                   </el-row>
+                </el-col>
+                <el-col :span="6" :offset="1">
+                  <el-table :data=" [row] ">
+                    <el-table-column
+                      label="Cahier des charges liés"
+                      prop="requirements"
+                      align="center"
+                      >
+                      <template #default="{ row }">
+                        <el-select v-model="row.requirements" multiple placeholder="Sélectionner les références">
+                          <el-option
+                            v-for="req in requirements"
+                            :key="req.id"
+                            :label="`[${req.reference}]`"
+                            :value="req.id"
+                          />
+                        </el-select>
+                      </template>
+
+                    </el-table-column>
+                  </el-table>
                 </el-col>
             </el-row>
           </template>
@@ -189,7 +210,7 @@
     </el-form>
     <el-alert
       v-show="modelValue.length == 0"
-      title="Vous n'avez ajouté aucune RdM"
+      title="Vous n'avez ajouté aucun RdM"
       type="warning"
       description="Apputez sur le bouton ci-dessus pour en ajouter."
       :closable="false"
@@ -215,6 +236,7 @@ export default {
   components: {MemberPicker},
   props: {
     modelValue: { type: Array, required: true },
+    requirements: { type: Array, required: true },
     loading: { type: Boolean, required: true },
     phases: { type: Array, required: true },
     consultants: { type: Array, required: true }

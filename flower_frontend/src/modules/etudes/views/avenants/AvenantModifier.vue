@@ -63,6 +63,9 @@ export default {
         is_budget: false,
         new_dates: null,
         phases: [],
+        phasesReal: [],
+        phasesTransverse: [],
+        requirements: [],
         originalPhases: [],
         signer1: 0,
         signer2: 0,
@@ -111,6 +114,7 @@ export default {
           this.avenant.originalPhases = JSON.parse(JSON.stringify(resAvenant.data.phases))
           this.avenant.doc_etude.signer1 = resAvenant.data.doc_etude.signer1.id || 0
           this.avenant.doc_etude.signer2 = resAvenant.data.doc_etude.signer2.id || 0
+          this.avenant.requirements = res.data.requirements
         }).catch((err) => {
           this.$message({ message: "Impossible de récupérer l'avenant pour le moment : " + err, type: "error" })
         }).finally(() => {
@@ -228,6 +232,7 @@ export default {
       let promesses = []
       if (globalForm.is_client){
         const docEtude = {
+          id: this.avenant.doc_etude.id,
           application_fees: this.avenant.doc_etude.application_fees,
           hasMaterialFees: this.avenant.doc_etude.hasMaterialFees,
           materialFees: this.avenant.doc_etude.materialFees,
@@ -236,6 +241,7 @@ export default {
           signer2: this.avenant.doc_etude.signer2,
         }
         const avenantEtude = {
+          id: this.avenant.id,
           description: this.avenant.description,
           is_delai: this.avenant.is_delai,
           is_methodo: this.avenant.is_methodo,
@@ -272,25 +278,25 @@ export default {
         })
       }
       Promise.all(promesses).then(() => {
-        this.$message({message: "Avenant créé avec succès", type: "success"})
+        this.$message({message: "Avenant modifié avec succès", type: "success"})
         this.$router.push(`/etudes/${this.$route.params.id}/voir?active=Avenants`)
       }).catch((error) => {
-        console.error("Erreur lors de la création de l'avenant", error)
-        this.$message({message: "Erreur lors de la création de l'avenant : " + error, type: "error"})
+        console.error("Erreur lors de la modification de l'avenant", error)
+        this.$message({message: "Erreur lors de la modification de l'avenant : " + error, type: "error"})
         this.loading = false
       })
     },
-    /*saveDocs(docEtude, avenantEtude) {
+    saveDocs(doc, avenant, client) {
       return new Promise((resolve, reject) => {
         axios.put(
-          `/api/etudes/ce/${docEtude.id}/`,
-          docEtude,
+          client ? `/api/etudes/ce/${doc.id}/` : `/api/etudes/mission/doc/${doc.id}/`,
+          doc,
           {withCredentials: true}
         ).then((res) => {
-          avenantEtude.doc_etude = res.data.id
+          client ? avenant.doc_etude = res.data.id : avenant.doc_mission = res.data.id
           axios.put(
-            `/api/etudes/avenants/${avenantEtude.id}/`,
-            avenantEtude,
+            client ? `/api/etudes/avenants/${avenant.id}/` : `/api/etudes/avenants/missions/${avenant.id}/`,
+            avenant,
             {withCredentials: true}
           ).then((resAvenant) => {
             resolve(resAvenant.data)
@@ -299,80 +305,11 @@ export default {
             reject(error)
           })
         }).catch((error) => {
-          console.error("Erreur lors de la modification du docEtude", error)
-          reject(error)
-        })
-      })
-    },*/
-    saveDocs(doc, avenant, client) {
-      return new Promise((resolve, reject) => {
-        axios.put(
-          client ? `/api/etudes/ce/` : `/api/etudes/mission/doc/`,
-          doc,
-          {withCredentials: true}
-        ).then((res) => {
-          client ? avenant.doc_etude = res.data.id : avenant.doc_mission = res.data.id
-          axios.put(
-            client ? `/api/etudes/avenants/` : `/api/etudes/avenants/missions/`,
-            avenant,
-            {withCredentials: true}
-          ).then((resAvenant) => {
-            resolve(resAvenant.data)
-          }).catch((error) => {
-            console.error("Erreur lors de la création de l'avenant", error)
-            reject(error)
-          })
-        }).catch((error) => {
-          console.error("Erreur lors de la création du doc", error)
+          console.error("Erreur lors de la modification du doc", error)
           reject(error)
         })
       })
     },
-    /*savePhases(avenant) {
-      this.loading = true
-      this.avenant.phases.forEach((phase) => {
-        phase.avenant_creer = avenant.id
-        phase.etude = this.etude.id
-      })
-      this.etude.phases.forEach((phase) => {
-        phase.avenant_edit = avenant.id
-        phase.etude = this.etude.id
-      })
-      const newPhases = this.avenant.phases.filter(p => p.id === undefined || p.id === null)
-      const phasesToSave = this.etude.phases.filter(p => this.avenant.phases.some(av_phase => av_phase.index === p.index)).concat(this.avenant.phases.filter(p => p.id !== undefined && p.id !== null))
-      const phasesToDelete = this.avenant.originalPhases.filter(p => !this.avenant.phases.some(av_phase => av_phase.index === p.index))
-      return new Promise((resolve, reject) => {
-        axios.post(
-          "/api/etudes/phases/",
-          newPhases,
-          {withCredentials: true}
-        ).then((res) => {
-          var promesses = []
-          phasesToSave.forEach((phase) => {
-            promesses.push(axios.put(
-              `/api/etudes/phases/${phase.id}/`,
-              phase,
-              {withCredentials: true}
-            ))
-          })
-          phasesToDelete.forEach((phase) => {
-            promesses.push(axios.delete(
-              `/api/etudes/phases/${phase.id}/`,
-              {withCredentials: true}
-            ))
-          })
-          Promise.all(promesses).then((res) => {
-            resolve(res.data)
-          }).catch((err) => {
-            console.error("Erreur lors de la mise à jour des phases", err)
-            reject(err)
-          })
-        }).catch((err) => {
-          console.error("Erreur lors de l'enregistrement des phases", err)
-          reject(err)
-        })
-      })
-    },*/
     savePhases(avenant, related, is_client) {
       this.loading = true
       avenant.phases.forEach((phase) => {

@@ -69,6 +69,7 @@ class CEViewDocx(generics.RetrieveAPIView):
         duree = 0
 
         phases = []
+        nbPhases = etude.phaseEtude.all().count()
         for phase in etude.phaseEtude.all():
             total = phase.nbJEH * phase.priceJEH
             phases.append({
@@ -91,6 +92,7 @@ class CEViewDocx(generics.RetrieveAPIView):
 
         context = {
             "etude": etude,
+            "nbPhases": nbPhases,
             "phases": phases,
             "total_nbJEH": total_nbJEH,
             "total_HT": total_HT,

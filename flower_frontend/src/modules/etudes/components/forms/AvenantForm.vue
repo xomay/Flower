@@ -213,7 +213,7 @@
       <el-option
         v-for="item in etude.phases"
         :key="item.id"
-        :label="`Phase ${item.index} : ${item.title}`"
+        :label="`Phase ${item.index < 0 ? 'transverse ' + Math.abs(item.index) : item.index} : ${item.title}`"
         :value="item.index"
       />
     </el-select>
@@ -221,12 +221,25 @@
     content-position="left">Modifier les phases</el-divider>
     <PhasesForm
       v-if="(avenant.is_delai || avenant.is_methodo || avenant.is_budget)"
-      v-model="avenant.phases"
+      v-model="avenant.phasesReal"
+      :requirements="avenant.requirements"
       :is_delai="avenant.is_delai"
       :is_methodo="avenant.is_methodo"
       :is_budget="avenant.is_budget"
       :small="false"
-      @add-phase="addPhase"
+      @add-phase="addPhase(false)"
+      @delete-phase="deletePhase"
+    />
+    <PhasesForm
+      v-if="(avenant.is_delai || avenant.is_methodo || avenant.is_budget)"
+      v-model="avenant.phasesTransverse"
+      :requirements="avenant.requirements"
+      :is_delai="avenant.is_delai"
+      :is_methodo="avenant.is_methodo"
+      :is_budget="avenant.is_budget"
+      :is_transverse="true"
+      :small="false"
+      @add-phase="addPhase(true)"
       @delete-phase="deletePhase"
     />
     <el-divider v-if="(avenant.is_cdc)" 
@@ -360,7 +373,7 @@
         <el-option
           v-for="item in avenantRM.mission.phasesMission"
           :key="item.id"
-          :label="`Phase ${item.index} : ${item.title}`"
+          :label="`Phase ${item.index < 0 ? 'transverse ' + Math.abs(item.index) : item.index} : ${item.title}`"
           :value="item.index"
         />
       </el-select>
@@ -456,6 +469,8 @@ export default {
         newPhase.uss = []
         return newPhase
       }).concat(this.avenant.originalPhases.filter(p => this.idx.includes(p.index)))
+      this.avenant.phasesReal = this.avenant.phases.filter(phase => phase.index >= 0)
+      this.avenant.phasesTransverse = this.avenant.phases.filter(phase => phase.index < 0)
     },
     RMidx () {
       this.filteredAvenantsRM = this.avenantsRM.filter(avenantRM => this.RMidx.includes(avenantRM.id))
@@ -469,6 +484,8 @@ export default {
         }
         this.initialized = true
       }
+      this.avenant.phasesReal = this.avenant.phases.filter(phase => phase.index >= 0)
+      this.avenant.phasesTransverse = this.avenant.phases.filter(phase => phase.index < 0)
     },
     avenantsRM () {
       if (!this.initialized && this.avenantsRM.length > 0) {
@@ -489,10 +506,16 @@ export default {
     updateRMReference (avenantRM) {
       this.$emit("update-rm-reference", avenantRM)
     },
-    addPhase () {
+    addPhase (trans) {
+      if (trans){
+        if (this.etude.phases.filter(phase => phase.index < 0).length > 0){
+          this.$message({message: "Impossible d'ajouter une nouvelle phase transverse car une phase transverse existe déjà.", type: "error"})
+          return
+        }
+      }
       const newIndex = this.etude.phases.length + 1,
         newPhase = {
-          index: newIndex,
+          index: trans ? -1 : newIndex,
           title: "",
           description: "",
           methodologie: "",
@@ -501,6 +524,7 @@ export default {
           period: "",
           priceJEH: 450,
           uss: [],
+          requirements: [],
           state: 'PENDING',
           avenant_creer: this.avenant.id,
           avenant_edit: null,
