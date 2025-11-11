@@ -205,6 +205,7 @@ export default {
     is_delai: { type: Boolean, default: true },
     is_methodo: { type: Boolean, default: true },
     is_budget: { type: Boolean, default: true },
+    is_cdc: { type: Boolean, default: true },
     is_transverse: { type: Boolean, default: false },
   },
   emits: ["update:modelValue", "add-phase", "add-us", "delete-phase", "delete-group", "delete-us", "requirements-change"],

@@ -4,18 +4,19 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import generics
 from http import HTTPStatus
 
-from flower_app.controllers.permissions import HasGroupPermission, HasReaPermissionToSeeEtude, is_in_group
+from flower_app.controllers.permissions import HasGroupPermission, HasReaPermissionToSeeEtude, is_in_group, \
+    HasAnyGroupPermission
 from flower_app.models.GroupePhase import US, USSerializer
 from flower_app.models.People.Realisateur import Realisateur
 
 class USView(generics.ListCreateAPIView, generics.UpdateAPIView, generics.DestroyAPIView):
-    permission_classes = [IsAuthenticated, HasGroupPermission]
+    permission_classes = [IsAuthenticated, HasAnyGroupPermission]
     required_groups = {
-        'GET': ['ROLE_CA'],
-        'POST': ['ROLE_CA'],
-        'PUT': ['ROLE_CA'],
-        'PATCH': ['ROLE_CA'],
-        'DELETE': ['ROLE_CA']
+        'GET': ['ROLE_CA', 'ROLE_PIOUS'],
+        'POST': ['ROLE_CA', 'ROLE_PIOUS'],
+        'PUT': ['ROLE_CA', 'ROLE_PIOUS'],
+        'PATCH': ['ROLE_CA', 'ROLE_PIOUS'],
+        'DELETE': ['ROLE_CA', 'ROLE_PIOUS']
     }
     serializer_class = USSerializer
     queryset = US.objects.all()
@@ -27,10 +28,10 @@ class USView(generics.ListCreateAPIView, generics.UpdateAPIView, generics.Destro
         return Response(serializer.data)
 
 class USDetailView(generics.DestroyAPIView, generics.UpdateAPIView):
-    permission_classes = [IsAuthenticated, HasGroupPermission]
+    permission_classes = [IsAuthenticated, HasAnyGroupPermission]
     required_groups = {
-        'PUT': ['ROLE_CA'],
-        'DELETE': ['ROLE_CA']
+        'PUT': ['ROLE_CA', 'ROLE_PIOUS'],
+        'DELETE': ['ROLE_CA', 'ROLE_PIOUS']
     }
     serializer_class = USSerializer
     queryset = US.objects.all()

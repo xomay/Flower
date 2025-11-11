@@ -58,7 +58,7 @@
           prop="title"
         >
           <template #default="{row}">
-            {{ row.title }} : <i><p color="gray">{{ row.description }}</p></i>
+            <b>Phase {{ row.index }} -</b> {{ row.title }} : <i><p color="gray">{{ row.description }}</p></i>
           </template>
         </el-table-column>
         <el-table-column

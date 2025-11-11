@@ -226,6 +226,7 @@
       :is_delai="avenant.is_delai"
       :is_methodo="avenant.is_methodo"
       :is_budget="avenant.is_budget"
+      :is_cdc="avenant.is_cdc"
       :small="false"
       @add-phase="addPhase(false)"
       @delete-phase="deletePhase"
@@ -237,6 +238,7 @@
       :is_delai="avenant.is_delai"
       :is_methodo="avenant.is_methodo"
       :is_budget="avenant.is_budget"
+      :is_cdc="avenant.is_cdc"
       :is_transverse="true"
       :small="false"
       @add-phase="addPhase(true)"
@@ -385,6 +387,7 @@
         :is_delai="avenantRM.is_delai"
         :is_methodo="avenantRM.is_methodo"
         :is_budget="avenantRM.is_budget"
+        :is_cdc="avenantRM.is_cdc"
         :small="false"
       />
       <el-divider v-if="(avenantRM.is_cdc)" 
