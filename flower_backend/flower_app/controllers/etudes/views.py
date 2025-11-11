@@ -33,23 +33,21 @@ class EtudeListCreateView(generics.ListCreateAPIView):
             return EtudeSerializer
         return EtudeDetailSerializer
 
-    def get(self, request):
+    def get_queryset(self):
         user = self.request.user
-        if not user.groups.filter(name__in=['ROLE_PIOUS','ROLE_CA']).exists():
-            return Response({"detail": "Vous n'avez pas la permission d'accéder à cette ressource."}, status=HTTPStatus.FORBIDDEN)
-        elif user.groups.filter(name='ROLE_PIOUS').exists() and not user.groups.filter(name='ROLE_CA').exists():
-            self.queryset = SimuEtude.objects.all()
-            return super().get(self)
-        return super().get(self)
+        if user.groups.filter(name='ROLE_PIOUS').exists() and not user.groups.filter(
+                name='ROLE_CA').exists():
+            return SimuEtude.objects.all()
+        else:
+            return Etude.objects.filter(simuetude__isnull=True)
 
     def post(self, request):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        user = self.request.user
 
-        if not user.groups.filter(name__in=['ROLE_PIOUS','ROLE_CA']).exists():
+        if not self.request.user.groups.filter(name__in=['ROLE_PIOUS','ROLE_CA']).exists():
             return Response({"detail": "Vous n'avez pas la permission d'accéder à cette ressource."}, status=HTTPStatus.FORBIDDEN)
-        if user.groups.filter(name='ROLE_PIOUS').exists() and not user.groups.filter(
+        if self.request.user.groups.filter(name='ROLE_PIOUS').exists() and not self.request.user.groups.filter(
             name='ROLE_CA').exists():
             new_etude = SimuEtude.objects.create(**serializer.validated_data)
         else:
@@ -66,54 +64,51 @@ class CCListCreateView(generics.ListCreateAPIView):
     serializer_class = CCSerializer
     queryset = CC.objects.all()
 
-    def get(self, request):
+    def get_queryset(self):
         user = self.request.user
-        if not user.groups.filter(name__in=['ROLE_PIOUS','ROLE_CA']).exists():
-            return Response({"detail": "Vous n'avez pas la permission d'accéder à cette ressource."}, status=HTTPStatus.FORBIDDEN)
-        elif user.groups.filter(name='ROLE_PIOUS').exists() and not user.groups.filter(name='ROLE_CA').exists():
-            self.queryset = SimuCC.objects.all()
-            return super().get(self)
-        return super().get(self)
+        if user.groups.filter(name='ROLE_PIOUS').exists() and not user.groups.filter(
+                name='ROLE_CA').exists():
+            return SimuCC.objects.all()
+        return CC.objects.filter(simucc__isnull=True)
 
     def post(self, request):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        user = self.request.user
 
-        if not user.groups.filter(name__in=['ROLE_PIOUS','ROLE_CA']).exists():
+        if not self.request.user.groups.filter(name__in=['ROLE_PIOUS','ROLE_CA']).exists():
             return Response({"detail": "Vous n'avez pas la permission d'accéder à cette ressource."}, status=HTTPStatus.FORBIDDEN)
-        if user.groups.filter(name='ROLE_PIOUS').exists() and not user.groups.filter(
+        if self.request.user.groups.filter(name='ROLE_PIOUS').exists() and not self.request.user.groups.filter(
             name='ROLE_CA').exists():
-            new_cc = SimuCC.objects.create(**serializer.validated_data)
+            new_etude = SimuCC.objects.create(**serializer.validated_data)
         else:
-            new_cc = CC.objects.create(**serializer.validated_data)
-        serializer = EtudeSerializer(new_cc)
+            new_etude = CC.objects.create(**serializer.validated_data)
+        serializer = CCSerializer(new_etude)
         return Response(serializer.data, status=HTTPStatus.CREATED)
 
 class CEListCreateView(generics.ListCreateAPIView):
-    permission_classes = [IsAuthenticated, HasGroupPermission]
+    permission_classes = [IsAuthenticated, HasAnyGroupPermission]
     required_groups = {
-        'GET': ['ROLE_CA'],
-        'POST': ['ROLE_CA']
+        'GET': ['ROLE_CA', 'ROLE_PIOUS'],
+        'POST': ['ROLE_CA', 'ROLE_PIOUS']
     }
     serializer_class = CESerializer
     queryset = DocEtude.objects.all()
 
 class DocMissionListCreateView(generics.ListCreateAPIView):
-    permission_classes = [IsAuthenticated, HasGroupPermission]
+    permission_classes = [IsAuthenticated, HasAnyGroupPermission]
     required_groups = {
-        'GET': ['ROLE_CA'],
-        'POST': ['ROLE_CA']
+        'GET': ['ROLE_CA', 'ROLE_PIOUS'],
+        'POST': ['ROLE_CA', 'ROLE_PIOUS']
     }
     serializer_class = DocMissionSerializer
     queryset = DocMission.objects.all()
 
 class CEUpdateView(generics.RetrieveUpdateAPIView):
-    permission_classes = [IsAuthenticated, HasGroupPermission]
+    permission_classes = [IsAuthenticated, HasAnyGroupPermission]
     required_groups = {
-        'GET': ['ROLE_CA'],
-        'PUT': ['ROLE_CA'],
-        'PATCH': ['ROLE_CA'],
+        'GET': ['ROLE_CA', 'ROLE_PIOUS'],
+        'PUT': ['ROLE_CA', 'ROLE_PIOUS'],
+        'PATCH': ['ROLE_CA', 'ROLE_PIOUS'],
     }
     queryset = DocEtude.objects.all()
 
@@ -123,11 +118,11 @@ class CEUpdateView(generics.RetrieveUpdateAPIView):
         return CEDetailSerializer
 
 class CCUpdateView(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = [IsAuthenticated, HasGroupPermission]
+    permission_classes = [IsAuthenticated, HasAnyGroupPermission]
     required_groups = {
-        'PUT': ['ROLE_CA'],
-        'PATCH': ['ROLE_CA'],
-        'DELETE': ['ROLE_CA']
+        'PUT': ['ROLE_CA', 'ROLE_PIOUS'],
+        'PATCH': ['ROLE_CA', 'ROLE_PIOUS'],
+        'DELETE': ['ROLE_CA', 'ROLE_PIOUS'],
     }
     queryset = CC.objects.all()
 
@@ -136,12 +131,19 @@ class CCUpdateView(generics.RetrieveUpdateDestroyAPIView):
             return CCSerializer
         return CCDetailSerializer
 
+    def get_queryset(self):
+        user = self.request.user
+        if user.groups.filter(name='ROLE_PIOUS').exists() and not user.groups.filter(
+                name='ROLE_CA').exists():
+            return SimuCC.objects.all()
+        return CC.objects.filter(simucc__isnull=True)
+
 class DocMissionUpdateView(generics.RetrieveUpdateAPIView):
-    permission_classes = [IsAuthenticated, HasGroupPermission]
+    permission_classes = [IsAuthenticated, HasAnyGroupPermission]
     required_groups = {
-        'GET': ['ROLE_CA'],
-        'PUT': ['ROLE_CA'],
-        'PATCH': ['ROLE_CA'],
+        'GET': ['ROLE_CA', 'ROLE_PIOUS'],
+        'PUT': ['ROLE_CA', 'ROLE_PIOUS'],
+        'PATCH': ['ROLE_CA', 'ROLE_PIOUS'],
     }
     queryset = DocMission.objects.all()
 
@@ -151,11 +153,11 @@ class DocMissionUpdateView(generics.RetrieveUpdateAPIView):
         return DocMissionSerializer
 
 class EtudeRetrieveUpdateView(generics.RetrieveUpdateAPIView):
-    permission_classes = [IsAuthenticated, HasGroupPermission]
+    permission_classes = [IsAuthenticated, HasAnyGroupPermission]
     required_groups = {
-        'GET': ['ROLE_CA'],
-        'PUT': ['ROLE_CA'],
-        'PATCH': ['ROLE_CA']
+        'GET': ['ROLE_CA', 'ROLE_PIOUS'],
+        'PUT': ['ROLE_CA', 'ROLE_PIOUS'],
+        'PATCH': ['ROLE_CA', 'ROLE_PIOUS'],
     }
     queryset = Etude.objects.all()
 
@@ -163,6 +165,13 @@ class EtudeRetrieveUpdateView(generics.RetrieveUpdateAPIView):
         if self.request.method in ['PUT', 'PATCH']:
             return EtudeSerializer
         return EtudeDetailSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.groups.filter(name='ROLE_PIOUS').exists() and not user.groups.filter(
+                name='ROLE_CA').exists():
+            return SimuEtude.objects.all()
+        return Etude.objects.filter(simuetude__isnull=True)
 
 class EtudeEditFiles(APIView):
     def put(self, request, id):
@@ -282,14 +291,20 @@ class ReaEtudesDetailView(generics.RetrieveAPIView):
         return Response(data, status=HTTPStatus.OK)
 
 class CEView(generics.RetrieveUpdateAPIView):
-    permission_classes = [IsAuthenticated, HasGroupPermission]
+    permission_classes = [IsAuthenticated, HasAnyGroupPermission]
     required_groups = {
-        'GET': ['ROLE_CA'],
-        'PUT': ['ROLE_CA'],
-        'PATCH': ['ROLE_CA']
+        'GET': ['ROLE_CA', 'ROLE_PIOUS'],
+        'PUT': ['ROLE_CA', 'ROLE_PIOUS'],
+        'PATCH': ['ROLE_CA', 'ROLE_PIOUS']
     }
     serializer_class = CESerializer
     def retrieve(self, request, pk):
+        user = self.request.user
+        if not user.groups.filter(name__in=['ROLE_PIOUS', 'ROLE_CA']).exists():
+            return Response({"detail": "Vous n'avez pas la permission d'accéder à cette ressource."},
+                            status=HTTPStatus.FORBIDDEN)
+        elif user.groups.filter(name='ROLE_PIOUS').exists() and not user.groups.filter(name='ROLE_CA').exists():
+            Response(CEDetailSerializer(SimuEtude.objects.get(id=pk).docEtude).data)
         return Response(CEDetailSerializer(Etude.objects.get(id=pk).docEtude).data)
 
     def update(self, request, pk):
@@ -300,30 +315,37 @@ class CEView(generics.RetrieveUpdateAPIView):
         return Response()
 
 class CCView(generics.RetrieveUpdateAPIView):
-    permission_classes = [IsAuthenticated, HasGroupPermission]
+    permission_classes = [IsAuthenticated, HasAnyGroupPermission]
     required_groups = {
-        'GET': ['ROLE_CA'],
-        'PUT': ['ROLE_CA'],
-        'PATCH': ['ROLE_CA']
+        'GET': ['ROLE_CA', 'ROLE_PIOUS'],
+        'PUT': ['ROLE_CA', 'ROLE_PIOUS'],
+        'PATCH': ['ROLE_CA', 'ROLE_PIOUS']
     }
     serializer_class = CCSerializer
     def retrieve(self, request, pk):
+        user = self.request.user
+        if user.groups.filter(name='ROLE_PIOUS').exists() and not user.groups.filter(name='ROLE_CA').exists():
+            return Response(CCDetailSerializer(SimuCC.objects.get(id=pk)).data)
         return Response(CCDetailSerializer(CC.objects.get(id=pk)).data)
 
     def update(self, request, pk):
         serializer = CCSerializer(data=request.data)
         if (serializer.is_valid(raise_exception=True)):
+            user = self.request.user
+            if user.groups.filter(name='ROLE_PIOUS').exists() and not user.groups.filter(name='ROLE_CA').exists():
+                SimuCC.objects.filter(id=request.data['id']).update(**serializer.data)
+                return Response(serializer.data)
             CC.objects.filter(id=request.data['id']).update(**serializer.data)
             return Response(serializer.data)
         return Response()
 
 class MissionsView(generics.ListCreateAPIView, generics.UpdateAPIView):
-    permission_classes = [IsAuthenticated, HasGroupPermission]
+    permission_classes = [IsAuthenticated, HasAnyGroupPermission]
     required_groups = {
-        'GET': ['ROLE_CA'],
-        'POST': ['ROLE_CA'],                                        # from modules/etudes/views/MissionCreer.vue
-        'PUT': ['ROLE_CA'],                                         # from modules/etudes/views/MissionCreer.vue
-        'PATCH': ['ROLE_CA']
+        'GET': ['ROLE_CA', 'ROLE_PIOUS'],
+        'POST': ['ROLE_CA', 'ROLE_PIOUS'],                                        # from modules/etudes/views/MissionCreer.vue
+        'PUT': ['ROLE_CA', 'ROLE_PIOUS'],                                         # from modules/etudes/views/MissionCreer.vue
+        'PATCH': ['ROLE_CA', 'ROLE_PIOUS']
     }
     serializer_class = MissionSerializer
     lookup_url_kwarg = "project_id"
@@ -334,6 +356,9 @@ class MissionsView(generics.ListCreateAPIView, generics.UpdateAPIView):
         return MissionDetailSerializer
 
     def get_queryset(self):
+        user = self.request.user
+        if user.groups.filter(name='ROLE_PIOUS').exists() and not user.groups.filter(name='ROLE_CA').exists():
+            return SimuEtude.objects.get(id=self.kwargs.get('pk')).mission_set
         return Etude.objects.get(id=self.kwargs.get('pk')).mission_set
 
     def update(self, request):
@@ -359,9 +384,9 @@ class BVsView(APIView):
         return Response(None, status=HTTPStatus.FORBIDDEN)
     
 class MissionsDetailView(generics.DestroyAPIView):
-    permission_classes = [IsAuthenticated, HasGroupPermission]
+    permission_classes = [IsAuthenticated, HasAnyGroupPermission]
     required_groups = {
-        'DELETE': ['ROLE_CA']                                   #from from modules/etudes/components/forms/MissionForm.vue in modules/etudes/views/MissionCreer.vue
+        'DELETE': ['ROLE_CA', 'ROLE_PIOUS']                                   #from from modules/etudes/components/forms/MissionForm.vue in modules/etudes/views/MissionCreer.vue
     }
     serializer_class = MissionSerializer
     queryset = Mission.objects.all()

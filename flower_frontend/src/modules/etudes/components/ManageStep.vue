@@ -29,6 +29,7 @@
                 type="success"
                 icon="Check"
                 @click="levelupTo(1)"
+                plain
               >
                 La PC a été acceptée
               </el-button>
@@ -88,6 +89,7 @@
                 type="success"
                 icon="Check"
                 @click="signDateForm = true; form.docId = etude.docEtude.id"
+                plain
               >
                 {{ etude.hasCC ? 'Le BC' : "La CE" }} a été signé
               </el-button>
@@ -183,6 +185,7 @@
                 type="success"
                 icon="Check"
                 @click="levelupTo(3)"
+                plain
               >
                 Les RDM ont été signés
               </el-button>
@@ -261,6 +264,7 @@
                 type="success"
                 icon="Check"
                 @click="levelupTo(5)"
+                plain
               >
                 Le PVRI a été signé
               </el-button>
@@ -363,6 +367,7 @@
                 type="success"
                 icon="Check"
                 @click="levelupTo(7)"
+                plain
               >
                 Le PVRF a été signé
               </el-button>

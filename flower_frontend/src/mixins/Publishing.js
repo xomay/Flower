@@ -217,7 +217,7 @@ export default {
     },
     downloadRDM (rdmId) {
       this.loading = true
-      axios.get(`/api/publish/rdm/${rdmId}`, { withCredentials: true, responseType: "blob" }).then((response) => {
+      axios.get(`/api/publish/rdm/${rdmId}/`, { withCredentials: true, responseType: "blob" }).then((response) => {
         this.createDownloadElement(response.data, "RDM-" + this.etude.name + ".docx")
       }).catch(err => {
         if (err.response && err.response.status === 404) {
@@ -231,7 +231,7 @@ export default {
     },
     downloadPVR (pvrId) {
       this.loading = true
-      axios.get(`/api/publish/pvr/${pvrId}`, { withCredentials: true, responseType: "blob" }).then((response) => {
+      axios.get(`/api/publish/pvr/${pvrId}/`, { withCredentials: true, responseType: "blob" }).then((response) => {
         this.createDownloadElement(response.data, "PVR-" + this.etude.name + ".docx")
       }).catch(err => {
         this.$message({ message: "Une erreur est survenue lors de la génération du PVR : " + err, type: "error" })
@@ -241,7 +241,7 @@ export default {
     },
     downloadInvoice (invoiceId) {
       this.loading = true
-      axios.get(`/api/publish/facture/${invoiceId}`, { withCredentials: true, responseType: "blob" }).then((response) => {
+      axios.get(`/api/publish/facture/${invoiceId}/`, { withCredentials: true, responseType: "blob" }).then((response) => {
         this.createDownloadElement(response.data, "FA-" + this.etude.name + ".docx")
       }).catch(err => {
         this.$message({ message: "Une erreur est survenue lors de la génération de la facture : " + err, type: "error" })
@@ -252,7 +252,7 @@ export default {
     // DELETE
     deletePVR (pvrId, index) {
       this.loading = true
-      axios.delete(`/api/pvr/${pvrId}`, { withCredentials: true }).then(() => {
+      axios.delete(`/api/pvr/${pvrId}/`, { withCredentials: true }).then(() => {
         this.etude.pvr.splice(index, 1)
       }).catch(err => {
         this.$message({ message: err, type: "error", offset: 40 })

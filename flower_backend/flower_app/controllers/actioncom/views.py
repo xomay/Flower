@@ -22,7 +22,7 @@ class ActionsCommercialesListCreateView(generics.ListCreateAPIView):
         if self.request.user.groups.filter(name='ROLE_PIOUS').exists() and not self.request.user.groups.filter(
                 name='ROLE_CA').exists():
             return SimuAction.objects.all()
-        return Action.objects.all()
+        return Action.objects.filter(simuaction__isnull=True)
 
     def post(self, request):
         serializer = self.get_serializer(data=request.data)
@@ -65,7 +65,7 @@ class ActionsCommercialesDetailView(generics.RetrieveUpdateDestroyAPIView):
         if self.request.user.groups.filter(name='ROLE_PIOUS').exists() and not self.request.user.groups.filter(
                 name='ROLE_CA').exists():
             return SimuAction.objects.all()
-        return Action.objects.all()
+        return Action.objects.filter(simuaction__isnull=True)
 
 class ActionsTypesView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated, HasAnyGroupPermission]

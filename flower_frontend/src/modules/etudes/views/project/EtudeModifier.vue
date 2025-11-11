@@ -138,6 +138,7 @@ export default {
   methods: {
     abortEtude () {
       this.loading = true
+      this.etude.docEtude = this.etude.docEtude.id
       axios.put(
         `/api/etudes/${this.etude.id}/`,
         {

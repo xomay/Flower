@@ -15,18 +15,13 @@ from flower_app.models.Poste import Poste
 from flower_app.email.mail_user_accounts import send_mail_user_account_creation
 
 class MembreView(generics.ListCreateAPIView):
-    permission_classes = [IsAuthenticated, HasGroupPermission]
+    permission_classes = [IsAuthenticated, HasAnyGroupPermission]
     required_groups = {
-        #'GET': ['ROLE_PIOUS','ROLE_CA'],
+        'GET': ['ROLE_PIOUS','ROLE_CA'],
         'POST': ['ROLE_CA'],
     }
     serializer_class = MembreSerializer
     queryset = Membre.objects.all()
-
-    def get(self, request):
-        if not self.request.user.groups.filter(name__in=['ROLE_PIOUS','ROLE_CA']).exists():
-            return Response({"detail": "Vous n'avez pas la permission d'accéder à cette ressource."}, status=HTTPStatus.FORBIDDEN)
-        return super().get(self)
 
     def post(self, request):
         rep = super().post(request)

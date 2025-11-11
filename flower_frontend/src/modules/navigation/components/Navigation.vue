@@ -125,10 +125,10 @@ export default {
   },
   created () {
     // Accès selon les droits
+    this.addPiousCAStuff()
     this.addCAStuff()
     this.addTresoStuff()
     this.addAdminStuff()
-    this.addPiousStuff()
     // Accès réa :
     this.addReaStuff()
     // Si écran pas assez large, on replie le menu
@@ -222,9 +222,9 @@ export default {
       }
     },
     // Si l'utilisateur a des droits de Pious, ajoute ses outils dans la navbar
-    addPiousStuff () {
-      if (this.isPious() ) {
-        this.menu.push({
+    addPiousCAStuff () {
+      if (this.isPious() || this.isCA() ) {
+        /*this.menu.push({
           icon: "Monitor",
           title: "Simulation",
           children: [
@@ -250,13 +250,8 @@ export default {
               ]
             }
           ]
-        })
-      }
-    },
-    // Si l'utilisateur a des droits de CA, ajoute ses outils dans la navbar
-    addCAStuff () {
-      if (this.isCA() ) {
-        this.menu.push({
+        })*/
+       this.menu.push({
           icon: "UserFilled",
           title: "Gestion Associative",
           url: "/membres"
@@ -267,14 +262,20 @@ export default {
           url: "/etudes"
         },
         {
-          icon: "DataLine",
-          title: "Performance",
-          url: "/performance/devco" 
-        },
-        {
           icon: "Phone",
           title: "Prospection",
           url: "/prospects"
+        })
+      }
+    },
+    // Si l'utilisateur a des droits de CA, ajoute ses outils dans la navbar
+    addCAStuff () {
+      if (this.isCA() ) {
+        this.menu.push(
+        {
+          icon: "DataLine",
+          title: "Performance",
+          url: "/performance/devco" 
         },
         {
           icon: "ChatDotSquare",

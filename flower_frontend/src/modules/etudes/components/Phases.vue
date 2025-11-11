@@ -15,7 +15,7 @@
         type="primary"
         icon="EditPen"
         :loading="loading"
-        :disabled="etude.isAborted"
+        :disabled="etude.isAborted || etude.state >= 3"
       >
         {{ this.phases.length > 0 ? "Modifier les phases" : "Créer les phases" }}
       </el-button>

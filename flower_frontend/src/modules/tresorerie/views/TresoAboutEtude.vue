@@ -305,7 +305,7 @@ export default {
     },
     deletePVR (pvrId) {
       this.loading = true
-      axios.delete(`/api/pvr/${pvrId}`, { withCredentials: true }).then(() => {
+      axios.delete(`/api/pvr/${pvrId}/`, { withCredentials: true }).then(() => {
         this.$message({ message: "PVR supprimée avec succès.", type: "success"})
         this.etude.pvr = this.etude.pvr.filter(emlt => emlt.id !== pvrId)
       }).catch(err => {

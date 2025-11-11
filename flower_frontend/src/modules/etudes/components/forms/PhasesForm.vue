@@ -85,7 +85,8 @@
                         <el-select v-model="row.requirements"
                           @change="onRequirementsChange(row)"
                           multiple 
-                          placeholder="Sélectionner les références">
+                          placeholder="Sélectionner les références"
+                          :disabled="disabled || !is_cdc">
                           <el-option
                             v-for="req in requirements"
                             :key="req.id"

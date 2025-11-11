@@ -9,7 +9,7 @@ from flower_app.models.People.Membre import Membre
 
 class GenerateSignature(generics.RetrieveAPIView):
     def retrieve(self, request):
-        if request.user.is_authenticated and is_in_group(request.user, "ROLE_CA"):
+        if request.user.is_authenticated:
             membre = Membre.objects.get(user=request.user)
             return createSignature(membre)
         return Response("Accès non autorisé.", status=HTTPStatus.UNAUTHORIZED)

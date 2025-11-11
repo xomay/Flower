@@ -251,7 +251,7 @@ export default {
     return {
       displaysCE: null,
       loading: false,
-      activeCollapses: []
+      activeCollapses: ['0', '1', '2', '3']
     }
   },
   computed: {
@@ -288,7 +288,7 @@ export default {
       })
     },
     deletePVR (pvrId, index) {
-      axios.delete(`/api/pvr/${pvrId}`, { withCredentials: true }).then(() => {
+      axios.delete(`/api/pvr/${pvrId}/`, { withCredentials: true }).then(() => {
         this.etude.pvr.splice(index, 1)
       }).catch(err => {
         this.$message({ message: err, type: "error", offset: 40 })

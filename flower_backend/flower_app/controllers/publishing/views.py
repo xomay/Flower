@@ -3,16 +3,16 @@ from decimal import Decimal
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import generics
 
-from flower_app.controllers.permissions import HasGroupPermission
+from flower_app.controllers.permissions import HasGroupPermission, HasAnyGroupPermission
 from .publishing import computeDocx, computePdf
 from django.core.signing import Signer
 from django.http import HttpResponse
 from http import HTTPStatus
-from flower_app.models.Etude import Etude
+from flower_app.models.Etude import Etude, SimuEtude
 from flower_app.models.Facture import Facture
 from flower_app.models.Mission import Mission
 from flower_app.models.People.Membre import Membre
-from flower_app.models.People.Realisateur import Realisateur
+from flower_app.models.People.Realisateur import Realisateur, SimuRealisateur
 from flower_app.models.PVR import PVR
 from flower_app.models.NdF import NdF
 from flower_app.models.BV import BV
@@ -22,25 +22,30 @@ from flower_app.controllers.gantt.gantt import computeGanttFromEtudeRaw
 
 import tempfile
 
-from ...models.CC import CC
+from ...models.CC import CC, SimuCC
 
 
 class DevisView(generics.RetrieveAPIView):
-    permission_classes = [IsAuthenticated, HasGroupPermission]
+    permission_classes = [IsAuthenticated, HasAnyGroupPermission]
     required_groups = {
         # from modules/etudes/components/Generation.vue in modules/etudes/views/EtudeDetails.vue
-        'GET': ['ROLE_CA']
+        'GET': ['ROLE_CA', 'ROLE_PIOUS']
     }
 
-    def retrieve(request, self, etude_id):
-        etude = Etude.objects.get(pk=etude_id)
+    def retrieve(self, request, etude_id):
+        user = request.user
+        if user.groups.filter(name='ROLE_PIOUS').exists() and not user.groups.filter(
+                name='ROLE_CA').exists():
+            etude = SimuEtude.objects.get(pk=etude_id)
+        else:
+            etude = Etude.objects.get(pk=etude_id)
         return computeDocx({'etude': etude}, 'DEVIS.docx', 'DEVIS-' + etude.name)
 
 
 class CustomDevisView(generics.CreateAPIView):
-    permission_classes = [IsAuthenticated, HasGroupPermission]
+    permission_classes = [IsAuthenticated, HasAnyGroupPermission]
     required_groups = {
-        'POST': ['ROLE_CA']  # from modules/prospects/views/Devis.vue
+        'POST': ['ROLE_CA', 'ROLE_PIOUS']  # from modules/prospects/views/Devis.vue
     }
 
     def create(self, request):
@@ -51,14 +56,19 @@ class CustomDevisView(generics.CreateAPIView):
 
 
 class CEViewDocx(generics.RetrieveAPIView):
-    permission_classes = [IsAuthenticated, HasGroupPermission]
+    permission_classes = [IsAuthenticated, HasAnyGroupPermission]
     required_groups = {
         # from modules/etudes/components/Generation.vue in modules/etudes/views/EtudeDetails.vue
-        'GET': ['ROLE_CA']
+        'GET': ['ROLE_CA', 'ROLE_PIOUS']
     }
 
-    def retrieve(request, self, etude_id):
-        etude = Etude.objects.get(pk=etude_id)
+    def retrieve(self, request, etude_id):
+        user = request.user
+        if user.groups.filter(name='ROLE_PIOUS').exists() and not user.groups.filter(
+                name='ROLE_CA').exists():
+            etude = SimuEtude.objects.get(pk=etude_id)
+        else:
+            etude = Etude.objects.get(pk=etude_id)
         svgData = computeGanttFromEtudeRaw(etude)[1]
         tmp_img_file = tempfile.NamedTemporaryFile(delete=None, suffix='.jpg')
         svgData.write_image(tmp_img_file)
@@ -108,14 +118,19 @@ class CEViewDocx(generics.RetrieveAPIView):
             return computeDocx(context, 'BC.docx', 'BC-' + etude.name, images=images)
 
 class CEViewPdf(generics.RetrieveAPIView):
-    permission_classes = [IsAuthenticated, HasGroupPermission]
+    permission_classes = [IsAuthenticated, HasAnyGroupPermission]
     required_groups = {
         # from modules/etudes/components/Generation.vue in modules/etudes/views/EtudeDetails.vue
-        'GET': ['ROLE_CA']
+        'GET': ['ROLE_CA', 'ROLE_PIOUS']
     }
 
-    def retrieve(request, self, etude_id):
-        etude = Etude.objects.get(pk=etude_id)
+    def retrieve(self, request, etude_id):
+        user = request.user
+        if user.groups.filter(name='ROLE_PIOUS').exists() and not user.groups.filter(
+                name='ROLE_CA').exists():
+            etude = SimuEtude.objects.get(pk=etude_id)
+        else:
+            etude = Etude.objects.get(pk=etude_id)
         svgData = computeGanttFromEtudeRaw(etude)[1]
         tmp_img_file = tempfile.NamedTemporaryFile(delete=None, suffix='.jpg')
         svgData.write_image(tmp_img_file)
@@ -168,14 +183,19 @@ class CEViewPdf(generics.RetrieveAPIView):
             return computePdf(context, 'BC.docx', 'BC-' + etude.name, images=images)
 
 class CCViewDocx(generics.RetrieveAPIView):
-    permission_classes = [IsAuthenticated, HasGroupPermission]
+    permission_classes = [IsAuthenticated, HasAnyGroupPermission]
     required_groups = {
         # from modules/etudes/components/Generation.vue in modules/etudes/views/EtudeDetails.vue
-        'GET': ['ROLE_CA']
+        'GET': ['ROLE_CA', 'ROLE_PIOUS']
     }
 
-    def retrieve(request, self, cc_id):
-        cc = CC.objects.get(pk=cc_id)
+    def retrieve(self, request, cc_id):
+        user = request.user
+        if user.groups.filter(name='ROLE_PIOUS').exists() and not user.groups.filter(
+                name='ROLE_CA').exists():
+            cc = SimuCC.objects.get(pk=cc_id)
+        else:
+            cc = CC.objects.get(pk=cc_id)
 
         context = {
             "cc": cc,
@@ -184,14 +204,19 @@ class CCViewDocx(generics.RetrieveAPIView):
         return computeDocx(context, 'CCA.docx', 'CC-' + cc.name)
 
 class CCViewPdf(generics.RetrieveAPIView):
-    permission_classes = [IsAuthenticated, HasGroupPermission]
+    permission_classes = [IsAuthenticated, HasAnyGroupPermission]
     required_groups = {
         # from modules/etudes/components/Generation.vue in modules/etudes/views/EtudeDetails.vue
-        'GET': ['ROLE_CA']
+        'GET': ['ROLE_CA', 'ROLE_PIOUS']
     }
 
-    def retrieve(request, self, cc_id):
-        cc = CC.objects.get(pk=cc_id)
+    def retrieve(self, request, cc_id):
+        user = request.user
+        if user.groups.filter(name='ROLE_PIOUS').exists() and not user.groups.filter(
+                name='ROLE_CA').exists():
+            cc = SimuCC.objects.get(pk=cc_id)
+        else:
+            cc = CC.objects.get(pk=cc_id)
         print("CC ", cc.number)
 
         context = {
@@ -202,13 +227,13 @@ class CCViewPdf(generics.RetrieveAPIView):
 
 
 class RDMView(generics.RetrieveAPIView):
-    permission_classes = [IsAuthenticated, HasGroupPermission]
+    permission_classes = [IsAuthenticated, HasAnyGroupPermission]
     required_groups = {
         # from modules/etudes/components/Generation.vue in modules/etudes/views/EtudeDetails.vue
-        'GET': ['ROLE_CA']
+        'GET': ['ROLE_CA', 'ROLE_PIOUS']
     }
 
-    def retrieve(request, self, rdm_id):
+    def retrieve(self, request, rdm_id):
         mission = Mission.objects.get(pk=rdm_id)
         rea = mission.consultant
 
@@ -249,7 +274,7 @@ class NdFView(generics.RetrieveAPIView):
         'GET': ['ROLE_CA', 'ROLE_TRESO']
     }
 
-    def retrieve(request, self, ndf_id):
+    def retrieve(self, request, ndf_id):
         ndf = NdF.objects.get(pk=ndf_id)
         return computeDocx({'ndf': ndf}, 'NF.docx', ndf.reference)
 
@@ -260,7 +285,7 @@ class BVView(generics.RetrieveAPIView):
         'GET': ['ROLE_CA', 'ROLE_TRESO']
     }
 
-    def retrieve(request, self, bv_id):
+    def retrieve(self, request, bv_id):
         bv = BV.objects.get(pk=bv_id)
         return computeDocx({
             'bv': bv,
@@ -269,12 +294,12 @@ class BVView(generics.RetrieveAPIView):
 
 
 class BAView(generics.RetrieveAPIView):
-    permission_classes = [IsAuthenticated, HasGroupPermission]
+    permission_classes = [IsAuthenticated, HasAnyGroupPermission]
     required_groups = {
-        'GET': ['ROLE_CA']
+        'GET': ['ROLE_CA', 'ROLE_PIOUS']
     }
 
-    def retrieve(request, self, etudiant_id):
+    def retrieve(self, request, etudiant_id):
         rea = Membre.objects.get(pk=etudiant_id)
         if rea.ba == None:
             rea.ba = date.today()
@@ -303,13 +328,18 @@ class BAView(generics.RetrieveAPIView):
 
 
 class BAReaView(generics.RetrieveAPIView):
-    permission_classes = [IsAuthenticated, HasGroupPermission]
+    permission_classes = [IsAuthenticated, HasAnyGroupPermission]
     required_groups = {
-        'GET': ['ROLE_CA']
+        'GET': ['ROLE_CA', 'ROLE_PIOUS']
     }
 
-    def retrieve(request, self, etudiant_id):
-        rea = Realisateur.objects.get(pk=etudiant_id)
+    def retrieve(self, request, etudiant_id):
+        user = request.user
+        if user.groups.filter(name='ROLE_PIOUS').exists() and not user.groups.filter(
+                name='ROLE_CA').exists():
+            rea = SimuRealisateur.objects.get(pk=etudiant_id)
+        else:
+            rea = Realisateur.objects.get(pk=etudiant_id)
         if rea.ba == None:
             rea.ba = date.today()
             if BA.objects.filter(year=rea.ba.year, type="REA").first():
@@ -328,13 +358,13 @@ class BAReaView(generics.RetrieveAPIView):
 
 
 class FactureView(generics.RetrieveAPIView):
-    permission_classes = [IsAuthenticated, HasGroupPermission]
+    permission_classes = [IsAuthenticated, HasAnyGroupPermission]
     required_groups = {
         # from modules/etudes/components/Generation.vue in modules/etudes/views/EtudeDetails.vue
-        'GET': ['ROLE_CA']
+        'GET': ['ROLE_CA', 'ROLE_PIOUS']
     }
 
-    def retrieve(request, self, facture_id):
+    def retrieve(self, request, facture_id):
         invoice = Facture.objects.get(pk=facture_id)
         return computeDocx({'facture': invoice}, 'FA.docx', str(invoice))
 
@@ -345,7 +375,7 @@ class SharedFactureView(generics.RetrieveAPIView):
         'GET': []
     }
 
-    def retrieve(request, self, facture_id, key):
+    def retrieve(self, request, facture_id, key):
         signer = Signer()
         expected_key = signer.sign('facture'+str(facture_id))
         if(key == expected_key):
@@ -357,12 +387,12 @@ class SharedFactureView(generics.RetrieveAPIView):
 
 
 class PVRView(generics.RetrieveAPIView):
-    permission_classes = [IsAuthenticated, HasGroupPermission]
+    permission_classes = [IsAuthenticated, HasAnyGroupPermission]
     required_groups = {
         # from modules/etudes/components/Generation.vue in modules/etudes/views/EtudeDetails.vue
-        'GET': ['ROLE_CA']
+        'GET': ['ROLE_CA', 'ROLe_PIOUS']
     }
 
-    def retrieve(request, self, pvr_id):
+    def retrieve(self, request, pvr_id):
         pvr = PVR.objects.get(pk=pvr_id)
         return computeDocx({'pvr': pvr}, 'PVR.docx')

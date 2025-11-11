@@ -92,7 +92,7 @@ class ProspectRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
         if self.request.user.groups.filter(name='ROLE_PIOUS').exists() and not self.request.user.groups.filter(
             name='ROLE_CA').exists():
             return SimuProspect.objects.all()
-        return Prospect.objects.all()
+        return Prospect.objects.filter(simuprospect__isnull=True)
 
     # Durant le GET, on update en fct des stings PUIS on remplace les ID de contactway par leur valeur textuelle.
     def update(self, *args, **kwargs):
@@ -132,7 +132,8 @@ class EmployeListCreateView(generics.ListCreateAPIView):
         if self.request.user.groups.filter(name='ROLE_PIOUS').exists() and not self.request.user.groups.filter(
             name='ROLE_CA').exists():
             employes = SimuProspect.objects.get(id=prospectId).employe_set
-        employes = Prospect.objects.get(id=prospectId).employe_set
+        else:
+            employes = Prospect.objects.get(id=prospectId).employe_set
         return employes
     
     def create(self, request, id):
