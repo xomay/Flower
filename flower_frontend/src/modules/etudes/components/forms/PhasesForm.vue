@@ -177,7 +177,7 @@
         <el-button
           type="text"
           icon="Plus"
-          :disabled="disabled || !is_methodo || !is_budget || !is_delai"
+          :disabled="disabled || !is_methodo || !is_delai"
           v-show="!is_transverse || (is_transverse && modelValue.length == 0)"
           @click="addPhase()"
         >

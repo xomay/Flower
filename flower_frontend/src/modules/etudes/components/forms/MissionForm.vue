@@ -186,7 +186,7 @@
             <el-input-number
               v-model="row.nbJEH"
               controls-position="right"
-              :min="1"
+              :min="0"
               :max="getRemainingJEH(row.phaseEtude, mission)"
               style="width: 90%"
               size="small"
@@ -278,7 +278,7 @@ export default {
           return total + (match ? Number(match.nbJEH || 0) : 0)
         }, 0)
 
-        return totalAllocated < phase.nbJEH || currentMission.phases.includes(phase.id)
+        return phase.nbJEH == 0 || totalAllocated < phase.nbJEH || currentMission.phases.includes(phase.id)
       })
     },
     validateForm () {

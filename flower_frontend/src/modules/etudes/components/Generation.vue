@@ -23,7 +23,7 @@
     <el-button
       type="success"
       :loading="loading"
-      :disabled="!allowDevisGenerate"
+      :disabled="!allowDevisGenerate || true"
       icon="Download"
       @click="downloadDevis"
     >

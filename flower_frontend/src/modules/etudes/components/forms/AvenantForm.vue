@@ -146,6 +146,7 @@
         </el-col>
       </el-row>
     </el-form>
+    <div v-if="globalForm.is_client">
     <el-divider v-if="(avenant.is_budget)" 
     content-position="left">Modifier les frais</el-divider>
     <el-form
@@ -254,6 +255,7 @@
         :autosize="{ minRows: 10 }"
         placeholder="Cahier des charges de la phase"
       />
+    </div>
     </div>
     <!-- ---------------------Avenant aux RMs--------------------- -->
      <el-divider v-if="globalForm.is_inter && create" content-position="left">
@@ -472,8 +474,7 @@ export default {
         newPhase.uss = []
         return newPhase
       }).concat(this.avenant.originalPhases.filter(p => this.idx.includes(p.index)))
-      this.avenant.phasesReal = this.avenant.phases.filter(phase => phase.index >= 0)
-      this.avenant.phasesTransverse = this.avenant.phases.filter(phase => phase.index < 0)
+      this.update_phases()
     },
     RMidx () {
       this.filteredAvenantsRM = this.avenantsRM.filter(avenantRM => this.RMidx.includes(avenantRM.id))
@@ -487,8 +488,7 @@ export default {
         }
         this.initialized = true
       }
-      this.avenant.phasesReal = this.avenant.phases.filter(phase => phase.index >= 0)
-      this.avenant.phasesTransverse = this.avenant.phases.filter(phase => phase.index < 0)
+      this.update_phases()
     },
     avenantsRM () {
       if (!this.initialized && this.avenantsRM.length > 0) {
@@ -508,6 +508,10 @@ export default {
     },
     updateRMReference (avenantRM) {
       this.$emit("update-rm-reference", avenantRM)
+    },
+    update_phases(){
+      this.avenant.phasesReal = this.avenant.phases.filter(phase => phase.index >= 0)
+      this.avenant.phasesTransverse = this.avenant.phases.filter(phase => phase.index < 0)
     },
     addPhase (trans) {
       if (trans){
@@ -534,12 +538,14 @@ export default {
           etude: this.etude.id,
         }
       this.avenant.phases.push(newPhase)
+      this.update_phases()
     },
     deletePhase ({phase}) {
       this.avenant.phases = this.avenant.phases.filter(p => p.index !== phase.index)
       if (this.idx.includes(phase.index)) {
         this.idx = this.idx.filter(i => i !== phase.index)
       }
+      this.update_phases()
     },
     getAvailablePhases () {
       // Vérifier si la phase est déjà sélectionnée dans l'avenant via la liste de phases qui ont le meme index que la phase

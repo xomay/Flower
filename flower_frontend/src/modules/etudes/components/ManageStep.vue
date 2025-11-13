@@ -15,7 +15,7 @@
             </div>
             <el-row class="stCardRw">
               <el-button
-                :disabled="!btn_devis_generate"
+                :disabled="true || !btn_devis_generate"
                 :loading="loading"
                 type="primary"
                 plain
@@ -76,7 +76,7 @@
                 <el-button
                   type="primary"
                   :loading="loading"
-                  icon="Download"
+                  icon="EditPen"
                   :disabled="!btn_ce_generate"
                   plain
                 >
@@ -93,6 +93,14 @@
               >
                 {{ etude.hasCC ? 'Le BC' : "La CE" }} a été signé
               </el-button>
+              <el-button
+                v-show="etude.state > 1 && !btn_ce_levelup"
+                :loading="loading"
+                type="success"
+                icon="Calendar"
+                @click="signDateForm = true; form.docId = etude.docEtude.id"
+                plain
+              />
               <el-alert
                 v-show="btn_ce_help"
                 :title="etude.hasCC ? 'BC non rédigé' : 'CE non rédigée'"

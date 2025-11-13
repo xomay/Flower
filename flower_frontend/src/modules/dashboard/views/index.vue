@@ -148,7 +148,7 @@
     <!-- Footer version -->
     <div class="version-footer">
       <el-text type="info">
-        Version actuelle : <b>flower 2.0.1</b>
+        Version actuelle : <b>flower 2.0.2</b>
       </el-text>
     </div>
   </div>
