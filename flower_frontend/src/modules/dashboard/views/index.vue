@@ -63,7 +63,7 @@
         </router-link>
       </el-col>
       
-      <el-col :span="6">
+      <el-col :span="6" v-if="!this.isPious()">
         <router-link to="tresorerie/etudes">
         <el-card class="stat-card" shadow="hover">
           <div class="stat-content">
@@ -110,7 +110,7 @@
           </router-link>
         </el-col>
         
-        <el-col :span="8">
+        <el-col :span="8" v-if="!this.isPious()">
           <router-link to="/membres/ajouter">
             <el-button type="info" size="large" class="action-button">
               <el-icon style="margin: 5px; font-size: 1.2rem;"><User /></el-icon>
