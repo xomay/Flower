@@ -3,7 +3,7 @@
     :title="title"
     :breadcrumb="breadcrumb"
   >
-    <template v-slot:action>
+    <template v-slot:action v-if="!isOnlyPious()">
       <el-button
         type="primary"
         icon="Edit"
@@ -164,10 +164,11 @@ axios.defaults.withCredentials = true
 import Utils from "@/mixins/Utils"
 import MemberView from "../components/MemberView"
 import MemberIndicatorsView from "../components/MemberIndicatorsView"
+import { Permissions } from "@/mixins/Permissions"
 
 export default {
   name: "MembresDetail",
-  mixins: [Utils],
+  mixins: [Utils, Permissions],
   components: { MemberView, MemberIndicatorsView },
   data () {
     return {

@@ -76,7 +76,7 @@ export default {
   computed: {
     // Phases non sélectionnées par les RDM
     unpicked_phases () {
-      return this.phases.filter(ph => ! ph.hasRDM)
+      return this.phases.filter(ph => ph.nbJEH > 0 && !ph.hasRDM)
     }
   },
   beforeCreate () {

@@ -1,7 +1,7 @@
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import generics
 
-from flower_app.controllers.permissions import HasGroupPermission
+from flower_app.controllers.permissions import HasGroupPermission, HasAnyGroupPermission
 from flower_app.models.Avenant import AvenantEtude, AvenantMissionSerializer, AvenantMission, AvenantEtudeSerializer, \
     AvenantEtudeDetailSerializer, AvenantMissionDetailSerializer
 from flower_app.models.DocEtude import DocEtude, CESerializer, CEDetailSerializer, DocMission, DocMissionSerializer, \
@@ -9,10 +9,10 @@ from flower_app.models.DocEtude import DocEtude, CESerializer, CEDetailSerialize
 
 
 class AvenantEtudeView(generics.CreateAPIView):
-    permission_classes = [IsAuthenticated, HasGroupPermission]
+    permission_classes = [IsAuthenticated, HasAnyGroupPermission]
     required_groups = {
-        'GET': ['ROLE_CA'],
-        'POST': ['ROLE_CA'],
+        'GET': ['ROLE_CA', 'ROLE_PIOUS'],
+        'POST': ['ROLE_CA', 'ROLE_PIOUS'],
     }
     serializer_class = AvenantEtudeSerializer
     queryset = AvenantEtude.objects.all()
@@ -22,11 +22,18 @@ class AvenantEtudeView(generics.CreateAPIView):
             return AvenantEtudeSerializer
         return AvenantEtudeDetailSerializer
 
+    def get_queryset(self):
+        user = self.request.user
+        if user.groups.filter(name='ROLE_PIOUS').exists() and not user.groups.filter(name='ROLE_CA').exists():
+            # Filtrer uniquement les requirements liés à des SimuEtude
+            return AvenantEtude.objects.filter(etude__simuetude__isnull=False)
+        return AvenantEtude.objects.all()
+
 class AvenantMissionView(generics.CreateAPIView):
-    permission_classes = [IsAuthenticated, HasGroupPermission]
+    permission_classes = [IsAuthenticated, HasAnyGroupPermission]
     required_groups = {
-        'GET': ['ROLE_CA'],
-        'POST': ['ROLE_CA'],
+        'GET': ['ROLE_CA', 'ROLE_PIOUS'],
+        'POST': ['ROLE_CA', 'ROLE_PIOUS'],
     }
     serializer_class = AvenantMissionSerializer
     queryset = AvenantMission.objects.all()
@@ -36,13 +43,20 @@ class AvenantMissionView(generics.CreateAPIView):
             return AvenantMissionSerializer
         return AvenantMissionDetailSerializer
 
+    def get_queryset(self):
+        user = self.request.user
+        if user.groups.filter(name='ROLE_PIOUS').exists() and not user.groups.filter(name='ROLE_CA').exists():
+            # Filtrer uniquement les requirements liés à des SimuEtude
+            return AvenantMission.objects.filter(mission__project__simuetude__isnull=False)
+        return AvenantMission.objects.all()
+
 
 class AvenantEtudeDetailView(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = [IsAuthenticated, HasGroupPermission]
+    permission_classes = [IsAuthenticated, HasAnyGroupPermission]
     required_groups = {
-        'PUT': ['ROLE_CA'],
-        'PATCH': ['ROLE_CA'],
-        'DELETE': ['ROLE_CA']
+        'PUT': ['ROLE_CA', 'ROLE_PIOUS'],
+        'PATCH': ['ROLE_CA', 'ROLE_PIOUS'],
+        'DELETE': ['ROLE_CA', 'ROLE_PIOUS']
     }
     queryset = AvenantEtude.objects.all()
 
@@ -50,6 +64,13 @@ class AvenantEtudeDetailView(generics.RetrieveUpdateDestroyAPIView):
         if self.request.method in ['PUT', 'PATCH','DELETE']:
             return AvenantEtudeSerializer
         return AvenantEtudeDetailSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.groups.filter(name='ROLE_PIOUS').exists() and not user.groups.filter(name='ROLE_CA').exists():
+            # Filtrer uniquement les requirements liés à des SimuEtude
+            return AvenantEtude.objects.filter(etude__simuetude__isnull=False)
+        return AvenantEtude.objects.all()
 
     def delete(self, request, *args, **kwargs):
         from flower_app.models.GroupePhase import PhaseEtude
@@ -59,11 +80,11 @@ class AvenantEtudeDetailView(generics.RetrieveUpdateDestroyAPIView):
         return self.destroy(request, *args, **kwargs)
 
 class AvenantEtudeDocDetailView(generics.RetrieveUpdateAPIView):
-    permission_classes = [IsAuthenticated, HasGroupPermission]
+    permission_classes = [IsAuthenticated, HasAnyGroupPermission]
     required_groups = {
-        'GET': ['ROLE_CA'],
-        'PUT': ['ROLE_CA'],
-        'PATCH': ['ROLE_CA'],
+        'GET': ['ROLE_CA', 'ROLE_PIOUS'],
+        'PUT': ['ROLE_CA', 'ROLE_PIOUS'],
+        'PATCH': ['ROLE_CA', 'ROLE_PIOUS'],
     }
     queryset = DocEtude.objects.all()
 
@@ -72,13 +93,20 @@ class AvenantEtudeDocDetailView(generics.RetrieveUpdateAPIView):
             return AvenantEtudeDocSerializer
         return CEDetailSerializer
 
+    def get_queryset(self):
+        user = self.request.user
+        if user.groups.filter(name='ROLE_PIOUS').exists() and not user.groups.filter(name='ROLE_CA').exists():
+            # Filtrer uniquement les requirements liés à des SimuEtude
+            return DocEtude.objects.filter(etude__simuetude__isnull=False)
+        return DocEtude.objects.all()
+
 
 class AvenantMissionDetailView(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = [IsAuthenticated, HasGroupPermission]
+    permission_classes = [IsAuthenticated, HasAnyGroupPermission]
     required_groups = {
-        'PUT': ['ROLE_CA'],
-        'PATCH': ['ROLE_CA'],
-        'DELETE': ['ROLE_CA']
+        'PUT': ['ROLE_CA', 'ROLE_PIOUS'],
+        'PATCH': ['ROLE_CA', 'ROLE_PIOUS'],
+        'DELETE': ['ROLE_CA', 'ROLE_PIOUS']
     }
     queryset = AvenantMission.objects.all()
 
@@ -86,6 +114,13 @@ class AvenantMissionDetailView(generics.RetrieveUpdateDestroyAPIView):
         if self.request.method in ['PUT', 'PATCH','DELETE']:
             return AvenantMissionSerializer
         return AvenantMissionDetailSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.groups.filter(name='ROLE_PIOUS').exists() and not user.groups.filter(name='ROLE_CA').exists():
+            # Filtrer uniquement les requirements liés à des SimuEtude
+            return AvenantMission.objects.filter(mission__project__simuetude__isnull=False)
+        return AvenantMission.objects.all()
 
     def delete(self, request, *args, **kwargs):
         from flower_app.models.GroupePhase import PhaseMission
@@ -95,11 +130,11 @@ class AvenantMissionDetailView(generics.RetrieveUpdateDestroyAPIView):
         return self.destroy(request, *args, **kwargs)
 
 class AvenantDocMissionDetailView(generics.RetrieveUpdateAPIView):
-    permission_classes = [IsAuthenticated, HasGroupPermission]
+    permission_classes = [IsAuthenticated, HasAnyGroupPermission]
     required_groups = {
-        'GET': ['ROLE_CA'],
-        'PUT': ['ROLE_CA'],
-        'PATCH': ['ROLE_CA'],
+        'GET': ['ROLE_CA', 'ROLE_PIOUS'],
+        'PUT': ['ROLE_CA', 'ROLE_PIOUS'],
+        'PATCH': ['ROLE_CA', 'ROLE_PIOUS'],
     }
     queryset = DocMission.objects.all()
 
@@ -107,3 +142,10 @@ class AvenantDocMissionDetailView(generics.RetrieveUpdateAPIView):
         if self.request.method in ['PUT', 'PATCH']:
             return AvenantDocMissionSerializer
         return DocMissionSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.groups.filter(name='ROLE_PIOUS').exists() and not user.groups.filter(name='ROLE_CA').exists():
+            # Filtrer uniquement les requirements liés à des SimuEtude
+            return DocMission.objects.filter(mission__project__simuetude__isnull=False)
+        return DocMission.objects.all()

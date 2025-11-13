@@ -48,11 +48,16 @@ class GetParameter(APIView):
 class PostesCreateView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated, HasGroupPermission]
     required_groups = {
-        'GET': ['ROLE_CA'],
+        #'GET': ['ROLE_CA'],
         'POST': ['ROLE_ADMIN']
     }
     serializer_class = PosteSerializer
     queryset = Poste.objects.all()
+
+    def get(self, request):
+        if not self.request.user.groups.filter(name__in=['ROLE_PIOUS','ROLE_CA']).exists():
+            return Response({"detail": "Vous n'avez pas la permission d'accéder à cette ressource."}, status=HTTPStatus.FORBIDDEN)
+        return super().get(self)
 
 class PostesUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated, HasGroupPermission]

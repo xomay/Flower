@@ -208,7 +208,7 @@
         label="Compléter les informations pour une mission"
         size="large"
         style="margin-bottom: 10px;"
-        :disabled="!this.$store.currentUser.roles.includes('ROLE_ADMIN')"
+        :disabled="!this.$store.currentUser.roles.includes('ROLE_ADMIN') && !create"
         border
       />
       <el-col v-if="rea_form">

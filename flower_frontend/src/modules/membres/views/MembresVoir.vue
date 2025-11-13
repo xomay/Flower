@@ -6,6 +6,7 @@
     <template #action>
       <router-link to="/membres/ajouter">
         <el-button
+          v-if="!isOnlyPious()"
           type="primary"
           icon="Plus"
           plain

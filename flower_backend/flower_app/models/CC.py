@@ -22,6 +22,11 @@ class CC(models.Model):
     def __str__(self):
         return 'CC'
 
+class SimuCC(CC):
+    class Meta:
+        verbose_name = "SimuCC"
+        verbose_name_plural = "SimuCCs"
+
 class CCSerializer(serializers.ModelSerializer):
     class Meta:
         model = CC

@@ -120,7 +120,7 @@
         />
       </el-form-item>
     </el-col>
-    <el-col :span="24">
+    <el-col :span="24" v-if="false">
       <span>
         Moyens de contact :
       </span>

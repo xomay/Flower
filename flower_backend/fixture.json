@@ -920,6 +920,14 @@
         "permissions": []
     }
 },
+    {
+    "model": "auth.group",
+    "pk": 7,
+    "fields": {
+        "name": "ROLE_PIOUS",
+        "permissions": []
+    }
+},
 {
     "model": "auth.user",
     "pk": 3,

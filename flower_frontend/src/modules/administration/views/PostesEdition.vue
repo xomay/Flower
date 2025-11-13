@@ -144,7 +144,7 @@ export default {
       ],
       loading: true,
       postes: [],
-      roles: [{id:1, name:"ROLE_ADMIN"}, {id:2, name:"ROLE_BUREAU"}, {id:3, name:"ROLE_CA"}, {id:4, name:"ROLE_QUALI"}, {id:5, name:"ROLE_SUIVEUR"}, {id:6, name:"ROLE_TRESO"}]
+      roles: [{id:1, name:"ROLE_ADMIN"}, {id:2, name:"ROLE_BUREAU"}, {id:3, name:"ROLE_CA"}, {id:4, name:"ROLE_QUALI"}, {id:5, name:"ROLE_SUIVEUR"}, {id:6, name:"ROLE_TRESO"}, {id:7, name:"ROLE_PIOUS"}]
     }
   },
   beforeCreate () {

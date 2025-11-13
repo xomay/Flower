@@ -8,16 +8,16 @@ from rest_framework import generics
 from http import HTTPStatus
 import random, string
 
-from flower_app.controllers.permissions import HasGroupPermission
+from flower_app.controllers.permissions import HasGroupPermission, HasAnyGroupPermission
 from flower_app.models.People.Membre import Membre, MembreSerializer
 from flower_app.models.People.Realisateur import Realisateur
 from flower_app.models.Poste import Poste
 from flower_app.email.mail_user_accounts import send_mail_user_account_creation
 
 class MembreView(generics.ListCreateAPIView):
-    permission_classes = [IsAuthenticated, HasGroupPermission]
+    permission_classes = [IsAuthenticated, HasAnyGroupPermission]
     required_groups = {
-        'GET': ['ROLE_CA'],
+        'GET': ['ROLE_PIOUS','ROLE_CA'],
         'POST': ['ROLE_CA'],
     }
     serializer_class = MembreSerializer
@@ -32,9 +32,9 @@ class MembreView(generics.ListCreateAPIView):
         return Response(serializer.data, status=HTTPStatus.CREATED)
 
 class MembreDetailView(generics.RetrieveUpdateAPIView, generics.DestroyAPIView):
-    permission_classes = [IsAuthenticated, HasGroupPermission]
+    permission_classes = [IsAuthenticated, HasAnyGroupPermission]
     required_groups = {
-        'GET': ['ROLE_CA'],
+        'GET': ['ROLE_CA', 'ROLE_PIOUS'],
         'PUT': ['ROLE_CA'],
         'PATCH': ['ROLE_CA'],
         'DELETE': ['ROLE_ADMIN']

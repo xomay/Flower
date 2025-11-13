@@ -7,8 +7,9 @@ import random
 import string
 from django.contrib.auth.models import User, Group
 
-from flower_app.controllers.permissions import HasGroupPermission
-from flower_app.models.People.Realisateur import Realisateur, RealisateurSerializer, RealisateurComment, RealisateurCommentSerializer
+from flower_app.controllers.permissions import HasGroupPermission, HasAnyGroupPermission
+from flower_app.models.People.Realisateur import Realisateur, RealisateurSerializer, RealisateurComment, \
+    RealisateurCommentSerializer, SimuRealisateur
 from flower_app.models.Competence import Competence, CompetenceSerializer
 
 from flower_app.email.mail_reas_accounts import send_mail_rea_account_creation, send_mail_rea_account_deletion
@@ -16,25 +17,53 @@ from flower_app.email.mail_reas_accounts import send_mail_rea_account_creation, 
 # Réalisateur
 
 class RealisateurListCreateView(generics.ListCreateAPIView):
-    permission_classes = [IsAuthenticated, HasGroupPermission]
+    permission_classes = [IsAuthenticated, HasAnyGroupPermission]
     required_groups = {
         'GET': ['ROLE_CA'],                                         #
         'POST': ['ROLE_CA']                                         #
     }
     serializer_class = RealisateurSerializer
-    queryset = Realisateur.objects.all()
+    queryset = Realisateur.objects.filter(simurealisateur__isnull=False)
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.groups.filter(name='ROLE_PIOUS').exists() and not user.groups.filter(
+                name='ROLE_CA').exists():
+            return SimuRealisateur.objects.all()
+        else:
+            return Realisateur.objects.filter(simurealisateur__isnull=True)
+
+    def post(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        if not self.request.user.groups.filter(name__in=['ROLE_PIOUS','ROLE_CA']).exists():
+            return Response({"detail": "Vous n'avez pas la permission d'accéder à cette ressource."}, status=HTTPStatus.FORBIDDEN)
+        if self.request.user.groups.filter(name='ROLE_PIOUS').exists() and not self.request.user.groups.filter(
+            name='ROLE_CA').exists():
+            new_realisateur = SimuRealisateur.objects.create(**serializer.validated_data)
+        else:
+            new_realisateur = Realisateur.objects.create(**serializer.validated_data)
+        serializer = RealisateurSerializer(new_realisateur)
+        return Response(serializer.data, status=HTTPStatus.CREATED)
 
 class RealisateurRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = [IsAuthenticated, HasGroupPermission]
+    permission_classes = [IsAuthenticated, HasAnyGroupPermission]
     lookup_field = 'id'
     required_groups = {
-        'GET': ['ROLE_CA'],
-        'PUT': ['ROLE_CA'],
-        'PATCH': ['ROLE_CA'],
-        'DELETE': ['ROLE_CA']
+        'GET': ['ROLE_CA', 'ROLE_PIOUS'],
+        'PUT': ['ROLE_CA', 'ROLE_PIOUS'],
+        'PATCH': ['ROLE_CA', 'ROLE_PIOUS'],
+        'DELETE': ['ROLE_CA', 'ROLE_PIOUS']
     }
     serializer_class = RealisateurSerializer
-    queryset = Realisateur.objects.all()
+    #queryset = Realisateur.objects.all()
+
+    def get_queryset(self):
+        if self.request.user.groups.filter(name='ROLE_PIOUS').exists() and not self.request.user.groups.filter(
+            name='ROLE_CA').exists():
+            return SimuRealisateur.objects.all()
+        return Realisateur.objects.filter(simurealisateur__isnull=True)
 
 class OpenAccountView(generics.UpdateAPIView):
     permission_classes = [IsAuthenticated, HasGroupPermission]
@@ -89,22 +118,22 @@ class DeleteAccountView(generics.UpdateAPIView):
 # Commentaires
 
 class CommentsListCreateView(generics.ListCreateAPIView):
-    permission_classes = [IsAuthenticated, HasGroupPermission]
+    permission_classes = [IsAuthenticated, HasAnyGroupPermission]
     required_groups = {
-        'GET': ['ROLE_CA'],
-        'POST': ['ROLE_CA']
+        'GET': ['ROLE_CA', 'ROLE_PIOUS'],
+        'POST': ['ROLE_CA', 'ROLE_PIOUS']
     }
     serializer_class = RealisateurCommentSerializer
     queryset = RealisateurComment.objects.all()
 
 class CommentsRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = [IsAuthenticated, HasGroupPermission]
+    permission_classes = [IsAuthenticated, HasAnyGroupPermission]
     lookup_field = 'id'
     required_groups = {
-        'GET': ['ROLE_CA'],
-        'PUT': ['ROLE_CA'],
-        'PATCH': ['ROLE_CA'],
-        'DELETE': ['ROLE_CA']
+        'GET': ['ROLE_CA', 'ROLE_PIOUS'],
+        'PUT': ['ROLE_CA', 'ROLE_PIOUS'],
+        'PATCH': ['ROLE_CA', 'ROLE_PIOUS'],
+        'DELETE': ['ROLE_CA', 'ROLE_PIOUS']
     }
     serializer_class = RealisateurCommentSerializer
     queryset = RealisateurComment.objects.all()
@@ -114,8 +143,13 @@ class CommentsRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
 class SkillsRetrieveUpdateDestroyView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated, HasGroupPermission]
     required_groups = {
-        'GET': ['ROLE_CA'],
+        #'GET': ['ROLE_CA'],
         'POST': ['ROLE_CA']
     }
     serializer_class = CompetenceSerializer
     queryset = Competence.objects.all()
+
+    def get(self, request):
+        if not self.request.user.groups.filter(name__in=['ROLE_PIOUS','ROLE_CA']).exists():
+            return Response({"detail": "Vous n'avez pas la permission d'accéder à cette ressource."}, status=HTTPStatus.FORBIDDEN)
+        return super().get(self)

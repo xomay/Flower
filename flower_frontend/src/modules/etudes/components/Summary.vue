@@ -95,7 +95,7 @@
             <el-tag type="primary" size="small">Chef de projet</el-tag>
           </div>
           <div v-if="etude.qualityManager && !reaVue" class="team-member">
-            <el-avatar :size="40">
+            <el-avatar :size="40" :src="etude.qualityManager.picture">
               {{ etude.qualityManager.firstname?.[0] }}{{ etude.qualityManager.lastname?.[0] }}
             </el-avatar>
             <div class="member-info">

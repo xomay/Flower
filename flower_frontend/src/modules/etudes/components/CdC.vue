@@ -15,7 +15,7 @@
         type="primary"
         icon="EditPen"
         :loading="loading"
-        :disabled="etude.isAborted"
+        :disabled="etude.isAborted || etude.state >= 3"
       >
         {{ "Modifier le Cahier des Charges" }}
       </el-button>

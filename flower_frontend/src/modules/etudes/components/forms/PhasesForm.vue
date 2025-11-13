@@ -85,7 +85,8 @@
                         <el-select v-model="row.requirements"
                           @change="onRequirementsChange(row)"
                           multiple 
-                          placeholder="Sélectionner les références">
+                          placeholder="Sélectionner les références"
+                          :disabled="disabled || !is_cdc">
                           <el-option
                             v-for="req in requirements"
                             :key="req.id"
@@ -176,7 +177,7 @@
         <el-button
           type="text"
           icon="Plus"
-          :disabled="disabled || !is_methodo || !is_budget || !is_delai"
+          :disabled="disabled || !is_methodo || !is_delai"
           v-show="!is_transverse || (is_transverse && modelValue.length == 0)"
           @click="addPhase()"
         >
@@ -204,6 +205,7 @@ export default {
     is_delai: { type: Boolean, default: true },
     is_methodo: { type: Boolean, default: true },
     is_budget: { type: Boolean, default: true },
+    is_cdc: { type: Boolean, default: true },
     is_transverse: { type: Boolean, default: false },
   },
   emits: ["update:modelValue", "add-phase", "add-us", "delete-phase", "delete-group", "delete-us", "requirements-change"],

@@ -15,7 +15,7 @@
         type="primary"
         icon="EditPen"
         :loading="loading"
-        :disabled="etude.isAborted"
+        :disabled="etude.isAborted || etude.state >= 3"
       >
         {{ this.phases.length > 0 ? "Modifier les phases" : "Créer les phases" }}
       </el-button>
@@ -58,7 +58,7 @@
           prop="title"
         >
           <template #default="{row}">
-            {{ row.title }} : <i><p color="gray">{{ row.description }}</p></i>
+            <b>Phase {{ row.index }} -</b> {{ row.title }} : <i><p color="gray">{{ row.description }}</p></i>
           </template>
         </el-table-column>
         <el-table-column

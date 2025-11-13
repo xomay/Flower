@@ -204,6 +204,7 @@ export default {
               1
             )
           }
+          this.updateIndex()
           this.$message({message: "La phase a bien été supprimée.", type: "success"})
         }).catch(() => {
           this.$message({message: "Impossible de supprimer cette phase pour le moment", type: "error"})
@@ -218,8 +219,15 @@ export default {
             1
           )
         }
+        this.updateIndex()
         this.loading = false
       }
+    },
+    updateIndex () {
+      this.phases = this.phases.map((phase, idx) => {
+        phase.index = idx + 1
+        return phase
+      })
     },
     deleteUS ({us, phase}) {
       this.loading = true

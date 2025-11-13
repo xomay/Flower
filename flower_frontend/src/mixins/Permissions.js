@@ -17,6 +17,9 @@ export const Permissions = {
     },
     isPious() {
       return this.$store.currentUser.roles.includes("ROLE_PIOUS")
+    },
+    isOnlyPious() {
+      return this.$store.currentUser.roles.length === 1 && this.$store.currentUser.roles.includes("ROLE_PIOUS")
     }
   }
 }
