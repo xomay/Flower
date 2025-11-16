@@ -39,11 +39,24 @@ class RealisateurListCreateView(generics.ListCreateAPIView):
 
         if not self.request.user.groups.filter(name__in=['ROLE_PIOUS','ROLE_CA']).exists():
             return Response({"detail": "Vous n'avez pas la permission d'accéder à cette ressource."}, status=HTTPStatus.FORBIDDEN)
+
+        # Extraire les champs many-to-many
+        validated_data = serializer.validated_data
+        skills = validated_data.pop('skills', [])
+        comments = validated_data.pop('comments', [])
+
         if self.request.user.groups.filter(name='ROLE_PIOUS').exists() and not self.request.user.groups.filter(
             name='ROLE_CA').exists():
-            new_realisateur = SimuRealisateur.objects.create(**serializer.validated_data)
+            new_realisateur = SimuRealisateur.objects.create(**validated_data)
         else:
-            new_realisateur = Realisateur.objects.create(**serializer.validated_data)
+            new_realisateur = Realisateur.objects.create(**validated_data)
+
+        # Assigner les champs many-to-many
+        if skills:
+            new_realisateur.skills.set(skills)
+        if comments:
+            new_realisateur.comments.set(comments)
+
         serializer = RealisateurSerializer(new_realisateur)
         return Response(serializer.data, status=HTTPStatus.CREATED)
 
@@ -141,15 +154,10 @@ class CommentsRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
 # Skills
 
 class SkillsRetrieveUpdateDestroyView(generics.ListCreateAPIView):
-    permission_classes = [IsAuthenticated, HasGroupPermission]
+    permission_classes = [IsAuthenticated, HasAnyGroupPermission]
     required_groups = {
-        #'GET': ['ROLE_CA'],
-        'POST': ['ROLE_CA']
+        'GET': ['ROLE_CA', 'ROLE_PIOUS'],
+        'POST': ['ROLE_CA', 'ROLE_PIOUS']
     }
     serializer_class = CompetenceSerializer
     queryset = Competence.objects.all()
-
-    def get(self, request):
-        if not self.request.user.groups.filter(name__in=['ROLE_PIOUS','ROLE_CA']).exists():
-            return Response({"detail": "Vous n'avez pas la permission d'accéder à cette ressource."}, status=HTTPStatus.FORBIDDEN)
-        return super().get(self)
