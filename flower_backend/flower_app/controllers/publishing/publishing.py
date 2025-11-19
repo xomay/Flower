@@ -34,16 +34,20 @@ def rd(number, digits=2):
 def addMonths(isodate, numberOfMonths):
     if isinstance(isodate, date):
         d = isodate
-    else:
+    elif isodate:
         d = date.fromisoformat(str(isodate))
+    else:
+        d = date.today()
     return (d + timedelta(days=numberOfMonths * 30)).isoformat()
 
 
 def addWeeks(isodate, numberOfWeeks):
     if isinstance(isodate, date):
         d = isodate
-    else:
+    elif isodate:
         d = date.fromisoformat(str(isodate))
+    else:
+        d = date.today()
     return (d + timedelta(weeks=numberOfWeeks)).isoformat()
 
 def toPercent(number):
