@@ -14,7 +14,8 @@ def computeGanttFromEtudeRaw(etude):
     beginDate = etude.docEtude.signDate
     for phase in etude.phases.order_by('index').iterator():
         finishDate = beginDate + timedelta(days=phase.period)
-        data.append(dict(Phase="<br>".join(textwrap.wrap(phase.title, width=(finishDate-beginDate).days)), Début=beginDate, Fin=finishDate))
+        if (phase.period > 0):
+            data.append(dict(Phase="<br>".join(textwrap.wrap(phase.title, width=(finishDate-beginDate).days)), Début=beginDate, Fin=finishDate))
         beginDate = finishDate
 
     if len(data) > 0 :
