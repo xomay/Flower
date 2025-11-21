@@ -23,7 +23,7 @@ class RealisateurListCreateView(generics.ListCreateAPIView):
         'POST': ['ROLE_CA', 'ROLE_PIOUS']                                         #
     }
     serializer_class = RealisateurSerializer
-    queryset = Realisateur.objects.filter(simurealisateur__isnull=False)
+    queryset = Realisateur.objects.all()
 
     def get_queryset(self):
         user = self.request.user
