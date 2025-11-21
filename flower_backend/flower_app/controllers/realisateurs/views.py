@@ -19,8 +19,8 @@ from flower_app.email.mail_reas_accounts import send_mail_rea_account_creation, 
 class RealisateurListCreateView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated, HasAnyGroupPermission]
     required_groups = {
-        'GET': ['ROLE_CA'],                                         #
-        'POST': ['ROLE_CA']                                         #
+        'GET': ['ROLE_CA', 'ROLE_PIOUS'],                                         #
+        'POST': ['ROLE_CA', 'ROLE_PIOUS']                                         #
     }
     serializer_class = RealisateurSerializer
     queryset = Realisateur.objects.filter(simurealisateur__isnull=False)
