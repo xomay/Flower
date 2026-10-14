@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '*fdkcuwkd+s6#_dsz_-kz@x5k=n60c8ogme9kz!uj26#dqf8*('
+SECRET_KEY = os.getenv('SECRET_KEY', 'your-default-secret-key')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', False)
@@ -98,8 +98,8 @@ ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*', 'password2*']
 #ACCOUNT_SIGNUP_FIELDS = ['email*', 'username*', 'password1*', 'password2*']
 ACCOUNT_LOGIN_METHODS = {'email'}
 
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = 'GOOGLE_CLIENT_ID'
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'GOOGLE_CLIENT_SECRET'
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.getenv('SOCIAL_AUTH_GOOGLE_OAUTH2_KEY', 'your-google-client-id')
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.getenv('SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET', 'your-google-client-secret')
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [

@@ -60,9 +60,9 @@ Dans flower_backend, exécuter `pip install -r requirements.txt`.
     CORS_ALLOWED_ORIGINS=["http://localhost:8080","http://127.0.0.1:8080"]
     CSRF_TRUSTED_ORIGINS=['http://localhost:8080','http://127.0.0.1:8080','http://127.0.0.1:8000']
     STATIC_URL=static/
-    API_TOKEN=nzdznCi8YEtFS_2cNnrm
+    API_TOKEN='API_TOKEN'
     PROJECT_ID=3115
-    SLACK_TOKEN=SLACK_TOKEN
+    SLACK_TOKEN='SLACK_TOKEN'
     ```
 
 Il faut à présent peupler la base de données avec un set de données initiales.
